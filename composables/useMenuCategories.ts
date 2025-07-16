@@ -14,8 +14,18 @@ export default function useMenuCategories() {
     },
     {
       name: "文章分类",
-        value: "category-3",
+      value: "category-3",
       path: "/home/categories/article-3",
+    },
+    {
+      name: "文章分类",
+      value: "category-4",
+      path: "/home/categories/article-4",
+    },
+    {
+      name: "文章分类",
+      value: "category-5",
+      path: "/home/categories/article-5",
     },
   ]);
 

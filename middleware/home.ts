@@ -1,4 +1,4 @@
-import useMenuCategories from "../composables/useMenuCategoies";
+import useMenuCategories from "../composables/useMenuCategories";
 
 export default defineNuxtRouteMiddleware((to, from) => {
   const { menuCategories } = useMenuCategories();

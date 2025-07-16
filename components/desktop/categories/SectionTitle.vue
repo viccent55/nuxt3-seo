@@ -1,10 +1,15 @@
 <template>
-  <div class="d-flex align-center justify-space-between mb-3 mt-6">
-    <div class="text-h6 text-blue-darken-2">{{ title }}</div>
-    <v-btn text class="text-caption">MORE</v-btn>
+  <div class="d-flex align-center ga-3 mb-3 mt-6">
+    <v-divider
+      class="border-opacity-100"
+      color="blue-darken-2"
+      :thickness="5"
+      vertical
+    ></v-divider>
+    <div class="text-h6">{{ title }}</div>
   </div>
 </template>
 
 <script setup lang="ts">
-defineProps<{ title: string }>()
+  defineProps<{ title: string }>();
 </script>

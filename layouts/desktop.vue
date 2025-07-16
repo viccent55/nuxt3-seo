@@ -1,10 +1,10 @@
 <script setup lang="ts">
-  import Header from './desktop/Header.vue'
-  import Footer from './desktop/Footer.vue'
+  import Header from "./desktop/Header.vue";
+  import Footer from "./desktop/Footer.vue";
 </script>
 <template>
   <Header />
-  <v-main class="bg-grey-lighten-5">
+  <v-main class="bg-background">
     <slot />
   </v-main>
   <Footer />

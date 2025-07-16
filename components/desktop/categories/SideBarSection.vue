@@ -5,15 +5,26 @@
 <template>
   <div class="mt-6">
     <div class="d-flex justify-space-between align-center mb-2">
-      <div class="text-subtitle-1 text-blue-darken-2">{{ title }}</div>
+      <div class="d-flex align-center ga-3">
+        <v-divider
+          class="border-opacity-100"
+          color="blue-darken-2"
+          :thickness="5"
+          vertical
+        ></v-divider>
+        <div class="text-subtitle-1 -blue-darken-2 d-flex align-center">
+          {{ title }}
+        </div>
+      </div>
       <v-btn
-        text
+        variant="text"
         class="text-caption"
       >
         MORE
+        <v-icon>mdi-chevron-right</v-icon>
       </v-btn>
     </div>
-    <div>
+    <div class="rounded-md">
       <slot />
     </div>
   </div>

@@ -1,16 +1,14 @@
 <script setup lang="ts">
-
+  const { menuCategories } = useMenuCategories();
   const state = reactive({
-    keywords: "nuxt3, seo, vue, web development",
-    title: "Nuxt3 SEO",
-    description: "A Nuxt 3 project with SEO optimizations"
+    search: "",
   });
 </script>
 <template>
   <header>
     <v-app-bar
       flat
-      color="white"
+      color="surface"
       class="border-b"
       height="64"
     >
@@ -22,19 +20,19 @@
               <v-btn
                 variant="text"
                 class="pa-0 text-body-1 font-weight-bold"
-                to="/home"
+                :to="menuCategories[0].path"
                 tag="h1"
               >
                 LOGO
               </v-btn>
-              
+
               <!-- Navigation -->
               <nav
                 aria-label="Main navigation"
                 class="d-flex ga-8"
               >
                 <NuxtLink
-                  to="/home"
+                  :to="menuCategories[0].path"
                   class="text-button"
                 >
                   首页
@@ -69,7 +67,7 @@
               style="width: 350px"
             >
               <v-text-field
-                v-model="state.title"
+                v-model="state.search"
                 hide-details
                 density="compact"
                 variant="outlined"
@@ -77,7 +75,6 @@
                 prepend-inner-icon="mdi-magnify"
                 style="max-width: 240px"
                 rounded="lg"
-                class="bg-grey-lighten-4 rounded-lg"
               />
               <v-divider vertical></v-divider>
               <div class="d-flex align-center text-caption">
@@ -108,13 +105,18 @@
     color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
     text-decoration: none;
     transition: color 0.2s ease-in-out;
-
+    font-weight: 500;
     &:hover {
-      color: rgb(var(--v-theme-primary));
+      color: rgb(var(--v-theme-on-surface));
+      font-weight: 500;
     }
   }
   .router-link-exact-active {
-    color: rgb(var(--v-theme-primary));
+    color: rgb(var(--v-theme-on-surface));
     font-weight: 700;
+
+    &:hover {
+      font-weight: 700;
+    }
   }
 </style>

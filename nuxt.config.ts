@@ -12,19 +12,25 @@ export default defineNuxtConfig({
       ],
     },
   },
-  imports: {
-    presets: [
-      {
-        from: "vue",
-        imports: ["reactive"], // Now reactive is auto-imported!
-      },
-    ],
+  css: ["public/css/main.scss"],
+  routeRules: {
+    "/": { redirect: "/home" },
   },
-  // routeRules: {
-  //   "/": { redirect: "/home" },
-  // },
   build: {
     transpile: ["vuetify"],
+  },
+  runtimeConfig: {
+    public: {
+      apiBase: "http://192.168.100.6:8088/apiv1",
+    },
+  },
+  nitro: {
+    devProxy: {
+      "/apiv1": {
+        target: "http://192.168.100.6:8088", // Your API server address
+        changeOrigin: true,
+      },
+    },
   },
   modules: [
     (_options, nuxt) => {
@@ -51,6 +57,7 @@ export default defineNuxtConfig({
       },
     },
   },
+
   compatibilityDate: "2025-05-15",
   devtools: { enabled: true },
 });
