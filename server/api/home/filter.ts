@@ -2,12 +2,12 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event); // ✅ Read POST body
   const config = useRuntimeConfig();
   try {
-    const result = await $fetch(`${config.public?.apiBase}/tag/group`, {
+    const result = await $fetch(`${config.public?.apiBase}/post/filter`, {
       method: "POST",
-      body, // Add necessary body content here if required
+      body,
     });
 
-    return result; // Return the fetched result
+    return result;
   } catch (error) {
     // Handle errors gracefully
     console.error("Error fetching group data:", error);

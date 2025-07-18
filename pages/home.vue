@@ -1,30 +1,42 @@
 <script lang="ts" setup>
-  import { useAuthStore } from "@/store/auth";
   import useMenuCategories from "../composables/useMenuCategories";
+
   definePageMeta({
-    middleware: ["home"],
+    middleware: ["redirect-home"],
   });
-  const state = reactive({
-    data: [],
-  });
+
   const { menuCategories } = useMenuCategories();
-
-  const auth = useAuthStore();
-
-  const { data, pending } = await useFetch("/api/groups", {
+  const state = reactive({
+    subject: [] as EmptyArrayType,
+    filter: {
+      field: "home",
+      with_actor: 1,
+      with_post: 1,
+      page: 1,
+      limit: 6,
+    },
+    latest: [] as EmptyArrayType,
+  });
+  const {
+    data: subject,
+    error: subjectError,
+    pending: subjectPending,
+  } = await useApiFetch<EmptyObjectType>("/api/home/subject", {
     method: "POST",
+    body: state.filter,
   });
 
-  onMounted(() => {
-    // getTags();
+  watchEffect(() => {
+    if (subject.value) {
+      state.subject = subject.value.data;
+    }
   });
 </script>
 
 <template>
   <v-container class="px-0 mt-4">
-    <div v-if="pending">Loading...</div>
+    <!-- <div v-if="pending">Loading...</div> -->
     <!-- Shared Categories Menu -->
-    {{ data }}
     <v-toolbar
       class="d-flex px-8 rounded-lg"
       density="compact"
@@ -49,7 +61,11 @@
       </template>
     </v-toolbar>
     <!-- Show child page content -->
-    <NuxtPage />
+
+    <NuxtPage
+      :subject="state.subject"
+      :latest="state.latest"
+    />
     <v-row dense>
       <v-col cols="6">
         <v-sheet

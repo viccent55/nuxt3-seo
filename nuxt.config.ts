@@ -12,6 +12,7 @@ export default defineNuxtConfig({
       ],
     },
   },
+
   css: ["public/css/main.scss"],
   routeRules: {
     "/": { redirect: "/home" },
@@ -24,14 +25,7 @@ export default defineNuxtConfig({
       apiBase: "http://192.168.100.6:8088/apiv1",
     },
   },
-  nitro: {
-    devProxy: {
-      "/apiv1": {
-        target: "http://192.168.100.6:8088", // Your API server address
-        changeOrigin: true,
-      },
-    },
-  },
+
   modules: [
     (_options, nuxt) => {
       nuxt.hooks.hook("vite:extendConfig", (config) => {

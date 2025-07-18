@@ -5,27 +5,27 @@ export default function useMenuCategories() {
     {
       name: "文章分类",
       value: "category-1",
-      path: "/home/categories/article-1",
+      path: "/home/categories-1",
     },
     {
       name: "文章分类",
       value: "category-2",
-      path: "/home/categories/article-2",
+      path: "/home/categories-2",
     },
     {
       name: "文章分类",
       value: "category-3",
-      path: "/home/categories/article-3",
+      path: "/home/categories-3",
     },
     {
       name: "文章分类",
       value: "category-4",
-      path: "/home/categories/article-4",
+      path: "/home/categories-4",
     },
     {
       name: "文章分类",
       value: "category-5",
-      path: "/home/categories/article-5",
+      path: "/home/categories-5",
     },
   ]);
 

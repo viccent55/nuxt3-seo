@@ -1,16 +1,11 @@
 <script lang="ts" setup>
   const props = defineProps({
     item: {
-      type: Object as PropType<Record<string, any>>,
+      type: Object as PropType<EmptyObjectType>,
       default: () => ({}),
     },
   });
-  const { decryptImage, decryptedImage } = useDecryption();
-  onMounted(async () => {
-    if (props.item.cover) {
-      await decryptImage(props.item.cover);
-    }
-  });
+  onMounted(async () => {});
 </script>
 <template>
   <div>

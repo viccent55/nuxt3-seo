@@ -1,9 +1,60 @@
 <script lang="ts" setup>
-  import SidebarSection from "~/components/desktop/categories/SidebarSection.vue";
-  import ArticleCard from "~/components/desktop/categories/ArticleCard.vue";
-  import ArticleListItem from "~/components/desktop/categories/ArticleListItem.vue";
-  import ArticleList from "~/components/desktop/categories/ArticleList.vue";
-  import SectionTitle from "~/components/desktop/categories/SectionTitle.vue";
+  import SidebarSection from "~/components/desktop/SidebarSection.vue";
+  import ArticleCard from "~/components/desktop/ArticleCard.vue";
+  import ArticleListItem from "~/components/desktop/ArticleListItem.vue";
+  import ArticleList from "~/components/desktop/ArticleList.vue";
+  import SectionTitle from "~/components/desktop/SectionTitle.vue";
+  defineProps({
+    subject: {
+      type: Array as PropType<EmptyArrayType>,
+      default: () => [],
+    },
+  });
+  const state = reactive({
+    latest: [] as EmptyArrayType,
+    paginate: {
+      page: 1,
+      limit: 10,
+      total: 0,
+    },
+  });
+
+  const { filterHome } = useHome();
+  const { data: latest } = await useAsyncData<any>(
+    "latest",
+    () =>
+      $fetch("/api/home/latest", {
+        method: "POST",
+        body: {
+          page: state.paginate.page,
+          limit: state.paginate.limit,
+        },
+      }),
+    {
+      watch: [state.paginate],
+      transform: (res) => {
+        state.latest = [];
+        // ✅ Filter or map your data here
+        return {
+          items: res.data.items || [],
+          count: res.data.count || 0,
+        };
+      },
+    }
+  );
+
+  watchEffect(() => {
+    if (latest.value) {
+      state.latest = latest.value.items ?? [];
+      if (latest.value.count) {
+        state.paginate.total = latest.value.count;
+      }
+    }
+  });
+
+  const onPageChange = (newPage: number) => {
+    state.paginate.page = newPage;
+  };
 
   const comments = [
     {
@@ -50,35 +101,43 @@
         <SectionTitle title="最新专题" />
         <v-row>
           <v-col
-            v-for="n in 6"
-            :key="n"
+            v-for="(item, index) in subject"
+            :key="index"
             cols="12"
             sm="6"
             md="4"
           >
-            <ArticleCard />
+            <ArticleCard :item="item" />
           </v-col>
         </v-row>
 
         <!-- Latest text -->
         <SectionTitle title="最新文章" />
-        <template v-for="(iten, index) in [1, 2, 3]">
-          <ArticleList />
+        <template
+          v-for="(item, index) in state.latest"
+          :key="index"
+        >
+          <ArticleList :item="item" />
           <!-- Advertisement space -->
-          <v-sheet v-if="index < 2"
+
+          <v-sheet
+            v-if="index < state.latest.length - 1"
             class="pa-6 text-center my-4"
-            color="blue-lighten-5">
+            color="blue-lighten-5"
+          >
             广告位
           </v-sheet>
         </template>
 
         <!-- <Pagination /> -->
-        <div class="text-center mt-2">
+        <div class="text-center mt-4">
           <v-pagination
             density="comfortable"
-            :length="10"
-            :total-visible="5"
+            :model-value="state.paginate.page"
+            :length="Math.ceil(state.paginate.total / state.paginate.limit)"
+            :total-visible="10"
             active-color="primary"
+            @update:model-value="onPageChange"
           ></v-pagination>
         </div>
       </v-col>
@@ -89,13 +148,11 @@
         md="4"
       >
         <SidebarSection title="推荐文章">
-          <v-sheet
-            class="pa-4"
-            color="blue-lighten-5"
-          >
+          <v-sheet class="pa-4">
             <ArticleListItem
-              v-for="n in 3"
-              :key="n"
+              v-for="(item, index) in filterHome.items"
+              :key="index"
+              :item="item"
             />
           </v-sheet>
         </SidebarSection>
@@ -153,27 +210,27 @@
         </SidebarSection>
 
         <SidebarSection title="热门人物">
-         <v-sheet>
-           <v-row class="mt-2">
-            <v-col
-              v-for="i in 6"
-              :key="i"
-              cols="4"
-              class="text-center"
-            >
-              <v-avatar
-                size="48"
-                class="mb-1"
+          <v-sheet>
+            <v-row class="mt-2">
+              <v-col
+                v-for="i in 6"
+                :key="i"
+                cols="4"
+                class="text-center"
               >
-                <v-img
-                  src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQ519BsNFaVDx_YmDcTJ7T2qOnXbXKJFL9RmmxzjamEeVWNRGwB"
-                />
-              </v-avatar>
-              <div class="text-caption">名字</div>
-              <div class="text-grey text-caption">所属栏目</div>
-            </v-col>
-          </v-row>
-         </v-sheet>
+                <v-avatar
+                  size="48"
+                  class="mb-1"
+                >
+                  <v-img
+                    src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQ519BsNFaVDx_YmDcTJ7T2qOnXbXKJFL9RmmxzjamEeVWNRGwB"
+                  />
+                </v-avatar>
+                <div class="text-caption">名字</div>
+                <div class="text-grey text-caption">所属栏目</div>
+              </v-col>
+            </v-row>
+          </v-sheet>
         </SidebarSection>
 
         <SidebarSection title="热门专题">
@@ -230,7 +287,8 @@
                   <div class="d-flex flex-column">
                     <v-sheet
                       class="text-body-2 mb-2 pa-2 rounded"
-                      color="blue-lighten-5">
+                      color="blue-lighten-5"
+                    >
                       {{ comment.text }}
                     </v-sheet>
                     <div
@@ -253,21 +311,26 @@
               </v-list-item>
             </v-list>
           </v-card>
-          <v-sheet class="pa-5 text-center my-4" color="blue-lighten-5">
+          <v-sheet
+            class="pa-5 text-center my-4"
+            color="blue-lighten-5"
+          >
             广告位
           </v-sheet>
         </SidebarSection>
-        <SidebarSection title="最新地址" >
+        <SidebarSection title="最新地址">
           <v-card
             elevation="0"
             class="pa-4"
-          
           >
             <v-list
               class="pa-0"
               density="compact"
             >
-              <v-list-item class="rounded-sm mb-2" bg-color="blue-lighten-5">
+              <v-list-item
+                class="rounded-sm mb-2"
+                bg-color="blue-lighten-5"
+              >
                 <v-list-item-title class="text-caption">
                   最新地址：
                   <a
@@ -280,7 +343,10 @@
                 </v-list-item-title>
               </v-list-item>
 
-              <v-list-item class="rounded-sm mb-2" bg-color="blue-lighten-5">
+              <v-list-item
+                class="rounded-sm mb-2"
+                bg-color="blue-lighten-5"
+              >
                 <v-list-item-title class="text-caption">
                   备用地址：
                   <a
@@ -293,7 +359,11 @@
                 </v-list-item-title>
               </v-list-item>
 
-              <v-list-item class="rounded-sm" color="primary" variant="tonal">
+              <v-list-item
+                class="rounded-sm"
+                color="primary"
+                variant="tonal"
+              >
                 <v-list-item-title class="text-caption">
                   永久域名：
                   <a
@@ -341,7 +411,7 @@
 
         <SidebarSection title="热门标签">
           <v-row
-            class="px-2 pt-2 pb-4 "
+            class="px-2 pt-2 pb-4"
             dense
           >
             <v-chip
