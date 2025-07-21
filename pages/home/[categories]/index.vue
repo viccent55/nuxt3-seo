@@ -5,13 +5,13 @@
   import ArticleList from "~/components/desktop/ArticleList.vue";
   import SectionTitle from "~/components/desktop/SectionTitle.vue";
   defineProps({
-    subject: {
+    subjects: {
       type: Array as PropType<EmptyArrayType>,
       default: () => [],
     },
   });
   const state = reactive({
-    latest: [] as EmptyArrayType,
+    latests: [] as EmptyArrayType,
     paginate: {
       page: 1,
       limit: 10,
@@ -19,7 +19,8 @@
     },
   });
 
-  const { filterHome } = useHome();
+  const { postFilter, actorFilter, subjectFilter, tagTop } = useHome();
+  const page = computed(() => state.paginate.page);
   const { data: latest } = await useAsyncData<any>(
     "latest",
     () =>
@@ -31,9 +32,9 @@
         },
       }),
     {
-      watch: [state.paginate],
+      watch: [page],
       transform: (res) => {
-        state.latest = [];
+        state.latests = [];
         // ✅ Filter or map your data here
         return {
           items: res.data.items || [],
@@ -45,7 +46,7 @@
 
   watchEffect(() => {
     if (latest.value) {
-      state.latest = latest.value.items ?? [];
+      state.latests = latest.value.items ?? [];
       if (latest.value.count) {
         state.paginate.total = latest.value.count;
       }
@@ -101,7 +102,7 @@
         <SectionTitle title="最新专题" />
         <v-row>
           <v-col
-            v-for="(item, index) in subject"
+            v-for="(item, index) in subjects"
             :key="index"
             cols="12"
             sm="6"
@@ -113,21 +114,25 @@
 
         <!-- Latest text -->
         <SectionTitle title="最新文章" />
-        <template
-          v-for="(item, index) in state.latest"
-          :key="index"
-        >
-          <ArticleList :item="item" />
-          <!-- Advertisement space -->
-
-          <v-sheet
-            v-if="index < state.latest.length - 1"
-            class="pa-6 text-center my-4"
-            color="blue-lighten-5"
-          >
-            广告位
-          </v-sheet>
-        </template>
+        <v-sheet color="transparent">
+          <template v-if="state.latests.length">
+            <template
+              v-for="(item, index) in state.latests"
+              :key="index"
+            >
+              <ArticleList :item="item" />
+              <div
+                v-if="index < state.latests.length - 1"
+                class="pa-6 text-center my-4"
+              >
+                广告位
+              </div>
+            </template>
+          </template>
+          <template v-else>
+            <div class="text-center pa-10">加载中或暂无内容...</div>
+          </template>
+        </v-sheet>
 
         <!-- <Pagination /> -->
         <div class="text-center mt-4">
@@ -150,7 +155,7 @@
         <SidebarSection title="推荐文章">
           <v-sheet class="pa-4">
             <ArticleListItem
-              v-for="(item, index) in filterHome.items"
+              v-for="(item, index) in postFilter?.items"
               :key="index"
               :item="item"
             />
@@ -213,8 +218,8 @@
           <v-sheet>
             <v-row class="mt-2">
               <v-col
-                v-for="i in 6"
-                :key="i"
+                v-for="(item, index) in actorFilter?.items"
+                :key="index"
                 cols="4"
                 class="text-center"
               >
@@ -222,12 +227,12 @@
                   size="48"
                   class="mb-1"
                 >
-                  <v-img
-                    src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQ519BsNFaVDx_YmDcTJ7T2qOnXbXKJFL9RmmxzjamEeVWNRGwB"
-                  />
+                  <Image :src="item.avatar" />
                 </v-avatar>
-                <div class="text-caption">名字</div>
-                <div class="text-grey text-caption">所属栏目</div>
+                <div class="text-caption truncate-1">{{ item.name }}</div>
+                <div class="text-grey text-caption text-xs truncate-2">
+                  {{ item.intro }}
+                </div>
               </v-col>
             </v-row>
           </v-sheet>
@@ -235,32 +240,27 @@
 
         <SidebarSection title="热门专题">
           <v-card elevation="0">
-            <v-img
+            <Image
               class="mx-4"
-              src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQ519BsNFaVDx_YmDcTJ7T2qOnXbXKJFL9RmmxzjamEeVWNRGwB"
-              height="160"
+              :src="subjectFilter?.items[0]?.cover"
               cover
+              height="200"
               lazy-src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQ519BsNFaVDx_YmDcTJ7T2qOnXbXKJFL9RmmxzjamEeVWNRGwB"
             />
             <v-card-text>
-              <div class="text-subtitle-2 truncate-2">
-                所属栏目所属栏目所属栏目所属栏目所属栏目所属栏目所属栏目
-                所属栏目所属栏目所属栏目所属栏目所属栏目所属栏目所属栏目
-                所属栏目所属栏目所属栏目所属栏目所属栏目所属栏目所属栏目
-                所属栏目所属栏目所属栏目所属栏目所属栏目所属栏目所属栏目....
-              </div>
+              <div class="text-subtitle-2 truncate-2"></div>
               <v-divider class="my-4"></v-divider>
               <v-list
                 class="bullet-list pa-0"
                 density="compact"
               >
                 <v-list-item
-                  v-for="tag in ['标签1', '标签2', '标签3']"
-                  :key="tag"
+                  v-for="(post, index) in subjectFilter?.items[0]?.posts"
+                  :key="index"
                   min-height="30"
                 >
                   <v-list-item-title class="text-caption">
-                    {{ tag }}
+                    {{ post.title }}
                   </v-list-item-title>
                 </v-list-item>
               </v-list>
@@ -408,21 +408,20 @@
             </v-sheet>
           </v-row>
         </SidebarSection>
-
         <SidebarSection title="热门标签">
           <v-row
             class="px-2 pt-2 pb-4"
             dense
           >
             <v-chip
-              v-for="tag in ['走后门', '教育公平', '医患关系']"
-              :key="tag"
+              v-for="(tag, index) in tagTop?.items"
+              :key="index"
               size="small"
               class="ma-1"
-              :color="tag === '教育公平' ? 'primary' : 'surface-variant'"
+              color="surface-variant"
               variant="tonal"
             >
-              {{ tag }}
+              {{ tag.name }}
             </v-chip>
           </v-row>
         </SidebarSection>

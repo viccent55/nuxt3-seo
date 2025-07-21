@@ -20,8 +20,9 @@
 </script>
 <template>
   <v-card
-    class="d-flex mb-2 position-relative"
+    class="d-flex mb-2 position-relative hover-shadow"
     tag="article"
+    flat
   >
     <v-hover v-slot="{ isHovering, props: hoverProps }">
       <v-avatar
@@ -34,13 +35,13 @@
         <div class="image-wrapper">
           <Image
             class="article-image"
-            :src="item.cover"
+            :src="item?.cover"
             @image-dimensions="(v) => (imageDimensions = v)"
             :style="isHovering ? getStyleImage(imageDimensions) : {}"
             contain
           />
           <v-chip
-            v-if="item.cover"
+            v-if="item?.cover"
             class="chip-top-left"
             color="primary"
             variant="flat"
@@ -56,9 +57,9 @@
 
     <v-card-text class="text-content">
       <div>
-        <h3 class="truncate-1">{{ item.title }}</h3>
+        <h3 class="truncate-1">{{ item?.title }}</h3>
         <div class="text-caption mt-1 text-grey truncatte-3">
-          {{ item.intro }}
+          {{ item?.intro }}
         </div>
       </div>
       <v-row
@@ -68,7 +69,7 @@
       >
         <v-col cols="7">
           <v-chip
-            v-for="(tag, index) in item.tags"
+            v-for="(tag, index) in item?.tags"
             :key="index"
             size="x-small"
             class="ma-1"
@@ -87,19 +88,19 @@
             <div class="d-flex ga-3">
               <div>
                 🕒
-                {{ dateStringTo24Hour(item.created, "YYYY-DD-MM hh:mm") }}
+                {{ dateStringTo24Hour(item?.created, "YYYY-DD-MM hh:mm") }}
               </div>
               <div class="d-flex ga-2 align-center">
                 <v-icon>mdi-eye</v-icon>
-                <span>{{ item.view_count }}</span>
+                <span>{{ item?.view_count }}</span>
               </div>
               <div class="d-flex ga-2 align-center">
                 <v-icon>mdi-chat-outline</v-icon>
-                <span>{{ item.comment_count }}</span>
+                <span>{{ item?.comment_count }}</span>
               </div>
               <div class="d-flex ga-2 align-center">
                 <v-icon>mdi-thumb-up-outline</v-icon>
-                <span>{{ item.like_count }}</span>
+                <span>{{ item?.like_count }}</span>
               </div>
             </div>
           </v-row>
@@ -107,27 +108,27 @@
         <v-col
           cols="12"
           v-if="
-            item.actors.length > 0 ||
-            item.subjects.length > 0 ||
-            item.categories.length > 0
+            item?.actors.length > 0 ||
+            item?.subjects.length > 0 ||
+            item?.categories.length > 0
           "
         >
           <v-row
             dense
             align="center"
           >
-            <v-col v-if="item.actors.length > 0">
+            <v-col v-if="item?.actors.length > 0">
               <div
                 class="d-flex align-center text-grey"
-                v-for="author in item.actors"
+                v-for="author in item?.actors"
                 :key="author.id"
               >
                 <ActorProfile :item="author" />
               </div>
             </v-col>
-            <v-col v-if="item.categories.length > 0">
+            <v-col v-if="item?.categories.length > 0">
               <v-chip
-                v-for="(category, index) in item.categories"
+                v-for="(category, index) in item?.categories"
                 :key="index"
                 size="x-small"
                 class="ma-1"
@@ -136,9 +137,9 @@
                 {{ category.name }}
               </v-chip>
             </v-col>
-            <v-col v-if="item.subjects.length > 0">
+            <v-col v-if="item?.subjects.length > 0">
               <v-chip
-                v-for="(subject, index) in item.subjects"
+                v-for="(subject, index) in item?.subjects"
                 :key="index"
                 size="x-small"
                 class="ma-1"

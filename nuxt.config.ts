@@ -22,7 +22,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      apiBase: "http://192.168.100.6:8088/apiv1",
+      apiBase: "http://cgbaike.com/apiv1",
     },
   },
 

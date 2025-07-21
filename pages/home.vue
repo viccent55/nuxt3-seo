@@ -1,13 +1,11 @@
 <script lang="ts" setup>
-  import useMenuCategories from "../composables/useMenuCategories";
-
   definePageMeta({
     middleware: ["redirect-home"],
   });
 
-  const { menuCategories } = useMenuCategories();
+  const { homeConfig } = useMenuCategories();
   const state = reactive({
-    subject: [] as EmptyArrayType,
+    subjects: [] as EmptyArrayType,
     filter: {
       field: "home",
       with_actor: 1,
@@ -15,7 +13,6 @@
       page: 1,
       limit: 6,
     },
-    latest: [] as EmptyArrayType,
   });
   const {
     data: subject,
@@ -24,11 +21,17 @@
   } = await useApiFetch<EmptyObjectType>("/api/home/subject", {
     method: "POST",
     body: state.filter,
+    transform: (res: EmptyObjectType) => {
+      return {
+        items: res.data.items || [],
+        count: res.data.count || 0,
+      };
+    },
   });
 
   watchEffect(() => {
     if (subject.value) {
-      state.subject = subject.value.data;
+      state.subjects = subject.value.items ?? [];
     }
   });
 </script>
@@ -36,36 +39,41 @@
 <template>
   <v-container class="px-0 mt-4">
     <!-- <div v-if="pending">Loading...</div> -->
-    <!-- Shared Categories Menu -->
+    <!-- Scrollable Category Bar -->
     <v-toolbar
-      class="d-flex px-8 rounded-lg"
-      density="compact"
+      class="category-scroll-wrapper px-4 mb-4"
       color="surface"
     >
-      <template
-        v-for="(category, index) in menuCategories"
-        :key="category.path"
+      <v-slide-group
+        show-arrows
+        class="category-slide-group"
       >
-        <NuxtLink
-          :to="category.path"
-          class="text-button"
+        <v-slide-group-item
+          v-for="(category, index) in homeConfig.categories"
+          :key="index"
         >
-          {{ category.name }}
-        </NuxtLink>
-        <v-divider
-          v-if="index < menuCategories.length - 1"
-          vertical
-          class="mx-4"
-          length="18"
-        />
-      </template>
+          <v-btn
+            :to="category.name"
+            variant="text"
+            class="text-button"
+            height="36"
+            density="compact"
+          >
+            {{ category.name }}
+          </v-btn>
+          <v-divider
+            v-if="index < homeConfig.categories.length - 1"
+            vertical
+            class="mx-1 mt-2"
+            length="18"
+          />
+        </v-slide-group-item>
+      </v-slide-group>
     </v-toolbar>
-    <!-- Show child page content -->
 
-    <NuxtPage
-      :subject="state.subject"
-      :latest="state.latest"
-    />
+    <!-- Page Content -->
+    <NuxtPage :subjects="state.subjects" />
+    <!-- Show child page content -->
     <v-row dense>
       <v-col cols="6">
         <v-sheet
@@ -87,20 +95,29 @@
   </v-container>
 </template>
 <style scoped>
-  .v-toolbar :deep(.v-divider) {
-    align-self: center;
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
+  .category-scroll-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
-  .text-button {
-    color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
-    text-decoration: none;
-    transition: color 0.2s ease-in-out;
 
-    &:hover {
-      color: rgb(var(--v-theme-primary));
-    }
+  .category-slide-group {
+    max-width: 100%;
   }
+
+  .text-button {
+    white-space: nowrap;
+    text-transform: none;
+    font-weight: 500;
+    font-size: 14px;
+    color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
+    transition: color 0.2s ease;
+  }
+
+  .text-button:hover {
+    color: rgb(var(--v-theme-primary));
+    background-color: rgba(var(--v-theme-primary), 0.08);
+  }
+
   .router-link-exact-active {
     color: rgb(var(--v-theme-primary));
     font-weight: 700;

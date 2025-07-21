@@ -1,35 +1,17 @@
 import { ref } from "vue";
 
 export default function useMenuCategories() {
-  const menuCategories = ref([
-    {
-      name: "文章分类",
-      value: "category-1",
-      path: "/home/categories-1",
+  const { data: homeConfig } = useFetch<any>("/api/config", {
+    method: "POST",
+    body: {},
+    transform: (res: EmptyObjectType) => {
+      return {
+        ...res?.data,
+      };
     },
-    {
-      name: "文章分类",
-      value: "category-2",
-      path: "/home/categories-2",
-    },
-    {
-      name: "文章分类",
-      value: "category-3",
-      path: "/home/categories-3",
-    },
-    {
-      name: "文章分类",
-      value: "category-4",
-      path: "/home/categories-4",
-    },
-    {
-      name: "文章分类",
-      value: "category-5",
-      path: "/home/categories-5",
-    },
-  ]);
+  });
 
   return {
-    menuCategories,
+    homeConfig,
   };
 }
