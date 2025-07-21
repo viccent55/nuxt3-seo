@@ -19,14 +19,17 @@
   };
 </script>
 <template>
-  <v-card
-    class="d-flex mb-2 position-relative hover-shadow"
-    tag="article"
-    flat
-  >
-    <v-hover v-slot="{ isHovering, props: hoverProps }">
+  <v-hover v-slot="{ isHovering, props: hoverProps }">
+    <v-card
+      v-bind="hoverProps"
+      :class="[
+        'd-flex mb-2 position-relative hover-shadow',
+        isHovering ? 'bg-default' : 'bg-none',
+      ]"
+      tag="article"
+      flat
+    >
       <v-avatar
-        v-bind="hoverProps"
         :class="item?.cover ? 'image-container' : 'no-image'"
         class="ma-3"
         rounded="0"
@@ -53,105 +56,121 @@
           </v-chip>
         </div>
       </v-avatar>
-    </v-hover>
 
-    <v-card-text class="text-content">
-      <div>
-        <h3 class="truncate-1">{{ item?.title }}</h3>
-        <div class="text-caption mt-1 text-grey truncatte-3">
-          {{ item?.intro }}
+      <v-card-text class="text-content">
+        <div>
+          <h3 class="truncate-1">{{ item?.title }}</h3>
+          <div class="text-caption mt-1 text-grey truncatte-3">
+            {{ item?.intro }}
+          </div>
         </div>
-      </div>
-      <v-row
-        no-gutters
-        class="mt-1"
-        align="center"
-      >
-        <v-col cols="7">
-          <v-chip
-            v-for="(tag, index) in item?.tags"
-            :key="index"
-            size="x-small"
-            class="ma-1"
-            color="primary"
-            variant="tonal"
-          >
-            {{ tag.name }}
-          </v-chip>
-        </v-col>
-        <v-col cols="5">
-          <v-row
-            dense
-            justify="end"
-            class="text-caption text-grey"
-          >
-            <div class="d-flex ga-3">
-              <div>
-                🕒
-                {{ dateStringTo24Hour(item?.created, "YYYY-DD-MM hh:mm") }}
-              </div>
-              <div class="d-flex ga-2 align-center">
-                <v-icon>mdi-eye</v-icon>
-                <span>{{ item?.view_count }}</span>
-              </div>
-              <div class="d-flex ga-2 align-center">
-                <v-icon>mdi-chat-outline</v-icon>
-                <span>{{ item?.comment_count }}</span>
-              </div>
-              <div class="d-flex ga-2 align-center">
-                <v-icon>mdi-thumb-up-outline</v-icon>
-                <span>{{ item?.like_count }}</span>
-              </div>
-            </div>
-          </v-row>
-        </v-col>
-        <v-col
-          cols="12"
-          v-if="
-            item?.actors.length > 0 ||
-            item?.subjects.length > 0 ||
-            item?.categories.length > 0
-          "
+        <v-row
+          no-gutters
+          class="mt-1"
+          align="center"
         >
-          <v-row
-            dense
-            align="center"
-          >
-            <v-col v-if="item?.actors.length > 0">
-              <div
-                class="d-flex align-center text-grey"
-                v-for="author in item?.actors"
-                :key="author.id"
+          <v-col cols="4">
+            <v-row
+              dense
+              justify="start"
+              class="text-caption text-grey"
+            >
+              <v-col cols="12">
+                <div class="d-flex ga-4 align-center">
+                  <div>
+                    {{ useTimeAgo(item?.created) }}
+                  </div>
+                  <div class="d-flex ga-2">
+                    <v-icon>mdi-eye</v-icon>
+                    <span>{{ item?.view_count }}</span>
+                  </div>
+                </div>
+              </v-col>
+              <v-col cols="12">
+                <div class="d-flex ga-4 align-center">
+                  <div class="d-flex ga-2">
+                    <v-icon>mdi-chat-outline</v-icon>
+                    <span>{{ item?.comment_count }}</span>
+                  </div>
+                  <div class="d-flex ga-2">
+                    <v-icon>mdi-thumb-up-outline</v-icon>
+                    <span>{{ item?.like_count }}</span>
+                  </div>
+                </div>
+              </v-col>
+            </v-row>
+          </v-col>
+          <v-col cols="8">
+            <v-row dense>
+              <v-col
+                cols="6"
+                v-if="item?.tags.length > 0"
               >
-                <ActorProfile :item="author" />
-              </div>
-            </v-col>
-            <v-col v-if="item?.categories.length > 0">
-              <v-chip
-                v-for="(category, index) in item?.categories"
-                :key="index"
-                size="x-small"
-                class="ma-1"
-                variant="tonal"
+                <v-chip
+                  v-for="(tag, index) in item?.tags"
+                  :key="index"
+                  size="x-small"
+                  class="ma-1"
+                  color="primary"
+                  variant="tonal"
+                  to="/tag"
+                >
+                  {{ tag.name }}
+                </v-chip>
+              </v-col>
+              <v-col
+                cols="6"
+                v-if="item?.actors.length > 0"
               >
-                {{ category.name }}
-              </v-chip>
-            </v-col>
-            <v-col v-if="item?.subjects.length > 0">
-              <v-chip
-                v-for="(subject, index) in item?.subjects"
-                :key="index"
-                size="x-small"
-                class="ma-1"
+                <div
+                  class="d-flex align-center text-grey"
+                  v-for="author in item?.actors"
+                  :key="author.id"
+                
+                >
+                  <ActorProfile
+                    :item="author"
+                    class="cursor-pointer"
+                   @click="$router.push('/actor')"
+                  />
+                </div>
+              </v-col>
+              <v-col
+                cols="6"
+                v-if="item?.categories.length > 0"
               >
-                {{ subject.name }}
-              </v-chip>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
-    </v-card-text>
-  </v-card>
+                <v-chip
+                  v-for="(category, index) in item?.categories"
+                  :key="index"
+                  size="x-small"
+                  class="ma-1"
+                  variant="tonal"
+                  to="/tag"
+                >
+                  {{ category.name }}
+                </v-chip>
+              </v-col>
+
+              <v-col
+                cols="6"
+                v-if="item?.subjects.length > 0"
+              >
+                <v-chip
+                  v-for="(subject, index) in item?.subjects"
+                  :key="index"
+                  size="x-small"
+                  class="ma-1"
+                  to="subject"
+                >
+                  {{ subject.name }}
+                </v-chip>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
+  </v-hover>
 </template>
 
 <style scoped>

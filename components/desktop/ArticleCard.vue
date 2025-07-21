@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-   defineProps({
+  defineProps({
     item: {
       type: Object as PropType<EmptyObjectType>,
       default: () => ({}),
@@ -15,6 +15,7 @@
         v-bind="props"
         :elevation="isHovering ? 8 : 0"
         class="transition-fast-in-fast-out"
+        :class="[' hover-shadow', isHovering ? 'bg-default' : 'bg-none']"
       >
         <Image
           height="160px"

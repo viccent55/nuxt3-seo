@@ -50,19 +50,19 @@
                 首页
               </NuxtLink>
               <NuxtLink
-                to="/character"
+                to="/subject"
                 class="text-button"
               >
                 专题
               </NuxtLink>
               <NuxtLink
-                to="/subject"
+                to="/actor"
                 class="text-button"
               >
                 人物
               </NuxtLink>
               <NuxtLink
-                to="/tags"
+                to="/tag"
                 class="text-button"
               >
                 标签
@@ -133,15 +133,15 @@
           title="首页"
         />
         <v-list-item
-          to="/character"
+          to="/subject"
           title="专题"
         />
         <v-list-item
-          to="/subject"
+          to="/actor"
           title="人物"
         />
         <v-list-item
-          to="/tags"
+          to="/tag"
           title="标签"
         />
         <v-divider class="my-2" />
