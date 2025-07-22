@@ -23,19 +23,19 @@
       type: Array as PropType<EmptyArrayType>,
       default: () => [],
     },
-    postFilter: {
+    postFilters: {
       type: Object as PropType<EmptyArrayType>,
       default: () => [],
     },
-    actorFilter: {
+    actorFilters: {
       type: Object as PropType<EmptyArrayType>,
       default: () => [],
     },
-    subjectFilter: {
+    subjectFilters: {
       type: Object as PropType<EmptyArrayType>,
       default: () => [],
     },
-    tagTop: {
+    tagTops: {
       type: Object as PropType<EmptyArrayType>,
       default: [],
     },
@@ -53,6 +53,7 @@
     if (!Array.isArray(list)) return null;
     return list.find((ad: any) => ad.position === index) || null;
   };
+  const subjectItem = computed(() => props.subjectFilters[0]);
   const emit = defineEmits(["page-change"]);
 </script>
 <template>
@@ -72,7 +73,11 @@
           sm="6"
           md="4"
         >
-          <ArticleCard :item="item" />
+          <ArticleCard
+            class="cursor-pointer"
+            :item="item"
+            @click="$router.push(`/subject/detail/${item.id}`)"
+          />
         </v-col>
       </v-row>
 
@@ -85,7 +90,13 @@
             :key="'latest-' + index"
           >
             <!-- Article -->
-            <ArticleList :item="item" />
+            <ArticleList
+              :item="item"
+              class="cursor-pointer"
+              @click="$router.push(`/home/article/${item.id}?breadcrumb=首页`)"
+            />
+            <v-divider class="my-3 mx-2"></v-divider>
+
             <!-- Inject advert if 'sort' matches current index -->
             <template v-if="getAdvertAtIndex(index)">
               <div class="my-4 text-center">
@@ -124,7 +135,7 @@
       <SidebarSection title="推荐文章">
         <v-sheet class="pa-4">
           <ArticleListItem
-            v-for="(item, index) in postFilter"
+            v-for="(item, index) in postFilters"
             :key="index"
             :item="item"
           />
@@ -187,7 +198,7 @@
         <v-sheet>
           <v-row class="mt-2">
             <v-col
-              v-for="(item, index) in actorFilter"
+              v-for="(item, index) in actorFilters"
               :key="index"
               cols="4"
               class="text-center"
@@ -209,12 +220,13 @@
 
       <SidebarSection title="热门专题">
         <v-card elevation="0">
+          {{ subjectItem }}
           <Image
-            :src="subjectFilter?.[0]?.cover"
+            :src="subjectItem?.cover"
             conver
             height="220"
             class="mt-4"
-            :lazy-src="subjectFilter?.[0]?.cover"
+            :lazy-src="subjectItem?.cover"
           />
           <v-card-text>
             <div class="text-subtitle-2 truncate-2"></div>
@@ -224,7 +236,7 @@
               density="compact"
             >
               <v-list-item
-                v-for="(post, index) in subjectFilter?.[0]?.posts"
+                v-for="(post, index) in subjectItem?.posts"
                 :key="index"
                 min-height="30"
               >
@@ -383,7 +395,7 @@
           dense
         >
           <v-chip
-            v-for="(tag, index) in tagTop"
+            v-for="(tag, index) in tagTops"
             :key="index"
             size="small"
             class="ma-1"

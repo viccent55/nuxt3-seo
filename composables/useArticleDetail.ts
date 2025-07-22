@@ -1,14 +1,14 @@
-export default function useSubject() {
+export default function useArticleDetail() {
   const route = useRoute();
 
   const {
-    data: subjectData,
+    data: articleDetail,
     pending,
     error,
   } = useAsyncData<EmptyObjectType>(
-    () => `subject-detail-${route.params.id}`,
+    () => `article-detail-${route.params.id}`,
     () =>
-      $fetch("/api/subject/detail", {
+      $fetch("/api/article/detail", {
         method: "POST",
         body: {
           id: route.params.id,
@@ -31,11 +31,11 @@ export default function useSubject() {
   });
 
   watchEffect(async () => {
-    if (subjectData.value?.id) {
+    if (articleDetail.value?.id) {
       const res = await $fetch<any>("/api/subject/post-subject", {
         method: "POST",
         body: {
-          sid: subjectData.value.id,
+          sid: articleDetail.value.id,
         },
       });
 
@@ -47,7 +47,7 @@ export default function useSubject() {
   });
 
   return {
-    subjectData,
+    articleDetail,
     postSubjectData,
     pending,
     error,

@@ -44,7 +44,7 @@
             <!-- Desktop Navigation -->
             <nav class="d-none d-sm-flex ga-6">
               <NuxtLink
-                to="/home"
+                to="/"
                 class="text-button"
               >
                 首页
@@ -129,7 +129,7 @@
     >
       <v-list nav>
         <v-list-item
-          to="/home"
+          to="/"
           title="首页"
         />
         <v-list-item

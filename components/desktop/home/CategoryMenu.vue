@@ -1,5 +1,6 @@
 <script lang="ts" setup>
   const { homeConfig } = useMenuCategories();
+  const route = useRoute();
 </script>
 <template>
   <!-- Scrollable Category Bar -->
@@ -20,10 +21,10 @@
           class="text-button"
           height="36"
           density="compact"
-          :to="`/home/${category.name}`"
+          :to="`/${category.name}`"
           :class="{
             'router-link-exact-active':
-              $route.path === `/home/${category.name}`,
+              category.name === route.params.categories,
           }"
         >
           {{ category.name }}

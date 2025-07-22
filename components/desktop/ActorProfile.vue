@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  const props = defineProps({
+  defineProps({
     item: {
       type: Object as PropType<EmptyObjectType>,
       default: () => ({}),
@@ -8,7 +8,6 @@
       type: String,
       default: "24px",
     },
-    
   });
   onMounted(async () => {});
 </script>

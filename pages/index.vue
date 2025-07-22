@@ -71,34 +71,65 @@
       }
     }
   });
+
   const onPageChange = (newPage: number) => {
     state.paginate.page = newPage;
   };
+
+  const POSITION_HOME_LIST = 1;
+  const POSITION_HOME_BOTTOM = 2;
+  const POSITION_HOME_RIGHT = 3;
+
+  const { data: advertData } = await useFetch<any>("/api/home/ads", {
+    method: "POST",
+    body: {
+      positions: [
+        POSITION_HOME_LIST,
+        POSITION_HOME_BOTTOM,
+        POSITION_HOME_RIGHT,
+      ],
+    },
+  });
+
+  const adverts = computed(() => advertData.value?.data || {});
 </script>
+
 <template>
-  <v-container class="mt-4" >
+  <v-container class="mt-2">
     <!-- Categories -->
     <CategoryMenu />
     <ContentDisplay
       :subjects="state.subjects"
       :latests="state.latests"
       :paginate="state.paginate"
-      :actor-filter="actorFilter?.items"
-      :post-filter="postFilter?.items"
-      :subject-filter="subjectFilter?.items"
-      :tag-top="tagTop?.items"
+      :actor-filters="actorFilter?.items"
+      :post-filters="postFilter?.items"
+      :subject-filters="subjectFilter?.items"
+      :tag-tops="tagTop?.items"
       :comments="comments"
+      :adverts="adverts"
+      :postion-list="POSITION_HOME_LIST"
       @page-change="onPageChange"
     />
+    <NuxtPage />
+    <v-row dense>
+      <v-col cols="6">
+        <v-sheet
+          class="pa-8 text-center my-4"
+          color="blue-lighten-5"
+        >
+          广告位
+        </v-sheet>
+      </v-col>
+      <v-col cols="6">
+        <v-sheet
+          class="pa-8 text-center my-4"
+          color="blue-lighten-5"
+        >
+          广告位
+        </v-sheet>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
-
-<style scoped lang="scss">
-  .bullet-list .v-list-item {
-    :deep(.v-list-item-title::before) {
-      content: "•";
-      margin-right: 8px;
-      color: currentColor;
-    }
-  }
-</style>
+<style scoped lang="scss"></style>

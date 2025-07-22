@@ -15,7 +15,7 @@ export default defineNuxtConfig({
 
   css: ["public/css/main.scss"],
   routeRules: {
-    "/": { redirect: "/home" },
+    // "/": { redirect: "/home" },
   },
   build: {
     transpile: ["vuetify"],

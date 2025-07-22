@@ -8,19 +8,22 @@
   onMounted(async () => {});
 </script>
 <template>
-  <div>
+  <v-sheet color="transparent">
     <v-hover v-slot="{ isHovering, props }">
       <v-card
         tag="article"
         v-bind="props"
-        :elevation="isHovering ? 8 : 0"
+        flat
         class="transition-fast-in-fast-out"
-        :class="[' hover-shadow', isHovering ? 'bg-default' : 'bg-none']"
+        :class="[isHovering ? 'bg-default' : 'bg-none']"
       >
-        <Image
-          height="160px"
-          :src="item.cover"
-        ></Image>
+        <div class="pa-4">
+          <Image
+            height="160px"
+            contain
+            :src="item.cover"
+          ></Image>
+        </div>
         <v-card-text class="text-subtitle-2 pt-2 pb-0">
           {{ item.name }}
         </v-card-text>
@@ -32,5 +35,5 @@
         </v-card-text>
       </v-card>
     </v-hover>
-  </div>
+  </v-sheet>
 </template>
