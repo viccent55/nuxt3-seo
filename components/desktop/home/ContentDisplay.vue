@@ -138,6 +138,10 @@
             v-for="(item, index) in postFilters"
             :key="index"
             :item="item"
+            class="cursor-pointer"
+            @click="
+              $router.push('/home/article/' + item.id + '?breadcrumb=首页')
+            "
           />
         </v-sheet>
       </SidebarSection>
