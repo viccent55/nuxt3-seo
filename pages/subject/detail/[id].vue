@@ -1,10 +1,9 @@
 <script lang="ts" setup>
   import Breadcrumbs from "~/components/desktop/Breadcrumbs.vue";
-  import { useTimeAgo } from "@vueuse/core";
   import ArticleListItem from "~/components/desktop/ArticleList.vue";
   import SidebarSection from "~/components/desktop/SidebarSection.vue";
+
   const { subjectFilters, subjectData } = useSubject();
-  const route = useRoute();
   const breadcrumb = computed(() => {
     return [
       {
@@ -21,6 +20,10 @@
       },
     ];
   });
+  const popupDialogRef = ref();
+  const onOpenDialog = (id: number) => {
+    popupDialogRef.value.openDialog(id, "subject");
+  };
 </script>
 
 <template>
@@ -70,7 +73,7 @@
               size="small"
               variant="outlined"
               color="primary"
-              @click="$router.push('/actor/article/' + subjectData?.id)"
+              @click="onOpenDialog(subjectData?.id)"
             >
               了解详情
             </v-btn>
@@ -105,5 +108,6 @@
         </SidebarSection>
       </v-col>
     </v-row>
+    <DesktopPopupList ref="popupDialogRef" />
   </v-container>
 </template>

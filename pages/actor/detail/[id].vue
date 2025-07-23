@@ -3,7 +3,6 @@
   import ArticleListItem from "~/components/desktop/ArticleList.vue";
 
   const { actorData, actorFilters } = useActor();
-  const route = useRoute();
   const breadcrumb = computed(() => {
     return [
       {
@@ -20,6 +19,10 @@
       },
     ];
   });
+  const popupDialogRef = ref();
+  const onOpenDialog = (id: number) => {
+    popupDialogRef.value.openDialog(id, "actor");
+  };
 </script>
 
 <template>
@@ -73,7 +76,7 @@
               size="small"
               variant="outlined"
               color="primary"
-              @click="$router.push('/actor/article/' + actorData?.id)"
+              @click="onOpenDialog(actorData?.id)"
             >
               了解详情
             </v-btn>
@@ -104,5 +107,6 @@
         </v-card>
       </v-col>
     </v-row>
+    <DesktopPopupList ref="popupDialogRef" />
   </v-container>
 </template>

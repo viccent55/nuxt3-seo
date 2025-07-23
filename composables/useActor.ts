@@ -37,7 +37,7 @@ export default function useActor() {
         body: {
           page: 1,
           limit: 30,
-          aid: 1,
+          aid: route.params.id,
         },
       });
 
