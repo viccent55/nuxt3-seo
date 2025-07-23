@@ -1,19 +1,17 @@
 <script lang="ts" setup>
+  const { onNavigatoArticle } = useVaraible();
   const { data, pending, error } = await useAsyncData<ApiResponse>(
-    "characters",
+    "actor",
     async () => {
-      const res = await $fetch<EmptyObjectType>(
-        "/api/charactor/subject-latest",
-        {
-          method: "POST",
-          body: {
-            with_actor: 1,
-            with_post: 1,
-            page: 1,
-            limit: 30,
-          },
-        }
-      );
+      const res = await $fetch<EmptyObjectType>("/api/actor/latest", {
+        method: "POST",
+        body: {
+          with_actor: 1,
+          with_post: 1,
+          page: 1,
+          limit: 30,
+        },
+      });
       return {
         items: res.data?.items || [],
         count: res.data?.count || 0,
@@ -32,54 +30,53 @@
         :key="index"
       >
         <v-hover v-slot="{ isHovering, props }">
-          <v-card
+          <v-sheet
             v-bind="props"
-            class="pa-4"
             flat
+            class="pa-5 cursor-pointer rounded"
+            :class="isHovering ? 'hover-shadow' : 'bg-none'"
             tag="article"
-            :elevation="isHovering ? 8 : 0"
-            to="/"
-            min-height="210"
+            color="surface"
+            min-height="220"
+            @click="$router.push(`/actor/detail/${item.id}`)"
           >
-            <v-row no-gutters>
+            <v-row dense>
               <v-col
                 cols="auto"
                 class="pr-4"
               >
-                <v-avatar
-                  size="160"
-                  class="rounded"
-                >
+                <v-avatar size="100">
                   <Image
-                    :src="item.cover"
+                    :src="item.avatar"
                     cover
-                  >
-                  <v-chip color="primary">asdf</v-chip>
-                  </Image>
+                  ></Image>
                 </v-avatar>
               </v-col>
-
-              <v-col>
-                <h3 class="text-subtitle-1 font-weight-medium mb-1">
-                  {{ item.name }}
-                </h3>
-
-                <div class="text-body-2 text-grey-darken-1 mb-2">
-                  {{ item.intro }}
+              <v-col class="d-flex flex-column">
+                <div>
+                  <h3 class="text-subtitle-1 font-weight-medium mb-1">
+                    {{ item.name }}
+                  </h3>
+                  <div class="text-body-2 text-grey-darken-1 mb-2">
+                    {{ item.intro }}
+                  </div>
                 </div>
-                <div class="text-caption text-grey mb-1 d-flex ga-2">
-                  <strong>相关文章：</strong>
+                <div class="text-caption d-flex text-grey mb-1 d-flex ga-2">
                   <div v-for="(iten, index) in item.actors">
                     <v-chip
                       v-if="iten.name"
                       size="x-small"
                       class="text-capitalize"
                       :key="index"
+                      variant="text"
+                      @click.stop="onNavigatoArticle(iten?.id)"
                     >
                       {{ iten.name }}
                     </v-chip>
                   </div>
                 </div>
+              </v-col>
+              <v-col cols="12">
                 <v-divider class="my-2" />
                 <v-row dense>
                   <v-col
@@ -87,7 +84,10 @@
                     v-for="post in item.posts"
                     :key="post.id"
                   >
-                    <div class="d-flex align-center">
+                    <div
+                      class="d-flex align-center active-color cursor-pointer"
+                      @click.stop="$router.push(`/actor/article/${post.id}`)"
+                    >
                       <v-icon
                         icon="mdi-circle-small"
                         size="small"
@@ -101,7 +101,7 @@
                 </v-row>
               </v-col>
             </v-row>
-          </v-card>
+          </v-sheet>
         </v-hover>
       </v-col>
     </v-row>
@@ -113,5 +113,8 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+  .active-color:hover * {
+    color: rgb(var(--v-theme-primary)) !important;
   }
 </style>

@@ -1,9 +1,8 @@
 <script lang="ts" setup>
   import Breadcrumbs from "~/components/desktop/Breadcrumbs.vue";
-  import { useTimeAgo } from "@vueuse/core";
   import ArticleListItem from "~/components/desktop/ArticleList.vue";
 
-  const { subjectFilters, subjectData } = useSubject();
+  const { actorData, actorFilters } = useActor();
   const route = useRoute();
   const breadcrumb = computed(() => {
     return [
@@ -16,7 +15,7 @@
         href: "/subject",
       },
       {
-        text: subjectData.value?.name,
+        text: actorData.value?.name,
         disabled: true,
       },
     ];
@@ -35,14 +34,14 @@
       >
         <!-- Topic summary card -->
         <template
-          v-for="(item, index) in subjectFilters?.items"
+          v-for="(item, index) in actorFilters?.items"
           :key="index"
         >
           <ArticleListItem
             :item="item"
             class="pa-2 cursor-pointer"
-            @click="$router.push('/subject/article/' + item.id)"
-            route-param="/subject"
+            @click="$router.push('/actor/article/' + item.id)"
+            route-param="/actor"
           />
         </template>
       </v-col>
@@ -61,20 +60,20 @@
               class="mx-auto mb-2"
             >
               <Image
-                :src="subjectData?.cover"
+                :src="actorData?.avatar"
                 cover
               />
             </v-avatar>
-            <div class="text-caption truncate-1">{{ subjectData?.name }}</div>
+            <div class="text-caption truncate-1">{{ actorData?.name }}</div>
             <div class="text-grey text-caption text-xs truncate-2">
-              {{ subjectData?.intro }}
+              {{ actorData?.intro }}
             </div>
             <v-btn
               class="mt-2"
               size="small"
               variant="outlined"
               color="primary"
-              @click="$router.push('/actor/article/' + subjectData?.id)"
+              @click="$router.push('/actor/article/' + actorData?.id)"
             >
               了解详情
             </v-btn>

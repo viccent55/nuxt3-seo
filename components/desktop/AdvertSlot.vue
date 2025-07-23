@@ -14,7 +14,7 @@
 <template>
   <v-card>
     <NuxtLink
-      :to="advert?.link || '#'"
+      :to="advert?.url || '#'"
       target="_blank"
     >
       <Image

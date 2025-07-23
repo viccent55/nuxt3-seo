@@ -1,19 +1,17 @@
 <script lang="ts" setup>
+  const { onNavigatoArticle } = useVaraible();
   const { data, pending, error } = await useAsyncData<ApiResponse>(
-    "characters",
+    "subject",
     async () => {
-      const res = await $fetch<EmptyObjectType>(
-        "/api/charactor/subject-latest",
-        {
-          method: "POST",
-          body: {
-            with_actor: 1,
-            with_post: 1,
-            page: 1,
-            limit: 30,
-          },
-        }
-      );
+      const res = await $fetch<EmptyObjectType>("/api/subject/latest", {
+        method: "POST",
+        body: {
+          with_actor: 1,
+          with_post: 1,
+          page: 1,
+          limit: 30,
+        },
+      });
       return {
         items: res.data?.items || [],
         count: res.data?.count || 0,
@@ -32,28 +30,27 @@
         :key="index"
       >
         <v-hover v-slot="{ isHovering, props }">
-          <v-card
+          <v-sheet
             v-bind="props"
-            class="pa-4"
             flat
+            class="pa-5 cursor-pointer rounded"
+            :class="isHovering ? 'hover-shadow' : 'bg-none'"
             tag="article"
-            :elevation="isHovering ? 8 : 0"
-            :to="`/subject/detail/${item.id}`"
-            min-height="210"
+            color="surface"
+            min-height="300"
+            @click="$router.push(`/subject/detail/${item.id}`)"
           >
-            <v-row no-gutters>
-              <v-col
-                cols="auto"
-                class="pr-4"
-              >
+            <v-row>
+              <v-col cols="auto">
                 <Image
                   :src="item.cover"
                   cover
-                  width="200"
+                  width="140"
+                  height="140"
                 >
                   <v-row class="chip-top-left">
                     <div
-                      v-for="(item, index) in 3"
+                      v-for="(item, index) in ['热点', '推荐', '经典']"
                       :key="index"
                       class="d-flex ga-2"
                     >
@@ -70,21 +67,24 @@
                         variant="flat"
                         class="rounded-0 mx-1"
                       >
-                        Test
+                        {{ item }}
                       </v-chip>
                     </div>
                   </v-row>
                 </Image>
               </v-col>
-
-              <v-col>
-                <h3 class="text-subtitle-1 font-weight-medium mb-1">
-                  {{ item.name }}
-                </h3>
-                <div class="text-body-2 text-grey-darken-1 mb-2">
-                  {{ item.intro }}
+              <v-col class="d-flex flex-column justify-between">
+                <div>
+                  <h3 class="text-subtitle-1 font-weight-medium mb-1">
+                    {{ item.name }}
+                  </h3>
+                  <div class="text-body-2 text-grey-darken-1 mb-2">
+                    {{ item.intro }}
+                  </div>
                 </div>
-                <div class="text-caption d-flex justify-end text-grey mb-1 d-flex ga-2 text-right">
+                <div
+                  class="text-caption d-flex justify-end text-grey mb-1 d-flex ga-2 text-right"
+                >
                   <strong>相关文章：</strong>
                   <div v-for="(iten, index) in item.actors">
                     <v-chip
@@ -93,11 +93,14 @@
                       class="text-capitalize"
                       :key="index"
                       variant="text"
+                      @click.stop="onNavigatoArticle(iten?.id)"
                     >
                       {{ iten.name }}
                     </v-chip>
                   </div>
                 </div>
+              </v-col>
+              <v-col cols="12">
                 <v-divider class="my-2" />
                 <v-row dense>
                   <v-col
@@ -105,7 +108,10 @@
                     v-for="post in item.posts"
                     :key="post.id"
                   >
-                    <div class="d-flex align-center">
+                    <div
+                      class="d-flex align-center active-color cursor-pointer"
+                      @click.stop="$router.push(`/subject/article/${post.id}`)"
+                    >
                       <v-icon
                         icon="mdi-circle-small"
                         size="small"
@@ -119,14 +125,14 @@
                 </v-row>
               </v-col>
             </v-row>
-          </v-card>
+          </v-sheet>
         </v-hover>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
   .chip-top-left {
     position: absolute;
     top: 8px;
@@ -134,5 +140,8 @@
     z-index: 100;
     margin: 0;
     pointer-events: none;
+  }
+  .active-color:hover * {
+    color: rgb(var(--v-theme-primary)) !important;
   }
 </style>

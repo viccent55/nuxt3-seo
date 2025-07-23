@@ -27,7 +27,7 @@
           >
             <div class="d-flex justify-end ga-3">
               <v-icon size="large">mdi-wechat</v-icon>
-              <v-icon size="large">mdi-wechat</v-icon>
+              <v-icon size="large">mdi-facebook</v-icon>
             </div>
           </v-col>
         </v-row>

@@ -1,14 +1,14 @@
-export default function useSubject() {
+export default function useActor() {
   const route = useRoute();
 
   const {
-    data: subjectData,
+    data: actorData,
     pending,
     error,
   } = useAsyncData<EmptyObjectType>(
-    () => `subject-detail-${route.params.id}`,
+    () => `actor-detail-${route.params.id}`,
     () =>
-      $fetch("/api/subject/detail", {
+      $fetch("/api/actor/detail", {
         method: "POST",
         body: {
           id: route.params.id,
@@ -25,23 +25,23 @@ export default function useSubject() {
   );
 
   // Reactive second request: only fetch when subjectData is ready
-  const subjectFilters = ref({
+  const actorFilters = ref({
     items: [] as EmptyArrayType,
     count: 0,
   });
 
   watchEffect(async () => {
-    if (subjectData.value?.id) {
-      const res = await $fetch<any>("/api/subject/filter", {
+    if (actorData.value?.id) {
+      const res = await $fetch<any>("/api/actor/filter", {
         method: "POST",
         body: {
           page: 1,
           limit: 30,
-          sid: subjectData.value.id,
+          aid: 1,
         },
       });
 
-      subjectFilters.value = {
+      actorFilters.value = {
         items: res.data.items || [],
         count: res.data.count || 0,
       };
@@ -49,8 +49,8 @@ export default function useSubject() {
   });
 
   return {
-    subjectData,
-    subjectFilters,
+    actorData,
+    actorFilters,
     pending,
     error,
   };

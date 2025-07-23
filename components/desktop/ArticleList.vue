@@ -1,10 +1,14 @@
 <script lang="ts" setup>
   import ActorProfile from "./ActorProfile.vue";
-
-  defineProps({
+  import { useTimeAgo } from "@vueuse/core";
+  const props = defineProps({
     item: {
       type: Object as PropType<EmptyObjectType>,
       default: () => ({}),
+    },
+    routeParam: {
+      type: String,
+      default: () => "",
     },
   });
   const imageDimensions = ref();
@@ -15,6 +19,10 @@
       display: "block",
       objectFit: "contain",
     };
+  };
+  const router = useRouter();
+  const onNavigatoArticle = (id: number) => {
+    router.push(`${props.routeParam}/article/${id}`);
   };
 </script>
 <template>
@@ -104,7 +112,7 @@
               <v-row dense>
                 <v-col
                   cols="6"
-                  v-if="item?.tags.length > 0"
+                  v-if="item?.tags?.length > 0"
                 >
                   <v-chip
                     v-for="(tag, index) in item?.tags"
@@ -113,14 +121,14 @@
                     class="ma-1"
                     color="primary"
                     variant="tonal"
-                    to="/tag"
+                    @click.stop="onNavigatoArticle(tag?.id)"
                   >
                     {{ tag.name }}
                   </v-chip>
                 </v-col>
                 <v-col
                   cols="6"
-                  v-if="item?.actors.length > 0"
+                  v-if="item?.actors?.length > 0"
                 >
                   <div
                     class="d-flex align-center text-grey"
@@ -130,13 +138,13 @@
                     <ActorProfile
                       :item="author"
                       class="cursor-pointer"
-                      @click="$router.push('/actor')"
+                      @click.stop="onNavigatoArticle(author?.id)"
                     />
                   </div>
                 </v-col>
                 <v-col
                   cols="6"
-                  v-if="item?.categories.length > 0"
+                  v-if="item?.categories?.length > 0"
                 >
                   <v-chip
                     v-for="(category, index) in item?.categories"
@@ -144,7 +152,7 @@
                     size="x-small"
                     class="ma-1"
                     variant="tonal"
-                    to="/tag"
+                    @click.stop="onNavigatoArticle(category?.id)"
                   >
                     {{ category.name }}
                   </v-chip>
@@ -152,14 +160,14 @@
 
                 <v-col
                   cols="6"
-                  v-if="item?.subjects.length > 0"
+                  v-if="item?.subjects?.length > 0"
                 >
                   <v-chip
                     v-for="(subject, index) in item?.subjects"
                     :key="index"
                     size="x-small"
                     class="ma-1"
-                    to="subject"
+                    @click.stop="onNavigatoArticle(subject?.id)"
                   >
                     {{ subject.name }}
                   </v-chip>

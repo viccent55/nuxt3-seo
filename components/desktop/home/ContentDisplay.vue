@@ -93,7 +93,8 @@
             <ArticleList
               :item="item"
               class="cursor-pointer"
-              @click="$router.push(`/home/article/${item.id}?breadcrumb=首页`)"
+              @click="$router.push(`/home/article/${item.id}`)"
+              route-param="/home"
             />
             <v-divider class="my-3 mx-2"></v-divider>
 
@@ -133,16 +134,21 @@
       md="4"
     >
       <SidebarSection title="推荐文章">
-        <v-sheet class="pa-4">
-          <ArticleListItem
+        <v-sheet class="pa-3">
+          <template
             v-for="(item, index) in postFilters"
             :key="index"
-            :item="item"
-            class="cursor-pointer"
-            @click="
-              $router.push('/home/article/' + item.id + '?breadcrumb=首页')
-            "
-          />
+          >
+            <ArticleListItem
+              :item="item"
+              class="pa-2"
+              :to="'/home/article/' + item.id"
+            />
+            <v-divider
+              class="my-2"
+              v-if="index < postFilters.length - 1"
+            ></v-divider>
+          </template>
         </v-sheet>
       </SidebarSection>
 
@@ -205,7 +211,8 @@
               v-for="(item, index) in actorFilters"
               :key="index"
               cols="4"
-              class="text-center"
+              class="text-center cursor-pointer"
+              @click="$router.push('/home/article/' + item.id)"
             >
               <v-avatar
                 size="48"
