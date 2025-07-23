@@ -21,8 +21,18 @@
     };
   };
   const router = useRouter();
-  const onNavigatoArticle = (id: number) => {
-    router.push(`${props.routeParam}/article/${id}`);
+
+  const gotoTagDetail = (id: number) => {
+    router.push(`/tag/detail/${id}`);
+  };
+  const gotoSubjectDetail = (id: number) => {
+    router.push(`/subject/detail/${id}`);
+  };
+  const gotoToCategoryOage = (name: string) => {
+    router.push(`/${name}`);
+  };
+  const gotoActorDetail = (id: number) => {
+    router.push(`/actor/detail/${id}`);
   };
 </script>
 <template>
@@ -121,7 +131,7 @@
                     class="ma-1"
                     color="primary"
                     variant="tonal"
-                    @click.stop="onNavigatoArticle(tag?.id)"
+                    @click.stop="gotoTagDetail(tag?.id)"
                   >
                     {{ tag.name }}
                   </v-chip>
@@ -138,7 +148,7 @@
                     <ActorProfile
                       :item="author"
                       class="cursor-pointer"
-                      @click.stop="onNavigatoArticle(author?.id)"
+                      @click.stop="gotoActorDetail(author?.id)"
                     />
                   </div>
                 </v-col>
@@ -152,7 +162,7 @@
                     size="x-small"
                     class="ma-1"
                     variant="tonal"
-                    @click.stop="onNavigatoArticle(category?.id)"
+                    @click.stop="gotoToCategoryOage(category?.name)"
                   >
                     {{ category.name }}
                   </v-chip>
@@ -167,7 +177,7 @@
                     :key="index"
                     size="x-small"
                     class="ma-1"
-                    @click.stop="onNavigatoArticle(subject?.id)"
+                    @click.stop="gotoSubjectDetail(subject?.id)"
                   >
                     {{ subject.name }}
                   </v-chip>

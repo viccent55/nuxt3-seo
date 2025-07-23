@@ -7,7 +7,7 @@
     loader: {
       type: Number,
       default: 10,
-    }
+    },
   });
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 </script>

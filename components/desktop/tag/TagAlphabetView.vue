@@ -5,10 +5,6 @@
 
   const alphabet = computed(() => Object.keys(props.data).sort());
   const selectedTagId = ref<number | null>(null);
-
-  function selectTag(id: number) {
-    selectedTagId.value = id;
-  }
 </script>
 
 <template>
@@ -44,8 +40,7 @@
               :color="selectedTagId === tag.id ? 'primary' : undefined"
               variant="text"
               class="rounded-pill border"
-              :to="'/tag/article/' + tag.id"
-              @click="selectTag(tag.id)"
+              :to="'/tag/detail/' + tag.id"
             >
               {{ tag.name }}
             </v-chip>

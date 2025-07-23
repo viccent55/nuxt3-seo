@@ -12,7 +12,7 @@
       },
       {
         text: "专题",
-        href: "/subject",
+        href: "/actor",
       },
       {
         text: actorData.value?.name,

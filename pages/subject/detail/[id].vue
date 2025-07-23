@@ -2,7 +2,7 @@
   import Breadcrumbs from "~/components/desktop/Breadcrumbs.vue";
   import { useTimeAgo } from "@vueuse/core";
   import ArticleListItem from "~/components/desktop/ArticleList.vue";
-
+  import SidebarSection from "~/components/desktop/SidebarSection.vue";
   const { subjectFilters, subjectData } = useSubject();
   const route = useRoute();
   const breadcrumb = computed(() => {
@@ -54,17 +54,13 @@
       >
         <!-- 人物名称 -->
         <h3 class="text-subtitle-1 font-weight-medium mb-2">人物名称</h3>
-        <v-card class="pa-4 mb-6 elevation-0">
-          <div class="text-center">
-            <v-avatar
-              size="80"
-              class="mx-auto mb-2"
-            >
-              <Image
-                :src="subjectData?.cover"
-                cover
-              />
-            </v-avatar>
+        <v-card class="mb-6 elevation-0">
+          <Image
+            :src="subjectData?.cover"
+            cover
+            height="180"
+          />
+          <v-card-text class="text-center">
             <div class="text-caption truncate-1">{{ subjectData?.name }}</div>
             <div class="text-grey text-caption text-xs truncate-2">
               {{ subjectData?.intro }}
@@ -78,31 +74,35 @@
             >
               了解详情
             </v-btn>
-          </div>
+          </v-card-text>
         </v-card>
 
         <!-- 涉及专题 -->
         <h3 class="text-subtitle-1 font-weight-medium mb-2">涉及专题</h3>
-        <v-card
-          class="pa-4"
-          flat
-        >
-          <Image
-            src="https://www.imperialbricks.co.uk/wp-content/uploads/2023/01/Imperial-Bricks-Factory.jpg"
-            height="160"
-            cover
-            class="rounded mt-2"
-          />
-          <v-card-text>
-            <div class="truncate-2 mb-2">标题标题标题标题标题标题标题标题</div>
-            <v-divider class="my-2"></v-divider>
-            <ul class="text-body-2 text-grey-darken-1 ps-2">
-              <li>标题标题标题标题标题标题标题标题</li>
-              <li>标题标题标题标题标题标题标题标题</li>
-              <li>标题标题标题标题标题标题标题标题</li>
-            </ul>
-          </v-card-text>
-        </v-card>
+        <SidebarSection title="热门人物">
+          <v-sheet>
+            <v-row class="mt-2">
+              <v-col
+                v-for="(item, index) in subjectData?.actors"
+                :key="index"
+                cols="4"
+                class="text-center cursor-pointer"
+                @click="$router.push('/home/article/' + item.id)"
+              >
+                <v-avatar
+                  size="48"
+                  class="mb-1"
+                >
+                  <Image :src="item.avatar" />
+                </v-avatar>
+                <div class="text-caption truncate-1">{{ item.name }}</div>
+                <div class="text-grey text-caption text-xs truncate-2">
+                  {{ item.intro }}
+                </div>
+              </v-col>
+            </v-row>
+          </v-sheet>
+        </SidebarSection>
       </v-col>
     </v-row>
   </v-container>
