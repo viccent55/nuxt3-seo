@@ -3,6 +3,7 @@
   import Breadcrumbs from "~/components/desktop/Breadcrumbs.vue";
   import ArticleListItem from "~/components/desktop/ArticleListItem.vue";
   import { useTimeAgo } from "@vueuse/core";
+  import CommentComponent from './comment.vue';
 
   const route = useRoute();
   const breadcrumbs = computed(() => {
@@ -117,6 +118,22 @@
               </v-chip>
             </div>
           </div>
+          <div class="d-flex justify-center ga-5">
+            <v-btn
+              elevation="0"
+              color="info"
+            >
+              上一篇：文章标题文章
+            </v-btn>
+            <v-btn
+              elevation="0"
+              color="info"
+              @click="onNavigatoArticle(articleDetail?.id)"
+            >
+              上一篇：文章标题文章
+            </v-btn>
+          </div>
+          <CommentComponent/>
         </v-card>
         <div
           class="position-absolute"

@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-  const { homeConfig } = useMenuCategories();
+  import { useStore } from "~/store";
+
+  const store = useStore();
   const route = useRoute();
 </script>
 <template>
@@ -13,7 +15,7 @@
       class="category-slide-group"
     >
       <v-slide-group-item
-        v-for="(category, index) in homeConfig?.categories"
+        v-for="(category, index) in store.configuration?.categories"
         :key="index"
       >
         <v-btn
@@ -30,7 +32,7 @@
           {{ category.name }}
         </v-btn>
         <v-divider
-          v-if="index < homeConfig?.categories.length - 1"
+          v-if="index < store.configuration?.categories.length - 1"
           vertical
           class="mx-1 mt-2"
           length="18"

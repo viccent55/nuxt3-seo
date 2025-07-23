@@ -24,6 +24,7 @@
     window.removeEventListener("scroll", checkScroll);
   });
   onMounted(() => {
+    store.fetchMenuCategories();
     theme.change(store.darkMode);
     window.addEventListener("scroll", checkScroll);
   });

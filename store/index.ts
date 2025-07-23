@@ -18,8 +18,8 @@ export const useStore = defineStore("store", {
       timeStr: "",
       placeTypes: <EmptyArrayType>[],
       darkMode: "light",
+      configuration: <EmptyObjectType>{},
     };
-    
   },
   actions: {
     updateLocale(lang: string) {
@@ -35,8 +35,20 @@ export const useStore = defineStore("store", {
     setTheme(name: "light" | "dark") {
       this.darkMode = name;
     },
+    async fetchMenuCategories() {
+      try {
+        const response = await $fetch<any>("/api/config", {
+          method: "POST",
+          body: {},
+        });
+
+        this.configuration = response?.data || {};
+      } catch (error) {
+        console.error("Failed to fetch config:", error);
+      }
+    },
   },
-   persist: {
+  persist: {
     storage: piniaPluginPersistedstate.localStorage(),
   },
 });

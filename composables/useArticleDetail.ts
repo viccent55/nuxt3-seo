@@ -30,25 +30,24 @@ export default function useArticleDetail() {
     count: 0,
   });
 
-  watchEffect(async () => {
-    if (articleDetail.value?.id) {
-      const res = await $fetch<any>("/api/subject/post-subject", {
-        method: "POST",
-        body: {
-          sid: articleDetail.value.id,
-        },
-      });
+  // watchEffect(async () => {
+  //   if (articleDetail.value?.id) {
+  //     const res = await $fetch<any>("/api/subject/filter", {
+  //       method: "POST",
+  //       body: {
+  //         sid: articleDetail.value.id,
+  //       },
+  //     });
 
-      postSubjectData.value = {
-        items: res.data.items || [],
-        count: res.data.count || 0,
-      };
-    }
-  });
+  //     postSubjectData.value = {
+  //       items: res.data.items || [],
+  //       count: res.data.count || 0,
+  //     };
+  //   }
+  // });
 
   return {
     articleDetail,
-    postSubjectData,
     pending,
     error,
   };

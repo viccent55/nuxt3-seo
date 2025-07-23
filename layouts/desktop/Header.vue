@@ -1,5 +1,7 @@
 <script setup lang="ts">
-  const { homeConfig } = useMenuCategories();
+import { useStore } from '~/store';
+
+  const store = useStore()
   const state = reactive({
     search: "",
     drawer: false,
@@ -37,7 +39,7 @@
             >
               <v-img
                 width="130"
-                :src="baseUrl + homeConfig?.website_logo"
+                :src="baseUrl + store.configuration?.website_logo"
               />
             </v-btn>
 
