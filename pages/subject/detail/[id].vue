@@ -20,10 +20,7 @@
       },
     ];
   });
-  const popupDialogRef = ref();
-  const onOpenDialog = (id: number) => {
-    popupDialogRef.value.openDialog(id, "subject");
-  };
+  const showContent = ref(false);
 </script>
 
 <template>
@@ -31,24 +28,56 @@
     <Breadcrumbs :items="breadcrumb" />
     <h2 class="text-h6 font-weight-bold mb-4">专题</h2>
     <v-row>
-      <!-- Left content -->
-      <v-col
-        cols="12"
-        md="8"
-      >
-        <!-- Topic summary card -->
-        <template
-          v-for="(item, index) in subjectFilters?.items"
-          :key="index"
-        >
-          <ArticleListItem
-            :item="item"
-            class="pa-2 cursor-pointer"
-            @click="$router.push('/subject/article/' + item.id)"
-            route-param="/subject"
-          />
+      <!-- Left content with transition -->
+      <v-slide-y-transition mode="out-in">
+        <template v-if="showContent">
+          <v-col
+            key="content"
+            cols="12"
+            md="8"
+          >
+            <v-card
+              color="surface"
+              flat
+            >
+              <v-card-title class="text-right">
+                <v-spacer />
+                <v-btn
+                  variant="outlined"
+                  elevation="0"
+                  size="small"
+                  @click="showContent = false"
+                >
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+              </v-card-title>
+              <v-card-text>
+                <div v-html="subjectData?.content"></div>
+              </v-card-text>
+            </v-card>
+          </v-col>
         </template>
-      </v-col>
+
+        <template v-else>
+          <v-col
+            key="summary"
+            cols="12"
+            md="8"
+          >
+            <template
+              v-for="item in subjectFilters?.items"
+              :key="item.id"
+            >
+              <ArticleListItem
+                :item="item"
+                class="pa-2 cursor-pointer"
+                @click="$router.push('/subject/article/' + item.id)"
+                route-param="/subject"
+              />
+            </template>
+          </v-col>
+        </template>
+      </v-slide-y-transition>
 
       <!-- Right sidebar -->
       <v-col
@@ -73,7 +102,7 @@
               size="small"
               variant="outlined"
               color="primary"
-              @click="onOpenDialog(subjectData?.id)"
+              @click="showContent = true"
             >
               了解详情
             </v-btn>
@@ -108,6 +137,5 @@
         </SidebarSection>
       </v-col>
     </v-row>
-    <DesktopPopupList ref="popupDialogRef" />
   </v-container>
 </template>

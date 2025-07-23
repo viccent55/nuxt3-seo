@@ -19,10 +19,8 @@
       },
     ];
   });
-  const popupDialogRef = ref();
-  const onOpenDialog = (id: number) => {
-    popupDialogRef.value.openDialog(id, "actor");
-  };
+
+  const showContent = ref(false);
 </script>
 
 <template>
@@ -31,24 +29,56 @@
     <h2 class="text-h6 font-weight-bold mb-4">专题</h2>
     <v-row>
       <!-- Left content -->
-      <v-col
-        cols="12"
-        md="8"
-      >
-        <!-- Topic summary card -->
-        <template
-          v-for="(item, index) in actorFilters?.items"
-          :key="index"
-        >
-          <ArticleListItem
-            :item="item"
-            class="pa-2 cursor-pointer"
-            @click="$router.push('/actor/article/' + item.id)"
-            route-param="/actor"
-          />
+      <v-slide-y-transition mode="out-in">
+        <template v-if="showContent">
+          <v-col
+            key="content"
+            cols="12"
+            md="8"
+          >
+            <v-card
+              color="surface"
+              flat
+              min-height="80%"
+            >
+              <v-card-title class="text-right">
+                <v-spacer />
+                <v-btn
+                  variant="outlined"
+                  elevation="0"
+                  size="small"
+                  @click="showContent = false"
+                >
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+              </v-card-title>
+              <v-card-text>
+                <div v-html="actorData?.content"></div>
+              </v-card-text>
+            </v-card>
+          </v-col>
         </template>
-      </v-col>
 
+        <template v-else>
+          <v-col
+            key="summary"
+            cols="12"
+            md="8"
+          >
+            <template
+              v-for="item in actorFilters?.items"
+              :key="item.id"
+            >
+              <ArticleListItem
+                :item="item"
+                class="pa-2 cursor-pointer"
+                @click="$router.push('/subject/article/' + item.id)"
+                route-param="/subject"
+              />
+            </template>
+          </v-col>
+        </template>
+      </v-slide-y-transition>
       <!-- Right sidebar -->
       <v-col
         cols="12"
@@ -76,7 +106,7 @@
               size="small"
               variant="outlined"
               color="primary"
-              @click="onOpenDialog(actorData?.id)"
+              @click="showContent = true"
             >
               了解详情
             </v-btn>
@@ -107,6 +137,5 @@
         </v-card>
       </v-col>
     </v-row>
-    <DesktopPopupList ref="popupDialogRef" />
   </v-container>
 </template>
