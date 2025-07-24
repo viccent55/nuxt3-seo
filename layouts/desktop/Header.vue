@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { useStore } from '~/store';
-
-  const store = useStore()
+  import { useStore } from "~/store";
+  const store = useStore();
   const state = reactive({
     search: "",
     drawer: false,
@@ -9,6 +8,15 @@ import { useStore } from '~/store';
 
   const config = useRuntimeConfig();
   const baseUrl = new URL(config.public.apiBase).origin ?? "/public/logo.png";
+
+  const loginDialogRef = ref();
+  const openLogin = () => {
+    loginDialogRef.value.openDialog();
+  };
+  const registerDialogRef = ref();
+  const openRegister = () => {
+    registerDialogRef.value.openDialog();
+  };
 </script>
 
 <template>
@@ -16,7 +24,7 @@ import { useStore } from '~/store';
     <v-app-bar
       flat
       color="surface"
-      height="64"
+      :height="$vuetify?.display.sm ? 100 : 64"
       class="border-b"
     >
       <v-container>
@@ -27,7 +35,8 @@ import { useStore } from '~/store';
           <!-- Left section (Logo + Navigation) -->
           <v-col
             cols="6"
-            sm="6"
+            md="6"
+            sm="12"
             class="d-flex align-center"
           >
             <!-- Logo -->
@@ -36,6 +45,7 @@ import { useStore } from '~/store';
               class="pa-0 text-body-1 font-weight-bold me-4"
               tag="h1"
               to="/"
+              variant="tonal"
             >
               <v-img
                 width="130"
@@ -46,36 +56,20 @@ import { useStore } from '~/store';
             <!-- Desktop Navigation -->
             <nav class="d-none d-sm-flex ga-6">
               <NuxtLink
-                to="/"
+                v-for="(menu, index) in store.menus"
+                :key="index"
+                :to="menu.value"
                 class="text-button"
               >
-                首页
-              </NuxtLink>
-              <NuxtLink
-                to="/subject"
-                class="text-button"
-              >
-                专题
-              </NuxtLink>
-              <NuxtLink
-                to="/actor"
-                class="text-button"
-              >
-                人物
-              </NuxtLink>
-              <NuxtLink
-                to="/tag"
-                class="text-button"
-              >
-                标签
+                {{ menu.name }}
               </NuxtLink>
             </nav>
           </v-col>
 
           <!-- Right section (Search + Login/Register) -->
           <v-col
-            cols="6"
             md="6"
+            sm="12"
             class="d-flex justify-end align-center ga-4 mt-sm-0"
           >
             <!-- Mobile Menu Icon -->
@@ -102,20 +96,36 @@ import { useStore } from '~/store';
             />
 
             <!-- Divider + Auth -->
-            <div class="d-none d-sm-flex align-center text-caption">
-              <NuxtLink
-                to="/login"
+            <div
+              class="d-none d-sm-flex align-center text-caption"
+              v-if="!store.userInfo?.username"
+            >
+              <v-btn
+                @click="openLogin"
                 class="me-2 text-button"
               >
                 登录
-              </NuxtLink>
+              </v-btn>
               |
-              <NuxtLink
-                to="/register"
+              <v-btn
+                @click="openRegister"
                 class="ms-2 text-button"
               >
                 注册
-              </NuxtLink>
+              </v-btn>
+            </div>
+            <div
+              class="d-none d-sm-flex align-center text-caption"
+              v-else
+            >
+              <v-btn
+                to="/dashboard"
+                class="me-2 text-button"
+              >
+                {{ store.userInfo?.nickname || store.userInfo?.username }}
+                &nbsp;
+                <v-icon>mdi-cog</v-icon>
+              </v-btn>
             </div>
           </v-col>
         </v-row>
@@ -128,35 +138,32 @@ import { useStore } from '~/store';
       temporary
       location="left"
       class="d-sm-none"
+      width="200"
     >
-      <v-list nav>
+      <v-list
+        nav
+        class="text-center"
+      >
         <v-list-item
-          to="/"
-          title="首页"
+          v-for="(category, index) in store.configuration?.categories"
+          :to="`/${category.name}`"
+          :title="category.name"
+          :key="index"
         />
-        <v-list-item
-          to="/subject"
-          title="专题"
-        />
-        <v-list-item
-          to="/actor"
-          title="人物"
-        />
-        <v-list-item
-          to="/tag"
-          title="标签"
-        />
+
         <v-divider class="my-2" />
         <v-list-item
-          to="/login"
           title="登录"
+          @click="openLogin"
         />
         <v-list-item
-          to="/register"
           title="注册"
+          @click="openRegister"
         />
       </v-list>
     </v-navigation-drawer>
+    <DesktopAuthLoginDialog ref="loginDialogRef" />
+    <DesktopAuthRegisterDialog ref="registerDialogRef" />
   </header>
 </template>
 

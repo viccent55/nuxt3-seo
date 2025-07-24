@@ -95,9 +95,9 @@
 </script>
 
 <template>
-  <v-container class="mt-2">
+  <v-container class="mt-md-2">
     <!-- Categories -->
-    <CategoryMenu />
+    <CategoryMenu v-if="$vuetify.display.mdAndUp"/>
     <ContentDisplay
       :subjects="state.subjects"
       :latests="state.latests"

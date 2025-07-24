@@ -152,7 +152,7 @@
         </v-sheet>
       </SidebarSection>
 
-      <SidebarSection title="活动参与">
+      <!-- <SidebarSection title="活动参与">
         <v-carousel
           height="200"
           show-arrows
@@ -202,7 +202,7 @@
             </v-img>
           </v-carousel-item>
         </v-carousel>
-      </SidebarSection>
+      </SidebarSection> -->
 
       <SidebarSection title="热门人物">
         <v-sheet>

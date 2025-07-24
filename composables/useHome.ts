@@ -66,11 +66,43 @@ export default function useHome() {
       };
     },
   });
-
+    const comments = [
+    {
+      text: "这里边有猫腻吧！炸了这么多次，马斯克是NASA领导亲儿子吗？",
+      author: "yangdy",
+      date: "12-21",
+      article: "赢得美国航天局29亿美元合同，SpaceX...",
+    },
+    {
+      text: "这里边有猫腻吧！炸了这么多次，马斯克是NASA领导亲儿子吗？",
+      author: "yangdy",
+      date: "12-21",
+      article: "赢得美国航天局29亿美元合同，SpaceX...",
+    },
+    {
+      text: "这里边有猫腻吧！炸了这么多次，马斯克是NASA领导亲儿子吗？",
+      author: "yangdy",
+      date: "12-21",
+      article: "赢得美国航天局29亿美元合同，SpaceX...",
+    },
+    {
+      text: "这里边有猫腻吧！炸了这么多次，马斯克是NASA领导亲儿子吗？",
+      author: "yangdy",
+      date: "12-21",
+      article: "赢得美国航天局29亿美元合同，SpaceX...",
+    },
+    {
+      text: "这里边有猫腻吧！炸了这么多次，马斯克是NASA领导亲儿子吗？",
+      author: "yangdy",
+      date: "12-21",
+      article: "赢得美国航天局29亿美元合同，SpaceX...",
+    },
+  ];
   return {
     postFilter,
     actorFilter,
     subjectFilter,
     tagTop,
+    comments,
   };
 }

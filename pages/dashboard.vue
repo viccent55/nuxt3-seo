@@ -1,0 +1,107 @@
+<script setup lang="ts">
+  definePageMeta({
+    middleware: ["dashboard"],
+  });
+  const menuItems = [
+    {
+      name: "profile",
+      label: "基本信息",
+      value: "/dashboard/profile",
+    },
+    {
+      name: "security",
+      label: "安全设置",
+      value: "/dashboard/security",
+    },
+    {
+      name: "submission",
+      label: "我的投稿",
+      value: "/dashboard/submission",
+    },
+    {
+      name: "message",
+      label: "我的消息",
+      value: "/dashboard/message",
+    },
+    {
+      name: "subscription",
+      label: "邮箱订阅",
+      value: "/dashboard/subscription",
+    },
+    {
+      name: "record",
+      label: "消费记录",
+      value: "/dashboard/record",
+    },
+  ];
+
+  const activeMenu = ref("profile");
+</script>
+
+<template>
+  <v-container>
+    <v-row>
+      <!-- Sidebar -->
+      <v-col
+        cols="12"
+        md="3"
+        class="pa-4"
+      >
+        <v-card
+          class="pa-4"
+          flat
+          color="surface"
+        >
+          <v-avatar
+            size="80"
+            class="mx-auto mb-4 d-flex justify-center"
+          >
+            <Image src="https://via.placeholder.com/80" />
+          </v-avatar>
+          <div class="text-center mb-2 font-weight-medium">用户昵称</div>
+          <div class="text-center text-caption text-grey mb-1">
+            余额：¥165.00
+          </div>
+          <div class="text-center">
+            <v-chip
+              color="orange"
+              size="small"
+              label
+            >
+              VIP
+            </v-chip>
+          </div>
+
+          <v-divider class="my-4" />
+
+          <v-list
+            list
+            dense
+          >
+            <v-list-item
+             class="mb-2 text-center"
+              v-for="item in menuItems"
+              :key="item.label"
+              :value="item.value"
+              @click="activeMenu = item.name"
+              active-color="primary"
+              rounded
+              :to="item.value"
+            >
+              <v-list-item-title>{{ item.label }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </v-col>
+
+      <!-- Main Content -->
+      <v-col
+        cols="12"
+        md="9"
+        class="pa-4"
+      >
+        <nuxt-page />
+      </v-col>
+    </v-row>
+  </v-container>
+</template>

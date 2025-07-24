@@ -111,30 +111,28 @@
 
         <!-- 涉及专题 -->
         <h3 class="text-subtitle-1 font-weight-medium mb-2">涉及专题</h3>
-        <SidebarSection title="热门人物">
-          <v-sheet>
-            <v-row class="mt-2">
-              <v-col
-                v-for="(item, index) in subjectData?.actors"
-                :key="index"
-                cols="4"
-                class="text-center cursor-pointer"
-                @click="$router.push('/home/article/' + item.id)"
+        <v-sheet>
+          <v-row class="mt-2">
+            <v-col
+              v-for="(item, index) in subjectData?.actors"
+              :key="index"
+              cols="4"
+              class="text-center cursor-pointer"
+              @click="$router.push('/home/article/' + item.id)"
+            >
+              <v-avatar
+                size="48"
+                class="mb-1"
               >
-                <v-avatar
-                  size="48"
-                  class="mb-1"
-                >
-                  <Image :src="item.avatar" />
-                </v-avatar>
-                <div class="text-caption truncate-1">{{ item.name }}</div>
-                <div class="text-grey text-caption text-xs truncate-2">
-                  {{ item.intro }}
-                </div>
-              </v-col>
-            </v-row>
-          </v-sheet>
-        </SidebarSection>
+                <Image :src="item.avatar" />
+              </v-avatar>
+              <div class="text-caption truncate-1">{{ item.name }}</div>
+              <div class="text-grey text-caption text-xs truncate-2">
+                {{ item.intro }}
+              </div>
+            </v-col>
+          </v-row>
+        </v-sheet>
       </v-col>
     </v-row>
   </v-container>

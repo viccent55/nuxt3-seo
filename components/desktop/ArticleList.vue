@@ -11,6 +11,7 @@
       default: () => "",
     },
   });
+  
   const imageDimensions = ref();
   const getStyleImage = (item: EmptyObjectType) => {
     return {
@@ -20,7 +21,23 @@
       objectFit: "contain",
     };
   };
+  
   const router = useRouter();
+  const isMobile = ref(false);
+  
+  // Check for mobile on mount and when window resizes
+  onMounted(() => {
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+  });
+  
+  onBeforeUnmount(() => {
+    window.removeEventListener('resize', checkMobile);
+  });
+  
+  const checkMobile = () => {
+    isMobile.value = window.innerWidth < 768;
+  };
 
   const gotoTagDetail = (id: number) => {
     router.push(`/tag/detail/${id}`);
@@ -35,13 +52,15 @@
     router.push(`/actor/detail/${id}`);
   };
 </script>
+
 <template>
   <v-sheet color="transparent">
     <v-hover v-slot="{ isHovering, props: hoverProps }">
       <v-card
         v-bind="hoverProps"
         :class="[
-          'd-flex mb-2 position-relative ',
+          'd-flex mb-2 position-relative',
+          isMobile ? 'flex-column' : '',
           isHovering ? 'bg-default' : 'bg-none',
         ]"
         tag="article"
@@ -49,13 +68,13 @@
       >
         <v-avatar
           :class="item?.cover ? 'image-container' : 'no-image'"
-          class="ma-3"
+          class="ma-sm-3"
           rounded="0"
           size="160"
         >
           <div class="image-wrapper">
             <Image
-              class="article-image"
+              class="article-image "
               :src="item?.cover"
               @image-dimensions="(v) => (imageDimensions = v)"
               :style="isHovering ? getStyleImage(imageDimensions) : {}"
@@ -87,10 +106,10 @@
             class="mt-1"
             align="center"
           >
-            <v-col cols="4">
+            <v-col :cols="isMobile ? 12 : 4">
               <v-row
                 dense
-                justify="start"
+                :justify="isMobile ? 'space-between' : 'start'"
                 class="text-caption text-grey"
               >
                 <v-col cols="12">
@@ -118,10 +137,10 @@
                 </v-col>
               </v-row>
             </v-col>
-            <v-col cols="8">
+            <v-col :cols="isMobile ? 12 : 8">
               <v-row dense>
                 <v-col
-                  cols="6"
+                  :cols="isMobile ? 12 : 6"
                   v-if="item?.tags?.length > 0"
                 >
                   <v-chip
@@ -137,7 +156,7 @@
                   </v-chip>
                 </v-col>
                 <v-col
-                  cols="6"
+                  :cols="isMobile ? 12 : 6"
                   v-if="item?.actors?.length > 0"
                 >
                   <div
@@ -153,7 +172,7 @@
                   </div>
                 </v-col>
                 <v-col
-                  cols="6"
+                  :cols="isMobile ? 12 : 6"
                   v-if="item?.categories?.length > 0"
                 >
                   <v-chip
@@ -169,7 +188,7 @@
                 </v-col>
 
                 <v-col
-                  cols="6"
+                  :cols="isMobile ? 12 : 6"
                   v-if="item?.subjects?.length > 0"
                 >
                   <v-chip
@@ -191,7 +210,7 @@
   </v-sheet>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
   .chip-top-left {
     position: absolute;
     top: 8px;
@@ -215,6 +234,7 @@
     align-items: stretch;
     justify-content: flex-start;
   }
+  
   .article-image {
     position: absolute;
     top: 0;
@@ -228,14 +248,46 @@
 
   .text-content {
     position: relative;
-    padding-left: 5px; /* Add padding to prevent text overlap */
+    padding-left: 5px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
   }
 
-  /* Ensure the card can contain the expanded image */
   .position-relative {
     overflow: visible !important;
+  }
+  
+  /* Mobile-specific styles */
+  @media (max-width: 768px) {
+    .v-avatar {
+      width: 100% !important;
+      height: auto !important;
+      aspect-ratio: 16/9;
+    }
+    
+    .v-card {
+      padding: 8px;
+    }
+    
+    .text-content {
+      padding: 8px !important;
+    }
+    
+    .truncate-1 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .truncatte-3 {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 </style>

@@ -16,6 +16,7 @@ export default defineNuxtConfig({
   css: ["public/css/main.scss"],
   routeRules: {
     // "/": { redirect: "/home" },
+    "/dashboard": { redirect: "/dashboard/profile" },
   },
   build: {
     transpile: ["vuetify"],
@@ -39,9 +40,36 @@ export default defineNuxtConfig({
     "pinia-plugin-persistedstate/nuxt",
   ],
   pwa: {
+    registerType: "prompt",
+    includeAssets: ["/images/logo.png"],
+    client: {
+      installPrompt: true,
+    },
     manifest: {
-      name: "My Nuxt PWA App",
-      short_name: "NuxtPWA",
+      name: "Nuxt Seo",
+      short_name: "Nuxt Seo",
+      description: "Nuxt Seo .. Cn!",
+      theme_color: "#fefefeff",
+      background_color: "#CFD8DC",
+      display: "standalone",
+      start_url: "/",
+      scope: "/",
+      icons: [
+        {
+          src: "/images/logo.png",
+          sizes: "64x64",
+          type: "image/png",
+        },
+      ],
+    },
+    workbox: {
+      cleanupOutdatedCaches: true,
+      navigateFallback: "/",
+      globPatterns: ["**/*", "200"],
+    },
+    devOptions: {
+      enabled: false, // no SW in dev
+      type: "module",
     },
   },
   vite: {

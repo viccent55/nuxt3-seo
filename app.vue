@@ -20,6 +20,27 @@
     showButton.value = window.scrollY > 300;
   };
 
+  const state = reactive({
+    message: "",
+    color: "primary",
+    timeout: 3000,
+    show: false,
+    location: "",
+  });
+  const triggerSnackbar = (
+    msg: string,
+    color: string = "success",
+    location: any,
+    time: number = 3000
+  ) => {
+    state.message = msg;
+    state.color = color;
+    state.timeout = time;
+    state.show = true;
+    state.location = location;
+  };
+  provide("showSnackbar", triggerSnackbar);
+
   onBeforeUnmount(() => {
     window.removeEventListener("scroll", checkScroll);
   });
@@ -31,12 +52,28 @@
 </script>
 <template>
   <v-app>
-    <NuxtLayout :name="isMobile ? 'mobile' : 'desktop'">
+    <NuxtLayout :name="$vuetify.display.smAndDown ? 'mobile' : 'desktop'">
       <NuxtLoadingIndicator />
       <NuxtPwaManifest />
       <NuxtPage />
     </NuxtLayout>
     <!-- Floating FAB -->
+    <v-snackbar
+      v-model="state.show"
+      :color="state.color"
+      :timeout="state.timeout"
+    >
+      {{ state.message }}
+      <template v-slot:actions>
+        <v-btn
+          color="error"
+          variant="text"
+          @click="state.show = false"
+        >
+          关闭
+        </v-btn>
+      </template>
+    </v-snackbar>
     <v-fab
       class="fab"
       icon="mdi-brightness-6"
@@ -53,16 +90,29 @@
   </v-app>
 </template>
 <style scoped>
-  .fab {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    z-index: 99;
-  }
+  .fab,
   .scroll-to-top {
     position: fixed;
-    bottom: 80px;
-    right: 30px;
+    right: 10px;
     z-index: 99;
+  }
+
+  .fab {
+    bottom: 70px;
+  }
+  .scroll-to-top {
+    bottom: 120px;
+  }
+
+  /* Desktop overrides */
+  @media (min-width: 960px) {
+    .fab {
+      bottom: 30px;
+      right: 30px;
+    }
+    .scroll-to-top {
+      bottom: 80px;
+      right: 30px;
+    }
   }
 </style>
