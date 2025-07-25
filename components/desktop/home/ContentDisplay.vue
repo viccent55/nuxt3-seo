@@ -53,7 +53,8 @@
     if (!Array.isArray(list)) return null;
     return list.find((ad: any) => ad.position === index) || null;
   };
-  const subjectItem = computed(() => props.subjectFilters[0]);
+  const subjectItem = computed(() => props.adverts[3][0]);
+
   const emit = defineEmits(["page-change"]);
 </script>
 <template>
@@ -231,32 +232,7 @@
 
       <SidebarSection title="热门专题">
         <v-card elevation="0">
-          {{ subjectItem }}
-          <Image
-            :src="subjectItem?.cover"
-            conver
-            height="220"
-            class="mt-4"
-            :lazy-src="subjectItem?.cover"
-          />
-          <v-card-text>
-            <div class="text-subtitle-2 truncate-2"></div>
-            <v-divider class="my-4"></v-divider>
-            <v-list
-              class="bullet-list pa-0"
-              density="compact"
-            >
-              <v-list-item
-                v-for="(post, index) in subjectItem?.posts"
-                :key="index"
-                min-height="30"
-              >
-                <v-list-item-title class="text-caption">
-                  {{ post.title }}
-                </v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-card-text>
+          <DesktopAdvertSlot :advert="subjectItem" />
         </v-card>
       </SidebarSection>
 
@@ -303,12 +279,6 @@
             </v-list-item>
           </v-list>
         </v-card>
-        <v-sheet
-          class="pa-5 text-center my-4"
-          color="blue-lighten-5"
-        >
-          广告位
-        </v-sheet>
       </SidebarSection>
       <SidebarSection title="最新地址">
         <v-card

@@ -3,6 +3,8 @@
   import ContentDisplay from "~/components/desktop/home/ContentDisplay.vue";
   const { postFilter, actorFilter, subjectFilter, tagTop, comments } =
     useHome();
+  const functionHelper = useFunctionHelper;
+
   const state = reactive({
     subjects: [] as EmptyArrayType,
     latests: [] as EmptyArrayType,
@@ -91,13 +93,13 @@
     },
   });
 
-  const adverts = computed(() => advertData.value?.data || {});
+  const adverts = computed(() => advertData.value?.data || []);
 </script>
 
 <template>
   <v-container class="mt-md-2">
     <!-- Categories -->
-    <CategoryMenu v-if="$vuetify.display.mdAndUp"/>
+    <CategoryMenu v-if="$vuetify.display.mdAndUp" />
     <ContentDisplay
       :subjects="state.subjects"
       :latests="state.latests"
@@ -112,22 +114,13 @@
       @page-change="onPageChange"
     />
     <NuxtPage />
-    <v-row dense>
-      <v-col cols="6">
-        <v-sheet
-          class="pa-8 text-center my-4"
-          color="blue-lighten-5"
-        >
-          广告位
-        </v-sheet>
-      </v-col>
-      <v-col cols="6">
-        <v-sheet
-          class="pa-8 text-center my-4"
-          color="blue-lighten-5"
-        >
-          广告位
-        </v-sheet>
+    <v-row dense class="mt-2">
+      <v-col
+        cols="6"
+        v-for="(item, index) in adverts[2]"
+        :key="index"
+      >
+        <DesktopAdvertSlot :advert="item" />
       </v-col>
     </v-row>
   </v-container>
