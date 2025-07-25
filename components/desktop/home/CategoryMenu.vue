@@ -26,13 +26,13 @@
           :to="`/${category.name}`"
           :class="{
             'router-link-exact-active':
-              category.name === route.params.categories,
+              category.name === route.params.slug,
           }"
         >
           {{ category.name }}
         </v-btn>
         <v-divider
-          v-if="index < store.configuration?.categories.length - 1"
+          v-if="index < store.configuration?.categories?.length - 1"
           vertical
           class="mx-1 mt-2"
           length="18"

@@ -3,16 +3,13 @@
   import Breadcrumbs from "~/components/desktop/Breadcrumbs.vue";
   import ArticleListItem from "~/components/desktop/ArticleListItem.vue";
   import { useTimeAgo } from "@vueuse/core";
-  import CommentComponent from './comment.vue';
+  import CommentComponent from "./comment.vue";
 
   const route = useRoute();
   const breadcrumbs = computed(() => {
     return [
       {
-        text:
-          route.params.categories == "home"
-            ? "首页"
-            : String(route.params.categories),
+        text: route.params.slug == "home" ? "首页" : String(route.params.slug),
         href: "/",
       },
       {
@@ -29,7 +26,7 @@
   const { articleDetail } = useArticleDetail();
   const router = useRouter();
   const onNavigatoArticle = (id: number) => {
-    router.push(`/${route.params.categories}/article/${id}`);
+    router.push(`/${route.params.slug}/article/${id}`);
   };
 </script>
 
@@ -133,7 +130,7 @@
               上一篇：文章标题文章
             </v-btn>
           </div>
-          <CommentComponent/>
+          <CommentComponent />
         </v-card>
         <div
           class="position-absolute"
