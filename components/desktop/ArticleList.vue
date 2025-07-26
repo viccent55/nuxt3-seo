@@ -1,7 +1,8 @@
 <script lang="ts" setup>
   import ActorProfile from "./ActorProfile.vue";
-  import { useTimeAgo } from "@vueuse/core";
-  const props = defineProps({
+  import { useTimeAgo, useElementSize } from "@vueuse/core";
+
+  defineProps({
     item: {
       type: Object as PropType<EmptyObjectType>,
       default: () => ({}),
@@ -11,30 +12,36 @@
       default: () => "",
     },
   });
-  
+
+  const articleCard = ref(null);
   const imageDimensions = ref();
   const getStyleImage = (item: EmptyObjectType) => {
     return {
-      minWidth: item?.isVertical ? "100%" : item?.width / 2.8 + "px",
+      minWidth: item?.isVertical ? "100%" : cardWidth.value / 2.2 + "px",
       zIndex: 10,
       display: "block",
       objectFit: "contain",
+      height: 'auto'
     };
   };
-  
+
   const router = useRouter();
   const isMobile = ref(false);
-  
+
+  const { width: cardWidth } = useElementSize(articleCard);
+
   // Check for mobile on mount and when window resizes
   onMounted(() => {
+    // You can now access the card's width via the reactive `cardWidth` ref.
+    console.log("Card width is:", cardWidth.value);
     checkMobile();
-    window.addEventListener('resize', checkMobile);
+    window.addEventListener("resize", checkMobile);
   });
-  
+
   onBeforeUnmount(() => {
-    window.removeEventListener('resize', checkMobile);
+    window.removeEventListener("resize", checkMobile);
   });
-  
+
   const checkMobile = () => {
     isMobile.value = window.innerWidth < 768;
   };
@@ -57,6 +64,7 @@
   <v-sheet color="transparent">
     <v-hover v-slot="{ isHovering, props: hoverProps }">
       <v-card
+        ref="articleCard"
         v-bind="hoverProps"
         :class="[
           'd-flex mb-2 position-relative',
@@ -74,7 +82,7 @@
         >
           <div class="image-wrapper">
             <Image
-              class="article-image "
+              class="article-image"
               :src="item?.cover"
               @image-dimensions="(v) => (imageDimensions = v)"
               :style="isHovering ? getStyleImage(imageDimensions) : {}"
@@ -234,7 +242,7 @@
     align-items: stretch;
     justify-content: flex-start;
   }
-  
+
   .article-image {
     position: absolute;
     top: 0;
@@ -257,7 +265,7 @@
   .position-relative {
     overflow: visible !important;
   }
-  
+
   /* Mobile-specific styles */
   @media (max-width: 768px) {
     .v-avatar {
@@ -265,15 +273,15 @@
       height: auto !important;
       aspect-ratio: 16/9;
     }
-    
+
     .v-card {
       padding: 8px;
     }
-    
+
     .text-content {
       padding: 8px !important;
     }
-    
+
     .truncate-1 {
       display: -webkit-box;
       -webkit-line-clamp: 2;
@@ -281,7 +289,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    
+
     .truncatte-3 {
       display: -webkit-box;
       -webkit-line-clamp: 3;

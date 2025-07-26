@@ -4,6 +4,8 @@
   import { useTimeAgo } from "@vueuse/core";
   import CommentComponent from "./comment.vue";
 
+  const { decryptImage, decryptedImage } = useDecryption();
+
   const route = useRoute();
   const paramslug = computed(() => {
     const map: Record<string, { name: string; href: string }> = {
@@ -44,6 +46,48 @@
   const onNavigatoArticle = (id: number) => {
     router.push(`/${route.params.slug}/article/${id}`);
   };
+
+  const decryptedContent = ref("");
+
+  // Watch for changes in the article detail
+  watchEffect(async () => {
+    if (articleDetail.value?.content) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(
+        articleDetail.value.content,
+        "text/html"
+      );
+
+      // Decrypt images
+      const images = doc.querySelectorAll("img[data-lazy-src]");
+      for (const img of images) {
+        const lazySrc = img.getAttribute("data-lazy-src");
+        if (lazySrc) {
+          try {
+            await decryptImage(lazySrc);
+            img.src = decryptedImage.value;
+          } catch (error) {
+            console.error("Error decrypting image:", error);
+          }
+        } else {
+          console.warn("Lazy source is undefined");
+        }
+      }
+
+      // Decrypt videos
+      // const videos = doc.querySelectorAll("video");
+      // for (const video of videos) {
+      //   const videoSrc = video.getAttribute("src");
+      //   console.log('videoSrc', videoSrc)
+      //   if (videoSrc) {
+      //     await decryptImage(videoSrc);
+      //     video.src = decryptedImage.value;
+      //   }
+      // }
+      // Update decrypted content
+      decryptedContent.value = doc.body.innerHTML;
+    }
+  });
 </script>
 
 <template>
@@ -107,11 +151,11 @@
               width="auto"
             />
           </v-sheet>
-
           <!-- Article Body -->
+           <!-- {{ articleDetail?.content }} -->
           <div
             class="mt-5 text-body-1"
-            v-html="articleDetail?.content"
+            v-html="decryptedContent"
           ></div>
 
           <div class="my-4 text-right d-flex ga-2 justify-end">
