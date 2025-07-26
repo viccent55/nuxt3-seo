@@ -55,6 +55,7 @@
   };
 
   const emit = defineEmits(["page-change"]);
+  const sideAds = computed(() => props.adverts.POSITION_HOME_RIGHT?.[0])
 </script>
 <template>
   <v-row>
@@ -236,7 +237,7 @@
 
       <SidebarSection title="热门专题">
         <v-card elevation="0">
-          <DesktopAdvertSlot :advert="adverts.POSITION_HOME_RIGHT[0]" />
+          <DesktopAdvertSlot :advert="sideAds" />
         </v-card>
       </SidebarSection>
 
