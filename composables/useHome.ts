@@ -21,10 +21,7 @@ export default function useHome() {
     {
       method: "POST",
       body: {
-        field: "hot",
-        with_actor: 1,
-        with_post: 1,
-        page: 1,
+        field: "recommend",
         limit: 6,
       },
       transform: (res: EmptyObjectType) => {

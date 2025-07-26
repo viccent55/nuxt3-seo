@@ -4,8 +4,11 @@
       type: Object as PropType<EmptyObjectType>,
       default: () => ({}),
     },
+    cover: {
+      type: Boolean,
+      default: false,
+    },
   });
-  onMounted(async () => {});
 </script>
 <template>
   <v-sheet color="transparent">
@@ -20,7 +23,7 @@
         <div class="pa-4">
           <Image
             height="160px"
-            contain
+            :cover="cover"
             :src="item.cover"
           ></Image>
         </div>

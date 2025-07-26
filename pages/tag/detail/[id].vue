@@ -49,7 +49,6 @@
       };
     },
   });
-  const hoveredIndex = ref(0);
 </script>
 
 <template>
@@ -93,35 +92,7 @@
         md="4"
       >
         <h3 class="text-subtitle-1 font-weight-medium mb-2">相关专题</h3>
-        <v-card
-          class="pa-4"
-          flat
-        >
-          <Image
-            :src="subjects?.items[hoveredIndex]?.cover"
-            height="160"
-            cover
-            class="rounded mt-2"
-          />
-          <v-card-text>
-            <div class="truncate-2 mb-2">
-              {{ subjects?.items[hoveredIndex]?.name }}
-            </div>
-            <v-divider class="my-2"></v-divider>
-            <ul class="text-body-2 text-grey-darken-1 ps-2" @mouseleave="hoveredIndex = 0">
-              <li
-                v-for="(item, index) in subjects?.items"
-                class="cursor-pointer mb-2"
-                :class="{ 'text-primary': hoveredIndex === index }"
-                :key="index"
-                @mouseover="hoveredIndex = index"
-                @click="$router.push('/tag/article/' + item.id)"
-              >
-                {{ item?.intro }}
-              </li>
-            </ul>
-          </v-card-text>
-        </v-card>
+        <DesktopActorCard :items="subjects?.items" />
 
         <h3 class="text-subtitle-1 font-weight-medium mb-2">涉及人物</h3>
         <v-card

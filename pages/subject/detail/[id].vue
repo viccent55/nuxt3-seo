@@ -113,7 +113,7 @@
               :key="index"
               cols="4"
               class="text-center cursor-pointer"
-              @click="$router.push('/subject/article/' + item.id)"
+              @click="$router.push('/actor/detail/' + item.id)"
             >
               <v-avatar
                 size="45"

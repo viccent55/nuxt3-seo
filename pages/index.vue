@@ -1,9 +1,8 @@
 <script lang="ts" setup>
   import CategoryMenu from "~/components/desktop/home/CategoryMenu.vue";
   import ContentDisplay from "~/components/desktop/home/ContentDisplay.vue";
-  const { postFilter, actorFilter, subjectFilter, tagTop, comments } =
+  const { postFilter, actorFilter, tagTop, comments, subjectFilter } =
     useHome();
-  const functionHelper = useFunctionHelper;
 
   const state = reactive({
     subjects: [] as EmptyArrayType,
@@ -20,6 +19,10 @@
       page: 1,
       limit: 6,
     },
+    ads: {} as EmptyObjectType,
+    POSITION_HOME_LIST: 1,
+    POSITION_HOME_BOTTOM: 2,
+    POSITION_HOME_RIGHT: 3,
   });
   const {
     data: subject,
@@ -37,7 +40,7 @@
   });
 
   watchEffect(() => {
-    if (subject.value) {
+    if (subject.value?.items) {
       state.subjects = subject.value.items ?? [];
     }
   });
@@ -78,22 +81,32 @@
     state.paginate.page = newPage;
   };
 
-  const POSITION_HOME_LIST = 1;
-  const POSITION_HOME_BOTTOM = 2;
-  const POSITION_HOME_RIGHT = 3;
-
   const { data: advertData } = await useFetch<any>("/api/home/ads", {
     method: "POST",
     body: {
       positions: [
-        POSITION_HOME_LIST,
-        POSITION_HOME_BOTTOM,
-        POSITION_HOME_RIGHT,
+        state.POSITION_HOME_LIST,
+        state.POSITION_HOME_BOTTOM,
+        state.POSITION_HOME_RIGHT,
       ],
     },
   });
+  watchEffect(() => {
+    if (advertData.value.data) {
+      const mapping: Record<number | string, string> = {
+        [state.POSITION_HOME_LIST]: "POSITION_HOME_LIST",
+        [state.POSITION_HOME_BOTTOM]: "POSITION_HOME_BOTTOM",
+        [state.POSITION_HOME_RIGHT]: "POSITION_HOME_RIGHT",
+      };
 
-  const adverts = computed(() => advertData.value?.data || []);
+      for (const key in advertData.value.data) {
+        const mappedKey = mapping[key];
+        if (mappedKey) {
+          state.ads[mappedKey] = advertData.value.data[key];
+        }
+      }
+    }
+  });
 </script>
 
 <template>
@@ -102,22 +115,24 @@
     <CategoryMenu v-if="$vuetify.display.mdAndUp" />
     <ContentDisplay
       :subjects="state.subjects"
+      :subjects-card="subjectFilter?.items"
       :latests="state.latests"
       :paginate="state.paginate"
       :actor-filters="actorFilter?.items"
       :post-filters="postFilter?.items"
-      :subject-filters="subjectFilter?.items"
       :tag-tops="tagTop?.items"
       :comments="comments"
-      :adverts="adverts"
-      :postion-list="POSITION_HOME_LIST"
+      :adverts="state.ads"
       @page-change="onPageChange"
     />
     <NuxtPage />
-    <v-row dense class="mt-2">
+    <v-row
+      dense
+      class="mt-2"
+    >
       <v-col
         cols="6"
-        v-for="(item, index) in adverts[2]"
+        v-for="(item, index) in state.ads?.POSITION_HOME_BOTTOM"
         :key="index"
       >
         <DesktopAdvertSlot :advert="item" />

@@ -11,6 +11,10 @@
       type: Array as PropType<EmptyArrayType>,
       default: () => [],
     },
+    subjectsCard: {
+      type: Array as PropType<EmptyArrayType>,
+      default: () => [],
+    },
     latests: {
       type: Array as PropType<EmptyArrayType>,
       default: () => [],
@@ -31,21 +35,13 @@
       type: Object as PropType<EmptyArrayType>,
       default: () => [],
     },
-    subjectFilters: {
-      type: Object as PropType<EmptyArrayType>,
-      default: () => [],
-    },
     tagTops: {
       type: Object as PropType<EmptyArrayType>,
       default: [],
     },
     adverts: {
-      type: Object as PropType<EmptyArrayType>,
+      type: Object as PropType<EmptyObjectType>,
       default: () => ({}),
-    },
-    postionList: {
-      type: Number,
-      default: 1,
     },
   });
   const route = useRoute();
@@ -53,11 +49,10 @@
     return route.params.slug || "home";
   });
   const getAdvertAtIndex = (index: number) => {
-    const list = props.adverts[props.postionList] || [];
+    const list = props.adverts.POSITION_HOME_LIST || [];
     if (!Array.isArray(list)) return null;
     return list.find((ad: any) => ad.position === index) || null;
   };
-  const subjectItem = computed(() => props.adverts[3]?.[0]);
 
   const emit = defineEmits(["page-change"]);
 </script>
@@ -220,7 +215,7 @@
               :key="index"
               cols="4"
               class="text-center cursor-pointer"
-              @click="$router.push('/home/article/' + item.id)"
+              @click="$router.push('/actor/detail/' + item.id)"
             >
               <v-avatar
                 size="45"
@@ -238,8 +233,12 @@
       </SidebarSection>
 
       <SidebarSection title="热门专题">
+        <DesktopActorCard :items="subjectsCard" />
+      </SidebarSection>
+
+      <SidebarSection title="热门专题">
         <v-card elevation="0">
-          <DesktopAdvertSlot :advert="subjectItem" />
+          <DesktopAdvertSlot :advert="adverts.POSITION_HOME_RIGHT[0]" />
         </v-card>
       </SidebarSection>
 
