@@ -35,8 +35,7 @@ export default function useActor() {
       const res = await $fetch<any>("/api/actor/filter", {
         method: "POST",
         body: {
-          page: 1,
-          limit: 30,
+          field: "hot",
           aid: route.params.id,
         },
       });

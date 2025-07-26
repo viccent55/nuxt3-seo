@@ -48,12 +48,16 @@
       default: 1,
     },
   });
+  const route = useRoute();
+  const slugParam = computed(() => {
+    return route.params.slug || "home";
+  });
   const getAdvertAtIndex = (index: number) => {
     const list = props.adverts[props.postionList] || [];
     if (!Array.isArray(list)) return null;
     return list.find((ad: any) => ad.position === index) || null;
   };
-  const subjectItem = computed(() => props.adverts[3][0]);
+  const subjectItem = computed(() => props.adverts[3]?.[0]);
 
   const emit = defineEmits(["page-change"]);
 </script>
@@ -94,7 +98,7 @@
             <ArticleList
               :item="item"
               class="cursor-pointer"
-              @click="$router.push(`/home/article/${item.id}`)"
+              @click="$router.push(`/${slugParam}/article/${item.id}`)"
               route-param="/home"
             />
             <v-divider class="my-3 mx-2"></v-divider>
@@ -206,8 +210,11 @@
       </SidebarSection> -->
 
       <SidebarSection title="热门人物">
-        <v-sheet>
-          <v-row class="mt-2">
+        <v-card
+          flat
+          class="pa-2"
+        >
+          <v-row>
             <v-col
               v-for="(item, index) in actorFilters"
               :key="index"
@@ -216,7 +223,7 @@
               @click="$router.push('/home/article/' + item.id)"
             >
               <v-avatar
-                size="48"
+                size="45"
                 class="mb-1"
               >
                 <Image :src="item.avatar" />
@@ -227,7 +234,7 @@
               </div>
             </v-col>
           </v-row>
-        </v-sheet>
+        </v-card>
       </SidebarSection>
 
       <SidebarSection title="热门专题">

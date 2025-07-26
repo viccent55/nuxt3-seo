@@ -1,25 +1,41 @@
 <script lang="ts" setup>
-  import CategoryMenu from "~/components/desktop/home/CategoryMenu.vue";
   import Breadcrumbs from "~/components/desktop/Breadcrumbs.vue";
   import ArticleListItem from "~/components/desktop/ArticleListItem.vue";
   import { useTimeAgo } from "@vueuse/core";
   import CommentComponent from "./comment.vue";
 
   const route = useRoute();
+  const paramslug = computed(() => {
+    const map: Record<string, { name: string; href: string }> = {
+      home: { name: "专题", href: "/" },
+      subject: { name: "专题", href: "/subject" },
+      actor: { name: "人物", href: "/actor" },
+      tag: { name: "标签", href: "/tag" },
+    };
+    const slug = route.params.slug as string;
+    return map[slug] || { name: slug, href: `/${slug}` };
+  });
   const breadcrumbs = computed(() => {
-    return [
+    const slug = route.params.slug as string;
+    const commonTrail = [
       {
-        text: route.params.slug == "home" ? "首页" : String(route.params.slug),
-        href: "/",
-      },
-      {
-        text: "专题",
-        href: "/subject",
+        text: paramslug.value.name,
+        href: paramslug.value.href,
       },
       {
         text: "专题名称",
         disabled: true,
       },
+    ];
+    if (slug === "home") {
+      return commonTrail;
+    }
+    return [
+      {
+        text: "专题",
+        href: "/",
+      },
+      ...commonTrail,
     ];
   });
 
@@ -32,7 +48,6 @@
 
 <template>
   <v-container class="mt-2">
-    <CategoryMenu />
     <Breadcrumbs :items="breadcrumbs" />
     <v-row>
       <!-- Left Main Content -->
@@ -119,13 +134,14 @@
             <v-btn
               elevation="0"
               color="info"
+              @click="onNavigatoArticle(articleDetail?.prev.id)"
             >
               上一篇：文章标题文章
             </v-btn>
             <v-btn
               elevation="0"
               color="info"
-              @click="onNavigatoArticle(articleDetail?.id)"
+              @click="onNavigatoArticle(articleDetail?.next.id)"
             >
               上一篇：文章标题文章
             </v-btn>
@@ -200,7 +216,7 @@
               @click="onNavigatoArticle(item.id)"
             >
               <v-avatar
-                size="48"
+                size="45"
                 class="mb-1"
               >
                 <Image :src="item.avatar" />

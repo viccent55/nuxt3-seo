@@ -2,7 +2,7 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event); // ✅ Read POST body
   const config = useRuntimeConfig();
   try {
-    const result = await $fetch(`${config.public?.apiBase}/post/tag`, {
+    const result = await $fetch(`${config.public?.apiBase}/subject/filter`, {
       method: "POST",
       body, 
     });

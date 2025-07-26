@@ -1,25 +1,6 @@
 export default function useTag() {
   const route = useRoute();
 
-  const {
-    data: tagData,
-    pending,
-    error,
-  } = useAsyncData<EmptyObjectType>(
-    () => `tag-group`,
-    () =>
-      $fetch("/api/tag/group", {
-        method: "POST",
-        body: {},
-      }),
-    {
-      transform: (res: EmptyObjectType) => {
-        return {
-          ...res?.data,
-        };
-      },
-    }
-  );
   const { data: tagDetail } = useAsyncData<EmptyObjectType>(
     () => `tag-detail-${route.params.id}`,
     () =>
@@ -38,34 +19,56 @@ export default function useTag() {
       },
     }
   );
-   // Reactive second request: only fetch when tagData is ready
-  const tagFilters = ref({
+  // Reactive second request: only fetch when tagData is ready
+  const tagFilters = reactive({
     items: [] as EmptyArrayType,
     count: 0,
+    loading: false,
   });
 
   watchEffect(async () => {
     if (tagDetail.value?.id) {
-      const res = await $fetch<any>("/api/tag/filter", {
+      try {
+        const res = await $fetch<any>("/api/tag/filter", {
+          method: "POST",
+          body: {
+            tid: tagDetail.value.id,
+          },
+        });
+
+        tagFilters.items = res.data.items || [];
+        tagFilters.count = res.data.count || 0;
+      } catch (e) {
+        console.error("Failed to fetch tag filters", e);
+      } finally {
+        tagFilters.loading = false;
+      }
+    }
+  });
+
+  // Reactive second request: only fetch when tagData is ready
+  const tagPosts = reactive({
+    items: [] as EmptyArrayType,
+    count: 0,
+    loading: false,
+  });
+
+  watchEffect(async () => {
+    if (tagDetail.value?.id) {
+      const res = await $fetch<any>("/api/tag/post", {
         method: "POST",
         body: {
-          page: 1,
-          limit: 30,
-          sid: tagDetail.value.id,
+          limit: 5,
         },
       });
-
-      tagFilters.value = {
-        items: res.data.items || [],
-        count: res.data.count || 0,
-      };
+      console.log(res.data);
+      tagPosts.items = res.data || [];
+      tagPosts.count = res.data.length || 0;
     }
   });
   return {
-    tagData,
-    pending,
-    error,
     tagDetail,
     tagFilters,
+    tagPosts,
   };
 }

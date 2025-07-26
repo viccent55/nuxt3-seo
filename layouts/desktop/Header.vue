@@ -1,6 +1,9 @@
 <script setup lang="ts">
   import { useStore } from "~/store";
+  import { useAuthStore } from "~/store/auth";
+
   const store = useStore();
+  const auth = useAuthStore();
   const state = reactive({
     search: "",
     drawer: false,
@@ -120,11 +123,19 @@
             >
               <v-btn
                 to="/dashboard"
-                class="me-2 text-button"
+                class="text-button"
               >
                 {{ store.userInfo?.nickname || store.userInfo?.username }}
                 &nbsp;
                 <v-icon>mdi-cog</v-icon>
+              </v-btn>
+              <v-btn
+                class="text-button px-0 mx-0"
+                min-width="35"
+                @click="auth.clearToken()"
+              >
+                &nbsp;
+                <v-icon>mdi-logout</v-icon>
               </v-btn>
             </div>
           </v-col>

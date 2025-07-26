@@ -35,8 +35,7 @@ export default function useSubject() {
       const res = await $fetch<any>("/api/subject/filter", {
         method: "POST",
         body: {
-          page: 1,
-          limit: 30,
+          field: "hot",
           sid: subjectData.value.id,
         },
       });

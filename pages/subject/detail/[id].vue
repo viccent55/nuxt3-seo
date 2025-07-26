@@ -1,15 +1,10 @@
 <script lang="ts" setup>
   import Breadcrumbs from "~/components/desktop/Breadcrumbs.vue";
   import ArticleListItem from "~/components/desktop/ArticleList.vue";
-  import SidebarSection from "~/components/desktop/SidebarSection.vue";
 
   const { subjectFilters, subjectData } = useSubject();
   const breadcrumb = computed(() => {
     return [
-      {
-        text: "首页",
-        href: "/",
-      },
       {
         text: "专题",
         href: "/subject",
@@ -118,10 +113,10 @@
               :key="index"
               cols="4"
               class="text-center cursor-pointer"
-              @click="$router.push('/home/article/' + item.id)"
+              @click="$router.push('/subject/article/' + item.id)"
             >
               <v-avatar
-                size="48"
+                size="45"
                 class="mb-1"
               >
                 <Image :src="item.avatar" />

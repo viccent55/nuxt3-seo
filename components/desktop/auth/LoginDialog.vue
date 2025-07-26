@@ -40,7 +40,7 @@
       store.setUserInfo(response.data.userinfo);
       snackbar.showSnackbar("登录成功", "success");
       closeDialog();
-      navigateTo("/dashboard");
+      // navigateTo("/dashboard");
     } catch (error) {
       console.error("Login failed:", error);
     }

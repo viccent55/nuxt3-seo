@@ -2,6 +2,7 @@
   import { useWindowSize } from "@vueuse/core";
   import { useTheme } from "vuetify";
   import { useStore } from "~/store";
+  import type { VSnackbar } from "vuetify/components/VSnackbar";
   const { width } = useWindowSize();
   const isMobile = computed(() => width.value < 768);
 
@@ -20,17 +21,19 @@
     showButton.value = window.scrollY > 300;
   };
 
+  type SnackbarLocation = VSnackbar["$props"]["location"];
+
   const state = reactive({
     message: "",
     color: "primary",
     timeout: 3000,
     show: false,
-    location: "",
+    location: "bottom center" as SnackbarLocation,
   });
   const triggerSnackbar = (
     msg: string,
     color: string = "success",
-    location: any,
+    location: SnackbarLocation = "bottom center",
     time: number = 3000
   ) => {
     state.message = msg;
@@ -51,6 +54,23 @@
   });
 </script>
 <template>
+  <v-snackbar
+    v-model="state.show"
+    :color="state.color"
+    :timeout="state.timeout"
+    :location="state.location"
+  >
+    {{ state.message }}
+    <template v-slot:actions>
+      <v-btn
+        color="error"
+        variant="text"
+        @click="state.show = false"
+      >
+        关闭
+      </v-btn>
+    </template>
+  </v-snackbar>
   <v-app>
     <NuxtLayout :name="$vuetify.display.smAndDown ? 'mobile' : 'desktop'">
       <NuxtLoadingIndicator />
@@ -58,22 +78,7 @@
       <NuxtPage />
     </NuxtLayout>
     <!-- Floating FAB -->
-    <v-snackbar
-      v-model="state.show"
-      :color="state.color"
-      :timeout="state.timeout"
-    >
-      {{ state.message }}
-      <template v-slot:actions>
-        <v-btn
-          color="error"
-          variant="text"
-          @click="state.show = false"
-        >
-          关闭
-        </v-btn>
-      </template>
-    </v-snackbar>
+
     <v-fab
       class="fab"
       icon="mdi-brightness-6"

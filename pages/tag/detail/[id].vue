@@ -2,29 +2,59 @@
   import Breadcrumbs from "~/components/desktop/Breadcrumbs.vue";
   import ArticleListItem from "~/components/desktop/ArticleList.vue";
 
-  const { tagData, tagFilters } = useTag();
+  const { tagDetail, tagFilters, tagPosts } = useTag();
   const breadcrumb = computed(() => {
     return [
-      {
-        text: "首页",
-        href: "/",
-      },
       {
         text: "专题",
         href: "/tag",
       },
       {
-        text: tagData.value?.name,
+        text: tagDetail.value?.name,
         disabled: true,
       },
     ];
   });
+
+  const { data: subjects } = useFetch<ApiResponse>("/api/tag/subject", {
+    method: "POST",
+    body: {
+      field: "home",
+      with_actor: true,
+      with_post: true,
+      page: 1,
+      limit: 30,
+    },
+    transform: (res: EmptyObjectType) => {
+      return {
+        items: res.data?.items || [],
+        count: res.data.count || 0,
+      };
+    },
+  });
+
+  const { data: actors } = useFetch<ApiResponse>("/api/tag/actor", {
+    method: "POST",
+    body: {
+      field: "hot",
+      with_actor: 1,
+      with_post: true,
+      page: 1,
+      limit: 30,
+    },
+    transform: (res: EmptyObjectType) => {
+      return {
+        items: res.data?.items || [],
+        count: res.data.count || 0,
+      };
+    },
+  });
+  const hoveredIndex = ref(0);
 </script>
 
 <template>
   <v-container>
     <Breadcrumbs :items="breadcrumb" />
-
     <v-row>
       <!-- Left content -->
       <v-col
@@ -43,7 +73,7 @@
           </div>
         </v-col>
         <!-- Topic summary card -->
-        <h2 class="text-h6 font-weight-bold mb-2">标签名称</h2>
+        <h2 class="text-h6 font-weight-bold mb-2">最新文章</h2>
         <template
           v-for="item in tagFilters?.items"
           :key="item.id"
@@ -68,47 +98,74 @@
           flat
         >
           <Image
-            src="https://www.imperialbricks.co.uk/wp-content/uploads/2023/01/Imperial-Bricks-Factory.jpg"
+            :src="subjects?.items[hoveredIndex]?.cover"
             height="160"
             cover
             class="rounded mt-2"
           />
           <v-card-text>
             <div class="truncate-2 mb-2">
-              标题标题标题标题标题标题标题标题标题 题标题标题标题
+              {{ subjects?.items[hoveredIndex]?.name }}
             </div>
             <v-divider class="my-2"></v-divider>
-            <ul class="text-body-2 text-grey-darken-1 ps-2">
-              <li>标题标题标题标题标题标题标题标题标题</li>
-              <li>标题标题标题标题标题标题标题标题标题</li>
-              <li>标题标题标题标题标题标题标题标题标题</li>
-              <li>标题标题标题标题标题标题标题标题标题</li>
+            <ul class="text-body-2 text-grey-darken-1 ps-2" @mouseleave="hoveredIndex = 0">
+              <li
+                v-for="(item, index) in subjects?.items"
+                class="cursor-pointer mb-2"
+                :class="{ 'text-primary': hoveredIndex === index }"
+                :key="index"
+                @mouseover="hoveredIndex = index"
+                @click="$router.push('/tag/article/' + item.id)"
+              >
+                {{ item?.intro }}
+              </li>
             </ul>
           </v-card-text>
         </v-card>
-        <!-- 涉及人物 -->
-        <h3 class="text-subtitle-1 font-weight-medium mt-4">涉及人物</h3>
-        <v-card flat clas="pa-4"> 
-          <v-row class="mt-2">
+
+        <h3 class="text-subtitle-1 font-weight-medium mb-2">涉及人物</h3>
+        <v-card
+          flat
+          class="pa-2"
+        >
+          <v-row dense>
             <v-col
-              v-for="(item, index) in tagData?.actors"
+              v-for="(actor, index) in actors?.items"
               :key="index"
               cols="4"
               class="text-center cursor-pointer"
-              @click="$router.push('/home/article/' + item.id)"
+              @click="$router.push('/tag/article/' + actor.id)"
             >
               <v-avatar
-                size="48"
+                size="40"
                 class="mb-1"
               >
-                <Image :src="item.avatar" />
+                <Image :src="actor.avatar" />
               </v-avatar>
-              <div class="text-caption truncate-1">{{ item.name }}</div>
+              <div class="text-caption truncate-1">{{ actor.name }}</div>
               <div class="text-grey text-caption text-xs truncate-2">
-                {{ item.intro }}
+                {{ actor.intro }}
               </div>
             </v-col>
           </v-row>
+        </v-card>
+        <!-- 涉及人物 -->
+        <h3 class="text-subtitle-1 font-weight-medium mt-4">推荐标签</h3>
+        <v-card
+          flat
+          class="pa-4"
+        >
+          <v-chip
+            v-for="(tag, index) in tagPosts?.items"
+            :key="index"
+            size="small"
+            class="ma-1"
+            color="surface-variant"
+            variant="tonal"
+            @click="$router.push('/tag/detail/' + tag.id)"
+          >
+            {{ tag.name }}
+          </v-chip>
         </v-card>
       </v-col>
     </v-row>

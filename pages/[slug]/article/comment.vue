@@ -28,22 +28,22 @@
       </v-btn>
     </div>
 
-    <v-divider class="mb-6" />
-
+    <v-divider />
     <!-- Comment List -->
     <div v-if="data?.items?.length">
       <div
         v-for="(comment, index) in data?.items"
         :key="index"
-        class="d-flex flex-column"
+        class="d-flex flex-column mt-4"
       >
         <div class="d-flex">
           <!-- Avatar -->
           <v-avatar
             size="40"
             class="mr-4"
+            border
           >
-            <v-img
+            <Image
               v-if="comment.member?.avatar"
               :src="comment.member.avatar"
             />
@@ -53,12 +53,12 @@
           <!-- Comment Content -->
           <div class="flex-grow-1">
             <div class="text-blue mb-1">
-              {{ comment.member?.nickname || "匿名用户" }}
+              {{ comment.member?.nickname || comment.member?.username }}
             </div>
             <div class="text-body-2 text-grey-darken-2 mb-1">
               {{ comment.text }}
             </div>
-            <div class="text-caption text-grey-darken-1">刚刚</div>
+            <!-- <div class="text-caption text-grey-darken-1">{{ comment }}</div> -->
 
             <!-- Children Replies -->
             <div
@@ -95,7 +95,7 @@
                     <div class="text-body-2 text-grey-darken-2">
                       {{ child.text }}
                     </div>
-                    <div class="text-caption text-grey-darken-1 mt-1">刚刚</div>
+                    <!-- <div class="text-caption text-grey-darken-1 mt-1">刚刚</div> -->
                   </div>
                 </div>
               </div>
@@ -118,6 +118,8 @@
 </template>
 
 <script setup lang="ts">
+  import { useStore } from "~/store";
+
   interface Member {
     id: number;
     username: string;
@@ -136,7 +138,7 @@
   const route = useRoute();
   const commentText = ref("");
   const comments = ref<Comment[]>([]);
-
+  const snackbar = useSnackbar();
   const { data, pending, error } = useFetch<EmptyObjectType>("/api/comment", {
     method: "POST",
     body: {
@@ -151,22 +153,39 @@
   });
 
   onMounted(() => {});
-
-  function submitComment() {
+  const store = useStore();
+  const submitComment = async () => {
     if (!commentText.value.trim()) return;
-    comments.value.unshift({
-      id: Date.now(),
-      pid: 0,
-      member_id: 1,
-      text: commentText.value,
-      member: {
-        id: 1,
-        username: "testuser",
-        nickname: "当前用户",
-        avatar: "",
-      },
-      children: [],
-    });
-    commentText.value = "";
-  }
+    const access_token = useCookie("access_token");
+    if (!access_token.value) {
+      return snackbar.showSnackbar("请先登录!", "error", "center top");
+    }
+    try {
+      data.value?.items.unshift({
+        id: Date.now(),
+        pid: 0,
+        post_id: route.params.id,
+        text: commentText.value,
+        member: {
+          id: 1,
+          username: store?.userInfo?.username ?? "",
+          nickname: store.userInfo?.nickname ?? "",
+          avatar: store.userInfo.avatar ?? "",
+        },
+      });
+     const { data: response, error } = await useApiFetch<EmptyObjectType>("/api/comment/post", {
+        method: "POST",
+        body: {
+          pid: 0,
+          post_id: route.params.id,
+          text: commentText.value,
+        },
+      });
+      console.log(response)
+        if (error.value) throw error.value;
+      commentText.value = "";
+    } catch (error) {
+      console.log(error);
+    }
+  };
 </script>
