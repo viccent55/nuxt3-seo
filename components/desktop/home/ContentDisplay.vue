@@ -203,7 +203,6 @@
           </v-carousel-item>
         </v-carousel>
       </SidebarSection> -->
-
       <SidebarSection title="热门人物">
         <v-card
           flat
@@ -231,7 +230,6 @@
           </v-row>
         </v-card>
       </SidebarSection>
-
       <SidebarSection title="热门专题">
         <DesktopActorCard :items="subjectsCard" />
       </SidebarSection>

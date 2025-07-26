@@ -127,7 +127,7 @@
     />
     <NuxtPage />
     <v-row
-      dense
+      
       class="mt-2"
     >
       <v-col

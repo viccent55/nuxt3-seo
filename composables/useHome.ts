@@ -21,7 +21,7 @@ export default function useHome() {
     {
       method: "POST",
       body: {
-        field: "recommend",
+        field: "hot",
         limit: 6,
       },
       transform: (res: EmptyObjectType) => {
