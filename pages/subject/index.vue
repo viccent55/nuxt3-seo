@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-  const { onNavigatoArticle } = useVaraible();
   const { data, pending, error } = await useAsyncData<ApiResponse>(
     "subject",
     async () => {
@@ -30,102 +29,114 @@
         :key="index"
       >
         <v-hover v-slot="{ isHovering, props }">
-          <v-sheet
-            v-bind="props"
-            flat
-            class="pa-5 cursor-pointer rounded"
-            :class="isHovering ? 'hover-shadow' : 'bg-none'"
-            tag="article"
-            color="surface"
-            min-height="300"
-            @click="$router.push(`/subject/detail/${item.id}`)"
+          <NuxtLink
+            :to="`/subject/detail/${item.id}`"
+            class="text-decoration-none"
           >
-            <v-row>
-              <v-col cols="auto">
-                <Image
-                  :src="item.cover"
-                  cover
-                  width="140"
-                  height="140"
-                >
-                  <v-row class="chip-top-left">
-                    <div
-                      v-for="(item, index) in ['热点', '推荐', '经典']"
-                      :key="index"
-                      class="d-flex ga-2"
-                    >
-                      <v-chip
-                        :color="
-                          index == 0
-                            ? 'primary'
-                            : index == 1
-                              ? 'green'
-                              : 'error'
-                        "
-                        flat
-                        size="x-small"
-                        variant="flat"
-                        class="rounded-0 mx-1"
-                      >
-                        {{ item }}
-                      </v-chip>
-                    </div>
-                  </v-row>
-                </Image>
-              </v-col>
-              <v-col class="d-flex flex-column justify-between">
-                <div>
-                  <h3 class="text-subtitle-1 font-weight-medium mb-1">
-                    {{ item.name }}
-                  </h3>
-                  <div class="text-body-2 text-grey-darken-1 mb-2">
-                    {{ item.intro }}
-                  </div>
-                </div>
-                <div
-                  class="text-caption d-flex justify-end text-grey mb-1 d-flex ga-2 text-right"
-                >
-                  <strong>相关文章：</strong>
-                  <div v-for="(iten, index) in item.actors">
-                    <v-chip
-                      v-if="iten.name"
-                      size="x-small"
-                      class="text-capitalize"
-                      :key="index"
-                      variant="text"
-                      @click.stop="onNavigatoArticle(iten?.id)"
-                    >
-                      {{ iten.name }}
-                    </v-chip>
-                  </div>
-                </div>
-              </v-col>
-              <v-col cols="12">
-                <v-divider class="my-2" />
-                <v-row dense>
-                  <v-col
-                    cols="6"
-                    v-for="post in item.posts"
-                    :key="post.id"
+            <v-sheet
+              v-bind="props"
+              flat
+              class="pa-5 cursor-pointer rounded"
+              :class="isHovering ? 'hover-shadow' : 'bg-none'"
+              tag="article"
+              color="surface"
+              min-height="300"
+            >
+              <v-row>
+                <v-col cols="auto">
+                  <Image
+                    :src="item.cover"
+                    cover
+                    width="140"
+                    height="140"
                   >
-                    <div
-                      class="d-flex align-center active-color cursor-pointer"
-                      @click.stop="$router.push(`/article/${post.id}`)"
-                    >
-                      <v-icon
-                        icon="mdi-circle-small"
-                        size="small"
-                        class="mr-1"
-                      />
-                      <div class="truncate-1 text-caption text-grey">
-                        {{ post.title }}
+                    <v-row class="chip-top-left">
+                      <div
+                        v-for="(item, index) in ['热点', '推荐', '经典']"
+                        :key="index"
+                        class="d-flex ga-2"
+                      >
+                        <v-chip
+                          :color="
+                            index == 0
+                              ? 'primary'
+                              : index == 1
+                                ? 'green'
+                                : 'error'
+                          "
+                          flat
+                          size="x-small"
+                          variant="flat"
+                          class="rounded-0 mx-1"
+                        >
+                          {{ item }}
+                        </v-chip>
                       </div>
+                    </v-row>
+                  </Image>
+                </v-col>
+                <v-col class="d-flex flex-column justify-between">
+                  <div>
+                    <h3 class="text-subtitle-1 font-weight-medium mb-1">
+                      {{ item.name }}
+                    </h3>
+                    <div class="text-body-2 text-grey-darken-1 mb-2">
+                      {{ item.intro }}
                     </div>
-                  </v-col>
-                </v-row>
-              </v-col>
-            </v-row>
-          </v-sheet>
+                  </div>
+                  <div
+                    class="text-caption d-flex justify-end text-grey mb-1 d-flex ga-2 text-right"
+                  >
+                    <strong>相关文章：</strong>
+                    <div v-for="(iten, index) in item.actors">
+                      <NuxtLink
+                        @click.stop
+                        :to="`/actor/detail/${iten.id}`"
+                        class="text-decoration-none text-grey"
+                      >
+                        <v-chip
+                          v-if="iten.name"
+                          size="x-small"
+                          class="text-capitalize"
+                          :key="index"
+                        >
+                          {{ iten.name }}
+                        </v-chip>
+                      </NuxtLink>
+                    </div>
+                  </div>
+                </v-col>
+                <v-col cols="12">
+                  <v-divider class="my-2" />
+                  <v-row dense>
+                    <v-col
+                      cols="6"
+                      v-for="post in item.posts"
+                      :key="post.id"
+                    >
+                      <NuxtLink
+                        :to="`/article/${post.id}`"
+                        class="text-decoration-none"
+                      >
+                        <div
+                          class="d-flex align-center active-color cursor-pointer"
+                        >
+                          <v-icon
+                            icon="mdi-circle-small"
+                            size="small"
+                            class="mr-1"
+                          />
+                          <div class="truncate-1 text-caption text-grey">
+                            {{ post.title }}
+                          </div>
+                        </div>
+                      </NuxtLink>
+                    </v-col>
+                  </v-row>
+                </v-col>
+              </v-row>
+            </v-sheet>
+          </NuxtLink>
         </v-hover>
       </v-col>
     </v-row>

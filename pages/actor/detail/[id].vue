@@ -65,12 +65,16 @@
               v-for="item in actorFilters?.items"
               :key="item.id"
             >
-              <ArticleListItem
-                :item="item"
-                class="pa-2 cursor-pointer"
-                @click="$router.push('/article/' + item.id)"
-                route-param="/subject"
-              />
+              <NuxtLink
+                :to="`/article/${item.id}`"
+                class="text-decoration-none"
+              >
+                <ArticleListItem
+                  :item="item"
+                  class="pa-2 cursor-pointer"
+                  route-param="/subject"
+                />
+              </NuxtLink>
             </template>
           </v-col>
         </template>

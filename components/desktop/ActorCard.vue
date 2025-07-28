@@ -27,14 +27,23 @@
         <ul class="text-body-2 text-grey-darken-1 ps-2">
           <li
             v-for="(item, index) in items"
+            :key="index"
             class="cursor-pointer mb-2"
             :class="{ 'text-primary': hoveredIndex === index }"
-            :key="index"
             @mouseover="hoveredIndex = index"
             @mouseleave="hoveredIndex = 0"
-            @click="$router.push('/article/' + item.id)"
           >
-            {{ item?.name }}
+            <NuxtLink
+              :to="`/actor/detail/${item.id}`"
+              class="text-decoration-none"
+              @mouseover="hoveredIndex = index"
+              @mouseleave="hoveredIndex = -1"
+              :class="
+                hoveredIndex === index ? 'text-primary' : 'text-grey-darken-1'
+              "
+            >
+              {{ item?.name }}
+            </NuxtLink>
           </li>
         </ul>
       </v-card-text>

@@ -44,7 +44,7 @@
       default: () => ({}),
     },
   });
-  
+
   const getAdvertAtIndex = (index: number) => {
     const list = props.adverts.POSITION_HOME_LIST || [];
     if (!Array.isArray(list)) return null;
@@ -52,7 +52,7 @@
   };
 
   const emit = defineEmits(["page-change"]);
-  const sideAds = computed(() => props.adverts.POSITION_HOME_RIGHT?.[0])
+  const sideAds = computed(() => props.adverts.POSITION_HOME_RIGHT?.[0]);
 </script>
 <template>
   <v-row>
@@ -71,11 +71,12 @@
           sm="6"
           md="4"
         >
-          <ArticleCard
-            class="cursor-pointer"
-            :item="item"
-            @click="$router.push(`/subject/detail/${item.id}`)"
-          />
+          <NuxtLink :to="'/subject/detail/' + item.id" class="text-decoration-none">
+            <ArticleCard
+              class="cursor-pointer"
+              :item="item"
+            />
+          </NuxtLink>
         </v-col>
       </v-row>
 
@@ -88,12 +89,13 @@
             :key="'latest-' + index"
           >
             <!-- Article -->
-            <ArticleList
-              :item="item"
-              class="cursor-pointer"
-              @click="$router.push(`/article/${item.id}`)"
-              route-param="/home"
-            />
+            <NuxtLink :to="`/article/${item.id}`" class="text-decoration-none">
+              <ArticleList
+                :item="item"
+                class="cursor-pointer"
+                route-param="/home"
+              />
+            </NuxtLink>
             <v-divider class="my-3 mx-2"></v-divider>
 
             <!-- Inject advert if 'sort' matches current index -->
@@ -212,18 +214,19 @@
               :key="index"
               cols="4"
               class="text-center cursor-pointer"
-              @click="$router.push('/actor/detail/' + item.id)"
             >
-              <v-avatar
-                size="45"
-                class="mb-1"
-              >
-                <Image :src="item.avatar" />
-              </v-avatar>
-              <div class="text-caption truncate-1">{{ item.name }}</div>
-              <div class="text-grey text-caption text-xs truncate-2">
-                {{ item.intro }}
-              </div>
+              <NuxtLink :to="`/actor/detail/${item.id}`" class="text-decroation-none">
+                <v-avatar
+                  size="45"
+                  class="mb-1"
+                >
+                  <Image :src="item.avatar" />
+                </v-avatar>
+                <div class="text-caption truncate-1">{{ item.name }}</div>
+                <div class="text-grey text-caption text-xs truncate-2">
+                  {{ item.intro }}
+                </div>
+              </NuxtLink>
             </v-col>
           </v-row>
         </v-card>

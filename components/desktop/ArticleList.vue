@@ -46,18 +46,6 @@
     isMobile.value = window.innerWidth < 768;
   };
 
-  const gotoTagDetail = (id: number) => {
-    router.push(`/tag/detail/${id}`);
-  };
-  const gotoSubjectDetail = (id: number) => {
-    router.push(`/subject/detail/${id}`);
-  };
-  const gotoToCategoryOage = (name: string) => {
-    router.push(`/${name}`);
-  };
-  const gotoActorDetail = (id: number) => {
-    router.push(`/actor/detail/${id}`);
-  };
 </script>
 
 <template>
@@ -151,17 +139,25 @@
                   :cols="isMobile ? 12 : 6"
                   v-if="item?.tags?.length > 0"
                 >
-                  <v-chip
+                  <template
                     v-for="(tag, index) in item?.tags"
                     :key="index"
-                    size="x-small"
-                    class="ma-1"
-                    color="primary"
-                    variant="tonal"
-                    @click.stop="gotoTagDetail(tag?.id)"
                   >
-                    {{ tag.name }}
-                  </v-chip>
+                    <v-hover v-slot="{ isHovering, props }">
+                      <v-chip
+                        v-bind="props"
+                        size="x-small"
+                        class="ma-1"
+                        :class="isHovering ? '' : 'bg-none text-grey'"
+                        :color="isHovering ? 'primary' : ''"
+                        @click.stop
+                        flat
+                        :to="'/tag/detail/' + tag.id"
+                      >
+                        {{ tag.name }}
+                      </v-chip>
+                    </v-hover>
+                  </template>
                 </v-col>
                 <v-col
                   :cols="isMobile ? 12 : 6"
@@ -172,42 +168,66 @@
                     v-for="author in item?.actors"
                     :key="author.id"
                   >
-                    <ActorProfile
-                      :item="author"
-                      class="cursor-pointer"
-                      @click.stop="gotoActorDetail(author?.id)"
-                    />
+                    <NuxtLink
+                      @click.stop
+                      :to="'/actor/detail/' + author.id"
+                      class="text-decoration-none"
+                    >
+                      <ActorProfile
+                        :item="author"
+                        class="cursor-pointer"
+                      />
+                    </NuxtLink>
                   </div>
                 </v-col>
                 <v-col
                   :cols="isMobile ? 12 : 6"
                   v-if="item?.categories?.length > 0"
                 >
-                  <v-chip
+                  <template
                     v-for="(category, index) in item?.categories"
                     :key="index"
-                    size="x-small"
-                    class="ma-1"
-                    variant="tonal"
-                    @click.stop="gotoToCategoryOage(category?.name)"
                   >
-                    {{ category.name }}
-                  </v-chip>
+                    <v-hover v-slot="{ isHovering, props }">
+                      <v-chip
+                        v-bind="props"
+                        size="x-small"
+                        class="ma-1"
+                        :class="isHovering ? '' : 'bg-none text-grey'"
+                        :color="isHovering ? 'primary' : ''"
+                        @click.stop
+                        flat
+                        :to="`/category-${category.id}`"
+                      >
+                        {{ category.name }}
+                      </v-chip>
+                    </v-hover>
+                  </template>
                 </v-col>
 
                 <v-col
                   :cols="isMobile ? 12 : 6"
                   v-if="item?.subjects?.length > 0"
                 >
-                  <v-chip
+                  <template
                     v-for="(subject, index) in item?.subjects"
                     :key="index"
-                    size="x-small"
-                    class="ma-1"
-                    @click.stop="gotoSubjectDetail(subject?.id)"
                   >
-                    {{ subject.name }}
-                  </v-chip>
+                    <v-hover v-slot="{ isHovering, props }">
+                      <v-chip
+                        v-bind="props"
+                        size="x-small"
+                        class="ma-1"
+                        :class="isHovering ? '' : 'bg-none text-grey'"
+                        :color="isHovering ? 'primary' : ''"
+                        @click.stop
+                        flat
+                        :to="`/subject/detail/${subject.id}`"
+                      >
+                        {{ subject.name }}
+                      </v-chip>
+                    </v-hover>
+                  </template>
                 </v-col>
               </v-row>
             </v-col>

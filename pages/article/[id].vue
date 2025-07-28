@@ -20,13 +20,7 @@
   });
 
   const { articleDetail } = useArticleDetail();
-  const router = useRouter();
-  const onNavigatoArticle = (id: number) => {
-    router.push(`/article/${id}`);
-  };
-
   const decryptedContent = ref("");
-
   // Watch for changes in the article detail
   watchEffect(async () => {
     if (articleDetail.value?.content) {
@@ -144,7 +138,7 @@
                 class="px-2"
                 variant="text"
                 border
-                @click="onNavigatoArticle(tag.id)"
+                :to="`/article/${tag.id}`"
               >
                 {{ tag.name }}
               </v-chip>
@@ -152,16 +146,18 @@
           </div>
           <div class="d-flex justify-center ga-5">
             <v-btn
+              v-if="articleDetail?.prev"
               elevation="0"
               color="info"
-              @click="onNavigatoArticle(articleDetail?.prev.id)"
+              :to="`/article/${articleDetail?.prev.id}`"
             >
               上一篇：文章标题文章
             </v-btn>
             <v-btn
+              v-if="articleDetail?.next"
               elevation="0"
               color="info"
-              @click="onNavigatoArticle(articleDetail?.next.id)"
+              :to="`/article/${articleDetail?.next.id}`"
             >
               上一篇：文章标题文章
             </v-btn>
@@ -233,18 +229,22 @@
               v-for="(item, index) in articleDetail?.related_actors"
               :key="index"
               class="text-center cursor-pointer"
-              @click="onNavigatoArticle(item.id)"
             >
-              <v-avatar
-                size="45"
-                class="mb-1"
+              <NuxtLink
+                :to="'/actor/detail/' + item.id"
+                class="text-decoration-none text-grey"
               >
-                <Image :src="item.avatar" />
-              </v-avatar>
-              <div class="text-caption truncate-1">{{ item.name }}</div>
-              <div class="text-grey text-caption text-xs truncate-2">
-                {{ item.intro }}
-              </div>
+                <v-avatar
+                  size="45"
+                  class="mb-1"
+                >
+                  <Image :src="item.avatar" />
+                </v-avatar>
+                <div class="text-caption truncate-1">{{ item.name }}</div>
+                <div class="text-grey text-caption text-xs truncate-2">
+                  {{ item.intro }}
+                </div>
+              </NuxtLink>
             </v-col>
           </v-row>
           <v-row
