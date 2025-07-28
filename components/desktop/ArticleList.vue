@@ -17,11 +17,11 @@
   const imageDimensions = ref();
   const getStyleImage = (item: EmptyObjectType) => {
     return {
-      minWidth: item?.isVertical ? "100%" : cardWidth.value / 2.2 + "px",
+      minWidth: item?.isVertical ? "100%" : cardWidth.value / 1.8 + "px",
       zIndex: 10,
       display: "block",
       objectFit: "contain",
-      height: 'auto'
+      height: "auto",
     };
   };
 

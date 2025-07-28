@@ -44,10 +44,7 @@
       default: () => ({}),
     },
   });
-  const route = useRoute();
-  const slugParam = computed(() => {
-    return route.params.slug || "home";
-  });
+  
   const getAdvertAtIndex = (index: number) => {
     const list = props.adverts.POSITION_HOME_LIST || [];
     if (!Array.isArray(list)) return null;
@@ -94,7 +91,7 @@
             <ArticleList
               :item="item"
               class="cursor-pointer"
-              @click="$router.push(`/${slugParam}/article/${item.id}`)"
+              @click="$router.push(`/article/${item.id}`)"
               route-param="/home"
             />
             <v-divider class="my-3 mx-2"></v-divider>
@@ -143,7 +140,7 @@
             <ArticleListItem
               :item="item"
               class="pa-2"
-              :to="'/home/article/' + item.id"
+              :to="'/article/' + item.id"
             />
             <v-divider
               class="my-2"

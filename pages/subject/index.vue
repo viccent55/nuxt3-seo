@@ -110,7 +110,7 @@
                   >
                     <div
                       class="d-flex align-center active-color cursor-pointer"
-                      @click.stop="$router.push(`/subject/article/${post.id}`)"
+                      @click.stop="$router.push(`/article/${post.id}`)"
                     >
                       <v-icon
                         icon="mdi-circle-small"

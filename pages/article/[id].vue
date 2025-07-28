@@ -6,45 +6,23 @@
 
   const { decryptImage, decryptedImage } = useDecryption();
 
-  const route = useRoute();
-  const paramslug = computed(() => {
-    const map: Record<string, { name: string; href: string }> = {
-      home: { name: "专题", href: "/" },
-      subject: { name: "专题", href: "/subject" },
-      actor: { name: "人物", href: "/actor" },
-      tag: { name: "标签", href: "/tag" },
-    };
-    const slug = route.params.slug as string;
-    return map[slug] || { name: slug, href: `/${slug}` };
-  });
   const breadcrumbs = computed(() => {
-    const slug = route.params.slug as string;
-    const commonTrail = [
-      {
-        text: paramslug.value.name,
-        href: paramslug.value.href,
-      },
-      {
-        text: "专题名称",
-        disabled: true,
-      },
-    ];
-    if (slug === "home") {
-      return commonTrail;
-    }
     return [
       {
         text: "专题",
         href: "/",
       },
-      ...commonTrail,
+      {
+        text: "文章",
+        disabled: true,
+      },
     ];
   });
 
   const { articleDetail } = useArticleDetail();
   const router = useRouter();
   const onNavigatoArticle = (id: number) => {
-    router.push(`/${route.params.slug}/article/${id}`);
+    router.push(`/article/${id}`);
   };
 
   const decryptedContent = ref("");
@@ -57,10 +35,9 @@
         articleDetail.value.content,
         "text/html"
       );
-
       // Decrypt images
       const images = doc.querySelectorAll("img[data-lazy-src]");
-      for (const img of images) {
+      for (const img of <any>images) {
         const lazySrc = img.getAttribute("data-lazy-src");
         if (lazySrc) {
           try {
@@ -152,12 +129,11 @@
             />
           </v-sheet>
           <!-- Article Body -->
-           <!-- {{ articleDetail?.content }} -->
+          <!-- {{ articleDetail?.content }} -->
           <div
             class="mt-5 text-body-1"
             v-html="decryptedContent"
           ></div>
-
           <div class="my-4 text-right d-flex ga-2 justify-end">
             <div
               v-if="articleDetail?.tags?.length"
@@ -290,7 +266,7 @@
             <ArticleListItem
               class="pa-2"
               :item="item"
-              :to="'/home/article/' + item.id"
+              :to="'/article/' + item.id"
             />
             <v-divider
               class="my-2"

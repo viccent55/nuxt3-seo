@@ -32,7 +32,7 @@
             :key="index"
             @mouseover="hoveredIndex = index"
             @mouseleave="hoveredIndex = 0"
-            @click="$router.push('/actor/article/' + item.id)"
+            @click="$router.push('/article/' + item.id)"
           >
             {{ item?.name }}
           </li>

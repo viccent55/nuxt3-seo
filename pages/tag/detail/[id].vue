@@ -80,7 +80,7 @@
           <ArticleListItem
             :item="item"
             class="pa-2 cursor-pointer"
-            @click="$router.push('/actor/article/' + item.id)"
+            @click="$router.push('/article/' + item.id)"
             route-param="/actor"
           />
         </template>
@@ -105,7 +105,7 @@
               :key="index"
               cols="4"
               class="text-center cursor-pointer"
-              @click="$router.push('/tag/article/' + actor.id)"
+              @click="$router.push('/article/' + actor.id)"
             >
               <v-avatar
                 size="40"

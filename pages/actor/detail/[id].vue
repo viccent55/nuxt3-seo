@@ -68,7 +68,7 @@
               <ArticleListItem
                 :item="item"
                 class="pa-2 cursor-pointer"
-                @click="$router.push('/subject/article/' + item.id)"
+                @click="$router.push('/article/' + item.id)"
                 route-param="/subject"
               />
             </template>
