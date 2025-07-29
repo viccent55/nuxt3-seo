@@ -146,7 +146,7 @@
       <!-- Latest text -->
       <SectionTitle title="最新文章" />
       <v-sheet color="transparent">
-        <template v-if="latests.length">
+        <div v-if="latests.length">
           <template
             v-for="(item, index) in latests"
             :key="'latest-' + index"
@@ -171,7 +171,7 @@
               </div>
             </template>
           </template>
-        </template>
+        </div>
         <template v-else>
           <div class="text-center pa-10">加载中或暂无内容...</div>
         </template>
@@ -491,35 +491,5 @@
     width: 32px;
     height: 32px;
     min-width: 32px;
-  }
-
-  .carousel-arrow.prev {
-    left: 0;
-  }
-
-  .carousel-arrow.next {
-    right: 0;
-  }
-
-  /* Make cards slightly smaller on mobile */
-  .mobile-card {
-    transform: scale(0.95);
-    transform-origin: center;
-  }
-
-  /* Touch-friendly sizing */
-  @media (max-width: 600px) {
-    .slide-item {
-      width: calc(50vw - 16px);
-    }
-
-    .carousel-arrow {
-      width: 28px;
-      height: 28px;
-    }
-
-    .carousel-arrow .v-icon {
-      font-size: 20px;
-    }
   }
 </style>

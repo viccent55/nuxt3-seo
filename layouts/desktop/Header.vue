@@ -30,7 +30,7 @@
       :height="$vuetify?.display.sm ? 100 : 64"
       class="border-b"
     >
-      <v-container>
+      <v-container max-width="1200">
         <v-row
           align="center"
           no-gutters

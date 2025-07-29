@@ -67,26 +67,24 @@
           rounded="0"
           size="160"
         >
-          <div class="image-wrapper">
-            <Image
-              class="article-image"
-              :src="item?.cover"
-              @image-dimensions="(v) => (imageDimensions = v)"
-              :style="isHovering ? getStyleImage(imageDimensions) : {}"
-              contain
-            />
-            <v-chip
-              v-if="item?.cover"
-              class="chip-top-left"
-              color="primary"
-              variant="flat"
-              label
-              rounded="0"
-              size="x-small"
-            >
-              文章分类
-            </v-chip>
-          </div>
+          <Image
+            :class="!isMobile ? 'article-image' : ''"
+            :src="item?.cover"
+            @image-dimensions="(v) => (imageDimensions = v)"
+            :style="isHovering ? getStyleImage(imageDimensions) : {}"
+            contain
+          />
+          <v-chip
+            v-if="item?.cover"
+            class="chip-top-left"
+            color="primary"
+            variant="flat"
+            label
+            rounded="0"
+            size="x-small"
+          >
+            文章分类
+          </v-chip>
         </v-avatar>
 
         <v-card-text
@@ -105,7 +103,7 @@
                 class="text-caption text-grey"
               >
                 <v-col cols="6">
-                  <div class="d-flex ga-4 align-center">
+                  <div class="d-flex ga-2 align-center">
                     <div>
                       {{ useTimeAgo(item?.created) }}
                     </div>
@@ -116,7 +114,7 @@
                   </div>
                 </v-col>
                 <v-col cols="6">
-                  <div class="d-flex ga-4 align-center">
+                  <div class="d-flex ga-2 align-center">
                     <div class="d-flex ga-2">
                       <v-icon>mdi-chat-outline</v-icon>
                       <span>{{ item?.comment_count }}</span>
@@ -130,78 +128,62 @@
               </v-row>
             </v-col>
             <v-col cols="12">
-              <v-row dense>
-                <v-col
+              <div class="scroll-x d-flex w-full">
+                <div
+                  class="d-flex align-center text-grey"
                   v-if="item?.actors?.length > 0"
-                  cols="12"
+                  v-for="author in item?.actors"
+                  :key="author.id"
                 >
-                  <div class="scroll-x d-flex">
-                    <div
-                      class="d-flex align-center text-grey"
-                      v-for="author in item?.actors"
-                      :key="author.id"
-                    >
-                      <ActorProfile
-                        :item="author"
-                        :to="`/actor/detail/${author.id}`"
-                        class="cursor-pointer"
-                      />
-                    </div>
-                  </div>
-                </v-col>
-                <v-col
-                  cols="12"
-                  v-if="item?.categories?.length > 0"
+                  <ActorProfile
+                    :item="author"
+                    :to="`/actor/detail/${author.id}`"
+                    class="cursor-pointer"
+                  />
+                </div>
+                <div
+                  class="d-flex align-center text-grey"
+                  v-if="item?.actors?.length > 0"
+                  v-for="category in item?.categories"
+                  :key="category.id"
                 >
-                  <div class="d-flex scroll-x">
-                    <template
-                      v-for="(category, index) in item?.categories"
-                      :key="index"
+                  <v-hover v-slot="{ isHovering, props }">
+                    <v-chip
+                      v-bind="props"
+                      size="x-small"
+                      class="ma-1"
+                      :class="isHovering ? '' : 'bg-none text-grey'"
+                      :color="isHovering ? 'primary' : ''"
+                      @click.stop
+                      flat
+                      :to="`/category-${category.id}`"
                     >
-                      <v-hover v-slot="{ isHovering, props }">
-                        <v-chip
-                          v-bind="props"
-                          size="x-small"
-                          class="ma-1"
-                          :class="isHovering ? '' : 'bg-none text-grey'"
-                          :color="isHovering ? 'primary' : ''"
-                          @click.stop
-                          flat
-                          :to="`/category-${category.id}`"
-                        >
-                          {{ category.name }}
-                        </v-chip>
-                      </v-hover>
-                    </template>
-                  </div>
-                </v-col>
-                <v-col
-                  cols="12"
-                  v-if="item?.subjects?.length > 0"
+                      {{ category.name }}
+                    </v-chip>
+                  </v-hover>
+                </div>
+                <div
+                  class="d-flex align-center text-grey"
+                  v-if="item?.subjects.length > 0"
+                  v-for="subject in item?.subjects"
+                  :key="subject.id"
                 >
-                  <div class="d-flex scroll-x">
-                    <template
-                      v-for="(subject, index) in item?.subjects"
-                      :key="index"
+                  <v-hover v-slot="{ isHovering, props }">
+                    <v-chip
+                      v-bind="props"
+                      size="x-small"
+                      class="ma-1"
+                      :class="isHovering ? '' : 'bg-none text-grey'"
+                      :color="isHovering ? 'primary' : ''"
+                      @click.stop
+                      flat
+                      :to="`/subject/detail/${subject.id}`"
                     >
-                      <v-hover v-slot="{ isHovering, props }">
-                        <v-chip
-                          v-bind="props"
-                          size="x-small"
-                          class="ma-1"
-                          :class="isHovering ? '' : 'bg-none text-grey'"
-                          :color="isHovering ? 'primary' : ''"
-                          @click.stop
-                          flat
-                          :to="`/subject/detail/${subject.id}`"
-                        >
-                          {{ subject.name }}
-                        </v-chip>
-                      </v-hover>
-                    </template>
-                  </div>
-                </v-col>
-              </v-row>
+                      {{ subject.name }}
+                    </v-chip>
+                  </v-hover>
+                </div>
+              </div>
             </v-col>
           </v-row>
         </v-card-text>
@@ -367,21 +349,11 @@
     z-index: 1;
   }
 
-  .image-wrapper {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: stretch;
-    justify-content: flex-start;
-  }
-
   .article-image {
     position: absolute;
     top: 0;
     left: 0;
-    height: 100%;
-    width: 100%;
+
     transition: all 0.2s ease;
     object-fit: contain;
     z-index: 1;

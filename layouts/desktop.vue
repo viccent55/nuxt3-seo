@@ -3,9 +3,11 @@
   import Footer from "./desktop/Footer.vue";
 </script>
 <template>
-  <Header />
-  <v-main class="bg-background">
-    <slot />
-  </v-main>
-  <Footer />
+  <v-container max-width="1200">
+    <Header />
+    <v-main class="bg-background">
+      <slot />
+    </v-main>
+    <Footer />
+  </v-container>
 </template>

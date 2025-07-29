@@ -126,12 +126,10 @@
       @page-change="onPageChange"
     />
     <NuxtPage />
-    <v-row
-      
-      class="mt-2"
-    >
+    <v-row class="mt-2">
       <v-col
-        cols="6"
+        cols="12"
+        md="6"
         v-for="(item, index) in state.ads?.POSITION_HOME_BOTTOM"
         :key="index"
       >

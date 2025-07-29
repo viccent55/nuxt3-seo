@@ -13,9 +13,9 @@
 </script>
 <template>
   <v-card
-   color="transparent"
+    color="transparent"
     flat
-    class="d-flex align-center text-grey "
+    class="d-flex align-center text-grey"
     :key="item.id"
   >
     <v-avatar
@@ -27,6 +27,11 @@
         alt="Avatar"
       />
     </v-avatar>
-    <div class="f11">{{ item.name }}</div>
+    <div
+      class="f10"
+      style="min-width: 30px; max-width: 50"
+    >
+      {{ item.name }}
+    </div>
   </v-card>
 </template>
