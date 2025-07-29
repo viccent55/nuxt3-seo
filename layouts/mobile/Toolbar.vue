@@ -6,28 +6,54 @@
   const store = useStore();
 
   const isActive = (path: string) => route.path.startsWith(path);
+  const loginDialogRef = ref();
+  const onToDashboard = () => {
+    const token = useCookie("access_token");
+    if (token.value) {
+      navigateTo("/dashboard");
+    } else {
+      loginDialogRef.value.openDialog();
+    }
+  };
 </script>
 
 <template>
-  <v-bottom-navigation
-    grow
-    class="d-md-none"
-    height="56"
-    color="surface"
-    elevation="3"
-  >
-    <v-btn
-      v-for="(menu, index) in store.menus"
-      :key="index"
-      :to="menu.value"
-      variant="text"
-      :color="isActive(menu.value) ? 'primary' : ''"
-      :class="isActive(menu.value) ? 'primary' : 'text-grey'"
+  <v-sheet color="transparent">
+    <v-bottom-navigation
+      grow
+      class="d-md-none"
+      height="56"
+      color="surface"
+      elevation="3"
     >
-      <v-icon>{{ menu.icon }}</v-icon>
-      <span class="text-caption">{{ menu.name }}</span>
-    </v-btn>
-  </v-bottom-navigation>
+      <template
+        v-for="(menu, index) in store.menusMobile"
+        :key="index"
+      >
+        <v-btn
+          v-if="menu.value === '/dashboard'"
+          @click="onToDashboard"
+          variant="text"
+          :color="isActive(menu.value) ? 'primary' : ''"
+          :class="isActive(menu.value) ? 'primary' : 'text-grey'"
+        >
+          <v-icon>{{ menu.icon }}</v-icon>
+          <span class="text-caption">{{ menu.name }}</span>
+        </v-btn>
+        <v-btn
+          v-else
+          :to="menu.value"
+          variant="text"
+          :color="isActive(menu.value) ? 'primary' : ''"
+          :class="isActive(menu.value) ? 'primary' : 'text-grey'"
+        >
+          <v-icon>{{ menu.icon }}</v-icon>
+          <span class="text-caption">{{ menu.name }}</span>
+        </v-btn>
+      </template>
+    </v-bottom-navigation>
+    <desktop-auth-login-dialog ref="loginDialogRef" />
+  </v-sheet>
 </template>
 
 <style scoped>

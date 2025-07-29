@@ -1,11 +1,7 @@
-export const useVaraible = () => {
-  const route = useRoute();
-  const router = useRouter();
-  const onNavigatoArticle = (id: number) => {
-    // router.push(`${route.path == "/" ? "/home" : route.path}/article/${id}`);
-  };
+const useVaraible = () => {
+  const isMobile = computed(() => window?.innerWidth < 768);
   return {
-    onNavigatoArticle,
+    isMobile,
   };
 };
 export default useVaraible;

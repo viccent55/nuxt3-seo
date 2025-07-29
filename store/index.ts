@@ -35,6 +35,28 @@ export const useStore = defineStore("store", {
           value: "/tag",
         },
       ],
+      menusMobile: [
+        {
+          name: "首页",
+          icon: "mdi-home-outline",
+          value: "/",
+        },
+        {
+          name: "专题",
+          icon: "mdi-book-outline",
+          value: "/subject",
+        },
+        {
+          name: "人物",
+          icon: "mdi-account-multiple-outline",
+          value: "/actor",
+        },
+        {
+          name: "分类",
+          icon: "mdi-account-outline",
+          value: "/dashboard",
+        },
+      ],
     };
   },
   actions: {

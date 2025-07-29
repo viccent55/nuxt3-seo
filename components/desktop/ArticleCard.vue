@@ -8,6 +8,14 @@
       type: Boolean,
       default: false,
     },
+    height: {
+      type: String,
+      default: "160px",
+    },
+    width: {
+      type: String,
+      default: "auto",
+    },
   });
 </script>
 <template>
@@ -20,9 +28,10 @@
         class="transition-fast-in-fast-out"
         :class="[isHovering ? 'bg-default' : 'bg-none']"
       >
-        <div class="pa-4">
+        <div class="pa-md-4 d-flex justify-center">
           <Image
-            height="160px"
+            :height="height"
+            :width="width"
             :cover="cover"
             :src="item.cover"
           ></Image>

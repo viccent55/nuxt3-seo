@@ -45,7 +45,6 @@
   const checkMobile = () => {
     isMobile.value = window.innerWidth < 768;
   };
-
 </script>
 
 <template>
@@ -85,12 +84,131 @@
               rounded="0"
               size="x-small"
             >
-              New Tweets
+              文章分类
             </v-chip>
           </div>
         </v-avatar>
 
-        <v-card-text class="text-content">
+        <v-card-text
+          class="text-content"
+          v-if="isMobile"
+        >
+          <h3 class="truncate-1">{{ item?.title }}</h3>
+          <v-row
+            no-gutters
+            class="mt-1"
+            align="center"
+          >
+            <v-col>
+              <v-row
+                dense
+                class="text-caption text-grey"
+              >
+                <v-col cols="6">
+                  <div class="d-flex ga-4 align-center">
+                    <div>
+                      {{ useTimeAgo(item?.created) }}
+                    </div>
+                    <div class="d-flex ga-2">
+                      <v-icon>mdi-eye</v-icon>
+                      <span>{{ item?.view_count }}</span>
+                    </div>
+                  </div>
+                </v-col>
+                <v-col cols="6">
+                  <div class="d-flex ga-4 align-center">
+                    <div class="d-flex ga-2">
+                      <v-icon>mdi-chat-outline</v-icon>
+                      <span>{{ item?.comment_count }}</span>
+                    </div>
+                    <div class="d-flex ga-2">
+                      <v-icon>mdi-thumb-up-outline</v-icon>
+                      <span>{{ item?.like_count }}</span>
+                    </div>
+                  </div>
+                </v-col>
+              </v-row>
+            </v-col>
+            <v-col cols="12">
+              <v-row dense>
+                <v-col
+                  v-if="item?.actors?.length > 0"
+                  cols="12"
+                >
+                  <div class="scroll-x d-flex">
+                    <div
+                      class="d-flex align-center text-grey"
+                      v-for="author in item?.actors"
+                      :key="author.id"
+                    >
+                      <ActorProfile
+                        :item="author"
+                        :to="`/actor/detail/${author.id}`"
+                        class="cursor-pointer"
+                      />
+                    </div>
+                  </div>
+                </v-col>
+                <v-col
+                  cols="12"
+                  v-if="item?.categories?.length > 0"
+                >
+                  <div class="d-flex scroll-x">
+                    <template
+                      v-for="(category, index) in item?.categories"
+                      :key="index"
+                    >
+                      <v-hover v-slot="{ isHovering, props }">
+                        <v-chip
+                          v-bind="props"
+                          size="x-small"
+                          class="ma-1"
+                          :class="isHovering ? '' : 'bg-none text-grey'"
+                          :color="isHovering ? 'primary' : ''"
+                          @click.stop
+                          flat
+                          :to="`/category-${category.id}`"
+                        >
+                          {{ category.name }}
+                        </v-chip>
+                      </v-hover>
+                    </template>
+                  </div>
+                </v-col>
+                <v-col
+                  cols="12"
+                  v-if="item?.subjects?.length > 0"
+                >
+                  <div class="d-flex scroll-x">
+                    <template
+                      v-for="(subject, index) in item?.subjects"
+                      :key="index"
+                    >
+                      <v-hover v-slot="{ isHovering, props }">
+                        <v-chip
+                          v-bind="props"
+                          size="x-small"
+                          class="ma-1"
+                          :class="isHovering ? '' : 'bg-none text-grey'"
+                          :color="isHovering ? 'primary' : ''"
+                          @click.stop
+                          flat
+                          :to="`/subject/detail/${subject.id}`"
+                        >
+                          {{ subject.name }}
+                        </v-chip>
+                      </v-hover>
+                    </template>
+                  </div>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-text
+          class="text-content"
+          v-else
+        >
           <div>
             <h3 class="truncate-1">{{ item?.title }}</h3>
             <div class="text-caption mt-1 text-grey truncatte-3">
@@ -168,16 +286,11 @@
                     v-for="author in item?.actors"
                     :key="author.id"
                   >
-                    <NuxtLink
-                      @click.stop
-                      :to="'/actor/detail/' + author.id"
-                      class="text-decoration-none"
-                    >
-                      <ActorProfile
-                        :item="author"
-                        class="cursor-pointer"
-                      />
-                    </NuxtLink>
+                    <ActorProfile
+                      :item="author"
+                      :to="`/actor/detail/${author.id}`"
+                      class="cursor-pointer"
+                    />
                   </div>
                 </v-col>
                 <v-col

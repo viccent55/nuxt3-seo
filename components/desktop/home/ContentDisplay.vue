@@ -53,6 +53,15 @@
 
   const emit = defineEmits(["page-change"]);
   const sideAds = computed(() => props.adverts.POSITION_HOME_RIGHT?.[0]);
+  const { isMobile } = useVariable();
+  const chunkedSubjects = computed(() => {
+    const chunkSize = 2;
+    const chunks = [];
+    for (let i = 0; i < props?.subjects.length; i += chunkSize) {
+      chunks.push(props.subjects.slice(i, i + chunkSize));
+    }
+    return chunks;
+  });
 </script>
 <template>
   <v-row>
@@ -63,16 +72,70 @@
     >
       <!-- Latest topics -->
       <SectionTitle title="最新专题" />
-      <v-row>
-        <v-col
-          v-for="(item, index) in subjects"
+      <v-carousel
+        v-if="isMobile"
+        :show-arrows="subjects.length > 2"
+        hide-delimiters
+        height="auto"
+        class="mobile-carousel"
+        cycle
+      >
+        <template v-slot:prev="{ props }">
+          <v-btn
+            density="compact"
+            icon="mdi-chevron-left"
+            variant="elevated"
+            @click="props.onClick"
+          />
+        </template>
+        <template v-slot:next="{ props }">
+          <v-btn
+            density="compact"
+            icon="mdi-chevron-right"
+            variant="elevated"
+            @click="props.onClick"
+          />
+        </template>
+        <v-carousel-item
+          v-for="(chunk, index) in chunkedSubjects"
           :key="index"
-          cols="12"
+        >
+          <v-row>
+            <v-col
+              v-for="item in chunk"
+              :key="item.id"
+              cols="6"
+            >
+              <NuxtLink
+                :to="'/subject/detail/' + item.id"
+                class="text-decoration-none"
+              >
+                <ArticleCard
+                  cover
+                  height="80"
+                  class="cursor-pointer"
+                  :item="item"
+                />
+              </NuxtLink>
+            </v-col>
+          </v-row>
+        </v-carousel-item>
+      </v-carousel>
+
+      <!-- Desktop view - Grid -->
+      <v-row v-else>
+        <v-col
+          v-for="item in subjects"
+          :key="item.id"
           sm="6"
           md="4"
         >
-          <NuxtLink :to="'/subject/detail/' + item.id" class="text-decoration-none">
+          <NuxtLink
+            :to="'/subject/detail/' + item.id"
+            class="text-decoration-none"
+          >
             <ArticleCard
+              cover
               class="cursor-pointer"
               :item="item"
             />
@@ -89,11 +152,14 @@
             :key="'latest-' + index"
           >
             <!-- Article -->
-            <NuxtLink :to="`/article/${item.id}`" class="text-decoration-none">
+            <NuxtLink
+              :to="`/article/${item.id}`"
+              class="text-decoration-none"
+            >
               <ArticleList
                 :item="item"
                 class="cursor-pointer"
-                route-param="/home"
+                route-param="/"
               />
             </NuxtLink>
             <v-divider class="my-3 mx-2"></v-divider>
@@ -132,6 +198,7 @@
     <v-col
       cols="12"
       md="4"
+      class="d-none d-sm-block"
     >
       <SidebarSection title="推荐文章">
         <v-sheet class="pa-3">
@@ -215,7 +282,10 @@
               cols="4"
               class="text-center cursor-pointer"
             >
-              <NuxtLink :to="`/actor/detail/${item.id}`" class="text-decroation-none">
+              <NuxtLink
+                :to="`/actor/detail/${item.id}`"
+                class="text-decroation-none"
+              >
                 <v-avatar
                   size="45"
                   class="mb-1"
@@ -395,3 +465,61 @@
     </v-col>
   </v-row>
 </template>
+<style scoped lang="scss">
+  .mobile-carousel-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 0 30px; /* Space for arrows */
+  }
+
+  .mobile-slide-group {
+    flex: 1;
+    padding: 8px 0;
+  }
+
+  .slide-item {
+    padding: 0 8px;
+    width: 50vw; /* Show 2 items by default */
+  }
+
+  .carousel-arrow {
+    position: absolute;
+    z-index: 1;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+  }
+
+  .carousel-arrow.prev {
+    left: 0;
+  }
+
+  .carousel-arrow.next {
+    right: 0;
+  }
+
+  /* Make cards slightly smaller on mobile */
+  .mobile-card {
+    transform: scale(0.95);
+    transform-origin: center;
+  }
+
+  /* Touch-friendly sizing */
+  @media (max-width: 600px) {
+    .slide-item {
+      width: calc(50vw - 16px);
+    }
+
+    .carousel-arrow {
+      width: 28px;
+      height: 28px;
+    }
+
+    .carousel-arrow .v-icon {
+      font-size: 20px;
+    }
+  }
+</style>

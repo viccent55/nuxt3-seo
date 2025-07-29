@@ -12,8 +12,10 @@
   onMounted(async () => {});
 </script>
 <template>
-  <div
-    class="d-flex align-center text-grey"
+  <v-card
+   color="transparent"
+    flat
+    class="d-flex align-center text-grey "
     :key="item.id"
   >
     <v-avatar
@@ -26,5 +28,5 @@
       />
     </v-avatar>
     <div class="f11">{{ item.name }}</div>
-  </div>
+  </v-card>
 </template>
