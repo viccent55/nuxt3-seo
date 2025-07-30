@@ -23,7 +23,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      apiBase: "http://cgbaike.com/apiv1",
+      apiBase: process.env.NUXT_PUBLIC_API_BASE,
     },
   },
 
@@ -71,6 +71,9 @@ export default defineNuxtConfig({
       enabled: false, // no SW in dev
       type: "module",
     },
+  },
+  devServer: {
+    port: 8088,
   },
   vite: {
     optimizeDeps: {
