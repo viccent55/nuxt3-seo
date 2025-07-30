@@ -15,17 +15,6 @@
 
   const articleCard = ref(null);
   const imageDimensions = ref();
-  const getStyleImage = (item: EmptyObjectType) => {
-    return {
-      minWidth: item?.isVertical ? "100%" : cardWidth.value / 1.8 + "px",
-      zIndex: 10,
-      display: "block",
-      objectFit: "contain",
-      height: "auto",
-    };
-  };
-
-  const router = useRouter();
   const isMobile = ref(false);
 
   const { width: cardWidth } = useElementSize(articleCard);
@@ -62,18 +51,40 @@
         flat
       >
         <v-avatar
-          :class="item?.cover ? 'image-container' : 'no-image'"
-          class="ma-sm-3"
+          size="180"
           rounded="0"
-          size="160"
+          class="mr-md-3"
         >
           <Image
-            :class="!isMobile ? 'article-image' : ''"
+            v-show="!isHovering"
             :src="item?.cover"
             @image-dimensions="(v) => (imageDimensions = v)"
-            :style="isHovering ? getStyleImage(imageDimensions) : {}"
-            contain
-          />
+            cover
+            height="200"
+          >
+            <v-chip
+              v-if="item?.cover"
+              class="chip-top-left"
+              color="primary"
+              variant="flat"
+              label
+              rounded="0"
+              size="x-small"
+            >
+              文章分类
+            </v-chip>
+          </Image>
+        </v-avatar>
+        <Image
+          v-show="isHovering"
+          style="position: absolute; z-index: 2"
+          :src="item?.cover"
+          @image-dimensions="(v: string) => (imageDimensions = v)"
+          width="auto"
+          height="180"
+          contain
+          :position="isMobile ? 'center' : 'left'"
+        >
           <v-chip
             v-if="item?.cover"
             class="chip-top-left"
@@ -85,8 +96,7 @@
           >
             文章分类
           </v-chip>
-        </v-avatar>
-
+        </Image>
         <v-card-text
           class="text-content"
           v-if="isMobile"
@@ -343,22 +353,6 @@
     pointer-events: none;
   }
 
-  .image-container {
-    position: relative;
-    overflow: visible !important;
-    z-index: 1;
-  }
-
-  .article-image {
-    position: absolute;
-    top: 0;
-    left: 0;
-
-    transition: all 0.2s ease;
-    object-fit: contain;
-    z-index: 1;
-  }
-
   .text-content {
     position: relative;
     padding-left: 5px;
@@ -394,7 +388,6 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-
     .truncatte-3 {
       display: -webkit-box;
       -webkit-line-clamp: 3;
