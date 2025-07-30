@@ -1,9 +1,12 @@
 <script lang="ts" setup>
   import Breadcrumbs from "~/components/desktop/Breadcrumbs.vue";
   import ArticleListItem from "~/components/desktop/ArticleListItem.vue";
-  import { useTimeAgo } from "@vueuse/core";
+  import { useTimeAgo, useEventListener } from "@vueuse/core";
   import CommentComponent from "./comment.vue";
+  import Hls from "hls.js";
 
+  const mainContentCol = ref();
+  const commentSection = ref();
   const { decryptImage, decryptedImage } = useDecryption();
 
   const breadcrumbs = computed(() => {
@@ -21,6 +24,45 @@
 
   const { articleDetail } = useArticleDetail();
   const decryptedContent = ref("");
+  const contentRef = ref<HTMLDivElement | null>(null);
+  const hlsInstances = ref<Hls[]>([]);
+  const floatingBarStyles = ref({});
+
+  const updateFloatingBarPosition = () => {
+    if (!mainContentCol.value?.$el) return;
+
+    const rect = mainContentCol.value.$el.getBoundingClientRect();
+    floatingBarStyles.value = {
+      // Position it to the left of the main content column
+      left: `${rect.left - 60}px`,
+      // Vertically center it
+      top: "50%",
+      transform: "translateY(-50%)",
+    };
+  };
+
+  onMounted(updateFloatingBarPosition);
+  useEventListener(window, "resize", updateFloatingBarPosition);
+
+  const initHlsForVideos = async () => {
+    if (contentRef.value) {
+      // Destroy previous instances to avoid memory leaks
+      hlsInstances.value.forEach((hls) => hls.destroy());
+      hlsInstances.value = [];
+
+      const videos = contentRef.value.querySelectorAll("video");
+      for (const video of videos) {
+        const src = video.getAttribute("src");
+        if (src && Hls.isSupported()) {
+          const hls = new Hls();
+          hls.loadSource(src);
+          hls.attachMedia(video);
+          hlsInstances.value.push(hls);
+        }
+      }
+    }
+  };
+
   // Watch for changes in the article detail
   watchEffect(async () => {
     if (articleDetail.value?.content) {
@@ -49,7 +91,6 @@
       // const videos = doc.querySelectorAll("video");
       // for (const video of videos) {
       //   const videoSrc = video.getAttribute("src");
-      //   console.log('videoSrc', videoSrc)
       //   if (videoSrc) {
       //     await decryptImage(videoSrc);
       //     video.src = decryptedImage.value;
@@ -59,6 +100,25 @@
       decryptedContent.value = doc.body.innerHTML;
     }
   });
+
+  watch(decryptedContent, async () => {
+    await nextTick();
+    initHlsForVideos();
+  });
+  const loginDialogRef = ref();
+  const onCommentClick = () => {
+    const accessToken = useCookie("access_token");
+
+    if (!accessToken.value) {
+      loginDialogRef.value.openDialog();
+    } else {
+      // Scroll to the comment section
+      commentSection.value?.$el?.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+  onBeforeUnmount(() => {
+    hlsInstances.value.forEach((hls) => hls.destroy());
+  });
 </script>
 
 <template>
@@ -67,6 +127,7 @@
     <v-row>
       <!-- Left Main Content -->
       <v-col
+        ref="mainContentCol"
         cols="12"
         md="8"
         class="position-relative"
@@ -125,7 +186,9 @@
           <!-- Article Body -->
           <!-- {{ articleDetail?.content }} -->
           <div
-            class="mt-5 text-body-1"
+            ref="contentRef"
+            class="mt-5 text-body-1 article-content"
+            style="max-width: 100%"
             v-html="decryptedContent"
           ></div>
           <div class="my-4 text-right d-flex ga-2 justify-end">
@@ -162,11 +225,11 @@
               上一篇：文章标题文章
             </v-btn>
           </div>
-          <CommentComponent />
+          <CommentComponent ref="commentSection" />
         </v-card>
         <div
-          class="position-absolute"
-          style="left: -40px; bottom: 40px"
+          class="position-fixed"
+          :style="floatingBarStyles"
         >
           <div class="d-flex flex-column ga-2">
             <div class="d-flex flex-column ga-1 align-center">
@@ -189,7 +252,10 @@
               </v-avatar>
               <span class="f12 text-grey">{{ articleDetail?.like_count }}</span>
             </div>
-            <div class="d-flex flex-column ga-1 align-center">
+            <div
+              class="d-flex flex-column ga-1 align-center cursor-pointer"
+              @click="onCommentClick"
+            >
               <v-avatar
                 size="36"
                 color="surface"
@@ -242,7 +308,7 @@
                 </v-avatar>
                 <div class="text-caption truncate-1">{{ item.name }}</div>
                 <div class="text-grey text-caption text-xs truncate-2">
-                  {{ item.intro }}
+                  {{ item?.intro }}
                 </div>
               </NuxtLink>
             </v-col>
@@ -282,7 +348,23 @@
         </v-sheet>
       </v-col>
     </v-row>
+    <DesktopAuthLoginDialog ref="loginDialogRef" />
   </v-container>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+  .article-content :deep(img) {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-inline: auto;
+    // border-radius: 4px;
+  }
+  .article-content :deep(video) {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-inline: auto;
+    // border-radius: 4px;
+  }
+</style>

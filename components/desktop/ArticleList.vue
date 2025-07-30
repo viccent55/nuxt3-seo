@@ -21,8 +21,6 @@
 
   // Check for mobile on mount and when window resizes
   onMounted(() => {
-    // You can now access the card's width via the reactive `cardWidth` ref.
-    console.log("Card width is:", cardWidth.value);
     checkMobile();
     window.addEventListener("resize", checkMobile);
   });
@@ -34,6 +32,7 @@
   const checkMobile = () => {
     isMobile.value = window.innerWidth < 768;
   };
+  const router = useRouter();
 </script>
 
 <template>
@@ -77,7 +76,7 @@
         </v-avatar>
         <Image
           v-show="isHovering"
-          style="position: absolute; z-index: 2"
+          style="position: absolute; z-index: 2; pointer-events: none"
           :src="item?.cover"
           @image-dimensions="(v: string) => (imageDimensions = v)"
           width="auto"
@@ -153,7 +152,7 @@
                 </div>
                 <div
                   class="d-flex align-center text-grey"
-                  v-if="item?.actors?.length > 0"
+                  v-if="item?.categories?.length > 0"
                   v-for="category in item?.categories"
                   :key="category.id"
                 >
@@ -165,8 +164,8 @@
                       :class="isHovering ? '' : 'bg-none text-grey'"
                       :color="isHovering ? 'primary' : ''"
                       @click.stop
+                      :to="`/actor/detail/${category.id}`"
                       flat
-                      :to="`/category-${category.id}`"
                     >
                       {{ category.name }}
                     </v-chip>
@@ -185,9 +184,8 @@
                       class="ma-1"
                       :class="isHovering ? '' : 'bg-none text-grey'"
                       :color="isHovering ? 'primary' : ''"
-                      @click.stop
-                      flat
                       :to="`/subject/detail/${subject.id}`"
+                      flat
                     >
                       {{ subject.name }}
                     </v-chip>
@@ -281,7 +279,6 @@
                     <ActorProfile
                       :item="author"
                       :to="`/actor/detail/${author.id}`"
-                      class="cursor-pointer"
                     />
                   </div>
                 </v-col>
@@ -300,9 +297,8 @@
                         class="ma-1"
                         :class="isHovering ? '' : 'bg-none text-grey'"
                         :color="isHovering ? 'primary' : ''"
-                        @click.stop
-                        flat
                         :to="`/category-${category.id}`"
+                        flat
                       >
                         {{ category.name }}
                       </v-chip>

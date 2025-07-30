@@ -4,6 +4,7 @@
 
   const store = useStore();
   const auth = useAuthStore();
+  const { isMobile } = useVariable();
   const state = reactive({
     search: "",
     drawer: false,
@@ -27,7 +28,7 @@
     <v-app-bar
       flat
       color="surface"
-      :height="$vuetify?.display.sm ? 100 : 64"
+      :height="isMobile ? 100 : 64"
       class="border-b"
     >
       <v-container max-width="1200">

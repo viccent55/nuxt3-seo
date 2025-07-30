@@ -8,6 +8,10 @@
       type: String,
       default: "24px",
     },
+    to: {
+      type: String,
+      default: "",
+    },
   });
   onMounted(async () => {});
 </script>
@@ -17,6 +21,7 @@
     flat
     class="d-flex align-center text-grey"
     :key="item.id"
+    :to="to"
   >
     <v-avatar
       :size="size"

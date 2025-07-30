@@ -17,6 +17,7 @@
       };
     }
   );
+  const { isMobile } = useVariable();
 </script>
 <template>
   <v-container>
@@ -42,19 +43,22 @@
               color="surface"
               min-height="300"
             >
-              <v-row>
-                <v-col cols="auto">
+              <v-row dense>
+                <v-col
+                  cols="4"
+                  sm="3"
+                >
                   <Image
                     :src="item.cover"
                     cover
-                    width="140"
-                    height="140"
+                    :width="isMobile ? '120' : '120'"
+                    :height="isMobile ? '100' : '120'"
                   >
                     <v-row class="chip-top-left">
                       <div
                         v-for="(item, index) in ['热点', '推荐', '经典']"
                         :key="index"
-                        class="d-flex ga-2"
+                        class="d-flex ga-1 mb-1"
                       >
                         <v-chip
                           :color="
@@ -75,19 +79,28 @@
                     </v-row>
                   </Image>
                 </v-col>
-                <v-col class="d-flex flex-column justify-between">
+                <v-col
+                  cols="8"
+                  sm="9"
+                  class="d-flex flex-column justify-between pl-md-4 pl-2"
+                >
                   <div>
                     <h3 class="text-subtitle-1 font-weight-medium mb-1">
                       {{ item.name }}
                     </h3>
-                    <div class="text-body-2 text-grey-darken-1 mb-2">
+                    <div class="text-body-2 text-grey-darken-1 mb-2 truncate-3">
                       {{ item.intro }}
                     </div>
                   </div>
                   <div
-                    class="text-caption d-flex justify-end text-grey mb-1 d-flex ga-2 text-right"
+                    class="d-flex align-center scroll-x text-grey mb-1 ga-2 align-center"
                   >
-                    <strong>相关文章：</strong>
+                    <div
+                      class="f11 font-weight-bold"
+                      style="min-width: 55px"
+                    >
+                      相关文章：
+                    </div>
                     <div v-for="(iten, index) in item.actors">
                       <NuxtLink
                         @click.stop

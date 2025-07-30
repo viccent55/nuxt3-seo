@@ -1,9 +1,10 @@
 <script lang="ts" setup>
   import CategoryMenu from "~/components/desktop/home/CategoryMenu.vue";
   import ContentDisplay from "~/components/desktop/home/ContentDisplay.vue";
+  
   const { postFilter, actorFilter, tagTop, comments, subjectFilter } =
     useHome();
-
+  const { isMobile } = useVariable();
   const state = reactive({
     subjects: [] as EmptyArrayType,
     latests: [] as EmptyArrayType,
@@ -112,7 +113,7 @@
 <template>
   <v-container class="mt-md-2">
     <!-- Categories -->
-    <CategoryMenu v-if="$vuetify.display.mdAndUp" />
+    <CategoryMenu v-if="isMobile" />
     <ContentDisplay
       :subjects="state.subjects"
       :subjects-card="subjectFilter?.items"

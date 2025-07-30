@@ -154,14 +154,17 @@
             <!-- Article -->
             <NuxtLink
               :to="`/article/${item.id}`"
+              @click.stop
               class="text-decoration-none"
             >
               <ArticleList
                 :item="item"
                 class="cursor-pointer"
                 route-param="/"
+                to
               />
             </NuxtLink>
+
             <v-divider class="my-3 mx-2"></v-divider>
 
             <!-- Inject advert if 'sort' matches current index -->
@@ -179,18 +182,17 @@
 
       <!-- <Pagination /> -->
       <div class="text-center mt-4">
-        <v-pagination
-          density="comfortable"
-          :model-value="paginate.page"
-          :length="Math.ceil(paginate.total / paginate.limit)"
-          :total-visible="10"
-          active-color="primary"
-          @update:model-value="
+        <DesktopPaginate
+          :page="paginate.page"
+          :total="paginate.total"
+          :limit="paginate.limit"
+          :isMobile="isMobile"
+          @update:page="
             (v) => {
               emit('page-change', v);
             }
           "
-        ></v-pagination>
+        />
       </div>
     </v-col>
 

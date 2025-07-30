@@ -73,6 +73,9 @@ export default defineNuxtConfig({
     },
   },
   vite: {
+    optimizeDeps: {
+      include: ["hls.js"],
+    },
     vue: {
       template: {
         transformAssetUrls,
