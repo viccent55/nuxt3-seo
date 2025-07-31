@@ -286,7 +286,7 @@
             >
               <NuxtLink
                 :to="`/actor/detail/${item.id}`"
-                class="text-decroation-none"
+                class="text-decoration-none"
               >
                 <v-avatar
                   size="45"
@@ -294,7 +294,7 @@
                 >
                   <Image :src="item.avatar" />
                 </v-avatar>
-                <div class="text-caption truncate-1">{{ item.name }}</div>
+                <div class="text-caption truncate-1 text-black">{{ item.name }}</div>
                 <div class="text-grey text-caption text-xs truncate-2">
                   {{ item.intro }}
                 </div>
