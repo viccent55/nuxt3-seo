@@ -73,7 +73,7 @@ export default defineNuxtConfig({
     },
   },
   devServer: {
-    port: 8088,
+    host: '0.0.0.0'  // Critical for Docker
   },
   vite: {
     optimizeDeps: {
