@@ -3,7 +3,10 @@
   import Footer from "./desktop/Footer.vue";
 </script>
 <template>
-  <v-container max-width="1200">
+  <v-container
+    max-width="1200"
+    class="px-0"
+  >
     <Header />
     <v-main class="bg-background">
       <slot />

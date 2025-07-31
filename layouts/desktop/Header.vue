@@ -10,9 +10,6 @@
     drawer: false,
   });
 
-  const config = useRuntimeConfig();
-  const baseUrl = new URL(config.public.apiBase).origin ?? "/public/logo.png";
-
   const loginDialogRef = ref();
   const openLogin = () => {
     loginDialogRef.value.openDialog();
@@ -53,7 +50,7 @@
             >
               <v-img
                 width="130"
-                :src="baseUrl + store.configuration?.website_logo"
+                src="/public/logo.png"
               />
             </v-btn>
 

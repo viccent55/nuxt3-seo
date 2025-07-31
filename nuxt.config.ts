@@ -2,10 +2,24 @@ import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
 export default defineNuxtConfig({
   app: {
     head: {
-      title: "Default Title",
+      title: "吃瓜百科",
+      link: [
+        { rel: "icon", type: "image/x-icon", href: "/icon-basis32x32.ico" },
+        {
+          rel: "icon",
+          type: "image/png",
+          sizes: "32x32",
+          href: "/icon-basis32x32.ico",
+        },
+        {
+          rel: "apple-touch-icon",
+          sizes: "180x180",
+          href: "/apple-touch-icon.png",
+        },
+      ],
       meta: [
         { name: "description", content: "Default description" },
-        { name: "author", content: "Your Name" },
+        { name: "author", content: "吃瓜百科" },
         { name: "keywords", content: "nuxt, vue, web" },
         { property: "og:type", content: "website" },
         { name: "twitter:card", content: "summary_large_image" },
@@ -41,14 +55,14 @@ export default defineNuxtConfig({
   ],
   pwa: {
     registerType: "prompt",
-    includeAssets: ["/images/logo.png"],
+    includeAssets: ["/logo.png"],
     client: {
       installPrompt: true,
     },
     manifest: {
-      name: "Nuxt Seo",
-      short_name: "Nuxt Seo",
-      description: "Nuxt Seo .. Cn!",
+      name: "吃瓜百科",
+      short_name: "吃瓜百科",
+      description: "吃瓜百科 .. Cn!",
       theme_color: "#fefefeff",
       background_color: "#CFD8DC",
       display: "standalone",
@@ -56,7 +70,7 @@ export default defineNuxtConfig({
       scope: "/",
       icons: [
         {
-          src: "/images/logo.png",
+          src: "/logo.png",
           sizes: "64x64",
           type: "image/png",
         },
@@ -68,8 +82,9 @@ export default defineNuxtConfig({
       globPatterns: ["**/*", "200"],
     },
     devOptions: {
-      enabled: false, // no SW in dev
+      enabled: process.env.NODE_ENV === "development", // Only enable in dev
       type: "module",
+      navigateFallback: "/",
     },
   },
   devServer: {
