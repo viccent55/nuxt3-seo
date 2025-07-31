@@ -113,7 +113,7 @@
 <template>
   <v-container class="mt-md-2">
     <!-- Categories -->
-    <CategoryMenu v-if="isMobile" />
+    <CategoryMenu v-if="!isMobile" />
     <ContentDisplay
       :subjects="state.subjects"
       :subjects-card="subjectFilter?.items"

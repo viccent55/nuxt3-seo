@@ -28,7 +28,7 @@
     <v-app-bar
       flat
       color="surface"
-      :height="isMobile ? 100 : 64"
+      :height="isMobile ? 55 : 65"
       class="border-b"
     >
       <v-container max-width="1200">
