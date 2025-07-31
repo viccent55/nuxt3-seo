@@ -73,7 +73,7 @@ export default defineNuxtConfig({
     },
   },
   devServer: {
-    host: '0.0.0.0'  // Critical for Docker
+    port: 3000,
   },
   vite: {
     optimizeDeps: {
@@ -83,6 +83,9 @@ export default defineNuxtConfig({
       template: {
         transformAssetUrls,
       },
+    },
+    server: {
+      allowedHosts: ["cgbk.com"], // ✅ 添加你的域名/IP
     },
   },
 
