@@ -23,7 +23,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      apiBase: 'http://api.szy7.com/apiv1',
+      apiBase: process.env.NUXT_PUBLIC_API_BASE,
     },
   },
 
