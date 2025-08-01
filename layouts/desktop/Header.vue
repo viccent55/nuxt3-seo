@@ -28,7 +28,7 @@
       :height="isMobile ? 55 : 65"
       class="border-b"
     >
-      <v-container max-width="1200">
+      <v-container width="1200">
         <v-row
           align="center"
           no-gutters
@@ -153,22 +153,54 @@
         nav
         class="text-center"
       >
-        <v-list-item
-          v-for="(category, index) in store.configuration?.categories"
-          :to="`/${category.name}`"
-          :title="category.name"
-          :key="index"
-        />
+        <!-- Categories Section -->
+        <template v-if="store.configuration?.categories?.length">
+          <v-list-item
+            v-for="(category, index) in store.configuration.categories"
+            :key="`category-${index}`"
+            :to="`/${category.name}`"
+            :title="category.name"
+          />
+          <v-divider class="my-2" />
+        </template>
 
-        <v-divider class="my-2" />
-        <v-list-item
-          title="登录"
-          @click="openLogin"
-        />
-        <v-list-item
-          title="注册"
-          @click="openRegister"
-        />
+        <!-- Loading state for categories -->
+        <template v-else>
+          <v-list-item
+            v-for="n in 3"
+            :key="`skeleton-${n}`"
+            disabled
+          >
+            <v-skeleton-loader
+              type="text"
+              width="80px"
+              height="20px"
+            />
+          </v-list-item>
+          <v-divider class="my-2" />
+        </template>
+
+        <!-- Auth Section -->
+        <template v-if="!store.userInfo?.username">
+          <v-list-item
+            title="登录"
+            @click="openLogin"
+          />
+          <v-list-item
+            title="注册"
+            @click="openRegister"
+          />
+        </template>
+        <template v-else>
+          <v-list-item
+            :title="store.userInfo?.nickname || store.userInfo?.username"
+            to="/dashboard"
+          />
+          <v-list-item
+            title="退出登录"
+            @click="auth.clearToken()"
+          />
+        </template>
       </v-list>
     </v-navigation-drawer>
     <DesktopAuthLoginDialog ref="loginDialogRef" />

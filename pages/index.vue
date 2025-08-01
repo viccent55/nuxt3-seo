@@ -70,7 +70,7 @@
   );
 
   watchEffect(() => {
-    if (latest.value) {
+    if (latest.value?.items) {
       state.latests = latest.value.items ?? [];
       if (latest.value.count) {
         state.paginate.total = latest.value.count;
