@@ -79,6 +79,7 @@
   });
 </script>
 <template>
+ <ClientOnly>
   <v-skeleton-loader
     v-if="loading"
     v-for="i in skeleton"
@@ -94,4 +95,5 @@
     style="max-width: 100%"
     v-html="decryptedContent"
   ></div>
+</ClientOnly>
 </template>
