@@ -10,8 +10,9 @@
     (e: "update:page", value: number): void;
   }>();
 
-  const inputPage = ref(1);
+  const inputPage = ref(props.page);
 
+  // Watch for changes from the outside to keep inputPage in sync
   watch(
     () => props.page,
     (v) => {
@@ -22,12 +23,20 @@
   const maxPage = computed(() => Math.ceil(props.total / props.limit) || 1);
 
   const clampPage = (page: number) => {
-    return Math.min(Math.max(1, page || 1), maxPage.value);
+    return Math.min(Math.max(1, page), maxPage.value);
   };
 
   const goToPage = () => {
-    emit("update:page", clampPage(inputPage.value));
+    // Only emit if the page has actually changed
+    const newPage = clampPage(inputPage.value);
+    if (newPage !== props.page) {
+      emit("update:page", newPage);
+    }
   };
+  // Watch for changes to inputPage and emit the new value
+  watch(inputPage, (newPage) => {
+    emit("update:page", clampPage(newPage));
+  });
 </script>
 
 <template>
@@ -49,7 +58,6 @@
         :total-visible="isMobile ? 4 : 10"
         class="ma-1"
         :density="isMobile ? 'compact' : 'comfortable'"
-        @update:model-value="goToPage"
       />
       <template v-if="!isMobile">
         <v-text-field
@@ -64,7 +72,7 @@
           min="1"
           :max="maxPage"
           @keyup.enter="goToPage"
-          @blur="inputPage = clampPage(inputPage)"
+          @blur="goToPage"
         />
         <v-btn
           @click="goToPage"
