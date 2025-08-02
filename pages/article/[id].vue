@@ -117,7 +117,7 @@
           </v-sheet>
           <!-- Article Body -->
           <!-- {{ articleDetail?.content }} -->
-          <ContentArticle :content="articleDetail?.content" :skeleton="10"/>
+          <ContentArticle :content="articleDetail?.content" :skeleton="16"/>
           <div class="my-4 text-right d-flex ga-2 justify-end">
             <div
               v-if="articleDetail?.tags?.length"

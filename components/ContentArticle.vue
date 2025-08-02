@@ -37,7 +37,7 @@
   // Watch for changes in the article detail
   watchEffect(async () => {
     loading.value = true;
-    if (props.content) {
+    if (props.content && typeof window !== 'undefined') {
       const parser = new DOMParser();
       const doc = parser.parseFromString(props.content, "text/html");
       // Decrypt images
@@ -79,14 +79,13 @@
   });
 </script>
 <template>
- <ClientOnly>
   <v-skeleton-loader
     v-if="loading"
     v-for="i in skeleton"
     :key="i"
     width="100%"
     height="16px"
-    class="rounded-pill mb-4"
+    class="rounded-pill mb-5"
   />
   <div
     v-else
@@ -95,5 +94,4 @@
     style="max-width: 100%"
     v-html="decryptedContent"
   ></div>
-</ClientOnly>
 </template>
