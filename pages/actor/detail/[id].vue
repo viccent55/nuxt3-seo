@@ -49,7 +49,7 @@
                 </v-btn>
               </v-card-title>
               <v-card-text>
-                <div v-html="actorData?.content"></div>
+                <ContentArticle :content="actorData?.content"/>
               </v-card-text>
             </v-card>
           </v-col>

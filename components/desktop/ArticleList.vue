@@ -2,7 +2,7 @@
   import ActorProfile from "./ActorProfile.vue";
   import { useTimeAgo, useElementSize } from "@vueuse/core";
 
-  defineProps({
+  const props = defineProps({
     item: {
       type: Object as PropType<EmptyObjectType>,
       default: () => ({}),
@@ -17,8 +17,6 @@
   const imageDimensions = ref();
   const isMobile = ref(false);
 
-  const { width: cardWidth } = useElementSize(articleCard);
-
   // Check for mobile on mount and when window resizes
   onMounted(() => {
     checkMobile();
@@ -32,7 +30,6 @@
   const checkMobile = () => {
     isMobile.value = window.innerWidth < 768;
   };
-  const router = useRouter();
 </script>
 
 <template>
@@ -208,9 +205,8 @@
           <v-row
             no-gutters
             class="mt-1"
-            align="center"
           >
-            <v-col :cols="isMobile ? 12 : 4">
+            <v-col md="4">
               <v-row
                 dense
                 :justify="isMobile ? 'space-between' : 'start'"
@@ -241,12 +237,16 @@
                 </v-col>
               </v-row>
             </v-col>
-            <v-col :cols="isMobile ? 12 : 8">
+            <v-col
+              cols="12"
+              md="8"
+            >
               <v-row dense>
                 <v-col
-                  :cols="isMobile ? 12 : 6"
                   v-if="item?.tags?.length > 0"
+                  cols="6"
                 >
+                  <!-- Tags rendering here -->
                   <template
                     v-for="(tag, index) in item?.tags"
                     :key="index"
@@ -267,9 +267,10 @@
                     </v-hover>
                   </template>
                 </v-col>
+
                 <v-col
-                  :cols="isMobile ? 12 : 6"
                   v-if="item?.actors?.length > 0"
+                  cols="6"
                 >
                   <div
                     class="d-flex align-center text-grey"
@@ -282,9 +283,10 @@
                     />
                   </div>
                 </v-col>
+
                 <v-col
-                  :cols="isMobile ? 12 : 6"
                   v-if="item?.categories?.length > 0"
+                  cols="6"
                 >
                   <template
                     v-for="(category, index) in item?.categories"
@@ -307,9 +309,10 @@
                 </v-col>
 
                 <v-col
-                  :cols="isMobile ? 12 : 6"
                   v-if="item?.subjects?.length > 0"
+                  cols="6"
                 >
+                  <!-- Subjects rendering here -->
                   <template
                     v-for="(subject, index) in item?.subjects"
                     :key="index"
