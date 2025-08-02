@@ -6,6 +6,10 @@
       type: String,
       default: () => "",
     },
+    skeleton: {
+      type: Number,
+      default: 4,
+    },
   });
   const { decryptImage, decryptedImage } = useDecryption();
   const decryptedContent = ref("");
@@ -29,8 +33,10 @@
       }
     }
   };
+  const loading = ref(false);
   // Watch for changes in the article detail
   watchEffect(async () => {
+    loading.value = true;
     if (props.content) {
       const parser = new DOMParser();
       const doc = parser.parseFromString(props.content, "text/html");
@@ -60,6 +66,7 @@
       // }
       // Update decrypted content
       decryptedContent.value = doc.body.innerHTML;
+      loading.value = false;
     }
   });
 
@@ -72,7 +79,16 @@
   });
 </script>
 <template>
+  <v-skeleton-loader
+    v-if="loading"
+    v-for="i in skeleton"
+    :key="i"
+    width="100%"
+    height="16px"
+    class="rounded-pill mb-4"
+  />
   <div
+    v-else
     ref="contentRef"
     class="mt-5 text-body-1 article-content"
     style="max-width: 100%"

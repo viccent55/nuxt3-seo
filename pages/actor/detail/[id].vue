@@ -49,7 +49,10 @@
                 </v-btn>
               </v-card-title>
               <v-card-text>
-                <ContentArticle :content="actorData?.content"/>
+                <ContentArticle
+                  :content="actorData?.content"
+                  :skeleton="6"
+                />
               </v-card-text>
             </v-card>
           </v-col>
