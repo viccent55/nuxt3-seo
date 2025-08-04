@@ -50,6 +50,7 @@
               </v-card-title>
               <v-card-text>
                 <ContentArticle
+                  class="px-5"
                   :content="actorData?.content"
                   :skeleton="6"
                 />

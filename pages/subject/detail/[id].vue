@@ -47,7 +47,11 @@
                 </v-btn>
               </v-card-title>
               <v-card-text>
-                <ContentArticle :content="subjectData?.content" :skeleton="6"/>
+                <ContentArticle
+                  class="px-5"
+                  :content="subjectData?.content"
+                  :skeleton="6"
+                />
               </v-card-text>
             </v-card>
           </v-col>
