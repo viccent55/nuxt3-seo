@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+  useSeo({});
   const { data, pending, error } = await useAsyncData<ApiResponse>(
     "subject",
     async () => {

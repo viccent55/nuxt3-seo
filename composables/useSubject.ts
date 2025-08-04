@@ -17,13 +17,22 @@ export default function useSubject() {
     {
       watch: [() => route.params.id],
       transform: (res: EmptyObjectType) => {
+        useSeo({
+          seo_title: res.data?.seo_title,
+          seo_keywords: res.data?.seo_keywords,
+          seo_description: res.data?.seo_description,
+        });
         return {
           ...res?.data,
         };
       },
     }
   );
-
+  useSeo({
+    seo_title: subjectData.value?.seo_title,
+    seo_keywords: subjectData.value?.seo_keywords,
+    home_description: subjectData.value?.seo_description,
+  });
   // Reactive second request: only fetch when subjectData is ready
   const subjectFilters = ref({
     items: [] as EmptyArrayType,

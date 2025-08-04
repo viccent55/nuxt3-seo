@@ -1,10 +1,12 @@
 <script lang="ts" setup>
   import CategoryMenu from "~/components/desktop/home/CategoryMenu.vue";
   import ContentDisplay from "~/components/desktop/home/ContentDisplay.vue";
-  
+
+  useSeo({});
   const { postFilter, actorFilter, tagTop, comments, subjectFilter } =
     useHome();
   const { isMobile } = useVariable();
+
   const state = reactive({
     subjects: [] as EmptyArrayType,
     latests: [] as EmptyArrayType,

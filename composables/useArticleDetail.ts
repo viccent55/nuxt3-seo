@@ -17,34 +17,22 @@ export default function useArticleDetail() {
     {
       watch: [() => route.params.id],
       transform: (res: EmptyObjectType) => {
+        useSeo({
+          seo_title: res.data?.title,
+          seo_keywords: res.data?.seo_keywords,
+          home_description: res.data?.seo_description,
+        });
         return {
           ...res?.data,
         };
       },
     }
   );
-
-  // Reactive second request: only fetch when subjectData is ready
-  const postSubjectData = ref({
-    items: [] as EmptyArrayType,
-    count: 0,
+  useSeo({
+    seo_title: articleDetail.value?.title,
+    seo_keywords: articleDetail.value?.seo_keywords,
+    home_description: articleDetail.value?.seo_description,
   });
-
-  // watchEffect(async () => {
-  //   if (articleDetail.value?.id) {
-  //     const res = await $fetch<any>("/api/subject/filter", {
-  //       method: "POST",
-  //       body: {
-  //         sid: articleDetail.value.id,
-  //       },
-  //     });
-
-  //     postSubjectData.value = {
-  //       items: res.data.items || [],
-  //       count: res.data.count || 0,
-  //     };
-  //   }
-  // });
 
   return {
     articleDetail,

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+  useSeo({});
   const { isMobile } = useVariable();
   const state = reactive({
     page: 1,
@@ -32,14 +33,6 @@
     }
   );
 
-  const clampPage = (page: number) => {
-    const maxPage = Math.ceil(state.total / state.limit) || 1;
-    return Math.min(Math.max(1, page || 1), maxPage);
-  };
-
-  const onInputPageBlur = () => {
-    state.inputPageNumber = clampPage(state.inputPageNumber);
-  };
 </script>
 <template>
   <v-container>

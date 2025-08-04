@@ -13,12 +13,23 @@ export default function useTag() {
     {
       watch: [() => route.params.id],
       transform: (res: EmptyObjectType) => {
+        useSeo({
+          seo_title: res.data?.seo_title,
+          seo_keywords: res.data?.seo_keywords,
+          home_description: res.data?.seo_description,
+        });
         return {
           ...res?.data,
         };
       },
     }
   );
+  useSeo({
+    seo_title: tagDetail.value?.seo_title,
+    seo_keywords: tagDetail.value?.seo_keywords,
+    home_description: tagDetail.value?.seo_description,
+  });
+
   // Reactive second request: only fetch when tagData is ready
   const tagFilters = reactive({
     items: [] as EmptyArrayType,
@@ -61,7 +72,6 @@ export default function useTag() {
           limit: 5,
         },
       });
-      console.log(res.data);
       tagPosts.items = res.data || [];
       tagPosts.count = res.data.length || 0;
     }

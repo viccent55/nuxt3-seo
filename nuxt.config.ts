@@ -3,6 +3,13 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: "吃瓜百科",
+      meta: [
+        { name: "description", content: "Default description" },
+        { name: "author", content: "吃瓜百科" },
+        { name: "keywords", content: "nuxt, vue, web" },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
       link: [
         { rel: "icon", type: "image/x-icon", href: "/icon-basis32x32.ico" },
         {
@@ -16,13 +23,6 @@ export default defineNuxtConfig({
           sizes: "180x180",
           href: "/apple-touch-icon.png",
         },
-      ],
-      meta: [
-        { name: "description", content: "Default description" },
-        { name: "author", content: "吃瓜百科" },
-        { name: "keywords", content: "nuxt, vue, web" },
-        { property: "og:type", content: "website" },
-        { name: "twitter:card", content: "summary_large_image" },
       ],
     },
   },
@@ -89,6 +89,7 @@ export default defineNuxtConfig({
   },
   devServer: {
     port: 3000,
+    host: "0.0.0.0",
   },
   vite: {
     optimizeDeps: {

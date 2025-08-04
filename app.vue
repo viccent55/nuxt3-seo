@@ -47,8 +47,8 @@
   onBeforeUnmount(() => {
     window.removeEventListener("scroll", checkScroll);
   });
+  await store.fetchMenuCategories();
   onMounted(() => {
-    store.fetchMenuCategories();
     theme.change(store.darkMode);
     window.addEventListener("scroll", checkScroll);
   });
