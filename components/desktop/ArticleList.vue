@@ -1,8 +1,8 @@
 <script lang="ts" setup>
   import ActorProfile from "./ActorProfile.vue";
-  import { useTimeAgo, useElementSize } from "@vueuse/core";
+  import { useTimeAgo } from "@vueuse/core";
 
-  const props = defineProps({
+  defineProps({
     item: {
       type: Object as PropType<EmptyObjectType>,
       default: () => ({}),

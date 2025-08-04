@@ -48,12 +48,16 @@
       >
         <v-hover v-slot="{ isHovering, props }">
           <NuxtLink
+            custom
+            v-slot="{ navigate, href }"
             :to="`/actor/detail/${item.id}`"
             class="text-decoration-none"
           >
             <v-sheet
               v-bind="props"
               flat
+              :href="href"
+              @click="navigate"
               class="pa-5 cursor-pointer rounded"
               :class="isHovering ? 'hover-shadow' : 'bg-none'"
               tag="article"

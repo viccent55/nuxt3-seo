@@ -160,8 +160,6 @@
               <ArticleList
                 :item="item"
                 class="cursor-pointer"
-                route-param="/"
-                to
               />
             </NuxtLink>
 
@@ -294,7 +292,9 @@
                 >
                   <Image :src="item.avatar" />
                 </v-avatar>
-                <div class="text-caption truncate-1 text-black">{{ item.name }}</div>
+                <div class="text-caption truncate-1 text-black">
+                  {{ item.name }}
+                </div>
                 <div class="text-grey text-caption text-xs truncate-2">
                   {{ item.intro }}
                 </div>

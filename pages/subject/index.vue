@@ -3,26 +3,28 @@
     keepalive: true,
   });
   useSeo({});
-
-  const { data, pending, error } = await useAsyncData<ApiResponse>(
-    "subject",
-    async () => {
-      const res = await $fetch<EmptyObjectType>("/api/subject/latest", {
-        method: "POST",
-        body: {
-          with_actor: 1,
-          with_post: 1,
-          page: 1,
-          limit: 30,
-        },
-      });
-      return {
-        items: res.data?.items || [],
-        count: res.data?.count || 0,
-      };
-    }
-  );
   const { isMobile } = useVariable();
+  const state = reactive({
+    data: [] as EmptyArrayType,
+    page: {
+      with_actor: 1,
+      with_post: 1,
+      page: 1,
+      limit: 30,
+    },
+    total: 0,
+  });
+  const fetchData = async () => {
+    state.data = [];
+    const res = await $fetch<EmptyObjectType>("/api/subject/latest", {
+      method: "POST",
+      body: state.page,
+    });
+    state.data = res.data?.items || [];
+    state.total = res.data?.count || 0;
+  };
+
+  await fetchData();
 </script>
 <template>
   <v-container>
@@ -31,17 +33,21 @@
       <v-col
         cols="12"
         md="6"
-        v-for="(item, index) in data?.items"
+        v-for="(item, index) in state?.data"
         :key="index"
       >
         <v-hover v-slot="{ isHovering, props }">
           <NuxtLink
+            custom
+            v-slot="{ navigate, href }"
             :to="`/subject/detail/${item.id}`"
             class="text-decoration-none"
           >
             <v-sheet
               v-bind="props"
               flat
+              :href="href"
+              @click="navigate"
               class="pa-5 cursor-pointer rounded"
               :class="isHovering ? 'hover-shadow' : 'bg-none'"
               tag="article"
@@ -143,6 +149,7 @@
                             icon="mdi-circle-small"
                             size="small"
                             class="mr-1"
+                            color="grey"
                           />
                           <div class="truncate-1 text-caption text-grey">
                             {{ post.title }}
