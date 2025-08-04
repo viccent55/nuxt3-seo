@@ -1,4 +1,8 @@
 <script lang="ts" setup>
+  definePageMeta({
+    keepalive: true,
+  });
+  
   import CategoryMenu from "~/components/desktop/home/CategoryMenu.vue";
   import ContentDisplay from "~/components/desktop/home/ContentDisplay.vue";
   const { postFilter, actorFilter, subjectFilter, tagTop, comments } =
