@@ -89,7 +89,7 @@ export default defineNuxtConfig({
   },
   devServer: {
     port: 3000,
-    host: "0.0.0.0",
+    // host: "0.0.0.0",
   },
   vite: {
     optimizeDeps: {
@@ -106,5 +106,5 @@ export default defineNuxtConfig({
   },
 
   compatibilityDate: "2025-05-15",
-  devtools: { enabled: true },
+  devtools: { enabled: process.env.NODE_ENV === "development" },
 });
