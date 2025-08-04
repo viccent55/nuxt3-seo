@@ -55,7 +55,7 @@
         v-model="inputPage"
         :length="maxPage"
         active-color="primary"
-        :total-visible="isMobile ? 4 : 10"
+        :total-visible="isMobile ? 4 : 8"
         class="ma-1"
         :density="isMobile ? 'compact' : 'comfortable'"
       />
