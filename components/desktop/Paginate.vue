@@ -27,16 +27,17 @@
   };
 
   const goToPage = () => {
-    // Only emit if the page has actually changed
+    // Clamp the input value to the valid range
     const newPage = clampPage(inputPage.value);
+    // Reset the input field to the clamped value for immediate visual feedback
+    if (newPage !== inputPage.value) {
+      inputPage.value = newPage;
+    }
+    // Only emit if the page has actually changed
     if (newPage !== props.page) {
       emit("update:page", newPage);
     }
   };
-  // Watch for changes to inputPage and emit the new value
-  watch(inputPage, (newPage) => {
-    emit("update:page", clampPage(newPage));
-  });
 </script>
 
 <template>
@@ -57,6 +58,7 @@
         active-color="primary"
         :total-visible="isMobile ? 4 : 8"
         class="ma-1"
+        @update:model-value="goToPage"
         :density="isMobile ? 'compact' : 'comfortable'"
       />
       <template v-if="!isMobile">
