@@ -1,5 +1,9 @@
 <script lang="ts" setup>
+  definePageMeta({
+    keepalive: true,
+  });
   useSeo({});
+
   const { data, pending, error } = await useAsyncData<ApiResponse>(
     "subject",
     async () => {

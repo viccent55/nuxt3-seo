@@ -1,7 +1,11 @@
 <script lang="ts" setup>
   import TagAlphabetView from "~/components/desktop/tag/TagAlphabetView.vue";
   import TagSkeletonLoader from "~/components/desktop/tag/TagSkeletonLoader.vue";
+  definePageMeta({
+    keepalive: true,
+  });
   useSeo({});
+
   const { data: tagData, pending } = useAsyncData<EmptyObjectType>(
     () => `tag-group`,
     () =>

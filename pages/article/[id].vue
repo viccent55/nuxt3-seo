@@ -1,4 +1,8 @@
 <script lang="ts" setup>
+  definePageMeta({
+    keepalive: true,
+  });
+
   import Breadcrumbs from "~/components/desktop/Breadcrumbs.vue";
   import ArticleListItem from "~/components/desktop/ArticleListItem.vue";
   import { useTimeAgo, useEventListener } from "@vueuse/core";

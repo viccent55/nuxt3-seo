@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+  definePageMeta({
+    keepalive: true,
+  });
   useSeo({});
   const { isMobile } = useVariable();
   const state = reactive({
@@ -32,7 +35,6 @@
       fetchData();
     }
   );
-
 </script>
 <template>
   <v-container>
