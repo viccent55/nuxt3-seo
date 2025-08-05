@@ -3,7 +3,7 @@
     keepalive: true,
   });
   useSeo({});
-  const { isMobile } = useVariable();
+  const { isMobile, store } = useVariable();
   const state = reactive({
     data: [] as EmptyArrayType,
     page: {
@@ -163,6 +163,16 @@
             </v-sheet>
           </NuxtLink>
         </v-hover>
+      </v-col>
+    </v-row>
+    <v-row class="mt-2">
+      <v-col
+        cols="12"
+        md="6"
+        v-for="(item, index) in store.advertisement?.POSITION_HOME_BOTTOM"
+        :key="index"
+      >
+        <DesktopAdvertSlot :advert="item" />
       </v-col>
     </v-row>
   </v-container>

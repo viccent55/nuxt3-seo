@@ -123,18 +123,22 @@
       </v-carousel>
 
       <!-- Desktop view - Grid -->
-      <v-row v-else>
+      <v-row
+        v-else
+        no-gutters
+      >
         <v-col
           v-for="item in subjects"
           :key="item.id"
           sm="6"
-          md="4"
+          md="3"
         >
           <NuxtLink
             :to="'/subject/detail/' + item.id"
             class="text-decoration-none"
           >
             <ArticleCard
+              height="120px"
               cover
               class="cursor-pointer"
               :item="item"
@@ -307,7 +311,7 @@
         <DesktopActorCard :items="subjectsCard" />
       </SidebarSection>
 
-      <SidebarSection title="热门专题">
+      <SidebarSection title="">
         <v-card elevation="0">
           <DesktopAdvertSlot :advert="sideAds" />
         </v-card>

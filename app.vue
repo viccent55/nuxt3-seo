@@ -79,19 +79,21 @@
     </NuxtLayout>
     <!-- Floating FAB -->
 
-    <v-fab
-      class="fab"
-      icon="mdi-brightness-6"
-      size="small"
-      @click="toggleDark"
-    />
-    <v-fab
-      v-if="showButton"
-      class="scroll-to-top"
-      size="small"
-      icon="mdi-arrow-up"
-      @click="scrollToTop"
-    />
+    <div>
+      <v-fab
+        class="fab"
+        icon="mdi-brightness-6"
+        size="small"
+        @click="toggleDark"
+      />
+      <v-fab
+        v-if="showButton"
+        class="scroll-to-top"
+        size="small"
+        icon="mdi-arrow-up"
+        @click="scrollToTop"
+      />
+    </div>
   </v-app>
 </template>
 <style scoped>

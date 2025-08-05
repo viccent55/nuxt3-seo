@@ -5,7 +5,7 @@
 </script>
 
 <template>
-  <div class="mt-6">
+  <div class="mt-2">
     <div class="d-flex justify-space-between align-center mb-2">
       <div class="d-flex align-center ga-3">
         <v-divider

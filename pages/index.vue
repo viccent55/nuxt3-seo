@@ -5,7 +5,7 @@
     keepalive: true,
   });
   useSeo({});
-  const { postFilter, actorFilter, tagTop, comments, subjectFilter } =
+  const { postFilter, actorFilter, tagTop, comments, subjectFilter, store } =
     useHome();
   const { isMobile } = useVariable();
 
@@ -14,7 +14,7 @@
     latests: [] as EmptyArrayType,
     paginate: {
       page: 1,
-      limit: 10,
+      limit: 30,
       total: 0,
     },
     filter: {
@@ -24,10 +24,6 @@
       page: 1,
       limit: 6,
     },
-    ads: {} as EmptyObjectType,
-    POSITION_HOME_LIST: 1,
-    POSITION_HOME_BOTTOM: 2,
-    POSITION_HOME_RIGHT: 3,
   });
   const {
     data: subject,
@@ -85,37 +81,10 @@
   const onPageChange = (newPage: number) => {
     state.paginate.page = newPage;
   };
-
-  const { data: advertData } = await useFetch<any>("/api/home/ads", {
-    method: "POST",
-    body: {
-      positions: [
-        state.POSITION_HOME_LIST,
-        state.POSITION_HOME_BOTTOM,
-        state.POSITION_HOME_RIGHT,
-      ],
-    },
-  });
-  watchEffect(() => {
-    if (advertData.value.data) {
-      const mapping: Record<number | string, string> = {
-        [state.POSITION_HOME_LIST]: "POSITION_HOME_LIST",
-        [state.POSITION_HOME_BOTTOM]: "POSITION_HOME_BOTTOM",
-        [state.POSITION_HOME_RIGHT]: "POSITION_HOME_RIGHT",
-      };
-
-      for (const key in advertData.value.data) {
-        const mappedKey = mapping[key];
-        if (mappedKey) {
-          state.ads[mappedKey] = advertData.value.data[key];
-        }
-      }
-    }
-  });
 </script>
 
 <template>
-  <v-container class="mt-md-2">
+  <v-container class="pt-0">
     <!-- Categories -->
     <CategoryMenu v-if="!isMobile" />
     <ContentDisplay
@@ -127,7 +96,7 @@
       :post-filters="postFilter?.items"
       :tag-tops="tagTop?.items"
       :comments="comments"
-      :adverts="state.ads"
+      :adverts="store.advertisement"
       @page-change="onPageChange"
     />
     <NuxtPage />
@@ -135,7 +104,7 @@
       <v-col
         cols="12"
         md="6"
-        v-for="(item, index) in state.ads?.POSITION_HOME_BOTTOM"
+        v-for="(item, index) in store.advertisement?.POSITION_HOME_BOTTOM"
         :key="index"
       >
         <DesktopAdvertSlot :advert="item" />

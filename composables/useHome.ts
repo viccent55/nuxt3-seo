@@ -1,3 +1,5 @@
+import { useStore } from "~/store";
+
 export default function useHome() {
   const { data: postFilter } = useApiFetch<ApiResponse>(
     "/api/home/post-filter",
@@ -5,7 +7,7 @@ export default function useHome() {
       method: "POST",
       body: {
         page: 1,
-        limit: 5,
+        limit: 30,
         field: "home",
       },
       transform: (res: EmptyObjectType) => {
@@ -63,7 +65,7 @@ export default function useHome() {
       };
     },
   });
-    const comments = [
+  const comments = [
     {
       text: "这里边有猫腻吧！炸了这么多次，马斯克是NASA领导亲儿子吗？",
       author: "yangdy",
@@ -95,11 +97,50 @@ export default function useHome() {
       article: "赢得美国航天局29亿美元合同，SpaceX...",
     },
   ];
+
+  const POSITION_HOME_LIST = 1;
+  const POSITION_HOME_BOTTOM = 2;
+  const POSITION_HOME_RIGHT = 3;
+  const { data: advertData } = useFetch<any>("/api/home/ads", {
+    method: "POST",
+    body: {
+      positions: [
+        POSITION_HOME_LIST,
+        POSITION_HOME_BOTTOM,
+        POSITION_HOME_RIGHT,
+      ],
+    },
+  });
+  const store = useStore();
+  watchEffect(() => {
+    if (advertData.value?.data) {
+      const mapping: Record<number | string, string> = {
+        [POSITION_HOME_LIST]: "POSITION_HOME_LIST",
+        [POSITION_HOME_BOTTOM]: "POSITION_HOME_BOTTOM",
+        [POSITION_HOME_RIGHT]: "POSITION_HOME_RIGHT",
+      };
+
+      const adsItems = advertData.value.data;
+
+      // Ensure store.advertisement exists
+      if (!store.advertisement) {
+        store.advertisement = {};
+      }
+
+      for (const key in adsItems) {
+        const mappedKey = mapping?.[key];
+        if (mappedKey) {
+          store.advertisement[mappedKey] = adsItems?.[key];
+        }
+      }
+    }
+  });
   return {
     postFilter,
     actorFilter,
     subjectFilter,
     tagTop,
     comments,
+    store,
   };
 }

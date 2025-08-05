@@ -57,6 +57,7 @@ export const useStore = defineStore("store", {
           value: "/dashboard",
         },
       ],
+      advertisement: {} as EmptyObjectType,
     };
   },
   actions: {
@@ -90,6 +91,20 @@ export const useStore = defineStore("store", {
       } catch (error) {
         console.error("Failed to fetch config:", error);
       }
+    },
+    setAdvertisement(adsItems: Record<string, any>) {
+      const mapping: Record<string, string> = {
+        "1": "POSITION_HOME_LIST",
+        "2": "POSITION_HOME_BOTTOM",
+        "3": "POSITION_HOME_RIGHT",
+      };
+
+      Object.entries(adsItems).forEach(([key, value]) => {
+        const mappedKey = mapping[key];
+        if (mappedKey) {
+          this.advertisement[mappedKey] = value;
+        }
+      });
     },
   },
   persist: {

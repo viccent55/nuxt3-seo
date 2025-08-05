@@ -27,16 +27,11 @@
   };
 
   const goToPage = () => {
-    // Clamp the input value to the valid range
     const newPage = clampPage(inputPage.value);
-    // Reset the input field to the clamped value for immediate visual feedback
-    if (newPage !== inputPage.value) {
-      inputPage.value = newPage;
-    }
-    // Only emit if the page has actually changed
     if (newPage !== props.page) {
       emit("update:page", newPage);
     }
+    inputPage.value = newPage; // sync back input field
   };
 </script>
 
@@ -53,12 +48,12 @@
         共 {{ total }} 条
       </div>
       <v-pagination
-        v-model="inputPage"
+        :model-value="props.page"
         :length="maxPage"
         active-color="primary"
         :total-visible="isMobile ? 4 : 8"
         class="ma-1"
-        @update:model-value="goToPage"
+        @update:model-value="(val) => emit('update:page', clampPage(val))"
         :density="isMobile ? 'compact' : 'comfortable'"
       />
       <template v-if="!isMobile">

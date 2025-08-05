@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex align-center ga-3 mb-3 mt-6">
+  <div class="d-flex align-center ga-3 mb-3 mt-2">
     <v-divider
       class="border-opacity-100"
       color="blue-darken-2"

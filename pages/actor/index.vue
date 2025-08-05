@@ -3,7 +3,7 @@
     keepalive: true,
   });
   useSeo({});
-  const { isMobile } = useVariable();
+  const { isMobile, store } = useVariable();
   const state = reactive({
     page: 1,
     limit: 10,
@@ -146,6 +146,16 @@
       :isMobile="isMobile"
       @update:page="state.page = $event"
     />
+    <v-row class="mt-2">
+      <v-col
+        cols="12"
+        md="6"
+        v-for="(item, index) in store.advertisement?.POSITION_HOME_BOTTOM"
+        :key="index"
+      >
+        <DesktopAdvertSlot :advert="item" />
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
