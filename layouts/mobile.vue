@@ -5,9 +5,11 @@
 </script>
 <template>
   <Header />
-  <v-main class="bg-background ">
+  <v-main class="bg-background">
+    <InstallPWA />
+    <ReloadPWA />
     <slot />
   </v-main>
-  <Footer class="pb-14"/>
+  <Footer class="pb-14" />
   <Toolbar />
 </template>

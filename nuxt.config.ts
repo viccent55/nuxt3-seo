@@ -70,8 +70,19 @@ export default defineNuxtConfig({
       scope: "/",
       icons: [
         {
-          src: "/logo.png",
-          sizes: "64x64",
+          src: "/images/pwa/512.png",
+          sizes: "512x512",
+          type: "image/png",
+        },
+
+        {
+          src: "images/pwa/256.png",
+          sizes: "256x256",
+          type: "image/png",
+        },
+        {
+          src: "/images/pwa/128.png",
+          sizes: "128x128",
           type: "image/png",
         },
       ],
@@ -89,7 +100,7 @@ export default defineNuxtConfig({
   },
   devServer: {
     port: 3000,
-    host: "0.0.0.0",
+    // host: "0.0.0.0",
   },
   vite: {
     optimizeDeps: {
@@ -107,6 +118,6 @@ export default defineNuxtConfig({
 
   compatibilityDate: "2025-05-15",
   devtools: {
-    enabled: process.env.NODE_ENV !== 'production',
+    enabled: process.env.NODE_ENV !== "production",
   },
 });
