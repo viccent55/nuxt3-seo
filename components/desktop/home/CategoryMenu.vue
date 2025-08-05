@@ -26,7 +26,7 @@
           :to="`/category-${category.id}`"
           :class="{
             'router-link-exact-active':
-              category.name === route.params.slug,
+              `category-${category.id}` === route.params.slug,
           }"
         >
           {{ category.name }}

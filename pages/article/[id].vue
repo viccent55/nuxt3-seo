@@ -92,7 +92,7 @@
                 class="px-2"
                 variant="text"
                 size="small"
-                :to="`/${category.name}`"
+                :to="`/category-${category.id}`"
               >
                 {{ category.name }}
               </v-chip>
