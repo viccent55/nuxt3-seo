@@ -7,7 +7,6 @@
   <Header />
   <v-main class="bg-background">
     <InstallPWA />
-    <ReloadPWA />
     <slot />
   </v-main>
   <Footer class="pb-14" />

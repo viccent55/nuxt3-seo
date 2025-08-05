@@ -3,7 +3,7 @@
   import { useTheme } from "vuetify";
   import { useStore } from "~/store";
   import type { VSnackbar } from "vuetify/components/VSnackbar";
-  
+
   const { isMobile } = useVariable();
 
   const theme = useTheme();

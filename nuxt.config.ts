@@ -55,10 +55,7 @@ export default defineNuxtConfig({
   ],
   pwa: {
     registerType: "prompt",
-    includeAssets: ["/logo.png"],
-    client: {
-      installPrompt: true,
-    },
+    includeAssets: ["/logo.png", "/favicon.ico", "/apple-touch-icon.png"],
     manifest: {
       name: "吃瓜百科",
       short_name: "吃瓜百科",
@@ -70,32 +67,28 @@ export default defineNuxtConfig({
       scope: "/",
       icons: [
         {
-          src: "/images/pwa/512.png",
-          sizes: "512x512",
+          src: "/images/pwa/128.png",
+          sizes: "128x128",
           type: "image/png",
         },
-
         {
-          src: "images/pwa/256.png",
+          src: "/images/pwa/256.png",
           sizes: "256x256",
           type: "image/png",
         },
         {
-          src: "/images/pwa/128.png",
-          sizes: "128x128",
+          src: "/images/pwa/512.png",
+          sizes: "512x512",
           type: "image/png",
         },
       ],
     },
     workbox: {
-      cleanupOutdatedCaches: true,
-      navigateFallback: "/",
-      globPatterns: ["**/*", "200"],
+      globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
     },
     devOptions: {
-      enabled: process.env.NODE_ENV === "development", // Only enable in dev
+      enabled: true,
       type: "module",
-      navigateFallback: "/",
     },
   },
   devServer: {
@@ -118,6 +111,6 @@ export default defineNuxtConfig({
 
   compatibilityDate: "2025-05-15",
   devtools: {
-    enabled: process.env.NODE_ENV !== "production",
+    enabled: process.env.NODE_ENV === "development",
   },
 });
