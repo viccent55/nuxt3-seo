@@ -6,10 +6,9 @@
   const { isMobile, store } = useVariable();
   const state = reactive({
     page: 1,
-    limit: 10,
+    limit: 30,
     total: 0,
     data: [] as EmptyArrayType,
-    inputPageNumber: 1,
   });
 
   const fetchData = async () => {
@@ -31,7 +30,6 @@
   watch(
     () => state.page,
     (v) => {
-      state.inputPageNumber = v;
       fetchData();
     }
   );
@@ -86,20 +84,20 @@
                     </div>
                   </div>
                   <div class="text-caption d-flex text-grey mb-1 d-flex ga-2">
-                    <div v-for="(iten, index) in item.actors">
+                    <div v-for="(actor, index) in item?.actors">
                       <NuxtLink
                         @click.stop
-                        :to="`/actor/detail/${iten.id}`"
+                        :to="`/actor/detail/${actor.id}`"
                         class="text-decoration-none text-grey"
                       >
                         <v-chip
-                          v-if="iten.name"
+                          v-if="actor.name"
                           size="x-small"
                           class="text-capitalize"
                           :key="index"
                           variant="text"
                         >
-                          {{ iten.name }}
+                          {{ actor.name }}
                         </v-chip>
                       </NuxtLink>
                     </div>
@@ -110,7 +108,7 @@
                   <v-row dense>
                     <v-col
                       cols="6"
-                      v-for="post in item.posts"
+                      v-for="post in item?.posts"
                       :key="post.id"
                     >
                       <NuxtLink

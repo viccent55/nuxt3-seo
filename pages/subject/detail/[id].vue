@@ -113,7 +113,7 @@
         </v-card>
 
         <!-- 涉及专题 -->
-        <h3 class="text-subtitle-1 font-weight-medium mb-2">涉及专题</h3>
+        <h3 class="text-subtitle-1 font-weight-medium mb-2">涉及人物</h3>
         <v-sheet>
           <v-row class="mt-2">
             <v-col

@@ -130,7 +130,7 @@
         <v-col
           v-for="item in subjects"
           :key="item.id"
-          sm="6"
+          sm="4"
           md="3"
         >
           <NuxtLink

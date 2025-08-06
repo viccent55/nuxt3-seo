@@ -25,6 +25,12 @@
   };
 
   await fetchData();
+  watch(
+    () => state.page,
+    (v) => {
+      fetchData();
+    }
+  );
 </script>
 <template>
   <v-container>
@@ -64,44 +70,34 @@
                     cover
                     :width="isMobile ? '120' : '120'"
                     :height="isMobile ? '100' : '120'"
-                  >
-                    <v-row class="chip-top-left">
-                      <div
-                        v-for="(item, index) in ['热点', '推荐', '经典']"
-                        :key="index"
-                        class="d-flex ga-1 mb-1"
-                      >
-                        <v-chip
-                          :color="
-                            index == 0
-                              ? 'primary'
-                              : index == 1
-                                ? 'green'
-                                : 'error'
-                          "
-                          flat
-                          size="x-small"
-                          variant="flat"
-                          class="rounded-0 mx-1"
-                        >
-                          {{ item }}
-                        </v-chip>
-                      </div>
-                    </v-row>
-                  </Image>
+                  ></Image>
                 </v-col>
                 <v-col
                   cols="8"
                   sm="9"
-                  class="d-flex flex-column justify-between pl-md-4 pl-2"
+                  class="d-flex rlex-sm-row flex-column pl-md-4"
                 >
-                  <div>
-                    <h3 class="text-subtitle-1 font-weight-medium mb-1">
+                  <div class="d-flex align-center ga-2 mb-1">
+                    <v-chip
+                      v-for="(item, index) in ['热点', '推荐', '经典']"
+                      :key="index"
+                      :color="
+                        index == 0 ? 'primary' : index == 1 ? 'green' : 'error'
+                      "
+                      flat
+                      hide-details
+                      size="x-small"
+                      variant="flat"
+                      class="rounded-0"
+                    >
+                      {{ item }}
+                    </v-chip>
+                    <h3 class="text-subtitle-1 font-weight-medium">
                       {{ item.name }}
                     </h3>
-                    <div class="text-body-2 text-grey-darken-1 mb-2 truncate-3">
-                      {{ item.intro }}
-                    </div>
+                  </div>
+                  <div class="text-body-2 text-grey-darken-1 mb-2 truncate-3">
+                    {{ item.intro }}
                   </div>
                   <div
                     class="d-flex align-center scroll-x text-grey mb-1 ga-2 align-center"
@@ -165,6 +161,13 @@
         </v-hover>
       </v-col>
     </v-row>
+    <DesktopPaginate
+      :page="state.page.page"
+      :total="state.total"
+      :limit="state.page.limit"
+      :isMobile="isMobile"
+      @update:page="state.page.page = $event"
+    />
     <v-row class="mt-2">
       <v-col
         cols="12"
@@ -179,14 +182,6 @@
 </template>
 
 <style scoped lang="scss">
-  .chip-top-left {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    z-index: 100;
-    margin: 0;
-    pointer-events: none;
-  }
   .active-color:hover * {
     color: rgb(var(--v-theme-primary)) !important;
   }

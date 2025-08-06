@@ -169,6 +169,7 @@
               <v-avatar
                 size="36"
                 color="surface"
+         
               >
                 <v-icon color="grey">mdi-star</v-icon>
               </v-avatar>
