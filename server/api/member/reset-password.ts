@@ -1,17 +1,20 @@
 export default defineEventHandler(async (event) => {
+  const config = useRuntimeConfig();
   const headers = getHeaders(event); // ✅ Read Header
   const body = await readBody(event); // ✅ Read POST body
-  const config = useRuntimeConfig();
   try {
-    const result = await $fetch(`${config.public?.apiBase}/behavior/likePost`, {
-      method: "POST",
-      body,
-      headers: {
-        Authorization: headers.authorization!,
-      },
-    });
+    const result = await $fetch(
+      `${config.public?.apiBase}/member/resetPassword`,
+      {
+        method: "POST",
+        body,
+        headers: {
+          Authorization: headers.authorization!,
+        },
+      }
+    );
 
-    return result; // Return the fetched result
+    return result;
   } catch (error) {
     // Handle errors gracefully
     console.error("Error fetching group data:", error);

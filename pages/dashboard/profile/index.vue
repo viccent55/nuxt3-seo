@@ -1,27 +1,59 @@
 <script lang="ts" setup>
-  const defaultAvatar =
-    "https://upload.wikimedia.org/wikipedia/en/8/86/Avatar_Aang.png";
+  import { useStore } from "~/store";
 
   const form = ref();
   const snackbar = useSnackbar();
   const state = reactive({
     form: {
-      nickname: "用户14325",
+      nickname: "",
       phone: "18301983192",
-      email: "18301983192@qq.com",
-      registerDate: "2021-04-02",
+      email: "",
+      registerDate: "",
       avatar: "", // or default avatar URL
-      signature: "世界这么大我想去看看",
-      promotionLink: "https://www.leiphone.com/author/qiaoyan277",
+      signature: "",
+      promotionLink: "",
+      slogan: "",
     },
     loading: false,
     valid: false,
   });
-
+  const fileInput = ref<HTMLInputElement | null>(null);
+  const store = useStore();
   const uploadAvatar = () => {
-    // Trigger file picker or navigate to upload logic
-    alert("上传头像点击");
+    fileInput.value?.click();
   };
+  const onFileSelected = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const base64 = reader.result as string;
+      state.form.avatar = base64;
+    };
+
+    reader.readAsDataURL(file);
+  };
+  const onSave = async () => {
+    // The composable is called, but the request isn't made yet.
+    // The request is executed by calling .execute()
+    const response = await useApiFetch("/api/member/profile", {
+      method: "POST",
+      body: state.form,
+    })
+
+   console.log(response)
+  };
+  onMounted(() => {
+    state.form.avatar = store.userInfo.avatar;
+    state.form.email = store.userInfo.email;
+    state.form.nickname = store.userInfo.nickname;
+    state.form.phone = store.userInfo.phone;
+    state.form.registerDate = store.userInfo.register_date;
+    state.form.signature = store.userInfo.signature;
+    state.form.promotionLink = store.userInfo.promotion_link;
+  });
 </script>
 <template>
   <v-card
@@ -88,8 +120,16 @@
           <div class="mb-4 text-field">
             <label class="text-subtitle-1 mb-1 d-block">头像：</label>
             <div class="d-flex flex-column ga-2">
-              <v-avatar size="100">
-                <v-img :src="state.form.avatar || defaultAvatar" />
+              <!-- Hidden file input -->
+              <input
+                ref="fileInput"
+                type="file"
+                accept="image/*"
+                style="display: none"
+                @change="onFileSelected"
+              />
+              <v-avatar size="80">
+                <v-img :src="state.form.avatar || '/images/no-image.png'" />
               </v-avatar>
               <v-btn
                 class="mt-2 elevation-0"
@@ -121,10 +161,23 @@
               density="compact"
               variant="outlined"
               hide-details
-              class="mb-4"
             />
           </div>
         </v-form>
+      </v-col>
+      <v-col
+        cols="12"
+        align="center"
+      >
+        <v-btn
+          color="primary"
+          elevation="0"
+          @click="onSave"
+          width="200"
+          density="default"
+        >
+          提交
+        </v-btn>
       </v-col>
     </v-row>
   </v-card>

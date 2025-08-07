@@ -2,6 +2,11 @@
   definePageMeta({
     middleware: ["dashboard"],
   });
+
+  import { useStore } from "~/store";
+
+  const { onCopy } = useVariable();
+  const store = useStore();
   const menuItems = [
     {
       name: "profile",
@@ -54,12 +59,24 @@
             size="80"
             class="mx-auto mb-4 d-flex justify-center"
           >
-            <Image src="https://via.placeholder.com/80" />
+            <Image :src="store.userInfo?.avatar" />
           </v-avatar>
-          <div class="text-center mb-2 font-weight-medium">用户昵称</div>
-          <div class="text-center text-caption text-grey mb-1">
-            余额：¥165.00
+          <div class="text-center mb-2 font-weight-medium">
+            {{ store.userInfo?.nickname || store.userInfo?.username }}
           </div>
+          <div class="text-center text-caption text-grey mb-1">
+            {{ store.userInfo?.referrer_code }}
+            <v-btn
+              density="compact"
+              color="primary"
+              variant="text"
+              icon
+              @click="onCopy(store.userInfo?.referrer_code)"
+            >
+              <v-icon size="18">mdi-content-copy</v-icon>
+            </v-btn>
+          </div>
+
           <div class="text-center">
             <v-chip
               color="orange"

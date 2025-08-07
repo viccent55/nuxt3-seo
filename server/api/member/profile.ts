@@ -1,9 +1,9 @@
 export default defineEventHandler(async (event) => {
+  const config = useRuntimeConfig();
   const headers = getHeaders(event); // ✅ Read Header
   const body = await readBody(event); // ✅ Read POST body
-  const config = useRuntimeConfig();
   try {
-    const result = await $fetch(`${config.public?.apiBase}/behavior/likePost`, {
+    const result = await $fetch(`${config.public?.apiBase}/member/setInfo`, {
       method: "POST",
       body,
       headers: {
@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
       },
     });
 
-    return result; // Return the fetched result
+    return result;
   } catch (error) {
     // Handle errors gracefully
     console.error("Error fetching group data:", error);
