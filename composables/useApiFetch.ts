@@ -14,12 +14,16 @@ export function useApiFetch<T>(url: string, options: any = {}) {
         : {}),
     },
     onResponse({ response }) {
+      // if (response._data.code === 401000) {
+      //   auth.clearToken();
+      //   store.clearUserInfo();
+      // }
       // Optional: log or handle response
     },
     onResponseError({ response }) {
       if (response.status === 401) {
         auth.clearToken();
-        store.clearUserInfo(); // <- fix here
+        store.clearUserInfo();
       }
     },
   });

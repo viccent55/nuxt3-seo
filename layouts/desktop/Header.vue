@@ -1,22 +1,22 @@
 <script setup lang="ts">
   import { useStore } from "~/store";
   import { useAuthStore } from "~/store/auth";
+  import { useGlobalDialog } from "~/store/globalDialog";
 
   const store = useStore();
   const auth = useAuthStore();
+  const storeDialog = useGlobalDialog();
   const { isMobile } = useVariable();
   const state = reactive({
     search: "",
     drawer: false,
   });
 
-  const loginDialogRef = ref();
   const openLogin = () => {
-    loginDialogRef.value.openDialog();
+    storeDialog.onLogin();
   };
-  const registerDialogRef = ref();
   const openRegister = () => {
-    registerDialogRef.value.openDialog();
+    storeDialog.onRegister();
   };
 </script>
 
@@ -49,7 +49,7 @@
           >
             <v-img
               width="130"
-              src="/public/logo.png"
+              src="/logo.png"
             />
           </v-btn>
 
@@ -128,7 +128,7 @@
             </v-btn>
             <v-btn
               class="text-button px-0 mx-0"
-              min-width="35"
+              style="min-width: 35px"
               @click="auth.clearToken()"
             >
               &nbsp;
@@ -153,15 +153,15 @@
       class="text-center"
     >
       <!-- Categories Section -->
-      <template v-if="store.configuration?.categories?.length">
+      <div v-if="store.configuration?.categories?.length">
         <v-list-item
           v-for="(category, index) in store.configuration.categories"
           :key="`category-${index}`"
-          :to="`/${category.name}`"
+          :to="`/category-${category.id}`"
           :title="category.name"
         />
         <v-divider class="my-2" />
-      </template>
+      </div>
 
       <!-- Loading state for categories -->
       <template v-else>
@@ -202,8 +202,6 @@
       </template>
     </v-list>
   </v-navigation-drawer>
-  <DesktopAuthLoginDialog ref="loginDialogRef" />
-  <DesktopAuthRegisterDialog ref="registerDialogRef" />
 </template>
 
 <style scoped lang="scss">

@@ -9,7 +9,6 @@
   import CommentComponent from "./comment.vue";
 
   const mainContentCol = ref();
-  const commentSection = ref();
 
   const breadcrumbs = computed(() => {
     return [
@@ -24,7 +23,14 @@
     ];
   });
 
-  const { articleDetail } = useArticleDetail();
+  const {
+    articleDetail,
+    onLikeArticle,
+    onCommentClick,
+    onCollect,
+    commentSection,
+    onViewCount,
+  } = useArticleDetail();
   const floatingBarStyles = ref({});
 
   const updateFloatingBarPosition = () => {
@@ -40,19 +46,10 @@
     };
   };
 
-  const loginDialogRef = ref();
-  const onCommentClick = () => {
-    const accessToken = useCookie("access_token");
-
-    if (!accessToken.value) {
-      loginDialogRef.value.openDialog();
-    } else {
-      // Scroll to the comment section
-      commentSection.value?.$el?.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
-  onMounted(updateFloatingBarPosition);
+  onMounted(() => {
+    updateFloatingBarPosition();
+    onViewCount();
+  });
   useEventListener(window, "resize", updateFloatingBarPosition);
 </script>
 
@@ -169,7 +166,8 @@
               <v-avatar
                 size="36"
                 color="surface"
-         
+                class="cursor-pointer"
+                @click="onCollect"
               >
                 <v-icon color="grey">mdi-star</v-icon>
               </v-avatar>
@@ -181,6 +179,8 @@
               <v-avatar
                 size="36"
                 color="surface"
+                class="cursor-pointer"
+                @click="onLikeArticle"
               >
                 <v-icon color="grey">mdi-thumb-up-outline</v-icon>
               </v-avatar>
@@ -282,7 +282,6 @@
         </v-sheet>
       </v-col>
     </v-row>
-    <DesktopAuthLoginDialog ref="loginDialogRef" />
   </v-container>
 </template>
 

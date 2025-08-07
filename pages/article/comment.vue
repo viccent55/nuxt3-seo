@@ -137,20 +137,22 @@
   }
   const route = useRoute();
   const commentText = ref("");
-  const comments = ref<Comment[]>([]);
   const snackbar = useSnackbar();
-  const { data, pending, error } = useFetch<EmptyObjectType>("/api/comment", {
-    method: "POST",
-    body: {
-      id: route.params.id,
-    },
-    watch: [() => route.params.id],
-    transform: (res: EmptyObjectType) => {
-      return {
-        items: res.data,
-      };
-    },
-  });
+  const { data, pending, error } = useApiFetch<EmptyObjectType>(
+    "/api/comment",
+    {
+      method: "POST",
+      body: {
+        id: route.params.id,
+      },
+      watch: [() => route.params.id],
+      transform: (res: EmptyObjectType) => {
+        return {
+          items: res.data,
+        };
+      },
+    }
+  );
 
   onMounted(() => {});
   const store = useStore();
@@ -161,28 +163,31 @@
       return snackbar.showSnackbar("请先登录!", "error", "center top");
     }
     try {
-      data.value?.items.unshift({
-        id: Date.now(),
-        pid: 0,
-        post_id: route.params.id,
-        text: commentText.value,
-        member: {
-          id: 1,
-          username: store?.userInfo?.username ?? "",
-          nickname: store.userInfo?.nickname ?? "",
-          avatar: store.userInfo.avatar ?? "",
-        },
-      });
-     const { data: response, error } = await useApiFetch<EmptyObjectType>("/api/comment/post", {
-        method: "POST",
-        body: {
+      const { data: commentRes } = await useApiFetch<EmptyObjectType>(
+        "/api/comment/post",
+        {
+          method: "POST",
+          body: {
+            pid: 0,
+            post_id: route.params.id,
+            text: commentText.value,
+          },
+        }
+      );
+      if (commentRes.value) {
+        data.value?.items.unshift({
+          id: Date.now(),
           pid: 0,
           post_id: route.params.id,
           text: commentText.value,
-        },
-      });
-      console.log(response)
-        if (error.value) throw error.value;
+          member: {
+            id: 1,
+            username: store?.userInfo?.username ?? "",
+            nickname: store.userInfo?.nickname ?? "",
+            avatar: store.userInfo.avatar ?? "",
+          },
+        });
+      }
       commentText.value = "";
     } catch (error) {
       console.log(error);

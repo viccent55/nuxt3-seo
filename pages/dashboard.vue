@@ -14,9 +14,9 @@
       value: "/dashboard/security",
     },
     {
-      name: "submission",
+      name: "contribute",
       label: "我的投稿",
-      value: "/dashboard/submission",
+      value: "/dashboard/contribute",
     },
     {
       name: "message",
@@ -34,12 +34,10 @@
       value: "/dashboard/record",
     },
   ];
-
-  const activeMenu = ref("profile");
 </script>
 
 <template>
-  <v-container>
+  <v-container class="container">
     <v-row>
       <!-- Sidebar -->
       <v-col
@@ -79,12 +77,11 @@
             dense
           >
             <v-list-item
-             class="mb-2 text-center"
+              class="mb-2 text-center"
               v-for="item in menuItems"
               :key="item.label"
               :value="item.value"
-              @click="activeMenu = item.name"
-              active-color="primary"
+              color="primary"
               rounded
               :to="item.value"
             >

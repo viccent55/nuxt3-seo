@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-  import ActorProfile from "./ActorProfile.vue";
   import { useTimeAgo } from "@vueuse/core";
 
   defineProps({
@@ -75,7 +74,7 @@
           v-show="isHovering"
           style="position: absolute; z-index: 2; pointer-events: none"
           :src="item?.cover"
-          @image-dimensions="(v: string) => (imageDimensions = v)"
+          @image-dimensions="(v) => (imageDimensions = v)"
           width="auto"
           height="180"
           contain
@@ -141,7 +140,7 @@
                   v-for="author in item?.actors"
                   :key="author.id"
                 >
-                  <ActorProfile
+                  <DesktopActorProfile
                     :item="author"
                     :to="`/actor/detail/${author.id}`"
                     class="cursor-pointer"
@@ -248,8 +247,8 @@
                 >
                   <!-- Tags rendering here -->
                   <template
-                    v-for="(tag, index) in item?.tags"
-                    :key="index"
+                    v-for="tag in item?.tags"
+                    :key="tag.id"
                   >
                     <v-hover v-slot="{ isHovering, props }">
                       <v-chip
@@ -277,7 +276,7 @@
                     v-for="author in item?.actors"
                     :key="author.id"
                   >
-                    <ActorProfile
+                    <DesktopActorProfile
                       :item="author"
                       :to="`/actor/detail/${author.id}`"
                     />
@@ -289,8 +288,8 @@
                   cols="6"
                 >
                   <template
-                    v-for="(category, index) in item?.categories"
-                    :key="index"
+                    v-for="category in item?.categories"
+                    :key="category.id"
                   >
                     <v-hover v-slot="{ isHovering, props }">
                       <v-chip
@@ -314,8 +313,8 @@
                 >
                   <!-- Subjects rendering here -->
                   <template
-                    v-for="(subject, index) in item?.subjects"
-                    :key="index"
+                    v-for="subject in item?.subjects"
+                    :key="subject.id"
                   >
                     <v-hover v-slot="{ isHovering, props }">
                       <v-chip

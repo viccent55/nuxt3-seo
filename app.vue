@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-  import { useWindowSize } from "@vueuse/core";
   import { useTheme } from "vuetify";
   import { useStore } from "~/store";
   import type { VSnackbar } from "vuetify/components/VSnackbar";
@@ -63,8 +62,10 @@
     {{ state.message }}
     <template v-slot:actions>
       <v-btn
-        color="error"
-        variant="text"
+        color="white"
+        density="compact"
+        variant="elevated"
+        elevation="0"
         @click="state.show = false"
       >
         关闭
@@ -78,7 +79,6 @@
       <NuxtPage />
     </NuxtLayout>
     <!-- Floating FAB -->
-
     <div>
       <v-fab
         class="fab"
@@ -94,6 +94,8 @@
         @click="scrollToTop"
       />
     </div>
+    <DesktopAuthLoginDialog />
+    <DesktopAuthRegisterDialog />
   </v-app>
 </template>
 <style scoped>

@@ -1,11 +1,9 @@
 <script setup lang="ts">
+  import { useGlobalDialog } from "~/store/globalDialog";
+
   const snackbar = useSnackbar();
+  const storeDialog = useGlobalDialog();
   const state = reactive({
-    dialog: {
-      isShowDialog: false,
-      title: "登录",
-      loginText: "登录",
-    },
     form: {
       username: "",
       password: "",
@@ -44,10 +42,10 @@
     }
   };
   const openDialog = () => {
-    state.dialog.isShowDialog = true;
+    storeDialog.register.isShowDialog = true;
   };
   const closeDialog = () => {
-    state.dialog.isShowDialog = false;
+    storeDialog.register.isShowDialog = false;
     state.form = {
       username: "",
       password: "",
@@ -62,7 +60,8 @@
 
 <template>
   <v-dialog
-    v-model="state.dialog.isShowDialog"
+    v-model="storeDialog.register.isShowDialog"
+    transition="scale-transition"
     persistent
   >
     <v-card
@@ -81,7 +80,7 @@
           </v-btn>
         </div>
         <div class="text-h5 text-medium-emphasis text-center mb-5">
-          {{ state.dialog.title }}
+          {{ storeDialog.register.title }}
         </div>
       </v-card-title>
 

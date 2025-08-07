@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  const tabs = ["已发系统消息布", "评论", "回复"];
+  const tabs = ["已发布", "未审核", "未通过", "草稿"];
   const activeTab = ref(0);
 </script>
 <template>

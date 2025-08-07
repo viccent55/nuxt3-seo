@@ -1,15 +1,12 @@
 <script setup lang="ts">
   import { useStore } from "~/store";
   import { useAuthStore } from "~/store/auth";
+  import { useGlobalDialog } from "~/store/globalDialog";
 
   const auth = useAuthStore();
   const store = useStore();
+  const storeDialog = useGlobalDialog();
   const state = reactive({
-    dialog: {
-      isShowDialog: false,
-      title: "登录",
-      loginText: "登录",
-    },
     form: {
       username: "",
       password: "",
@@ -36,40 +33,46 @@
         method: "POST",
         body: state.form,
       });
-      auth.setToken(response.data.token);
-      store.setUserInfo(response.data.userinfo);
-      snackbar.showSnackbar("登录成功", "success");
-      closeDialog();
+      if (response.code === 400) {
+        return snackbar.showSnackbar("账户不正确!", "error", 'top center');
+      }
+      if (response.errcode === 0) {
+        auth.setToken(response.data.token);
+        store.setUserInfo(response.data.userinfo);
+        snackbar.showSnackbar("登录成功", "success", 'top center');
+        closeDialog();
+      }
       // navigateTo("/dashboard");
     } catch (error) {
       console.error("Login failed:", error);
     }
   };
-  const openDialog = () => {
-    state.dialog.isShowDialog = true;
-  };
+  watch(
+    () => storeDialog.login.isShowDialog,
+    (v) => {
+      if (!v) {
+        closeDialog();
+      }
+    }
+  );
   const closeDialog = () => {
-    state.dialog.isShowDialog = false;
+    storeDialog.login.isShowDialog = false;
     state.form = {
       username: "",
       password: "",
     };
   };
-
-  defineExpose({
-    openDialog,
-  });
 </script>
 
 <template>
   <v-dialog
-    v-model="state.dialog.isShowDialog"
+    v-model="storeDialog.login.isShowDialog"
+    transition="scale-transition"
     persistent
   >
     <v-card
       class="mx-auto py-0"
       elevation="0"
-      
       rounded="lg"
     >
       <v-card-title class="bg-blue-grey-lighten-5">
@@ -83,7 +86,7 @@
           </v-btn>
         </div>
         <div class="text-h5 text-medium-emphasis text-center mb-5">
-          {{ state.dialog.title }}
+          {{ storeDialog.login.title }}
         </div>
       </v-card-title>
 
@@ -115,6 +118,7 @@
             variant="outlined"
             required
             @click:append-inner="state.visible = !state.visible"
+            @keydown.enter="login"
           />
           <v-btn
             class="my-4"

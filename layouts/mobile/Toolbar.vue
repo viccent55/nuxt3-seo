@@ -1,18 +1,19 @@
 <script setup lang="ts">
   import { useRoute } from "vue-router";
   import { useStore } from "~/store";
+  import { useGlobalDialog } from "~/store/globalDialog";
 
   const route = useRoute();
   const store = useStore();
+  const storeDialog = useGlobalDialog();
 
   const isActive = (path: string) => route.path.startsWith(path);
-  const loginDialogRef = ref();
   const onToDashboard = () => {
     const token = useCookie("access_token");
     if (token.value) {
       navigateTo("/dashboard");
     } else {
-      loginDialogRef.value.openDialog();
+      storeDialog.onLogin();
     }
   };
 </script>
@@ -52,7 +53,6 @@
         </v-btn>
       </template>
     </v-bottom-navigation>
-    <desktop-auth-login-dialog ref="loginDialogRef" />
   </v-sheet>
 </template>
 
