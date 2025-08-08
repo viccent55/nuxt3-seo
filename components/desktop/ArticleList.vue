@@ -212,85 +212,9 @@
             no-gutters
             class="mt-1"
           >
-            <v-col md="4">
-              <v-row
-                dense
-                :justify="isMobile ? 'space-between' : 'start'"
-                class="text-caption text-grey"
-              >
-                <v-col cols="12">
-                  <div class="d-flex ga-4 align-center">
-                    <div>
-                      {{ useTimeAgo(item?.created) }}
-                    </div>
-                    <div class="d-flex ga-2">
-                      <v-icon>mdi-eye</v-icon>
-                      <span>{{ item?.view_count }}</span>
-                    </div>
-                  </div>
-                </v-col>
-                <v-col cols="12">
-                  <div class="d-flex ga-4 align-center">
-                    <div class="d-flex ga-2">
-                      <v-icon>mdi-chat-outline</v-icon>
-                      <span>{{ item?.comment_count }}</span>
-                    </div>
-                    <div class="d-flex ga-2">
-                      <v-icon>mdi-thumb-up-outline</v-icon>
-                      <span>{{ item?.like_count }}</span>
-                    </div>
-                  </div>
-                </v-col>
-              </v-row>
-            </v-col>
-            <v-col
-              cols="12"
-              md="8"
-            >
-              <v-row dense>
-                <v-col
-                  v-if="item?.tags?.length > 0"
-                  cols="6"
-                >
-                  <!-- Tags rendering here -->
-                  <template
-                    v-for="tag in item?.tags"
-                    :key="tag.id"
-                  >
-                    <v-hover v-slot="{ isHovering, props }">
-                      <v-chip
-                        v-bind="props"
-                        size="x-small"
-                        class="ma-1"
-                        :class="isHovering ? '' : 'bg-none text-grey'"
-                        :color="isHovering ? 'primary' : ''"
-                        @click.stop
-                        flat
-                        :to="'/tag/detail/' + tag.id"
-                      >
-                        {{ tag.name }}
-                      </v-chip>
-                    </v-hover>
-                  </template>
-                </v-col>
-
-                <v-col
-                  v-if="item?.actors?.length > 0"
-                  cols="6"
-                >
-                  <div
-                    class="d-flex align-center text-grey"
-                    v-for="author in item?.actors"
-                    :key="author.id"
-                  >
-                    <DesktopActorProfile
-                      :item="author"
-                      :to="`/actor/detail/${author.id}`"
-                    />
-                  </div>
-                </v-col>
-
-                <v-col
+            <v-col cols="12">
+              <div class="d-flex gap-3 justify-end">
+                <div
                   v-if="item?.categories?.length > 0"
                   cols="6"
                 >
@@ -312,16 +236,12 @@
                       </v-chip>
                     </v-hover>
                   </template>
-                </v-col>
-
-                <v-col
-                  v-if="item?.subjects?.length > 0"
-                  cols="6"
-                >
-                  <!-- Subjects rendering here -->
+                </div>
+                <!-- Tags rendering here -->
+                <div v-if="item?.tags?.length > 0">
                   <template
-                    v-for="subject in item?.subjects"
-                    :key="subject.id"
+                    v-for="tag in item?.tags"
+                    :key="tag.id"
                   >
                     <v-hover v-slot="{ isHovering, props }">
                       <v-chip
@@ -332,12 +252,77 @@
                         :color="isHovering ? 'primary' : ''"
                         @click.stop
                         flat
-                        :to="`/subject/detail/${subject.id}`"
+                        :to="'/tag/detail/' + tag.id"
                       >
-                        {{ subject.name }}
+                        {{ tag.name }}
                       </v-chip>
                     </v-hover>
                   </template>
+                </div>
+              </div>
+            </v-col>
+            <v-col
+              cols="12"
+              v-if="item?.subjects?.length && item?.actors?.length"
+            >
+              <v-row dense>
+                <div
+                  v-if="item?.subjects?.length > 0"
+                  v-for="subject in item?.subjects"
+                  :key="subject.id"
+                >
+                  <v-hover v-slot="{ isHovering, props }">
+                    <v-chip
+                      v-bind="props"
+                      size="x-small"
+                      class="ma-1"
+                      :class="isHovering ? '' : 'bg-none text-grey'"
+                      :color="isHovering ? 'primary' : ''"
+                      @click.stop
+                      flat
+                      :to="`/subject/detail/${subject.id}`"
+                    >
+                      {{ subject.name }}
+                    </v-chip>
+                  </v-hover>
+                </div>
+                <div
+                  v-if="item?.actors?.length > 0"
+                  class="d-flex align-center text-grey"
+                  v-for="author in item?.actors"
+                  :key="author.id"
+                >
+                  <DesktopActorProfile
+                    :item="author"
+                    :to="`/actor/detail/${author.id}`"
+                  />
+                </div>
+              </v-row>
+            </v-col>
+            <v-col cols="12">
+              <v-row
+                dense
+                class="text-caption text-grey pr-1"
+              >
+                <v-col
+                  cols="12"
+                  class="d-flex align-center ga-4 justify-end"
+                >
+                  <div>
+                    {{ useTimeAgo(item?.created) }}
+                  </div>
+                  <div class="d-flex ga-2">
+                    <v-icon>mdi-eye</v-icon>
+                    <span>{{ item?.view_count }}</span>
+                  </div>
+                  <div class="d-flex ga-2">
+                    <v-icon>mdi-chat-outline</v-icon>
+                    <span>{{ item?.comment_count }}</span>
+                  </div>
+                  <div class="d-flex ga-2">
+                    <v-icon>mdi-thumb-up-outline</v-icon>
+                    <span>{{ item?.like_count }}</span>
+                  </div>
                 </v-col>
               </v-row>
             </v-col>
