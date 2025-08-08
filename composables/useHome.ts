@@ -1,7 +1,7 @@
 import { useStore } from "~/store";
 
-export default async function useHome() {
-  const { data: postFilter } = await useApiFetch("/api/home/post-filter", {
+export default function useHome() {
+  const { data: postFilter } = useApiFetch("/api/home/post-filter", {
     method: "POST",
     body: {
       page: 1,
@@ -15,7 +15,7 @@ export default async function useHome() {
       };
     },
   });
-  const { data: actorFilter } = await useApiFetch("/api/home/actor-fitler", {
+  const { data: actorFilter } = useApiFetch("/api/home/actor-fitler", {
     method: "POST",
     body: {
       field: "hot",
