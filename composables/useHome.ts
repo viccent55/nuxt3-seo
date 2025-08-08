@@ -1,7 +1,7 @@
 import { useStore } from "~/store";
 
 export default function useHome() {
-  const { data: postFilter } = useApiFetch("/api/home/post-filter", {
+  const { data: postFilter } = useFetch<ApiResponse>("/api/home/post-filter", {
     method: "POST",
     body: {
       page: 1,
@@ -15,19 +15,22 @@ export default function useHome() {
       };
     },
   });
-  const { data: actorFilter } = useApiFetch("/api/home/actor-fitler", {
-    method: "POST",
-    body: {
-      field: "hot",
-      limit: 6,
-    },
-    transform: (res: EmptyObjectType) => {
-      return {
-        items: res.data.items || [],
-        count: res.data.count || 0,
-      };
-    },
-  });
+  const { data: actorFilter } = useFetch<ApiResponse>(
+    "/api/home/actor-fitler",
+    {
+      method: "POST",
+      body: {
+        field: "hot",
+        limit: 6,
+      },
+      transform: (res: EmptyObjectType) => {
+        return {
+          items: res.data.items || [],
+          count: res.data.count || 0,
+        };
+      },
+    }
+  );
   const { data: subjectFilter } = useFetch<ApiResponse>(
     "/api/home/subject-filter",
     {
