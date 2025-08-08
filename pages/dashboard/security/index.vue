@@ -24,13 +24,16 @@
         (v: string) => v === state.form.password || "两次密码不一致",
       ],
     },
+    visible1: false,
+    visible2: false,
+    visible3: false,
   });
   const onSubmit = async () => {
     const response = await useApiFetch("/api/member/reset-password", {
       method: "POST",
       body: state.form,
     });
-    console.log("subsribe", response);
+    snackbar.showSnackbar("提交成功", "success", "top center");
   };
 </script>
 <template>
@@ -64,8 +67,14 @@
                 <label class="text-subtitle-1 mb-1 d-block">当前密码:</label>
                 <v-text-field
                   v-model="state.form.old_password"
-                  hide-details
+                  hide-details="auto"
                   hide-label
+                  required
+                  :append-inner-icon="
+                    state.visible1 ? 'mdi-eye-off' : 'mdi-eye'
+                  "
+                  :type="state.visible1 ? 'text' : 'password'"
+                  @click:append-inner="state.visible1 = !state.visible1"
                   variant="outlined"
                   density="compact"
                 />
@@ -79,6 +88,11 @@
                   :rules="state.rules.password"
                   density="compact"
                   variant="outlined"
+                  :append-inner-icon="
+                    state.visible2 ? 'mdi-eye-off' : 'mdi-eye'
+                  "
+                  :type="state.visible2 ? 'text' : 'password'"
+                  @click:append-inner="state.visible2 = !state.visible2"
                   hide-details="auto"
                 />
               </div>
@@ -89,6 +103,11 @@
                 <v-text-field
                   v-model="state.form.password_repeat"
                   :rules="state.rules.password_repeat"
+                  :append-inner-icon="
+                    state.visible3 ? 'mdi-eye-off' : 'mdi-eye'
+                  "
+                  :type="state.visible3 ? 'text' : 'password'"
+                  @click:append-inner="state.visible3 = !state.visible3"
                   variant="outlined"
                   density="compact"
                   hide-details="auto"
@@ -102,9 +121,9 @@
               <v-btn
                 @click="onSubmit()"
                 density="comfortable"
-                class="mt-5"
+                class="mt-3"
               >
-                onSave
+                提交
               </v-btn>
             </v-col>
             <v-col cols="12">

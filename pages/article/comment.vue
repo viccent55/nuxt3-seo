@@ -138,21 +138,18 @@
   const route = useRoute();
   const commentText = ref("");
   const snackbar = useSnackbar();
-  const { data, pending, error } = useApiFetch<EmptyObjectType>(
-    "/api/comment",
-    {
-      method: "POST",
-      body: {
-        id: route.params.id,
-      },
-      watch: [() => route.params.id],
-      transform: (res: EmptyObjectType) => {
-        return {
-          items: res.data,
-        };
-      },
-    }
-  );
+  const { data } = await useApiFetch("/api/comment", {
+    method: "POST",
+    body: {
+      id: route.params.id,
+    },
+    watch: [() => route.params.id],
+    transform: (res: EmptyObjectType) => {
+      return {
+        items: res.data,
+      };
+    },
+  });
 
   onMounted(() => {});
   const store = useStore();
@@ -163,19 +160,16 @@
       return snackbar.showSnackbar("请先登录!", "error", "center top");
     }
     try {
-      const { data: commentRes } = await useApiFetch<EmptyObjectType>(
-        "/api/comment/post",
-        {
-          method: "POST",
-          body: {
-            pid: 0,
-            post_id: route.params.id,
-            text: commentText.value,
-          },
-        }
-      );
-      if (commentRes.value) {
-        data.value?.items.unshift({
+      const { data: commentRes } = await useApiFetch("/api/comment/post", {
+        method: "POST",
+        body: {
+          pid: 0,
+          post_id: route.params.id,
+          text: commentText.value,
+        },
+      });
+      if (commentRes?.value) {
+        commentRes.value.items.unshift({
           id: Date.now(),
           pid: 0,
           post_id: route.params.id,

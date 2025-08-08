@@ -1,39 +1,33 @@
 import { useStore } from "~/store";
 
-export default function useHome() {
-  const { data: postFilter } = useApiFetch<ApiResponse>(
-    "/api/home/post-filter",
-    {
-      method: "POST",
-      body: {
-        page: 1,
-        limit: 30,
-        field: "home",
-      },
-      transform: (res: EmptyObjectType) => {
-        return {
-          items: res.data.items || [],
-          count: res.data.count || 0,
-        };
-      },
-    }
-  );
-  const { data: actorFilter } = useApiFetch<ApiResponse>(
-    "/api/home/actor-fitler",
-    {
-      method: "POST",
-      body: {
-        field: "hot",
-        limit: 6,
-      },
-      transform: (res: EmptyObjectType) => {
-        return {
-          items: res.data.items || [],
-          count: res.data.count || 0,
-        };
-      },
-    }
-  );
+export default async function useHome() {
+  const { data: postFilter } = await useApiFetch("/api/home/post-filter", {
+    method: "POST",
+    body: {
+      page: 1,
+      limit: 30,
+      field: "home",
+    },
+    transform: (res: EmptyObjectType) => {
+      return {
+        items: res.data.items || [],
+        count: res.data.count || 0,
+      };
+    },
+  });
+  const { data: actorFilter } = await useApiFetch("/api/home/actor-fitler", {
+    method: "POST",
+    body: {
+      field: "hot",
+      limit: 6,
+    },
+    transform: (res: EmptyObjectType) => {
+      return {
+        items: res.data.items || [],
+        count: res.data.count || 0,
+      };
+    },
+  });
   const { data: subjectFilter } = useFetch<ApiResponse>(
     "/api/home/subject-filter",
     {

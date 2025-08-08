@@ -58,5 +58,5 @@ export const useApiFetch = async (
     return { data, error };
   };
 
-  return makeRequest();
+  return await makeRequest();
 };

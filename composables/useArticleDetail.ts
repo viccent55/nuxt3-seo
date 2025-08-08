@@ -43,7 +43,7 @@ export default function useArticleDetail() {
       return storeDialog.onLogin();
     }
     try {
-      const { data: response, error } = await useApiFetch<EmptyObjectType>(
+      const { data: response, error } = await useApiFetch(
         "/api/article/like",
         {
           method: "POST",
@@ -52,7 +52,6 @@ export default function useArticleDetail() {
           },
         }
       );
-      console.log(response.value);
     } catch (error) {
       console.error("Login failed:", error);
     }

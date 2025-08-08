@@ -118,16 +118,16 @@
             class="d-none d-sm-flex align-center text-caption"
             v-else
           >
-            <v-btn
+            <NuxtLink
+              class="text-body-2 cursor-pointer text-decoration-none text-surface-variant"
               to="/dashboard"
-              class="text-button"
             >
               {{ store.userInfo?.nickname || store.userInfo?.username }}
               &nbsp;
               <v-icon>mdi-cog</v-icon>
-            </v-btn>
+            </NuxtLink>
             <v-btn
-              class="text-button px-0 mx-0"
+              class="text-button px-0 mx-2"
               style="min-width: 35px"
               @click="auth.clearToken()"
             >
