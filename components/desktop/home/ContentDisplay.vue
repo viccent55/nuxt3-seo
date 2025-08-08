@@ -5,6 +5,7 @@
   import SectionTitle from "~/components/desktop/SectionTitle.vue";
   import SidebarSection from "~/components/desktop/SidebarSection.vue";
   import AdvertSlot from "~/components/desktop/AdvertSlot.vue";
+  import { useGoTo } from "vuetify/lib/composables/goto.mjs";
 
   const props = defineProps({
     subjects: {
@@ -62,6 +63,29 @@
     }
     return chunks;
   });
+
+  const gotoLatestSection = () => {
+    const element = document.getElementById("latest-articles");
+
+    // 2. Find your fixed header element.
+    // Replace '.v-app-bar' with the actual class or ID of your header component.
+    const header = document.querySelector(".v-app-bar");
+
+    // Check if both elements exist
+    if (element && header) {
+      // 3. Calculate the target scroll position.
+      // We subtract the header's height to prevent it from being hidden.
+      const offset = header.clientHeight;
+      const elementPosition = element.offsetTop;
+      const targetPosition = elementPosition - offset;
+
+      // 4. Use window.scrollTo to perform the scroll with the new position.
+      window.scrollTo({
+        top: targetPosition,
+        behavior: "smooth",
+      });
+    }
+  };
 </script>
 <template>
   <v-row>
@@ -148,7 +172,10 @@
       </v-row>
 
       <!-- Latest text -->
-      <SectionTitle title="最新文章" />
+      <SectionTitle
+        title="最新文章"
+        id="latest-articles"
+      />
       <v-sheet color="transparent">
         <div v-if="latests.length">
           <template
@@ -191,6 +218,7 @@
           @update:page="
             (v) => {
               emit('page-change', v);
+              gotoLatestSection();
             }
           "
         />
@@ -310,13 +338,13 @@
         <DesktopActorCard :items="subjectsCard" />
       </SidebarSection>
 
-      <SidebarSection title="">
+      <SidebarSection :more="false">
         <v-card elevation="0">
           <DesktopAdvertSlot :advert="sideAds" />
         </v-card>
       </SidebarSection>
 
-      <SidebarSection title="热门标签">
+      <SidebarSection title="热门评论">
         <v-card
           elevation="0"
           variant="flat"
@@ -462,6 +490,7 @@
             class="ma-1"
             color="surface-variant"
             variant="tonal"
+            :to="'/article/' + tag.id"
           >
             {{ tag.name }}
           </v-chip>

@@ -1,7 +1,14 @@
 <script setup lang="ts">
-  defineProps<{
-    title: string
-    }>();
+  defineProps({
+    title: {
+      type: String,
+      required: false,
+    },
+    more: {
+      type: Boolean,
+      default: true,
+    },
+  });
 </script>
 
 <template>
@@ -19,6 +26,7 @@
         </div>
       </div>
       <v-btn
+        v-if="more"
         variant="text"
         class="text-caption"
       >

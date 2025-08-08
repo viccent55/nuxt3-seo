@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import { useTimeAgo } from "@vueuse/core";
+  import { useElementSize, useTimeAgo } from "@vueuse/core";
 
   defineProps({
     item: {
@@ -15,8 +15,10 @@
   const articleCard = ref(null);
   const imageDimensions = ref();
   const isMobile = ref(false);
-
   // Check for mobile on mount and when window resizes
+  const checkMobile = () => {
+    isMobile.value = window.innerWidth < 768;
+  };
   onMounted(() => {
     checkMobile();
     window.addEventListener("resize", checkMobile);
@@ -25,9 +27,21 @@
   onBeforeUnmount(() => {
     window.removeEventListener("resize", checkMobile);
   });
-
-  const checkMobile = () => {
-    isMobile.value = window.innerWidth < 768;
+  const isHoverImage = ref(false);
+  const displayLogicStyle = () => {
+    if (isHoverImage.value) {
+      return {
+        position: "absolute",
+        zIndex: 3,
+        pointerEvents: "auto",
+      };
+    } else {
+      return {
+        position: "absolute",
+        zIndex: 2,
+        pointerEvents: "auto",
+      };
+    }
   };
 </script>
 
@@ -57,7 +71,7 @@
             cover
             height="200"
           >
-            <v-chip
+            <!-- <v-chip
               v-if="item?.cover"
               class="chip-top-left"
               color="primary"
@@ -67,31 +81,24 @@
               size="x-small"
             >
               文章分类
-            </v-chip>
+            </v-chip> -->
           </Image>
         </v-avatar>
+
         <Image
           v-show="isHovering"
-          style="position: absolute; z-index: 2; pointer-events: none"
+          :style="displayLogicStyle()"
           :src="item?.cover"
           @image-dimensions="(v) => (imageDimensions = v)"
-          width="auto"
+          @mouseenter="isHoverImage = true"
+          @mouseleave="isHoverImage = false"
           height="180"
+          :width="
+            String((imageDimensions?.width / imageDimensions?.height) * 180)
+          "
           contain
           :position="isMobile ? 'center' : 'left'"
-        >
-          <v-chip
-            v-if="item?.cover"
-            class="chip-top-left"
-            color="primary"
-            variant="flat"
-            label
-            rounded="0"
-            size="x-small"
-          >
-            文章分类
-          </v-chip>
-        </Image>
+        ></Image>
         <v-card-text
           class="text-content"
           v-if="isMobile"

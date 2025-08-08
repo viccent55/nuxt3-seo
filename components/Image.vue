@@ -50,6 +50,7 @@
     :width="width"
     :height="height"
     @load="handleImageLoad"
+    
   >
     <template v-slot:placeholder>
       <div class="d-flex align-center justify-center fill-height">
