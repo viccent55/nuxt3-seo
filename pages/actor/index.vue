@@ -141,7 +141,6 @@
       :page="state.page"
       :total="state.total"
       :limit="state.limit"
-      :isMobile="isMobile"
       @update:page="state.page = $event"
     />
     <v-row class="mt-2">

@@ -87,6 +87,11 @@
         horsepower: 335,
       },
     ],
+    paginate: {
+      page: 1,
+      itemsPerPage: 5,
+      total: 10,
+    },
   });
 
   const onClick = () => {
@@ -134,6 +139,17 @@
             end
           ></v-icon>
         </div>
+      </template>
+      <!-- ✅ Custom footer slot for pagination -->
+      <template v-slot:bottom>
+        <v-divider class="mt-4"/>
+        <DesktopPaginate
+          :page="state.paginate.page"
+          :total="state.paginate.total"
+          :limit="state.paginate.itemsPerPage"
+          @update:page="state.paginate.page = $event"
+          justify="center"
+        />
       </template>
     </v-data-table>
   </v-card>

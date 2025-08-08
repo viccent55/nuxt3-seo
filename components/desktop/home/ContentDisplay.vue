@@ -188,7 +188,6 @@
           :page="paginate.page"
           :total="paginate.total"
           :limit="paginate.limit"
-          :isMobile="isMobile"
           @update:page="
             (v) => {
               emit('page-change', v);

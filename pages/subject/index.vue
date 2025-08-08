@@ -25,6 +25,7 @@
   };
 
   await fetchData();
+  
   watch(
     () => state.page,
     (v) => {
@@ -165,7 +166,6 @@
       :page="state.page.page"
       :total="state.total"
       :limit="state.page.limit"
-      :isMobile="isMobile"
       @update:page="state.page.page = $event"
     />
     <v-row class="mt-2">

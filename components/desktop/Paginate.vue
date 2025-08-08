@@ -1,15 +1,21 @@
 <script lang="ts" setup>
-  const props = defineProps<{
-    page: number;
-    total: number;
-    limit: number;
-    isMobile: boolean;
-  }>();
+  const props = withDefaults(
+    defineProps<{
+      page: number;
+      total: number;
+      limit: number;
+      justify?: "start" | "center" | "end";
+    }>(),
+    {
+      justify: "center",
+    }
+  );
 
   const emit = defineEmits<{
     (e: "update:page", value: number): void;
   }>();
 
+  const { isMobile } = useVariable();
   const inputPage = ref(props.page);
 
   // Watch for changes from the outside to keep inputPage in sync
@@ -36,11 +42,8 @@
 </script>
 
 <template>
-  <v-row
-    dense
-    justify="center"
-  >
-    <v-col class="d-flex align-center">
+  <v-row dense>
+    <v-col :class="`d-flex align-center justify-${justify}`">
       <div
         v-if="!isMobile"
         class="text-subtitle-2 text-grey"

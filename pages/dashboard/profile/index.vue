@@ -41,10 +41,11 @@
     const response = await useApiFetch("/api/member/profile", {
       method: "POST",
       body: state.form,
-    })
+    });
 
-   console.log(response)
+    console.log(response);
   };
+
   onMounted(() => {
     state.form.avatar = store.userInfo.avatar;
     state.form.email = store.userInfo.email;

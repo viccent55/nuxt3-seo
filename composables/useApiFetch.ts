@@ -39,7 +39,7 @@ export const useApiFetch = async (
       Authorization: `Bearer ${accessToken.value}`,
     };
 
-    const { data, error } = await useFetch(url, {
+    const { data, error } = await useFetch<any>(url, {
       ...options,
       headers,
     });

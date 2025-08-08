@@ -25,11 +25,7 @@
       limit: 6,
     },
   });
-  const {
-    data: subject,
-    error: subjectError,
-    pending: subjectPending,
-  } = await useApiFetch<EmptyObjectType>("/api/home/subject", {
+  const { data: subject } = await useApiFetch("/api/home/subject", {
     method: "POST",
     body: state.filter,
     transform: (res: EmptyObjectType) => {
@@ -41,7 +37,7 @@
   });
 
   watchEffect(() => {
-    if (subject.value?.items) {
+    if (subject?.value.items) {
       state.subjects = subject.value.items ?? [];
     }
   });
