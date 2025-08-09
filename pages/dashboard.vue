@@ -1,12 +1,11 @@
 <script setup lang="ts">
   definePageMeta({
     middleware: ["dashboard"],
+    keepalive: true,
   });
 
-  import { useStore } from "~/store";
+  const { store, onCopy } = useVariable();
 
-  const { onCopy } = useVariable();
-  const store = useStore();
   const menuItems = [
     {
       name: "profile",
@@ -39,6 +38,8 @@
       value: "/dashboard/record",
     },
   ];
+
+  onMounted(() => {});
 </script>
 
 <template>
@@ -96,9 +97,9 @@
             <v-list-item
               class="mb-2 text-center"
               v-for="item in menuItems"
-              :key="item.label"
-              :value="item.value"
-              color="primary"
+              :key="item.name"
+              @click="store.dbRouteName = item.name"
+              :active-color="store.dbRouteName === item.name ? 'primary' : ''"
               rounded
               :to="item.value"
             >

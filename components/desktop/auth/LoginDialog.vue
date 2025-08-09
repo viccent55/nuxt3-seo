@@ -89,7 +89,7 @@
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </div>
-        <div class="text-h5 text-medium-emphasis text-center mb-5">
+        <div class="text-h5 text-medium-emphasis text-center mb-5 text-primary">
           {{ storeDialog.login.title }}
         </div>
       </v-card-title>
@@ -159,3 +159,8 @@
     </v-card>
   </v-dialog>
 </template>
+<style lang="scss" scoped>
+  .text-primary {
+    color: rgba(var(--v-theme-primary))!important;
+  }
+</style>

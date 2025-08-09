@@ -120,7 +120,7 @@
           >
             <NuxtLink
               class="text-body-2 cursor-pointer text-decoration-none text-surface-variant"
-              to="/dashboard"
+              :to="`/dashboard/${store.dbRouteName}`"
             >
               {{ store.userInfo?.nickname || store.userInfo?.username }}
               &nbsp;

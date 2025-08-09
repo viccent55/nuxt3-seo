@@ -58,6 +58,7 @@ export const useStore = defineStore("store", {
         },
       ],
       advertisement: {} as EmptyObjectType,
+      dbRouteName: 'profile',
     };
   },
   actions: {
@@ -107,7 +108,10 @@ export const useStore = defineStore("store", {
       });
     },
   },
-  persist: {
-    storage: piniaPluginPersistedstate.localStorage(),
-  },
+  persist: [
+    {
+      pick: ["darkMode", "userInfo", "advertisement", "configuration"],
+      storage: piniaPluginPersistedstate.localStorage(),
+    },
+  ],
 });
