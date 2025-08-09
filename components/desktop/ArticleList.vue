@@ -42,7 +42,7 @@
     <v-hover v-slot="{ isHovering, props: hoverProps }">
       <v-card
         ref="articleCard"
-        v-bind="hoverProps"
+        v-bind="isMobile ? {} : hoverProps"
         :class="[
           'd-flex mb-2 position-relative',
           isMobile ? 'flex-column' : '',
@@ -60,8 +60,9 @@
             v-show="!isHovering"
             :src="item?.cover"
             @image-dimensions="(v) => (imageDimensions = v)"
-            cover
-            height="200"
+            contain
+            height="180"
+            width="100%"
           >
             <!-- <v-chip
               v-if="item?.cover"
@@ -87,9 +88,9 @@
           :width="
             String((imageDimensions?.width / imageDimensions?.height) * 180)
           "
-          height="100%"
+          :height="isMobile ? '160' : '100%'"
           contain
-          :position="isMobile ? 'center' : 'left'"
+          position="center"
         ></Image>
         <v-card-text
           class="text-content"
