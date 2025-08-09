@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-  const props = defineProps({
+  import { useElementSize, useTimeAgo } from "@vueuse/core";
+  defineProps({
     item: {
       type: Object as PropType<EmptyObjectType>,
       default: () => ({}),
@@ -10,7 +11,10 @@
     },
   });
   const { formatTime, isMobile } = useVariable();
+
   const articleCard = ref(null);
+  // get reactive width and height of the element
+  const { width, height } = useElementSize(articleCard);
   const imageDimensions = ref();
 
   onMounted(() => {});
@@ -31,24 +35,6 @@
       };
     }
   };
-  const formatTimeAgo = computed(() => {
-    const now = new Date();
-    const createdAt = new Date(props.item?.created);
-    const diffMs = now.getTime() - createdAt.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
-
-    if (diffMins < 60) {
-      return `${diffMins} 分钟前 (${diffMins} mins ago)`;
-    } else if (diffHours < 24) {
-      return `${diffHours} 小时前 (${diffHours} hours ago)`;
-    } else if (diffDays < 7) {
-      return `${diffDays} 天前 (${diffDays} days ago)`;
-    } else {
-      return createdAt.toLocaleDateString(); // or your custom format
-    }
-  });
 </script>
 
 <template>
@@ -90,7 +76,7 @@
             </v-chip> -->
           </Image>
         </v-avatar>
-
+        <!-- {{ (imageDimensions?.width / height) * 180 }} == {{ (width, height) }} -->
         <Image
           v-show="isHovering"
           :style="displayLogicStyle()"
@@ -98,10 +84,10 @@
           @image-dimensions="(v) => (imageDimensions = v)"
           @mouseenter="isHoverImage = true"
           @mouseleave="isHoverImage = false"
-          height="180"
           :width="
             String((imageDimensions?.width / imageDimensions?.height) * 180)
           "
+          height="100%"
           contain
           :position="isMobile ? 'center' : 'left'"
         ></Image>
