@@ -29,11 +29,11 @@ const useVaraible = () => {
     const diffDays = Math.floor(diffMs / 86400000);
 
     if (diffMins < 60) {
-      return `${diffMins} 分钟前 (${diffMins} mins ago)`;
+      return `${diffMins} 分钟前 `;
     } else if (diffHours < 24) {
-      return `${diffHours} 小时前 (${diffHours} hours ago)`;
+      return `${diffHours} 小时前 `;
     } else if (diffDays < 7) {
-      return `${diffDays} 天前 (${diffDays} days ago)`;
+      return `${diffDays} 天前 `;
     } else {
       return createdAt.toLocaleDateString();
     }

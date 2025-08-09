@@ -219,39 +219,8 @@
             class="mt-1"
           >
             <v-col cols="12">
-              <v-row
-                dense
-                justify="end"
-              >
-                <v-col
-                  v-if="item?.categories?.length > 0"
-                  cols="4"
-                  align="start"
-                >
-                  <template
-                    v-for="category in item?.categories"
-                    :key="category.id"
-                  >
-                    <v-hover v-slot="{ isHovering, props }">
-                      <v-chip
-                        v-bind="props"
-                        size="x-small"
-                        class="ma-1"
-                        :class="isHovering ? '' : 'bg-none text-grey'"
-                        :color="isHovering ? 'primary' : ''"
-                        :to="`/category-${category.id}`"
-                        flat
-                      >
-                        {{ category.name }}
-                      </v-chip>
-                    </v-hover>
-                  </template>
-                </v-col>
-                <v-col
-                  v-if="item?.tags?.length > 0"
-                  cols="8"
-                  align="end"
-                >
+              <div class="d-flex justify-end">
+                <div v-if="item?.tags?.length > 0">
                   <!-- Tags rendering here -->
                   <template
                     v-for="tag in item?.tags"
@@ -272,20 +241,45 @@
                       </v-chip>
                     </v-hover>
                   </template>
-                </v-col>
-              </v-row>
+                </div>
+                <div v-if="item?.categories?.length > 0">
+                  <template
+                    v-for="category in item?.categories"
+                    :key="category.id"
+                  >
+                    <v-hover v-slot="{ isHovering, props }">
+                      <v-chip
+                        v-bind="props"
+                        size="x-small"
+                        class="ma-1"
+                        :class="isHovering ? '' : 'bg-none text-grey'"
+                        :color="isHovering ? 'primary' : ''"
+                        :to="`/category-${category.id}`"
+                        flat
+                      >
+                        {{ category.name }}
+                      </v-chip>
+                    </v-hover>
+                  </template>
+                </div>
+              </div>
             </v-col>
             <v-col cols="12">
-              <v-row
-                dense
-                justify="end"
-              >
-                <v-col
-                  v-if="item?.subjects?.length > 0"
-                  cols="4"
-                  align="start"
-                >
-                  <div
+              <div class="d-flex justify-end ga-2">
+                <div v-if="item?.actors?.length > 0">
+                  <template
+                    v-for="author in item?.actors"
+                    :key="author.id"
+                    class="d-flex justify-end align-center text-grey"
+                  >
+                    <DesktopActorProfile
+                      :item="author"
+                      :to="`/actor/detail/${author.id}`"
+                    />
+                  </template>
+                </div>
+                <div v-if="item?.subjects?.length > 0">
+                  <template
                     v-for="subject in item?.subjects"
                     :key="subject.id"
                   >
@@ -303,25 +297,9 @@
                         {{ subject.name }}
                       </v-chip>
                     </v-hover>
-                  </div>
-                </v-col>
-                <v-col
-                  v-if="item?.actors?.length > 0"
-                  cols="8"
-                  align="end"
-                >
-                  <div
-                    v-for="author in item?.actors"
-                    :key="author.id"
-                    class="d-flex justify-end align-center text-grey"
-                  >
-                    <DesktopActorProfile
-                      :item="author"
-                      :to="`/actor/detail/${author.id}`"
-                    />
-                  </div>
-                </v-col>
-              </v-row>
+                  </template>
+                </div>
+              </div>
             </v-col>
             <v-col cols="12">
               <v-row
