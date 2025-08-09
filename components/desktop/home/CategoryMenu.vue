@@ -7,7 +7,7 @@
 <template>
   <!-- Scrollable Category Bar -->
   <v-toolbar
-    class="category-scroll-wrapper px-4 mb-4"
+    class="category-scroll-wrapper mb-4"
     color="surface"
   >
     <v-slide-group
@@ -23,10 +23,9 @@
           class="text-button"
           height="36"
           density="compact"
-          :to="`/category-${category.id}`"
+          :to="`/category/${category.id}`"
           :class="{
-            'router-link-exact-active':
-              `category-${category.id}` === route.params.slug,
+            'router-link-exact-active': category.id == route.params.id,
           }"
         >
           {{ category.name }}
@@ -45,6 +44,7 @@
 <style scoped lang="scss">
   .category-scroll-wrapper {
     overflow-x: auto;
+    padding-left: 10px;
     -webkit-overflow-scrolling: touch;
   }
 

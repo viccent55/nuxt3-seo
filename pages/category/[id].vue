@@ -8,7 +8,6 @@
     useHome();
 
   const state = reactive({
-    subjects: [] as EmptyArrayType,
     latests: [] as EmptyArrayType,
     paginate: {
       page: 1,
@@ -23,29 +22,16 @@
       limit: 6,
     },
   });
-  const { data: subject } = await useApiFetch("/api/home/subject", {
-    method: "POST",
-    body: state.filter,
-    transform: (res: EmptyObjectType) => {
-      return {
-        items: res.data.items || [],
-        count: res.data.count || 0,
-      };
-    },
-  });
 
-  watchEffect(() => {
-    if (subject?.value.items) {
-      state.subjects = subject.value.items ?? [];
-    }
-  });
+  const route = useRoute();
   const page = computed(() => state.paginate.page);
   const { data: latest } = await useAsyncData<any>(
-    "latest",
+    `latest-${route.params?.id}`,
     () =>
       $fetch("/api/home/latest", {
         method: "POST",
         body: {
+          cid: Number(route.params?.id),
           page: state.paginate.page,
           limit: state.paginate.limit,
         },
@@ -78,32 +64,16 @@
 </script>
 
 <template>
-  <v-container class="pt-0">
-    <!-- Categories -->
-    <DesktopHomeCategoryMenu v-if="$route?.name === 'index'" />
-    <ContentDisplay
-      :subjects="state.subjects"
-      :subjects-card="subjectFilter?.items"
-      :latests="state.latests"
-      :paginate="state.paginate"
-      :actor-filters="actorFilter?.items"
-      :post-filters="postFilter?.items"
-      :tag-tops="tagTop?.items"
-      :comments="comments"
-      :adverts="store.advertisement"
-      @page-change="onPageChange"
-    />
-    <NuxtPage />
-    <v-row class="mt-2">
-      <v-col
-        cols="12"
-        md="6"
-        v-for="(item, index) in store.advertisement?.POSITION_HOME_BOTTOM"
-        :key="index"
-      >
-        <DesktopAdvertSlot :advert="item" />
-      </v-col>
-    </v-row>
-  </v-container>
+  <ContentDisplay
+    :subjects-card="subjectFilter?.items"
+    :latests="state.latests"
+    :paginate="state.paginate"
+    :actor-filters="actorFilter?.items"
+    :post-filters="postFilter?.items"
+    :tag-tops="tagTop?.items"
+    :comments="comments"
+    :adverts="store.advertisement"
+    @page-change="onPageChange"
+  />
 </template>
 <style scoped lang="scss"></style>

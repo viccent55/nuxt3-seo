@@ -5,7 +5,6 @@
   import SectionTitle from "~/components/desktop/SectionTitle.vue";
   import SidebarSection from "~/components/desktop/SidebarSection.vue";
   import AdvertSlot from "~/components/desktop/AdvertSlot.vue";
-  import { useGoTo } from "vuetify/lib/composables/goto.mjs";
 
   const props = defineProps({
     subjects: {
@@ -95,81 +94,85 @@
       md="8"
     >
       <!-- Latest topics -->
-      <SectionTitle title="最新专题" />
-      <v-carousel
-        v-if="isMobile"
-        :show-arrows="subjects.length > 2"
-        hide-delimiters
-        height="auto"
-        class="mobile-carousel"
-        cycle
-      >
-        <template v-slot:prev="{ props }">
-          <v-btn
-            density="compact"
-            icon="mdi-chevron-left"
-            variant="elevated"
-            @click="props.onClick"
-          />
-        </template>
-        <template v-slot:next="{ props }">
-          <v-btn
-            density="compact"
-            icon="mdi-chevron-right"
-            variant="elevated"
-            @click="props.onClick"
-          />
-        </template>
-        <v-carousel-item
-          v-for="(chunk, index) in chunkedSubjects"
-          :key="index"
+      <SectionTitle
+        title="最新专题"
+        v-if="$route?.name == 'index'"
+      />
+      <section v-if="$route?.name == 'index'">
+        <v-carousel
+          v-if="isMobile"
+          :show-arrows="subjects.length > 2"
+          hide-delimiters
+          height="auto"
+          class="mobile-carousel"
+          cycle
         >
-          <v-row>
-            <v-col
-              v-for="item in chunk"
-              :key="item.id"
-              cols="6"
-            >
-              <NuxtLink
-                :to="'/subject/detail/' + item.id"
-                class="text-decoration-none"
-              >
-                <ArticleCard
-                  cover
-                  height="80"
-                  class="cursor-pointer"
-                  :item="item"
-                />
-              </NuxtLink>
-            </v-col>
-          </v-row>
-        </v-carousel-item>
-      </v-carousel>
-
-      <!-- Desktop view - Grid -->
-      <v-row
-        v-else
-        no-gutters
-      >
-        <v-col
-          v-for="item in subjects"
-          :key="item.id"
-          sm="4"
-          md="3"
-        >
-          <NuxtLink
-            :to="'/subject/detail/' + item.id"
-            class="text-decoration-none"
-          >
-            <ArticleCard
-              height="120px"
-              cover
-              class="cursor-pointer"
-              :item="item"
+          <template v-slot:prev="{ props }">
+            <v-btn
+              density="compact"
+              icon="mdi-chevron-left"
+              variant="elevated"
+              @click="props.onClick"
             />
-          </NuxtLink>
-        </v-col>
-      </v-row>
+          </template>
+          <template v-slot:next="{ props }">
+            <v-btn
+              density="compact"
+              icon="mdi-chevron-right"
+              variant="elevated"
+              @click="props.onClick"
+            />
+          </template>
+          <v-carousel-item
+            v-for="(chunk, index) in chunkedSubjects"
+            :key="index"
+          >
+            <v-row>
+              <v-col
+                v-for="item in chunk"
+                :key="item.id"
+                cols="6"
+              >
+                <NuxtLink
+                  :to="'/subject/detail/' + item.id"
+                  class="text-decoration-none"
+                >
+                  <ArticleCard
+                    cover
+                    height="80"
+                    class="cursor-pointer"
+                    :item="item"
+                  />
+                </NuxtLink>
+              </v-col>
+            </v-row>
+          </v-carousel-item>
+        </v-carousel>
+        <!-- Desktop view - Grid -->
+        <v-row
+          v-else
+          no-gutters
+        >
+          <v-col
+            v-for="item in subjects"
+            :key="item.id"
+            sm="4"
+            md="3"
+          >
+            <NuxtLink
+              :to="'/subject/detail/' + item.id"
+              class="text-decoration-none"
+            >
+              <ArticleCard
+                height="120px"
+                cover
+                class="cursor-pointer"
+                :item="item"
+              />
+            </NuxtLink>
+          </v-col>
+        </v-row>
+      </section>
 
       <!-- Latest text -->
       <SectionTitle
@@ -357,7 +360,6 @@
             <v-list-item
               v-for="(comment, index) in comments"
               :key="index"
-              class="px-4 py-3"
             >
               <template v-slot:default>
                 <div class="d-flex flex-column">
