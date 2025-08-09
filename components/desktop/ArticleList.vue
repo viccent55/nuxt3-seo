@@ -218,9 +218,12 @@
             no-gutters
             class="mt-1"
           >
-            <v-col cols="12">
+            <v-col
+              cols="12"
+              v-if="item.tags?.length > 0 || item.categories?.length > 0"
+            >
               <div class="d-flex justify-end">
-                <div v-if="item?.tags?.length > 0">
+                <div v-if="item.tags?.length > 0">
                   <!-- Tags rendering here -->
                   <template
                     v-for="tag in item?.tags"
@@ -242,7 +245,7 @@
                     </v-hover>
                   </template>
                 </div>
-                <div v-if="item?.categories?.length > 0">
+                <div v-if="item.categories?.length > 0">
                   <template
                     v-for="category in item?.categories"
                     :key="category.id"
@@ -264,7 +267,10 @@
                 </div>
               </div>
             </v-col>
-            <v-col cols="12">
+            <v-col
+              cols="12"
+              v-if="item.actors?.length > 0 || item.subjects?.length > 0"
+            >
               <div class="d-flex justify-end ga-2">
                 <div v-if="item?.actors?.length > 0">
                   <template
@@ -302,31 +308,26 @@
               </div>
             </v-col>
             <v-col cols="12">
-              <v-row
-                dense
-                class="text-caption text-grey pr-1"
+              <div
+                cols="12"
+                class="d-flex align-center ga-4 justify-end text-caption text-grey pr-1"
               >
-                <v-col
-                  cols="12"
-                  class="d-flex align-center ga-4 justify-end"
-                >
-                  <div>
-                    {{ formatTime(item?.created) }}
-                  </div>
-                  <div class="d-flex ga-2">
-                    <v-icon>mdi-eye</v-icon>
-                    <span>{{ item?.view_count }}</span>
-                  </div>
-                  <div class="d-flex ga-2">
-                    <v-icon>mdi-chat-outline</v-icon>
-                    <span>{{ item?.comment_count }}</span>
-                  </div>
-                  <div class="d-flex ga-2">
-                    <v-icon>mdi-thumb-up-outline</v-icon>
-                    <span>{{ item?.like_count }}</span>
-                  </div>
-                </v-col>
-              </v-row>
+                <div>
+                  {{ formatTime(item?.created) }}
+                </div>
+                <div class="d-flex ga-2">
+                  <v-icon>mdi-eye</v-icon>
+                  <span>{{ item?.view_count }}</span>
+                </div>
+                <div class="d-flex ga-2">
+                  <v-icon>mdi-chat-outline</v-icon>
+                  <span>{{ item?.comment_count }}</span>
+                </div>
+                <div class="d-flex ga-2">
+                  <v-icon>mdi-thumb-up-outline</v-icon>
+                  <span>{{ item?.like_count }}</span>
+                </div>
+              </div>
             </v-col>
           </v-row>
         </v-card-text>

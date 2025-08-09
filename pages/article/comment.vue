@@ -110,9 +110,9 @@
 
     <div
       v-else
-      class="text-grey text-body-2"
+      class="text-grey text-body-2 mt-5"
     >
-      暂无评论
+      暂无评论 ...
     </div>
   </v-card>
 </template>

@@ -121,16 +121,15 @@
             :content="articleDetail?.content"
             :skeleton="16"
           />
-          <div class="my-4 text-right d-flex ga-2 justify-end">
+          <div class="my-4 d-flex ga-2 justify-end">
             <div
-              v-if="articleDetail?.tags?.length"
+              v-if="articleDetail?.tags.length"
               v-for="(tag, index) in articleDetail?.tags"
               :key="index"
             >
               <v-chip
-                class="px-2"
-                variant="text"
-                border
+                class="px-2 bg-none text-grey"
+                size="small"
                 :to="`/article/${tag.id}`"
               >
                 {{ tag.name }}
