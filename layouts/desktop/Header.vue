@@ -156,8 +156,8 @@
       <div v-if="store.configuration?.categories?.length">
         <v-list-item
           v-for="(category, index) in store.configuration.categories"
-          :key="`category-${index}`"
-          :to="`/category-${category.id}`"
+          :key="index"
+          :to="`/category/${category.id}`"
           :title="category.name"
         />
         <v-divider class="my-2" />
@@ -193,8 +193,9 @@
       <template v-else>
         <v-list-item
           :title="store.userInfo?.nickname || store.userInfo?.username"
-          to="/dashboard"
+          :to="`/dashboard/${store.dbRouteName}`"
         />
+     
         <v-list-item
           title="退出登录"
           @click="auth.clearToken()"

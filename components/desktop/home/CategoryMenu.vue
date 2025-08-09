@@ -1,14 +1,12 @@
 <script lang="ts" setup>
-  import { useStore } from "~/store";
-
-  const store = useStore();
-  const route = useRoute();
+  const { store, route, isMobile } = useVariable();
 </script>
 <template>
   <!-- Scrollable Category Bar -->
   <v-toolbar
     class="category-scroll-wrapper mb-4"
     color="surface"
+    v-if="!isMobile"
   >
     <v-slide-group
       show-arrows

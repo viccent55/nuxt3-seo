@@ -11,7 +11,7 @@
   const onToDashboard = () => {
     const token = useCookie("access_token");
     if (token.value) {
-      navigateTo("/dashboard");
+      navigateTo("/mobile-setting");
     } else {
       storeDialog.onLogin();
     }
@@ -49,7 +49,7 @@
           :class="isActive(menu.value) ? 'primary' : 'text-grey'"
         >
           <v-icon>{{ menu.icon }}</v-icon>
-          <span class="text-caption">{{ menu.name }}</span>
+          <span class="text-caption">{{ menu.name }}  </span>
         </v-btn>
       </template>
     </v-bottom-navigation>
