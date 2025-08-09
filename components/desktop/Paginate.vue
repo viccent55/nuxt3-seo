@@ -54,7 +54,7 @@
         :model-value="props.page"
         :length="maxPage"
         active-color="primary"
-        :total-visible="isMobile ? 4 : 8"
+        :total-visible="isMobile ? 6 : 8"
         class="ma-1"
         @update:model-value="(val) => emit('update:page', clampPage(val))"
         :density="isMobile ? 'compact' : 'comfortable'"

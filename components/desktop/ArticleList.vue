@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-  import { useElementSize, useTimeAgo } from "@vueuse/core";
   defineProps({
     item: {
       type: Object as PropType<EmptyObjectType>,
@@ -14,7 +13,6 @@
 
   const articleCard = ref(null);
   // get reactive width and height of the element
-  const { width, height } = useElementSize(articleCard);
   const imageDimensions = ref();
 
   onMounted(() => {});
@@ -44,7 +42,7 @@
         ref="articleCard"
         v-bind="isMobile ? {} : hoverProps"
         :class="[
-          'd-flex mb-2 position-relative',
+          'd-flex mb-0 mb-md-2 position-relative',
           isMobile ? 'flex-column' : '',
           isHovering ? 'bg-default' : 'bg-none',
         ]"
@@ -107,19 +105,15 @@
                 dense
                 class="text-caption text-grey"
               >
-                <v-col cols="6">
-                  <div class="d-flex ga-2 align-center">
+                <v-col cols="12">
+                  <div class="d-flex ga-2 align-center justify-end">
                     <div>
-                      {{ useTimeAgo(item?.created) }}
+                      {{ formatTime(item?.created) }}
                     </div>
                     <div class="d-flex ga-2">
                       <v-icon>mdi-eye</v-icon>
                       <span>{{ item?.view_count }}</span>
                     </div>
-                  </div>
-                </v-col>
-                <v-col cols="6">
-                  <div class="d-flex ga-2 align-center">
                     <div class="d-flex ga-2">
                       <v-icon>mdi-chat-outline</v-icon>
                       <span>{{ item?.comment_count }}</span>
@@ -133,7 +127,7 @@
               </v-row>
             </v-col>
             <v-col cols="12">
-              <div class="scroll-x d-flex w-full">
+              <div class="scroll-x d-flex w-full justify-end">
                 <div
                   class="d-flex align-center text-grey"
                   v-if="item?.actors?.length > 0"
