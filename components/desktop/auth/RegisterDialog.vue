@@ -41,9 +41,6 @@
       console.error("Login failed:", error);
     }
   };
-  const openDialog = () => {
-    storeDialog.register.isShowDialog = true;
-  };
   const closeDialog = () => {
     storeDialog.register.isShowDialog = false;
     state.form = {
@@ -52,10 +49,10 @@
       password_repeat: "",
     };
   };
-
-  defineExpose({
-    openDialog,
-  });
+  const onLogin = () => {
+    closeDialog();
+    storeDialog.login.isShowDialog = true;
+  };
 </script>
 
 <template>
@@ -138,23 +135,14 @@
         </v-form>
 
         <div class="d-flex justify-center ga-5 mb-2">
-          <div class="d-flex ga-2 flex-column align-center">
-            <v-btn
-              icon="mdi-wechat"
-              elevation="0"
-              class="text-grey"
-              border
-            />
-            <div class="text-caption truncate-1">微信</div>
-          </div>
-          <div class="d-flex ga-2 flex-column align-center">
-            <v-btn
-              icon="mdi-account"
-              elevation="0"
-              border
-              class="text-grey"
-            />
-            <div class="text-caption truncate-1">微信</div>
+          <div class="d-flex justify-center mb-2">
+            <div>已有账户？</div>
+            <div
+              @click="onLogin()"
+              class="text-blue cursor-pointer"
+            >
+              登录
+            </div>
           </div>
         </div>
 

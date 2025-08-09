@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-  import { useElementSize, useTimeAgo } from "@vueuse/core";
-
-  defineProps({
+  const props = defineProps({
     item: {
       type: Object as PropType<EmptyObjectType>,
       default: () => ({}),
@@ -11,22 +9,12 @@
       default: () => "",
     },
   });
-
+  const { formatTime, isMobile } = useVariable();
   const articleCard = ref(null);
   const imageDimensions = ref();
-  const isMobile = ref(false);
-  // Check for mobile on mount and when window resizes
-  const checkMobile = () => {
-    isMobile.value = window.innerWidth < 768;
-  };
-  onMounted(() => {
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-  });
 
-  onBeforeUnmount(() => {
-    window.removeEventListener("resize", checkMobile);
-  });
+  onMounted(() => {});
+
   const isHoverImage = ref(false);
   const displayLogicStyle = () => {
     if (isHoverImage.value) {
@@ -43,6 +31,24 @@
       };
     }
   };
+  const formatTimeAgo = computed(() => {
+    const now = new Date();
+    const createdAt = new Date(props.item?.created);
+    const diffMs = now.getTime() - createdAt.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 60) {
+      return `${diffMins} 分钟前 (${diffMins} mins ago)`;
+    } else if (diffHours < 24) {
+      return `${diffHours} 小时前 (${diffHours} hours ago)`;
+    } else if (diffDays < 7) {
+      return `${diffDays} 天前 (${diffDays} days ago)`;
+    } else {
+      return createdAt.toLocaleDateString(); // or your custom format
+    }
+  });
 </script>
 
 <template>
@@ -213,10 +219,14 @@
             class="mt-1"
           >
             <v-col cols="12">
-              <div class="d-flex gap-3 justify-end">
-                <div
+              <v-row
+                dense
+                justify="end"
+              >
+                <v-col
                   v-if="item?.categories?.length > 0"
-                  cols="6"
+                  cols="4"
+                  align="start"
                 >
                   <template
                     v-for="category in item?.categories"
@@ -236,9 +246,13 @@
                       </v-chip>
                     </v-hover>
                   </template>
-                </div>
-                <!-- Tags rendering here -->
-                <div v-if="item?.tags?.length > 0">
+                </v-col>
+                <v-col
+                  v-if="item?.tags?.length > 0"
+                  cols="8"
+                  align="end"
+                >
+                  <!-- Tags rendering here -->
                   <template
                     v-for="tag in item?.tags"
                     :key="tag.id"
@@ -258,45 +272,55 @@
                       </v-chip>
                     </v-hover>
                   </template>
-                </div>
-              </div>
+                </v-col>
+              </v-row>
             </v-col>
-            <v-col
-              cols="12"
-              v-if="item?.subjects?.length && item?.actors?.length"
-            >
-              <v-row dense>
-                <div
+            <v-col cols="12">
+              <v-row
+                dense
+                justify="end"
+              >
+                <v-col
                   v-if="item?.subjects?.length > 0"
-                  v-for="subject in item?.subjects"
-                  :key="subject.id"
+                  cols="4"
+                  align="start"
                 >
-                  <v-hover v-slot="{ isHovering, props }">
-                    <v-chip
-                      v-bind="props"
-                      size="x-small"
-                      class="ma-1"
-                      :class="isHovering ? '' : 'bg-none text-grey'"
-                      :color="isHovering ? 'primary' : ''"
-                      @click.stop
-                      flat
-                      :to="`/subject/detail/${subject.id}`"
-                    >
-                      {{ subject.name }}
-                    </v-chip>
-                  </v-hover>
-                </div>
-                <div
+                  <div
+                    v-for="subject in item?.subjects"
+                    :key="subject.id"
+                  >
+                    <v-hover v-slot="{ isHovering, props }">
+                      <v-chip
+                        v-bind="props"
+                        size="x-small"
+                        class="ma-1"
+                        :class="isHovering ? '' : 'bg-none text-grey'"
+                        :color="isHovering ? 'primary' : ''"
+                        @click.stop
+                        flat
+                        :to="`/subject/detail/${subject.id}`"
+                      >
+                        {{ subject.name }}
+                      </v-chip>
+                    </v-hover>
+                  </div>
+                </v-col>
+                <v-col
                   v-if="item?.actors?.length > 0"
-                  class="d-flex align-center text-grey"
-                  v-for="author in item?.actors"
-                  :key="author.id"
+                  cols="8"
+                  align="end"
                 >
-                  <DesktopActorProfile
-                    :item="author"
-                    :to="`/actor/detail/${author.id}`"
-                  />
-                </div>
+                  <div
+                    v-for="author in item?.actors"
+                    :key="author.id"
+                    class="d-flex justify-end align-center text-grey"
+                  >
+                    <DesktopActorProfile
+                      :item="author"
+                      :to="`/actor/detail/${author.id}`"
+                    />
+                  </div>
+                </v-col>
               </v-row>
             </v-col>
             <v-col cols="12">
@@ -309,7 +333,7 @@
                   class="d-flex align-center ga-4 justify-end"
                 >
                   <div>
-                    {{ useTimeAgo(item?.created) }}
+                    {{ formatTime(item?.created) }}
                   </div>
                   <div class="d-flex ga-2">
                     <v-icon>mdi-eye</v-icon>

@@ -34,12 +34,12 @@
         body: state.form,
       });
       if (response.code === 400) {
-        return snackbar.showSnackbar("账户不正确!", "error", 'top center');
+        return snackbar.showSnackbar("账户不正确!", "error", "top center");
       }
       if (response.errcode === 0) {
         auth.setToken(response.data.token);
         store.setUserInfo(response.data.userinfo);
-        snackbar.showSnackbar("登录成功", "success", 'top center');
+        snackbar.showSnackbar("登录成功", "success", "top center");
         closeDialog();
       }
       // navigateTo("/dashboard");
@@ -61,6 +61,10 @@
       username: "",
       password: "",
     };
+  };
+  const onRegister = () => {
+    closeDialog();
+    storeDialog.register.isShowDialog = true;
   };
 </script>
 
@@ -131,24 +135,13 @@
             登录
           </v-btn>
         </v-form>
-        <div class="d-flex justify-center ga-5 mb-2">
-          <div class="d-flex ga-2 flex-column align-center">
-            <v-btn
-              icon="mdi-wechat"
-              elevation="0"
-              class="text-grey"
-              border
-            />
-            <div class="text-caption truncate-1">微信</div>
-          </div>
-          <div class="d-flex ga-2 flex-column align-center">
-            <v-btn
-              icon="mdi-account"
-              elevation="0"
-              border
-              class="text-grey"
-            />
-            <div class="text-caption truncate-1">微信</div>
+        <div class="d-flex justify-center mb-2">
+          <div>没有账号？</div>
+          <div
+            @click="onRegister()"
+            class="text-blue cursor-pointer"
+          >
+            请注册
           </div>
         </div>
         <div class="d-flex justify-center text-subtitle-1">
