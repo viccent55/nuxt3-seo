@@ -6,19 +6,24 @@
   import Breadcrumbs from "~/components/desktop/Breadcrumbs.vue";
   import ArticleListItem from "~/components/desktop/ArticleList.vue";
 
-  const { subjectFilters, subjectData } = useSubject();
+  const { actorData, actorFilters } = useActor();
   const breadcrumb = computed(() => {
     return [
       {
-        text: "专题",
-        href: "/subject",
+        text: "首页",
+        href: "/",
       },
       {
-        text: subjectData.value?.name,
+        text: "人物",
+        href: "/actor",
+      },
+      {
+        text: actorData.value?.name,
         disabled: true,
       },
     ];
   });
+
   const showContent = ref(false);
 </script>
 
@@ -27,7 +32,7 @@
     <Breadcrumbs :items="breadcrumb" />
     <h2 class="text-h6 font-weight-bold mb-4">专题</h2>
     <v-row>
-      <!-- Left content with transition -->
+      <!-- Left content -->
       <v-slide-y-transition mode="out-in">
         <template v-if="showContent">
           <v-col
@@ -38,6 +43,7 @@
             <v-card
               color="surface"
               flat
+              min-height="80%"
             >
               <v-card-title class="text-right">
                 <v-spacer />
@@ -53,7 +59,7 @@
               <v-card-text>
                 <ContentArticle
                   class="px-5"
-                  :content="subjectData?.content"
+                  :content="actorData?.content"
                   :skeleton="6"
                 />
               </v-card-text>
@@ -68,20 +74,23 @@
             md="8"
           >
             <template
-              v-for="item in subjectFilters?.items"
+              v-for="item in actorFilters?.items"
               :key="item.id"
             >
-              <ArticleListItem
-                :item="item"
-                class="pa-2 cursor-pointer"
-                @click="$router.push('/article/' + item.id)"
-                route-param="/subject"
-              />
+              <NuxtLink
+                :to="`/article/${item.id}`"
+                class="text-decoration-none"
+              >
+                <ArticleListItem
+                  :item="item"
+                  class="pa-2 cursor-pointer"
+                  route-param="/subject"
+                />
+              </NuxtLink>
             </template>
           </v-col>
         </template>
       </v-slide-y-transition>
-
       <!-- Right sidebar -->
       <v-col
         cols="12"
@@ -89,16 +98,20 @@
       >
         <!-- 人物名称 -->
         <h3 class="text-subtitle-1 font-weight-medium mb-2">人物名称</h3>
-        <v-card class="mb-6 elevation-0">
-          <Image
-            :src="subjectData?.cover"
-            cover
-            height="180"
-          />
-          <v-card-text class="text-center">
-            <div class="text-caption truncate-1">{{ subjectData?.name }}</div>
+        <v-card class="pa-4 mb-6 elevation-0">
+          <div class="text-center">
+            <v-avatar
+              size="80"
+              class="mx-auto mb-2"
+            >
+              <Image
+                :src="actorData?.avatar"
+                cover
+              />
+            </v-avatar>
+            <div class="text-caption truncate-1">{{ actorData?.name }}</div>
             <div class="text-grey text-caption text-xs truncate-2">
-              {{ subjectData?.intro }}
+              {{ actorData?.intro }}
             </div>
             <v-btn
               class="mt-2"
@@ -109,33 +122,12 @@
             >
               了解详情
             </v-btn>
-          </v-card-text>
+          </div>
         </v-card>
 
         <!-- 涉及专题 -->
-        <h3 class="text-subtitle-1 font-weight-medium mb-2">涉及人物</h3>
-        <v-sheet>
-          <v-row class="mt-2">
-            <v-col
-              v-for="(item, index) in subjectData?.actors"
-              :key="index"
-              cols="4"
-              class="text-center cursor-pointer"
-              @click="$router.push('/actor/detail/' + item.id)"
-            >
-              <v-avatar
-                size="45"
-                class="mb-1"
-              >
-                <Image :src="item.avatar" />
-              </v-avatar>
-              <div class="text-caption truncate-1">{{ item.name }}</div>
-              <div class="text-grey text-caption text-xs truncate-2">
-                {{ item.intro }}
-              </div>
-            </v-col>
-          </v-row>
-        </v-sheet>
+        <h3 class="text-subtitle-1 font-weight-medium mb-2">涉及专题</h3>
+        <DesktopActorCard :items="actorData?.subjects" />
       </v-col>
     </v-row>
   </v-container>

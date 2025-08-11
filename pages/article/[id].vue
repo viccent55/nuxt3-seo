@@ -5,11 +5,11 @@
 
   import Breadcrumbs from "~/components/desktop/Breadcrumbs.vue";
   import ArticleListItem from "~/components/desktop/ArticleListItem.vue";
-  import { useTimeAgo, useEventListener } from "@vueuse/core";
+  import { useEventListener } from "@vueuse/core";
   import CommentComponent from "./comment.vue";
 
   const mainContentCol = ref();
-
+  const { formatTime } = useVariable();
   const breadcrumbs = computed(() => {
     return [
       {
@@ -74,7 +74,7 @@
           <v-card-subtitle
             class="text-grey text-caption my-2 d-flex align-center"
           >
-            <span class="mr-2">{{ useTimeAgo(articleDetail?.created) }}</span>
+            <span class="mr-2">{{ formatTime(articleDetail?.created) }}</span>
             <div
               v-if="articleDetail?.categories?.length"
               class="d-flex ga-2"
@@ -89,7 +89,7 @@
                 class="px-2"
                 variant="text"
                 size="small"
-                :to="`/category-${category.id}`"
+                :to="`/category/${category.id}`"
               >
                 {{ category.name }}
               </v-chip>
@@ -136,7 +136,7 @@
               </v-chip>
             </div>
           </div>
-          <div class="d-flex justify-center ga-5">
+          <!-- <div class="d-flex justify-center ga-5">
             <v-btn
               v-if="articleDetail?.prev"
               elevation="0"
@@ -153,7 +153,7 @@
             >
               上一篇：文章标题文章
             </v-btn>
-          </div>
+          </div> -->
           <CommentComponent ref="commentSection" />
         </v-card>
         <div

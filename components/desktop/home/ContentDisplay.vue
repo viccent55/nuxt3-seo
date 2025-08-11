@@ -492,7 +492,7 @@
             class="ma-1"
             color="surface-variant"
             variant="tonal"
-            :to="'/article/' + tag.id"
+            :to="'/tag/' + tag.id"
           >
             {{ tag.name }}
           </v-chip>

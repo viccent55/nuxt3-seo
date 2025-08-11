@@ -40,7 +40,7 @@
               :color="selectedTagId === tag.id ? 'primary' : undefined"
               variant="text"
               class="rounded-pill border"
-              :to="'/tag/detail/' + tag.id"
+              :to="'/tag/' + tag.id"
             >
               {{ tag.name }}
             </v-chip>

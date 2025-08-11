@@ -14,30 +14,6 @@
   const { decryptImage, decryptedImage } = useDecryption();
   const decryptedContent = ref("");
   const contentRef = ref<HTMLDivElement | null>(null);
-  const hlsInstances = ref<Hls[]>([]);
-  const initHlsForVideos = async () => {
-    if (contentRef.value) {
-      // Destroy previous instances to avoid memory leaks
-      hlsInstances.value.forEach((hls) => hls.destroy());
-      hlsInstances.value = [];
-
-      const videos = contentRef.value.querySelectorAll("video");
-      // Use Promise.all to handle all videos concurrently
-      // We create an array of promises, where each promise handles one video
-      const videoPromises = Array.from(videos).map(async (video) => {
-        const src = video.getAttribute("src");
-        if (src && Hls.isSupported()) {
-          const hls = new Hls();
-          hls.loadSource(src);
-          hls.attachMedia(video);
-          hlsInstances.value.push(hls);
-        }
-      });
-
-      // Wait for all promises to complete
-      await Promise.all(videoPromises);
-    }
-  };
   const loading = ref(false);
   // Watch for changes in the article detail
   const init = async () => {
@@ -65,16 +41,20 @@
             })
           );
         }
-        // Decrypt videos
-        // const videos = doc.querySelectorAll("video");
-        // for (const video of videos) {
-        //   const videoSrc = video.getAttribute("src");
-        //   if (videoSrc) {
-        //     await decryptImage(videoSrc);
-        //     video.src = decryptedImage.value;
-        //   }
-        // }
-        // Update decrypted content
+        const videos = doc.querySelectorAll("video");
+        // Use Promise.all to handle all videos concurrently
+        // We create an array of promises, where each promise handles one video
+        const videoPromises = Array.from(videos).map(async (video) => {
+          const src = video.getAttribute("src");
+          if (src && Hls.isSupported()) {
+            const hls = new Hls();
+            hls.loadSource(src);
+            hls.attachMedia(video);
+          }
+        });
+
+        // Wait for all promises to complete
+        await Promise.all(videoPromises);
         decryptedContent.value = doc.body.innerHTML;
       }
     } catch (e) {
@@ -86,25 +66,12 @@
   watch(
     () => props.content,
     async () => {
-      await nextTick();
       init();
     }
   );
 
-  watch(
-    () => decryptedContent.value,
-    async () => {
-      await nextTick();
-      initHlsForVideos();
-    },
-    { immediate: true }
-  );
-  onBeforeUnmount(() => {
-    hlsInstances.value.forEach((hls) => hls.destroy());
-  });
   onMounted(() => {
     init();
-    initHlsForVideos();
   });
 </script>
 <template>

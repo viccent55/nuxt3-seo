@@ -195,7 +195,7 @@
           :title="store.userInfo?.nickname || store.userInfo?.username"
           :to="`/dashboard/${store.dbRouteName}`"
         />
-     
+
         <v-list-item
           title="退出登录"
           @click="auth.clearToken()"

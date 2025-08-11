@@ -10,7 +10,11 @@
   const breadcrumb = computed(() => {
     return [
       {
-        text: "专题",
+        text: "首页",
+        href: "/",
+      },
+      {
+        text: "标签",
         href: "/tag",
       },
       {

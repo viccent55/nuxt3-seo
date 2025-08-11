@@ -136,7 +136,7 @@
                 >
                   <DesktopActorProfile
                     :item="author"
-                    :to="`/actor/detail/${author.id}`"
+                    :to="`/actors/${author.id}`"
                     class="cursor-pointer"
                   />
                 </div>
@@ -154,7 +154,7 @@
                       :class="isHovering ? '' : 'bg-none text-grey'"
                       :color="isHovering ? 'primary' : ''"
                       @click.stop
-                      :to="`/actor/detail/${category.id}`"
+                      :to="`/category/${category.id}`"
                       flat
                     >
                       {{ category.name }}
@@ -174,7 +174,7 @@
                       class="ma-1"
                       :class="isHovering ? '' : 'bg-none text-grey'"
                       :color="isHovering ? 'primary' : ''"
-                      :to="`/subject/detail/${subject.id}`"
+                      :to="`/subjects/${subject.id}`"
                       flat
                     >
                       {{ subject.name }}
@@ -219,7 +219,7 @@
                         :color="isHovering ? 'primary' : ''"
                         @click.stop
                         flat
-                        :to="'/tag/detail/' + tag.id"
+                        :to="'/tags/' + tag.id"
                       >
                         {{ tag.name }}
                       </v-chip>
@@ -238,7 +238,7 @@
                         class="ma-1"
                         :class="isHovering ? '' : 'bg-none text-grey'"
                         :color="isHovering ? 'primary' : ''"
-                        :to="`/category-${category.id}`"
+                        :to="`/category/${category.id}`"
                         flat
                       >
                         {{ category.name }}
@@ -261,7 +261,7 @@
                   >
                     <DesktopActorProfile
                       :item="author"
-                      :to="`/actor/detail/${author.id}`"
+                      :to="`/actors/${author.id}`"
                     />
                   </template>
                 </div>
@@ -279,7 +279,7 @@
                         :color="isHovering ? 'primary' : ''"
                         @click.stop
                         flat
-                        :to="`/subject/detail/${subject.id}`"
+                        :to="`/subjects/${subject.id}`"
                       >
                         {{ subject.name }}
                       </v-chip>

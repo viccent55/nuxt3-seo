@@ -4,7 +4,7 @@
     keepalive: true,
   });
 
-  const { store, onCopy } = useVariable();
+  const { store, onCopy, isMobile } = useVariable();
 
   const menuItems = [
     {
@@ -44,7 +44,7 @@
 
 <template>
   <v-container class="container">
-    <v-row>
+    <v-row v-if="!isMobile">
       <!-- Sidebar -->
       <v-col
         cols="12"
@@ -118,5 +118,8 @@
         <nuxt-page />
       </v-col>
     </v-row>
+    <div v-else>
+      <NuxtPage />
+    </div>
   </v-container>
 </template>

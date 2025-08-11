@@ -48,7 +48,7 @@
           <NuxtLink
             custom
             v-slot="{ navigate, href }"
-            :to="`/actor/detail/${item.id}`"
+            :to="`/actor/${item.id}`"
             class="text-decoration-none"
           >
             <v-sheet

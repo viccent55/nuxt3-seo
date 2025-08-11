@@ -28,7 +28,7 @@
   const { data: latest } = await useAsyncData<any>(
     `latest-${route.params?.id}`,
     () =>
-      $fetch("/api/home/latest", {
+      $fetch("/api/category", {
         method: "POST",
         body: {
           cid: Number(route.params?.id),

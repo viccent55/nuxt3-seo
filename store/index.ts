@@ -5,11 +5,7 @@ export const useStore = defineStore("store", {
     return {
       lang: "en",
       ip: "",
-      onSearch: false,
       categories: [],
-      themeColor: "#818CF8",
-      timeStr: "",
-      placeTypes: <EmptyArrayType>[],
       darkMode: "light",
       configuration: <EmptyObjectType>{},
       userInfo: {} as EmptyObjectType,
@@ -30,7 +26,7 @@ export const useStore = defineStore("store", {
           value: "/actor",
         },
         {
-          name: "分类",
+          name: "标签",
           icon: "mdi-shape-outline",
           value: "/tag",
         },
@@ -58,7 +54,7 @@ export const useStore = defineStore("store", {
         },
       ],
       advertisement: {} as EmptyObjectType,
-      dbRouteName: 'profile',
+      dbRouteName: "profile",
     };
   },
   actions: {
@@ -112,6 +108,7 @@ export const useStore = defineStore("store", {
     {
       pick: ["darkMode", "userInfo", "advertisement", "configuration"],
       storage: piniaPluginPersistedstate.localStorage(),
+      key: "store",
     },
   ],
 });
