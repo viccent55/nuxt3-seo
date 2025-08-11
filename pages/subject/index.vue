@@ -25,7 +25,7 @@
   };
 
   await fetchData();
-  
+
   watch(
     () => state.page,
     (v) => {
@@ -131,7 +131,7 @@
                   <v-divider class="my-2" />
                   <v-row dense>
                     <v-col
-                      cols="6"
+                      :cols="item?.posts.length > 2 ? 6 : 12"
                       v-for="post in item.posts"
                       :key="post.id"
                     >
