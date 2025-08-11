@@ -219,7 +219,7 @@
                         :color="isHovering ? 'primary' : ''"
                         @click.stop
                         flat
-                        :to="'/tags/' + tag.id"
+                        :to="'/tag/' + tag.id"
                       >
                         {{ tag.name }}
                       </v-chip>
@@ -261,7 +261,7 @@
                   >
                     <DesktopActorProfile
                       :item="author"
-                      :to="`/actors/${author.id}`"
+                      :to="`/actor/${author.id}`"
                     />
                   </template>
                 </div>
@@ -279,7 +279,7 @@
                         :color="isHovering ? 'primary' : ''"
                         @click.stop
                         flat
-                        :to="`/subjects/${subject.id}`"
+                        :to="`/subject/${subject.id}`"
                       >
                         {{ subject.name }}
                       </v-chip>
