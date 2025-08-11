@@ -16,7 +16,7 @@
   const contentRef = ref<HTMLDivElement | null>(null);
   const loading = ref(false);
   // Watch for changes in the article detail
-  const init = async () => {
+  const initImgAndVideo = async () => {
     try {
       loading.value = true;
       if (props.content && typeof window !== "undefined") {
@@ -42,7 +42,6 @@
           );
         }
         const videos = doc.querySelectorAll("video");
-        // Use Promise.all to handle all videos concurrently
         // We create an array of promises, where each promise handles one video
         const videoPromises = Array.from(videos).map(async (video) => {
           const src = video.getAttribute("src");
@@ -52,7 +51,6 @@
             hls.attachMedia(video);
           }
         });
-
         // Wait for all promises to complete
         await Promise.all(videoPromises);
         decryptedContent.value = doc.body.innerHTML;
@@ -63,15 +61,8 @@
       loading.value = false;
     }
   };
-  watch(
-    () => props.content,
-    async () => {
-      init();
-    }
-  );
-
-  onMounted(() => {
-    init();
+  watchEffect(() => {
+    initImgAndVideo();
   });
 </script>
 <template>

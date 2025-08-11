@@ -143,8 +143,6 @@
     },
   });
 
-  onMounted(() => {});
-  const store = useStore();
   const submitComment = async () => {
     if (!commentText.value.trim()) return;
     const access_token = useCookie("access_token");
@@ -168,4 +166,5 @@
       console.log(error);
     }
   };
+  onMounted(() => {});
 </script>
