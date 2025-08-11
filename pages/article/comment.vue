@@ -127,18 +127,10 @@
     avatar: string;
   }
 
-  interface Comment {
-    id: number;
-    pid: number;
-    member_id: number;
-    text: string;
-    member: Member | null;
-    children: Comment[];
-  }
   const route = useRoute();
   const commentText = ref("");
   const snackbar = useSnackbar();
-  const { data } = await useApiFetch("/api/comment", {
+  const { data, refresh } = await useFetch("/api/comment", {
     method: "POST",
     body: {
       id: route.params.id,
@@ -168,19 +160,8 @@
           text: commentText.value,
         },
       });
-      if (commentRes?.value) {
-        commentRes.value.items.unshift({
-          id: Date.now(),
-          pid: 0,
-          post_id: route.params.id,
-          text: commentText.value,
-          member: {
-            id: 1,
-            username: store?.userInfo?.username ?? "",
-            nickname: store.userInfo?.nickname ?? "",
-            avatar: store.userInfo.avatar ?? "",
-          },
-        });
+      if (commentRes?.value.errcode === 0) {
+        refresh();
       }
       commentText.value = "";
     } catch (error) {
