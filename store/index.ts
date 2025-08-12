@@ -48,7 +48,7 @@ export const useStore = defineStore("store", {
           value: "/actor",
         },
         {
-          name: "分类",
+          name: "我的",
           icon: "mdi-account-outline",
           value: "/dashboard",
         },

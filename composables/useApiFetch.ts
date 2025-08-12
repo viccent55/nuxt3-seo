@@ -43,8 +43,7 @@ export const useApiFetch = async (
       ...options,
       headers,
     });
-
-    if (error.value?.statusCode === 401 && !attemptedRefresh) {
+    if (data.value?.errorcode === 401000 && !attemptedRefresh) {
       // Access token expired, attempt to refresh
       const refreshed = await refreshAccessToken();
       if (refreshed) {
@@ -52,7 +51,7 @@ export const useApiFetch = async (
         return makeRequest(true);
       } else {
         // Refresh failed, handle logout
-        return { data: null, error: "Login required." };
+        return { data: null, error: 1, message: "Login required!" };
       }
     }
     return { data, error };

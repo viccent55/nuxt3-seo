@@ -8,7 +8,9 @@
   <v-main class="bg-background">
     <InstallPWA />
     <slot />
+    <Footer
+      v-if="['index', 'subject', 'actor', 'tag'].includes(String($route?.name))"
+    />
   </v-main>
-  <Footer class="pb-14" />
   <Toolbar />
 </template>
