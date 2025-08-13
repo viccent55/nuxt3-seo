@@ -27,18 +27,34 @@
     height: 0,
     isVertical: false,
   });
-  const handleImageLoad = (src: string | undefined) => {
-    if (!src) return;
-    const img = document.querySelector(
-      `img[src="${src}"]`
-    ) as HTMLImageElement | null;
-    if (img) {
-      state.width = img.naturalWidth;
-      state.height = img.naturalHeight;
-      // Determine if the image is vertical or horizontal
-      state.isVertical = state.height > state.width;
-      emit("imageDimensions", state);
-    }
+  const handleImageLoad = () => {
+    // if (!src) return;
+    // const img = document.querySelector(
+    //   `img[src="${src}"]`
+    // ) as HTMLImageElement | null;
+    // if (img) {
+    //   state.width = img.naturalWidth;
+    //   state.height = img.naturalHeight;
+    //   // Determine if the image is vertical or horizontal
+    //   state.isVertical = state.height > state.width;
+    //   emit("imageDimensions", state);
+    // }
+    setTimeout(() => {
+      // We need to escape the URL for use in the selector
+      const escapedSrc = CSS.escape(decryptedImage.value);
+      const img = document.querySelector(
+        `img[src="${escapedSrc}"]`
+      ) as HTMLImageElement | null;
+
+      if (img) {
+        state.width = img.naturalWidth;
+        state.height = img.naturalHeight;
+        state.isVertical = state.height > state.width;
+        emit("imageDimensions", state);
+      } else {
+        console.error("Could not find image element in the DOM.");
+      }
+    }, 0);
   };
 </script>
 <template>
@@ -50,7 +66,6 @@
     :width="width"
     :height="height"
     @load="handleImageLoad"
-    
   >
     <template v-slot:placeholder>
       <div class="d-flex align-center justify-center fill-height">
@@ -65,8 +80,8 @@
 
   <v-img
     v-else
-    lazy-src="public/images/no-image.webp"
-    src="public/images/no-image.webp"
+    lazy-src="/loading.jpg"
+    src="/loading.jpg"
     alt="Loading image..."
     :height="height"
     :width="width"

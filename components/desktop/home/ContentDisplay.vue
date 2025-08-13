@@ -134,7 +134,7 @@
                 cols="6"
               >
                 <NuxtLink
-                  :to="'/subject/detail/' + item.id"
+                  :to="`/subject/${item.id}`"
                   class="text-decoration-none"
                 >
                   <ArticleCard
@@ -160,7 +160,7 @@
             md="3"
           >
             <NuxtLink
-              :to="'/subject/detail/' + item.id"
+              :to="`/subject/${item.id}`"
               class="text-decoration-none"
             >
               <ArticleCard

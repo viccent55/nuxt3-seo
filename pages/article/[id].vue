@@ -68,7 +68,7 @@
           flat
           color="transparent"
         >
-          <v-card-title class="text-h5 font-weight-bold">
+          <v-card-title class="text-h5 font-weight-bold text-wrap">
             {{ articleDetail?.title }}
           </v-card-title>
           <v-card-subtitle

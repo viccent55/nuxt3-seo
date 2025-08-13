@@ -163,7 +163,7 @@
                 </div>
                 <div
                   class="d-flex align-center text-grey"
-                  v-if="item?.subjects.length > 0"
+                  v-if="item?.subjects?.length > 0"
                   v-for="subject in item?.subjects"
                   :key="subject.id"
                 >

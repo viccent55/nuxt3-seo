@@ -130,7 +130,7 @@
                 @change="onFileSelected"
               />
               <v-avatar size="80">
-                <v-img :src="state.form.avatar || '/images/no-image.png'" />
+                <v-img :src="state.form.avatar || '/loading.jpg'" />
               </v-avatar>
               <v-btn
                 class="mt-2 elevation-0"

@@ -41,18 +41,24 @@
             })
           );
         }
+        // Handle videos
         const videos = doc.querySelectorAll("video");
-        // We create an array of promises, where each promise handles one video
-        const videoPromises = Array.from(videos).map(async (video) => {
-          const src = video.getAttribute("src");
-          if (src && Hls.isSupported()) {
-            const hls = new Hls();
-            hls.loadSource(src);
-            hls.attachMedia(video);
-          }
-        });
-        // Wait for all promises to complete
-        await Promise.all(videoPromises);
+        await Promise.all(
+          Array.from(videos).map((video: HTMLVideoElement) => {
+            // Reserve video player space
+            video.style.display = "block";
+            video.style.width = "100%";
+            video.style.aspectRatio = "16 / 9"; // adjust if needed
+            video.preload = "metadata";
+
+            const src = video.getAttribute("src");
+            if (src && Hls.isSupported()) {
+              const hls = new Hls();
+              hls.loadSource(src);
+              hls.attachMedia(video);
+            }
+          })
+        );
         decryptedContent.value = doc.body.innerHTML;
       }
     } catch (e) {
@@ -66,19 +72,10 @@
   });
 </script>
 <template>
-  <v-skeleton-loader
-    v-if="loading"
-    v-for="i in skeleton"
-    :key="i"
-    width="100%"
-    height="16px"
-    class="rounded-pill mb-5"
-  />
   <div
-    v-else
     ref="contentRef"
     class="mt-5 text-body-1 article-content"
     style="max-width: 100%"
-    v-html="decryptedContent"
+    v-html="loading ? props.content : decryptedContent"
   ></div>
 </template>
