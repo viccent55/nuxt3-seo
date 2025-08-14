@@ -28,12 +28,13 @@
   const clampPage = (page: number) =>
     Math.min(Math.max(1, page), maxPage.value);
 
+  const getPageUrl = (p: number) => `${props.basePath}?page=${p}`;
+
   const goToPage = () => {
     const newPage = clampPage(inputPage.value);
+    navigateTo(getPageUrl(newPage))
     if (newPage !== props.page) emit("page-change", newPage);
   };
-
-  const getPageUrl = (p: number) => `${props.basePath}?page=${p}`;
 
   watch(
     () => route.query.page,
