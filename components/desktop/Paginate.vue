@@ -41,7 +41,7 @@
       if (newVal) {
         emit("page-change", Number(newVal));
       } else {
-          emit("page-change", 1);
+        emit("page-change", 1);
       }
     }
   );
@@ -132,7 +132,7 @@
           type="number"
           label="到第"
           density="compact"
-          class="mx-4"
+          class="mx-4 input-paginate"
           hide-details
           variant="outlined"
           min="1"
@@ -213,5 +213,8 @@
       padding: 4px 8px;
       font-size: 12px;
     }
+  }
+  :deep(.input-paginate .v-input__control) {
+    height: 32px;
   }
 </style>
