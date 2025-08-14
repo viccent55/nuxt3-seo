@@ -13,7 +13,7 @@
   const breadcrumbs = computed(() => {
     return [
       {
-        text: "专题",
+        text: "首页",
         href: "/",
       },
       {

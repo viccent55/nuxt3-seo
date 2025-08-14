@@ -17,8 +17,8 @@
   const loading = ref(false);
   // Watch for changes in the article detail
   const initImgAndVideo = async () => {
+    loading.value = true;
     try {
-      loading.value = true;
       if (props.content && typeof window !== "undefined") {
         const parser = new DOMParser();
         const doc = parser.parseFromString(props.content, "text/html");
