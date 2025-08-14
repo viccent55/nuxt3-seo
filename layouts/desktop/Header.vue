@@ -24,7 +24,6 @@
   <v-app-bar
     flat
     color="surface"
-    :height="isMobile ? 55 : 65"
     class="border-b"
   >
     <v-container class="container">
@@ -34,9 +33,9 @@
       >
         <!-- Left section (Logo + Navigation) -->
         <v-col
-          cols="6"
           md="6"
-          sm="12"
+          sm="8"
+          cols="6"
           class="d-flex align-center"
         >
           <!-- Logo -->
@@ -69,19 +68,10 @@
         <!-- Right section (Search + Login/Register) -->
         <v-col
           md="6"
-          sm="12"
-          class="d-flex justify-end align-center ga-4 mt-sm-0"
+          sm="4"
+          cols="6"
+          class="d-flex justify-end align-center ga-2 mt-sm-0"
         >
-          <!-- Mobile Menu Icon -->
-          <v-btn
-            icon
-            variant="text"
-            class="d-flex d-sm-none"
-            @click="state.drawer = !state.drawer"
-          >
-            <v-icon>mdi-menu</v-icon>
-          </v-btn>
-
           <!-- Search Bar (only shown on sm+) -->
           <v-text-field
             v-model="state.search"
@@ -91,13 +81,22 @@
             placeholder="请输入搜索内容"
             prepend-inner-icon="mdi-magnify"
             class="d-none d-sm-flex search"
-            style="max-width: 220px"
+            style="max-width: 200px"
             rounded="lg"
           />
+          <!-- Mobile Menu Icon -->
+          <v-btn
+            icon
+            variant="text"
+            class="d-flex d-md-none"
+            @click="state.drawer = !state.drawer"
+          >
+            <v-icon>mdi-menu</v-icon>
+          </v-btn>
 
           <!-- Divider + Auth -->
           <div
-            class="d-none d-sm-flex align-center text-caption"
+            class="d-none d-md-flex align-center text-caption"
             v-if="!store.userInfo?.username"
           >
             <v-btn

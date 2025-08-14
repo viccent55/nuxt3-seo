@@ -9,7 +9,7 @@
       default: () => "",
     },
   });
-  const { formatTime, isMobile } = useVariable();
+  const { formatTime, isMobileSm } = useVariable();
 
   const articleCard = ref(null);
   // get reactive width and height of the element
@@ -40,10 +40,10 @@
     <v-hover v-slot="{ isHovering, props: hoverProps }">
       <v-card
         ref="articleCard"
-        v-bind="isMobile ? {} : hoverProps"
+        v-bind="isMobileSm ? {} : hoverProps"
         :class="[
           'd-flex mb-0 mb-md-2 position-relative',
-          isMobile ? 'flex-column' : '',
+          isMobileSm ? 'flex-column' : '',
           isHovering ? 'bg-default' : 'bg-none',
         ]"
         tag="article"
@@ -86,13 +86,13 @@
           :width="
             String((imageDimensions?.width / imageDimensions?.height) * 180)
           "
-          :height="isMobile ? '160' : '100%'"
+          :height="isMobileSm ? '160' : '100%'"
           contain
           position="center"
         ></Image>
         <v-card-text
           class="text-content"
-          v-if="isMobile"
+          v-if="isMobileSm"
         >
           <h3 class="truncate-1">{{ item?.title }}</h3>
           <v-row
@@ -340,7 +340,7 @@
   }
 
   /* Mobile-specific styles */
-  @media (max-width: 768px) {
+  @media (max-width: 467px) {
     .v-avatar {
       width: 100% !important;
       height: auto !important;

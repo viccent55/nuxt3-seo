@@ -3,7 +3,7 @@
     keepalive: true,
   });
   useSeo({});
-  const { isMobile, store } = useVariable();
+  const { isMobile, store, goto } = useVariable();
   const state = reactive({
     data: [] as EmptyArrayType,
     page: {
@@ -35,7 +35,12 @@
 </script>
 <template>
   <v-container>
-    <h2 class="text-h6 font-weight-bold mb-6">专题</h2>
+    <h2
+      class="text-h6 font-weight-bold mb-6"
+      id="subjects"
+    >
+      专题
+    </h2>
     <v-row>
       <v-col
         cols="12"
@@ -166,7 +171,12 @@
       :page="state.page.page"
       :total="state.total"
       :limit="state.page.limit"
-      @update:page="state.page.page = $event"
+      @page-change="
+        ($event) => {
+          state.page.page = $event;
+          goto('subjects');
+        }
+      "
     />
     <v-row class="mt-2">
       <v-col

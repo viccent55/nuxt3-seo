@@ -218,8 +218,8 @@
           :page="paginate.page"
           :total="paginate.total"
           :limit="paginate.limit"
-          @update:page="
-            (v) => {
+          @page-change="
+            (v: number) => {
               emit('page-change', v);
               gotoLatestSection();
             }

@@ -73,6 +73,8 @@
   });
 
   const onPageChange = (newPage: number) => {
+    console.log(newPage)
+    
     state.paginate.page = newPage;
   };
 </script>

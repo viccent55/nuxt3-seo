@@ -5,71 +5,138 @@
       total: number;
       limit: number;
       justify?: "start" | "center" | "end";
+      basePath?: string;
     }>(),
     {
       justify: "center",
+      basePath: "",
     }
   );
+  const { isMobile, route } = useVariable();
+  const emit = defineEmits(["page-change"]);
 
-  const emit = defineEmits<{
-    (e: "update:page", value: number): void;
-  }>();
-
-  const { isMobile } = useVariable();
+  const maxPage = computed(() =>
+    Math.max(1, Math.ceil(props.total / props.limit))
+  );
   const inputPage = ref(props.page);
 
-  // Watch for changes from the outside to keep inputPage in sync
   watch(
     () => props.page,
-    (v) => {
-      inputPage.value = v;
-    }
+    (v) => (inputPage.value = v)
   );
 
-  const maxPage = computed(() => Math.ceil(props.total / props.limit) || 1);
-
-  const clampPage = (page: number) => {
-    return Math.min(Math.max(1, page), maxPage.value);
-  };
+  const clampPage = (page: number) =>
+    Math.min(Math.max(1, page), maxPage.value);
 
   const goToPage = () => {
     const newPage = clampPage(inputPage.value);
-    if (newPage !== props.page) {
-      emit("update:page", newPage);
-    }
-    inputPage.value = newPage; // sync back input field
+    if (newPage !== props.page) emit("page-change", newPage);
   };
+
+  const getPageUrl = (p: number) => `${props.basePath}?page=${p}`;
+
+  watch(
+    () => route.query.page,
+    (newVal) => {
+      if (newVal) {
+        emit("page-change", Number(newVal));
+      } else {
+          emit("page-change", 1);
+      }
+    }
+  );
+
+  const visiblePages = computed(() => {
+    const total = maxPage.value;
+    const current = props.page;
+    const range = isMobile.value ? 3 : 8;
+    const half = Math.floor(range / 2);
+
+    let start = Math.max(1, current - half);
+    let end = Math.min(total, start + range - 1);
+    if (end - start < range - 1) start = Math.max(1, end - range + 1);
+
+    const pages: (number | string)[] = [];
+    if (start > 1) {
+      pages.push(1);
+      if (start > 2) pages.push("…");
+    }
+    for (let i = start; i <= end; i++) pages.push(i);
+    if (end < total) {
+      if (end < total - 1) pages.push("…");
+      pages.push(total);
+    }
+    return pages;
+  });
 </script>
 
 <template>
   <v-row dense>
-    <v-col :class="`d-flex align-center justify-${justify}`">
+    <v-col :class="`d-flex align-center justify-${justify} flex-wrap`">
       <div
         v-if="!isMobile"
-        class="text-subtitle-2 text-grey"
+        class="text-subtitle-2 text-grey me-3"
       >
         共 {{ total }} 条
       </div>
-      <v-pagination
-        :model-value="props.page"
-        :length="maxPage"
-        active-color="primary"
-        :total-visible="isMobile ? 6 : 8"
-        class="ma-1"
-        @update:model-value="(val) => emit('update:page', clampPage(val))"
-        :density="isMobile ? 'compact' : 'comfortable'"
-      />
+
+      <nav
+        class="d-flex flex-wrap ma-1"
+        aria-label="Pagination Navigation"
+      >
+        <!-- Prev -->
+        <NuxtLink
+          :to="getPageUrl(page - 1)"
+          :class="['page-btn', { disabled: page <= 1 }]"
+          aria-label="Previous page"
+        >
+          <v-icon>mdi-chevron-left</v-icon>
+        </NuxtLink>
+
+        <!-- Pages -->
+        <template
+          v-for="p in visiblePages"
+          :key="p"
+        >
+          <NuxtLink
+            v-if="p !== '…'"
+            :to="getPageUrl(Number(p))"
+            class="page-btn"
+            :class="{ active: p === page }"
+            :aria-current="p === page ? 'page' : undefined"
+          >
+            {{ p }}
+          </NuxtLink>
+          <span
+            v-else
+            class="ellipsis"
+          >
+            …
+          </span>
+        </template>
+
+        <!-- Next -->
+        <NuxtLink
+          :to="getPageUrl(page + 1)"
+          :class="['page-btn', { disabled: page >= maxPage }]"
+          aria-label="Next page"
+        >
+          <v-icon>mdi-chevron-right</v-icon>
+        </NuxtLink>
+      </nav>
+
+      <!-- Jump input -->
       <template v-if="!isMobile">
         <v-text-field
           v-model.number="inputPage"
-          hide-details
           type="number"
-          class="mx-2 pagination-input"
           label="到第"
-          style="max-width: 80px"
           density="compact"
+          class="mx-4"
+          hide-details
           variant="outlined"
           min="1"
+          max-width="80px"
           :max="maxPage"
           @keyup.enter="goToPage"
           @blur="goToPage"
@@ -87,15 +154,64 @@
   </v-row>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+  .page-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    margin: 2px;
+    padding: 0 8px;
+    border-radius: 6px;
+    font-size: 14px;
+    border: 1px solid var(--v-theme-grey-lighten-2);
+    background-color: var(--v-theme-surface);
+    color: var(--v-theme-on-surface);
+    text-decoration: none;
+    transition:
+      background-color 0.2s,
+      color 0.2s;
+
+    &:hover:not(.active):not(.disabled) {
+      background-color: var(--v-theme-grey-lighten-2);
+    }
+
+    &.active {
+      background-color: rgb(var(--v-theme-primary));
+      color: rgb(var(--v-theme-on-primary));
+      border-color: rgb(var(--v-theme-primary));
+    }
+
+    &.disabled {
+      color: var(--v-theme-grey-darken-1);
+      pointer-events: none;
+      opacity: 0.5;
+    }
+  }
+
+  .ellipsis {
+    padding: 6px 10px;
+    font-size: 14px;
+    color: var(--v-theme-grey-darken-2);
+  }
+
   .pagination-input :deep(.v-field) {
     height: 30px;
     min-height: 30px;
     width: 70px;
   }
-  .pagination-input :deep(.v-field__input) {
-    padding-top: 0;
-    padding-bottom: 0;
-    min-height: 30px;
+
+  @media (max-width: 600px) {
+    .page-btn {
+      min-width: 28px;
+      height: 28px;
+      font-size: 12px;
+      padding: 0 4px;
+    }
+    .ellipsis {
+      padding: 4px 8px;
+      font-size: 12px;
+    }
   }
 </style>

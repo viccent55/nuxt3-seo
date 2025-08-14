@@ -1,4 +1,5 @@
 import { useWindowSize } from "@vueuse/core";
+import { useGoTo } from "vuetify";
 import { useStore } from "~/store";
 
 const useVaraible = () => {
@@ -6,7 +7,11 @@ const useVaraible = () => {
   const store = useStore();
   const route = useRoute();
   const router = useRouter();
+  const isMobileSm = computed(() => width.value < 467);
   const isMobile = computed(() => width.value < 768);
+  const isIpad = computed(() => width.value <= 1024 && width.value >= 768);
+  const goto = useGoTo()
+
   const onCopy = (text: string) => {
     const el = document.createElement("textarea");
     el.value = text;
@@ -39,12 +44,16 @@ const useVaraible = () => {
     }
   };
   return {
+    isMobileSm,
     isMobile,
+    isIpad,
     store,
     route,
     router,
     onCopy,
     formatTime,
+    width,
+    goto,
   };
 };
 export default useVaraible;
