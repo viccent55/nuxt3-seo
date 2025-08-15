@@ -21,7 +21,7 @@ export default function useHome() {
       method: "POST",
       body: {
         field: "hot",
-        limit: 6,
+        limit: 9,
       },
       transform: (res: EmptyObjectType) => {
         return {

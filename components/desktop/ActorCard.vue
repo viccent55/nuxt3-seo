@@ -34,7 +34,7 @@
             @mouseleave="hoveredIndex = 0"
           >
             <NuxtLink
-              :to="`/actor/detail/${item.id}`"
+              :to="`/subject/${item.id}`"
               class="text-decoration-none"
               @mouseover="hoveredIndex = index"
               @mouseleave="hoveredIndex = -1"
