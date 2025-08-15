@@ -10,6 +10,7 @@
   const state = reactive({
     latests: [] as EmptyArrayType,
     paginate: {
+      cid: 0,
       page: 1,
       limit: 30,
       total: 0,
@@ -24,20 +25,21 @@
   });
 
   const route = useRoute();
-  const page = computed(() => state.paginate.page);
+  const catpage = computed(() => route.params.cid);
+  const page = computed(() => route.params.id);
   const { data: latest } = await useAsyncData<any>(
-    `latest-${route.params?.id}`,
+    `latest-${route.params?.cid}-${route.params?.id}`,
     () =>
       $fetch("/api/category", {
         method: "POST",
         body: {
-          cid: Number(route.params?.id),
-          page: state.paginate.page,
+          cid: route.params?.cid,
+          page: page.value,
           limit: state.paginate.limit,
         },
       }),
     {
-      watch: [page],
+      watch: [catpage, page],
       transform: (res) => {
         state.latests = [];
         // ✅ Filter or map your data here
@@ -48,7 +50,6 @@
       },
     }
   );
-
   watchEffect(() => {
     if (latest.value?.items) {
       state.latests = latest.value.items ?? [];
@@ -57,10 +58,6 @@
       }
     }
   });
-
-  const onPageChange = (newPage: number) => {
-    state.paginate.page = newPage;
-  };
 </script>
 
 <template>
@@ -73,7 +70,8 @@
     :tag-tops="tagTop?.items"
     :comments="comments"
     :adverts="store.advertisement"
-    @page-change="onPageChange"
+    :base-path="`/category/${catpage}/`"
   />
+  
 </template>
 <style scoped lang="scss"></style>

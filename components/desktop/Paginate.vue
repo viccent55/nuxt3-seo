@@ -20,32 +20,15 @@
   );
   const inputPage = ref(props.page);
 
-  watch(
-    () => props.page,
-    (v) => (inputPage.value = v)
-  );
-
   const clampPage = (page: number) =>
     Math.min(Math.max(1, page), maxPage.value);
 
-  const getPageUrl = (p: number) => `${props.basePath}?page=${p}`;
+  const getPageUrl = (p: number) => props.basePath + p;
 
   const goToPage = () => {
     const newPage = clampPage(inputPage.value);
-    navigateTo(getPageUrl(newPage))
-    if (newPage !== props.page) emit("page-change", newPage);
+    navigateTo(getPageUrl(newPage));
   };
-
-  watch(
-    () => route.query.page,
-    (newVal) => {
-      if (newVal) {
-        emit("page-change", Number(newVal));
-      } else {
-        emit("page-change", 1);
-      }
-    }
-  );
 
   const visiblePages = computed(() => {
     const total = maxPage.value;
@@ -68,6 +51,11 @@
       pages.push(total);
     }
     return pages;
+  });
+  watchEffect(() => {
+    if (route.params.id) {
+      emit("page-change");
+    }
   });
 </script>
 
@@ -103,8 +91,8 @@
             v-if="p !== '…'"
             :to="getPageUrl(Number(p))"
             class="page-btn"
-            :class="{ active: p === page }"
-            :aria-current="p === page ? 'page' : undefined"
+            :class="{ active: p == (route.params.id || 1) }"
+            :aria-current="p == route.params.id ? 'page' : undefined"
           >
             {{ p }}
           </NuxtLink>
@@ -179,6 +167,7 @@
     }
 
     &.active {
+      pointer-events: none;
       background-color: rgb(var(--v-theme-primary));
       color: rgb(var(--v-theme-on-primary));
       border-color: rgb(var(--v-theme-primary));

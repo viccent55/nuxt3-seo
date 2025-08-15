@@ -21,9 +21,9 @@
           class="text-button"
           height="36"
           density="compact"
-          :to="`/category/${category.id}`"
+          :to="`/category/${category.id}/1`"
           :class="{
-            'router-link-exact-active': category.id == route.params.id,
+            'router-link-exact-active': category.id == route.params.cid,
           }"
         >
           {{ category.name }}

@@ -10,7 +10,7 @@
   <v-container class="pt-0">
     <!-- Categories -->
     <DesktopHomeCategoryMenu />
-    <NuxtPage />
+    <DesktopCategoryPageContent />
     <v-row class="mt-2">
       <v-col
         cols="12"

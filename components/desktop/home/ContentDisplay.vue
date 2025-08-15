@@ -43,6 +43,10 @@
       type: Object as PropType<EmptyObjectType>,
       default: () => ({}),
     },
+    basePath: {
+      type: String,
+      default: () => "/page/",
+    },
   });
 
   const getAdvertAtIndex = (index: number) => {
@@ -53,7 +57,7 @@
 
   const emit = defineEmits(["page-change"]);
   const sideAds = computed(() => props.adverts.POSITION_HOME_RIGHT?.[0]);
-  const { isMobile } = useVariable();
+  const { isMobile, route } = useVariable();
   const chunkedSubjects = computed(() => {
     const chunkSize = 2;
     const chunks = [];
@@ -63,28 +67,23 @@
     return chunks;
   });
 
-  const gotoLatestSection = () => {
+  const gotoLatestSection = async () => {
+    await nextTick();
     const element = document.getElementById("latest-articles");
-
-    // 2. Find your fixed header element.
-    // Replace '.v-app-bar' with the actual class or ID of your header component.
     const header = document.querySelector(".v-app-bar");
+    if (!element || !header) return;
+    const offset = header.clientHeight;
+    const elementPosition = element.offsetTop;
+    const targetPosition = elementPosition - offset;
 
-    // Check if both elements exist
-    if (element && header) {
-      // 3. Calculate the target scroll position.
-      // We subtract the header's height to prevent it from being hidden.
-      const offset = header.clientHeight;
-      const elementPosition = element.offsetTop;
-      const targetPosition = elementPosition - offset;
-
-      // 4. Use window.scrollTo to perform the scroll with the new position.
-      window.scrollTo({
-        top: targetPosition,
-        behavior: "smooth",
-      });
-    }
+    window.scrollTo({
+      top: targetPosition,
+      behavior: "smooth",
+    });
   };
+  const displaySubject = computed(() => {
+    return route?.name == "index" || route?.params.page == "page";
+  });
 </script>
 <template>
   <v-row>
@@ -95,10 +94,10 @@
     >
       <!-- Latest topics -->
       <SectionTitle
+        v-if="displaySubject"
         title="最新专题"
-        v-if="$route?.name == 'index'"
       />
-      <section v-if="$route?.name == 'index'">
+      <section v-if="displaySubject">
         <v-carousel
           v-if="isMobile"
           :show-arrows="subjects.length > 2"
@@ -218,9 +217,9 @@
           :page="paginate.page"
           :total="paginate.total"
           :limit="paginate.limit"
+          :basePath="basePath"
           @page-change="
             (v: number) => {
-              emit('page-change', v);
               gotoLatestSection();
             }
           "

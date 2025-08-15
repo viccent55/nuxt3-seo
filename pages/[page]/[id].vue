@@ -1,9 +1,9 @@
-<script lang="ts" setup>
+<script setup lang="ts">
   definePageMeta({
     keepalive: true,
   });
 </script>
 
 <template>
-  <DesktopSubjectPage />
+  <DesktopHomePageContent />
 </template>
