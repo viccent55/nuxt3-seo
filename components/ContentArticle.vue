@@ -22,23 +22,23 @@
     loading.value = true;
     try {
       if (!props.content || !contentRef.value) return;
-      // put raw content into container
-      contentRef.value.innerHTML = props.content;
 
-      const images = Array.from(
-        contentRef.value.querySelectorAll("img[data-lazy-src]")
-      );
+      // Parse content using DOMParser for images
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(props.content, "text/html");
 
+      // 🔹 decrypt images in parallel
+      const images = Array.from(doc.querySelectorAll("img[data-lazy-src]"));
       await Promise.all(
-        images.map(async (img) => {
+        images.map(async (img: EmptyObjectType) => {
           const lazySrc = img.getAttribute("data-lazy-src");
           if (!lazySrc) return;
 
           try {
-            // get the decrypted value for this image individually
-            const decrypted = await decryptImage(lazySrc);
+            const decrypted = await decryptImage(lazySrc); // use returned value per image
             if (decrypted) {
-              img.setAttribute("src", decrypted);
+              img.src = decrypted;
+              img.removeAttribute("data-lazy-src");
             }
           } catch (err) {
             console.error("Error decrypting image:", err);
@@ -46,7 +46,13 @@
         })
       );
 
-      // 🔹 handle videos
+      // Insert the parsed & decrypted content into the container
+      contentRef.value.innerHTML = "";
+      Array.from(doc.body.childNodes).forEach((node) => {
+        contentRef.value?.appendChild(node);
+      });
+
+      // 🔹 handle videos in the inserted content
       const videos = contentRef.value.querySelectorAll("video");
       videos.forEach((video: HTMLVideoElement) => {
         video.style.display = "block";
@@ -56,8 +62,7 @@
         if (!src) return;
 
         if (video.canPlayType("application/vnd.apple.mpegurl")) {
-          // Safari native
-          video.src = src;
+          video.src = src; // Safari native
         } else if (Hls.isSupported()) {
           const hls = new Hls();
           hls.loadSource(src);
