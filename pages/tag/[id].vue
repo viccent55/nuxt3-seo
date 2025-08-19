@@ -72,12 +72,10 @@
           cols="12"
           class="px-0"
         >
-          <h2 class="text-h6 font-weight-bold mb-2">标签名称</h2>
-
-          <div class="text-caption">
-            专题介绍专题介绍专题介绍专题介绍专题介绍专题介绍专题介绍专题介绍专题介绍专题介绍介绍专题介绍专题介绍专题介绍专
-            题绍专题绍专题绍专题绍专题绍专题绍专题绍专题绍专题绍专题绍介绍专题介绍专题
-          </div>
+          <h2 class="text-h6 font-weight-bold mb-2">{{ tagDetail?.name }}</h2>
+          <!-- <div class="text-caption">
+           {{ tagDetail?.description }}
+          </div> -->
         </v-col>
         <!-- Topic summary card -->
         <h2 class="text-h6 font-weight-bold mb-2">最新文章</h2>

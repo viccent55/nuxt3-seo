@@ -9,6 +9,7 @@ export const useDecryption = () => {
         decryptedImage.value = await window.decryptImage(
           `https://pic.rfstl.cn${imageUrl}`
         );
+        return decryptedImage.value; // Return the decrypted image URL
       } catch (e) {
         console.error("Decryption failed:", e);
       }

@@ -70,7 +70,7 @@
               class="pa-5 cursor-pointer rounded"
               :class="isHovering ? 'hover-shadow' : 'bg-none'"
               color="surface"
-              min-height="220"
+              min-height="230"
             >
               <v-row dense>
                 <v-col
@@ -118,12 +118,13 @@
                   <v-row dense>
                     <v-col
                       :cols="item?.posts.length > 2 ? 6 : 12"
-                      v-for="post in item?.posts"
+                      v-for="(post, index) in item?.posts"
                       :key="post.id"
                     >
                       <NuxtLink
+                        v-if="index < 4"
                         :to="`/article/${post.id}`"
-                        class="text-decoration-none"
+                        class="text-decoration-none text-grey"
                       >
                         <div
                           class="d-flex align-center active-color cursor-pointer"
@@ -154,7 +155,6 @@
       base-path="/actor/page/"
       @page-change="
         ($event) => {
-          state.page = $event;
           goto('actors');
         }
       "

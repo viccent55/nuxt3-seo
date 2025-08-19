@@ -30,6 +30,8 @@
     onCollect,
     commentSection,
     onViewCount,
+    isLiked,
+    isCollected,
   } = useArticleDetail();
   const floatingBarStyles = ref({});
 
@@ -168,10 +170,16 @@
                 class="cursor-pointer"
                 @click="onCollect"
               >
-                <v-icon color="grey">mdi-star</v-icon>
+                <v-icon :color="isCollected ? 'primary' : 'grey'">
+                  mdi-star
+                </v-icon>
               </v-avatar>
               <span class="f12 text-grey">
-                {{ articleDetail?.collect_count }}
+                {{
+                  isCollected
+                    ? articleDetail?.collect_count + 1
+                    : articleDetail?.collect_count
+                }}
               </span>
             </div>
             <div class="d-flex flex-column ga-1 align-center">
@@ -181,9 +189,17 @@
                 class="cursor-pointer"
                 @click="onLikeArticle"
               >
-                <v-icon color="grey">mdi-thumb-up-outline</v-icon>
+                <v-icon :color="isLiked ? 'primary' : 'grey'">
+                  mdi-thumb-up-outline
+                </v-icon>
               </v-avatar>
-              <span class="f12 text-grey">{{ articleDetail?.like_count }}</span>
+              <span class="f12 text-grey">
+                {{
+                  isLiked
+                    ? articleDetail?.like_count + 1
+                    : articleDetail?.like_count
+                }}
+              </span>
             </div>
             <div
               class="d-flex flex-column ga-1 align-center cursor-pointer"

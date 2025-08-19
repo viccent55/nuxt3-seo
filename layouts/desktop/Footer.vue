@@ -1,5 +1,35 @@
 <script lang="ts" setup>
-  const links = ["Home", "About Us", "Team", "Services", "Blog", "Contact Us"];
+  import { NuxtLink } from "#components";
+  import { useStore } from "~/store";
+
+  const store = useStore();
+  const state = reactive({
+    bottom_menu: [] as { name: string; url: string }[],
+    friend_link: [] as { name: string; url: string }[],
+  });
+  watch(
+    () => store.configuration,
+    (v) => {
+      if (v.bottom_menu) {
+        const result = v.bottom_menu.split("\n").map((line: string) => {
+          const [name, url] = line.split("|");
+          return {
+            name,
+            url: url.startsWith("/page/") ? url.replace("/page", "") : url,
+          };
+        });
+
+        state.bottom_menu = result;
+      }
+      if (v.friend_link) {
+        state.friend_link = v.friend_link;
+      }
+    },
+    {
+      immediate: true,
+      deep: true,
+    }
+  );
 </script>
 
 <template>
@@ -15,10 +45,17 @@
             md="7"
           >
             <div class="d-flex flex-wrap flex-grow-1 ga-3 ga-md-8">
-              <span>用户投稿</span>
-              <span>商务合作</span>
-              <span>加入我们</span>
-              <span>关于我们</span>
+              <div>用户投稿:</div>
+              <div class="d-flex gap-md-5 flex-grow-1 ga-3">
+                <NuxtLink
+                  v-for="item in state.bottom_menu"
+                  :key="item.name"
+                  :to="item.url"
+                  class="text-decoration-none text-black"
+                >
+                  {{ item.name }}
+                </NuxtLink>
+              </div>
             </div>
           </v-col>
           <v-col
@@ -32,16 +69,23 @@
           </v-col>
         </v-row>
         <v-row dense>
-          <v-col cols="12">
+          <v-col
+            cols="12"
+            v-if="$route.name == 'index'"
+          >
             <div class="d-flex flex-wrap flex-grow-1 ga-3 ga-md-5 align-center">
-              <div>用户投稿</div>
+              <div>友情链接 :</div>
               <div class="d-flex ga-md-5 flex-grow-1 ga-3 text-caption">
-                <span>商务合作</span>
-                <span>加入我们</span>
-                <span>商务合作</span>
-                <span>加入我们</span>
-                <span>关于我们</span>
-                <span>关于我们</span>
+                <NuxtLink
+                  v-for="(item, index) in state.friend_link"
+                  :key="index"
+                  :to="item.url"
+                  class="text-decoration-none text-black"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {{ item.name }}
+                </NuxtLink>
               </div>
             </div>
           </v-col>
@@ -50,7 +94,10 @@
     </v-container>
     <v-footer class="d-flex justify-center flex-wrap flex-grow-1">
       <v-sheet class="pa-4">
-        Copyright@山东裕玩具有限公司版权所有|鲁ICP备16039348号公安备案号：37021302000181
+        {{
+          store.configuration?.copyright ||
+          "© Copyright@山东裕玩具有限公司版权所有|"
+        }}
       </v-sheet>
     </v-footer>
   </v-container>

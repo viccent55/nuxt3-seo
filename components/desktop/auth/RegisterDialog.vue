@@ -36,7 +36,11 @@
         method: "POST",
         body: state.form,
       });
-      snackbar.showSnackbar("登录成功", "success");
+      if (response.code == 0 || response.code == 200) {
+        snackbar.showSnackbar("登录成功", "success", "top center");
+      } else {
+        snackbar.showSnackbar(response.msg, "error", "top center");
+      }
     } catch (error) {
       console.error("Login failed:", error);
     }

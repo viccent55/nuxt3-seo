@@ -14,7 +14,7 @@
       with_actor: 1,
       with_post: 1,
       page: 1,
-      limit: 6,
+      limit: 4,
     },
   });
   const { postFilter, actorFilter, tagTop, comments, subjectFilter, store } =

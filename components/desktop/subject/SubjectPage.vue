@@ -3,7 +3,7 @@
     keepalive: true,
   });
   useSeo({});
-  const { isMobile, store, goto } = useVariable();
+  const { isMobile, store, goto, route } = useVariable();
   const state = reactive({
     data: [] as EmptyArrayType,
     page: {
@@ -14,24 +14,35 @@
     },
     total: 0,
   });
-  const fetchData = async () => {
-    state.data = [];
-    const res = await $fetch<EmptyObjectType>("/api/subject/latest", {
-      method: "POST",
-      body: state.page,
-    });
-    state.data = res.data?.items || [];
-    state.total = res.data?.count || 0;
-  };
-
-  await fetchData();
-
-  watch(
-    () => state.page,
-    (v) => {
-      fetchData();
+  const page = computed(() => Number(route.params.id) || 1);
+  const { data: subjects } = await useAsyncData<any>(
+    `subject-${page.value}`,
+    () =>
+      $fetch("/api/subject/latest", {
+        method: "POST",
+        body: {
+          with_actor: 1,
+          with_post: 1,
+          page: page.value,
+          limit: state.page.limit,
+        },
+      }),
+    {
+      watch: [page],
+      transform: (res: EmptyObjectType) => {
+        return {
+          items: res.data.items || [],
+          count: res.data.count || 0,
+        };
+      },
     }
   );
+  watchEffect(() => {
+    if (subjects?.value.items) {
+      state.data = subjects.value.items ?? [];
+      state.total = subjects.value.count ?? [];
+    }
+  });
 </script>
 <template>
   <v-container>
@@ -63,7 +74,7 @@
               class="pa-5 cursor-pointer rounded"
               :class="isHovering ? 'hover-shadow' : 'bg-none'"
               color="surface"
-              min-height="300"
+              min-height="230"
             >
               <v-row dense>
                 <v-col
@@ -84,18 +95,37 @@
                 >
                   <div class="d-flex align-center ga-2 mb-1">
                     <v-chip
-                      v-for="(item, index) in ['热点', '推荐', '经典']"
-                      :key="index"
-                      :color="
-                        index == 0 ? 'primary' : index == 1 ? 'green' : 'error'
-                      "
+                      v-if="item.hot_sort > 0"
+                      color="primary"
                       flat
                       hide-details
                       size="x-small"
                       variant="flat"
                       class="rounded-0"
                     >
-                      {{ item }}
+                      热点
+                    </v-chip>
+                    <v-chip
+                      v-if="item.recommend_sort > 0"
+                      color="green"
+                      flat
+                      hide-details
+                      size="x-small"
+                      variant="flat"
+                      class="rounded-0"
+                    >
+                      推荐
+                    </v-chip>
+                    <v-chip
+                      v-if="item.classic_sort > 0"
+                      color="error"
+                      flat
+                      hide-details
+                      size="x-small"
+                      variant="flat"
+                      class="rounded-0"
+                    >
+                      经典
                     </v-chip>
                     <h3 class="text-subtitle-1 font-weight-medium">
                       {{ item.name }}
@@ -136,10 +166,11 @@
                   <v-row dense>
                     <v-col
                       :cols="item?.posts.length > 2 ? 6 : 12"
-                      v-for="post in item.posts"
+                      v-for="(post, index) in item.posts"
                       :key="post.id"
                     >
                       <NuxtLink
+                        v-if="index < 4"
                         :to="`/article/${post.id}`"
                         class="text-decoration-none"
                       >
@@ -172,8 +203,7 @@
       :limit="state.page.limit"
       base-path="/subject/page/"
       @page-change="
-        ($event) => {
-          state.page.page = $event;
+        (p: number) => {
           goto('subjects');
         }
       "

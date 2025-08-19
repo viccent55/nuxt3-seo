@@ -38,20 +38,19 @@ export default function useArticleDetail() {
   const storeDialog = useGlobalDialog();
   const accessToken = useCookie("access_token");
 
+  const isLiked = ref(false);
   const onLikeArticle = async () => {
     if (!accessToken.value) {
       return storeDialog.onLogin();
     }
     try {
-      const { data: response, error } = await useApiFetch(
-        "/api/article/like",
-        {
-          method: "POST",
-          body: {
-            id: route.params.id,
-          },
-        }
-      );
+      const { data: response, error } = await useApiFetch("/api/article/like", {
+        method: "POST",
+        body: {
+          id: route.params.id,
+        },
+      });
+      isLiked.value = !isLiked.value;
     } catch (error) {
       console.error("Login failed:", error);
     }
@@ -66,7 +65,7 @@ export default function useArticleDetail() {
       commentSection.value?.$el?.scrollIntoView({ behavior: "smooth" });
     }
   };
-
+  const isCollected = ref(false);
   const onCollect = async () => {
     if (!accessToken.value) {
       return storeDialog.onLogin();
@@ -78,7 +77,7 @@ export default function useArticleDetail() {
           id: route.params?.id,
         },
       });
-      console.log("collect detail", response);
+      isCollected.value = !isCollected.value; // Toggle collection status
       // navigateTo("/dashboard");
     } catch (error) {
       console.error("Login failed:", error);
@@ -101,5 +100,7 @@ export default function useArticleDetail() {
     onCollect,
     commentSection,
     onViewCount,
+    isLiked,
+    isCollected,
   };
 }

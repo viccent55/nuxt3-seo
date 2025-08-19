@@ -5,6 +5,7 @@
   import SectionTitle from "~/components/desktop/SectionTitle.vue";
   import SidebarSection from "~/components/desktop/SidebarSection.vue";
   import AdvertSlot from "~/components/desktop/AdvertSlot.vue";
+  import { useStore } from "~/store";
 
   const props = defineProps({
     subjects: {
@@ -49,13 +50,15 @@
     },
   });
 
+  const store = useStore();
+  const emit = defineEmits(["page-change"]);
+
   const getAdvertAtIndex = (index: number) => {
     const list = props.adverts.POSITION_HOME_LIST || [];
     if (!Array.isArray(list)) return null;
     return list.find((ad: any) => ad.position === index) || null;
   };
 
-  const emit = defineEmits(["page-change"]);
   const sideAds = computed(() => props.adverts.POSITION_HOME_RIGHT?.[0]);
   const { isMobile, route } = useVariable();
   const chunkedSubjects = computed(() => {
@@ -233,7 +236,10 @@
       md="4"
       class="d-none d-sm-block"
     >
-      <SidebarSection title="推荐文章">
+      <SidebarSection
+        title="推荐文章"
+        :more="false"
+      >
         <v-sheet class="pa-3">
           <template
             v-for="(item, index) in postFilters"
@@ -252,58 +258,10 @@
         </v-sheet>
       </SidebarSection>
 
-      <!-- <SidebarSection title="活动参与">
-        <v-carousel
-          height="200"
-          show-arrows
-          hide-delimiters
-          hide-delimiter-background
-        >
-          <template v-slot:prev="{ props }">
-            <v-btn
-              variant="elevated"
-              icon="mdi-chevron-left"
-              @click="props.onClick"
-              density="compact"
-            ></v-btn>
-          </template>
-          <template v-slot:next="{ props }">
-            <v-btn
-              variant="elevated"
-              @click="props.onClick"
-              density="compact"
-              icon="mdi-chevron-right"
-            ></v-btn>
-          </template>
-          <v-carousel-item
-            v-for="(slide, i) in 2"
-            :key="i"
-          >
-            <v-img
-              height="200"
-              src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQ519BsNFaVDx_YmDcTJ7T2qOnXbXKJFL9RmmxzjamEeVWNRGwB"
-              cover
-              lazy-src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQ519BsNFaVDx_YmDcTJ7T2qOnXbXKJFL9RmmxzjamEeVWNRGwB"
-            >
-              <div
-                class="d-flex fill-height align-end pa-4"
-                style="
-                  background: linear-gradient(
-                    to top,
-                    rgba(0, 0, 0, 0.2) 20%,
-                    transparent
-                  );
-                "
-              >
-                <div class="text-white text-subtitle-2 truncate-2">
-                  这里是轮播图的标题，可能会很长，需要进行两行截断显示，多余的部分会变成省略号...
-                </div>
-              </div>
-            </v-img>
-          </v-carousel-item>
-        </v-carousel>
-      </SidebarSection> -->
-      <SidebarSection title="热门人物">
+      <SidebarSection
+        title="热门人物"
+        :goto="actorFilters?.length > 0 ? `/actor/${actorFilters[0].id}` : ''"
+      >
         <v-card
           flat
           class="pa-2"
@@ -316,7 +274,7 @@
               class="text-center cursor-pointer"
             >
               <NuxtLink
-                :to="`/actor/detail/${item.id}`"
+                :to="`/actor/${item.id}`"
                 class="text-decoration-none"
               >
                 <v-avatar
@@ -336,7 +294,10 @@
           </v-row>
         </v-card>
       </SidebarSection>
-      <SidebarSection title="热门专题">
+      <SidebarSection
+        title="热门专题"
+        :goto="subjectsCard?.length > 0 ? `/subject/${subjectsCard[0].id}` : ''"
+      >
         <DesktopActorCard :items="subjectsCard" />
       </SidebarSection>
 
@@ -346,7 +307,7 @@
         </v-card>
       </SidebarSection>
 
-      <SidebarSection title="热门评论">
+      <SidebarSection title="热门评论" :more="false">
         <v-card
           elevation="0"
           variant="flat"
@@ -389,7 +350,10 @@
           </v-list>
         </v-card>
       </SidebarSection>
-      <SidebarSection title="最新地址">
+      <SidebarSection
+        title="最新地址"
+        :more="false"
+      >
         <v-card
           elevation="0"
           class="pa-4"
@@ -405,11 +369,11 @@
               <v-list-item-title class="text-caption">
                 最新地址：
                 <a
-                  href="https://www.google.com"
+                  :href="store.configuration?.website_url"
                   target="_blank"
                   class="text-primary text-caption font-weight-medium"
                 >
-                  https://www.google.com
+                  {{ store.configuration?.website_url }}
                 </a>
               </v-list-item-title>
             </v-list-item>
@@ -421,11 +385,11 @@
               <v-list-item-title class="text-caption">
                 备用地址：
                 <a
-                  href="https://www.google.com"
+                  :href="store.configuration?.latest_url"
                   target="_blank"
                   class="text-primary text-caption font-weight-medium"
                 >
-                  https://www.google.com
+                  {{ store.configuration?.latest_url }}
                 </a>
               </v-list-item-title>
             </v-list-item>
@@ -433,16 +397,15 @@
             <v-list-item
               class="rounded-sm"
               color="primary"
-              variant="tonal"
             >
               <v-list-item-title class="text-caption">
                 永久域名：
                 <a
-                  href="https://www.example.com"
+                  :href="store.configuration?.backup_url"
                   target="_blank"
                   class="text-primary text-caption font-weight-medium"
                 >
-                  https://www.example.com
+                  {{ store.configuration?.backup_url }}
                 </a>
               </v-list-item-title>
             </v-list-item>
@@ -479,7 +442,10 @@
           </v-sheet>
         </v-row>
       </SidebarSection>
-      <SidebarSection title="热门标签">
+      <SidebarSection
+        title="热门标签"
+        :goto="tagTops?.length > 0 ? `/tag/${tagTops[0].id}` : ''"
+      >
         <v-row
           class="px-2 pt-2 pb-4"
           dense

@@ -40,7 +40,7 @@ export default function useHome() {
         with_actor: 1,
         with_post: 1,
         page: 1,
-        limit: 6,
+        limit: 8,
       },
       transform: (res: EmptyObjectType) => {
         return {

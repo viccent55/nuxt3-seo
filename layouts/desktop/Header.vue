@@ -8,9 +8,45 @@
   const storeDialog = useGlobalDialog();
   const { isMobile } = useVariable();
   const state = reactive({
-    search: "",
     drawer: false,
   });
+
+  const searchState = reactive({
+    input: "",
+    items: [] as any[],
+    loading: false,
+  });
+
+  let debounceTimer: NodeJS.Timeout;
+
+  const fetchSearchResults = () => {
+    $fetch("/api/home/search", {
+      method: "POST",
+      body: { keyword: searchState.input },
+    })
+      .then((res: any) => {
+        searchState.items = res.data.items || [];
+      })
+      .finally(() => {
+        searchState.loading = false;
+      });
+  };
+
+  watch(
+    () => searchState.input,
+    (newValue) => {
+      clearTimeout(debounceTimer);
+      if (newValue && newValue.trim() !== "") {
+        searchState.loading = true;
+        debounceTimer = setTimeout(() => {
+          fetchSearchResults();
+        }, 500);
+      } else {
+        searchState.items = [];
+        searchState.loading = false;
+      }
+    }
+  );
 
   const openLogin = () => {
     storeDialog.onLogin();
@@ -73,8 +109,12 @@
           class="d-flex justify-end align-center ga-2 mt-sm-0"
         >
           <!-- Search Bar (only shown on sm+) -->
-          <v-text-field
-            v-model="state.search"
+          <v-autocomplete
+            v-model:search="searchState.input"
+            :items="searchState.items"
+            :loading="searchState.loading"
+            item-title="title"
+            item-value="id"
             hide-details
             density="compact"
             variant="outlined"
@@ -83,7 +123,29 @@
             class="d-none d-sm-flex search"
             style="max-width: 200px"
             rounded="lg"
-          />
+            no-filter
+            auto-select-first
+            clearable
+          >
+            <template v-slot:item="{ props, item }">
+              <v-list-item
+                style="max-width: 300px"
+                v-bind="props"
+                :to="`/article/${item.raw.id}`"
+              >
+                <template #title>
+                  <div class="text-body-2">{{ item.raw.title }}</div>
+                </template>
+              </v-list-item>
+            </template>
+            <template v-slot:no-data>
+              <div class="pa-2 text-body-2">
+                {{
+                  searchState.input ? "没有找到结果" : "请输入关键词开始搜索"
+                }}
+              </div>
+            </template>
+          </v-autocomplete>
           <!-- Mobile Menu Icon -->
           <v-btn
             icon

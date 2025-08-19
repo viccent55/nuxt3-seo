@@ -11,71 +11,77 @@
       default: 4,
     },
   });
+
+  // your composable
   const { decryptImage, decryptedImage } = useDecryption();
-  const decryptedContent = ref("");
+
   const contentRef = ref<HTMLDivElement | null>(null);
   const loading = ref(false);
-  // Watch for changes in the article detail
+
   const initImgAndVideo = async () => {
     loading.value = true;
     try {
-      if (props.content && typeof window !== "undefined") {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(props.content, "text/html");
-        // Decrypt images
-        const images = doc.querySelectorAll("img[data-lazy-src]");
-        if (images && images.length) {
-          await Promise.all(
-            Array.from(images).map(async (img: EmptyObjectType) => {
-              const lazySrc = img.getAttribute("data-lazy-src");
-              if (lazySrc) {
-                try {
-                  await decryptImage(lazySrc);
-                  img.src = decryptedImage.value;
-                } catch (error) {
-                  console.error("Error decrypting image:", error);
-                }
-              } else {
-                console.warn("Lazy source is undefined");
-              }
-            })
-          );
-        }
-        // Handle videos
-        const videos = doc.querySelectorAll("video");
-        await Promise.all(
-          Array.from(videos).map((video: HTMLVideoElement) => {
-            // Reserve video player space
-            video.style.display = "block";
-            video.style.width = "100%";
-            video.style.aspectRatio = "16 / 9"; // adjust if needed
-            video.preload = "metadata";
+      if (!props.content || !contentRef.value) return;
+      // put raw content into container
+      contentRef.value.innerHTML = props.content;
 
-            const src = video.getAttribute("src");
-            if (src && Hls.isSupported()) {
-              const hls = new Hls();
-              hls.loadSource(src);
-              hls.attachMedia(video);
+      const images = Array.from(
+        contentRef.value.querySelectorAll("img[data-lazy-src]")
+      );
+
+      await Promise.all(
+        images.map(async (img) => {
+          const lazySrc = img.getAttribute("data-lazy-src");
+          if (!lazySrc) return;
+
+          try {
+            // get the decrypted value for this image individually
+            const decrypted = await decryptImage(lazySrc);
+            if (decrypted) {
+              img.setAttribute("src", decrypted);
+              img.removeAttribute("data-lazy-src");
             }
-          })
-        );
-        decryptedContent.value = doc.body.innerHTML;
-      }
+          } catch (err) {
+            console.error("Error decrypting image:", err);
+          }
+        })
+      );
+
+      // 🔹 handle videos
+      const videos = contentRef.value.querySelectorAll("video");
+      videos.forEach((video: HTMLVideoElement) => {
+        video.style.display = "block";
+        video.style.width = "100%";
+
+        const src = video.getAttribute("src");
+        if (!src) return;
+
+        if (video.canPlayType("application/vnd.apple.mpegurl")) {
+          // Safari native
+          video.src = src;
+        } else if (Hls.isSupported()) {
+          const hls = new Hls();
+          hls.loadSource(src);
+          hls.attachMedia(video);
+        }
+      });
     } catch (e) {
-      console.log(e);
+      console.error("initImgAndVideo error:", e);
     } finally {
       loading.value = false;
     }
   };
+
+  // re-run when content changes
   watchEffect(() => {
     initImgAndVideo();
   });
 </script>
+
 <template>
   <div
     ref="contentRef"
     class="mt-5 text-body-1 article-content"
     style="max-width: 100%"
-    v-html="loading ? props.content : decryptedContent"
-  ></div>
+  />
 </template>

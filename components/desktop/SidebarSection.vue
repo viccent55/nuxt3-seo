@@ -8,6 +8,10 @@
       type: Boolean,
       default: true,
     },
+    goto: {
+      type: String,
+      required: false,
+    },
   });
 </script>
 
@@ -29,6 +33,7 @@
         v-if="more"
         variant="text"
         class="text-caption"
+        :to="goto"
       >
         MORE
         <v-icon>mdi-chevron-right</v-icon>
