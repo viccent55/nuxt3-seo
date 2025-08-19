@@ -45,7 +45,6 @@
             md="7"
           >
             <div class="d-flex flex-wrap flex-grow-1 ga-3 ga-md-8">
-              <div>用户投稿:</div>
               <div class="d-flex gap-md-5 flex-grow-1 ga-3">
                 <NuxtLink
                   v-for="item in state.bottom_menu"
@@ -94,10 +93,7 @@
     </v-container>
     <v-footer class="d-flex justify-center flex-wrap flex-grow-1">
       <v-sheet class="pa-4">
-        {{
-          store.configuration?.copyright ||
-          "© Copyright@山东裕玩具有限公司版权所有|"
-        }}
+        {{ store.configuration?.copyright || "--" }}
       </v-sheet>
     </v-footer>
   </v-container>

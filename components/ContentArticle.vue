@@ -39,7 +39,6 @@
             const decrypted = await decryptImage(lazySrc);
             if (decrypted) {
               img.setAttribute("src", decrypted);
-              img.removeAttribute("data-lazy-src");
             }
           } catch (err) {
             console.error("Error decrypting image:", err);

@@ -106,17 +106,6 @@
             {{ articleDetail?.intro }}
           </v-sheet>
 
-          <!-- Ad Placeholder -->
-          <v-sheet
-            flat
-            color="transparent"
-          >
-            <Image
-              :src="articleDetail?.cover"
-              height="100%"
-              width="auto"
-            />
-          </v-sheet>
           <!-- Article Body -->
           <!-- {{ articleDetail?.content }} -->
           <ContentArticle

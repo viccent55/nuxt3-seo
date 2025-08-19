@@ -75,12 +75,16 @@
               v-for="item in subjectFilters?.items"
               :key="item.id"
             >
-              <ArticleListItem
-                :item="item"
-                class="pa-2 cursor-pointer"
-                @click="$router.push('/article/' + item.id)"
-                route-param="/subject"
-              />
+              <NuxtLink
+                :to="`/article/${item.id}`"
+                class="text-decoration-none"
+              >
+                <ArticleListItem
+                  :item="item"
+                  class="pa-2 cursor-pointer"
+                  route-param="/subject"
+                />
+              </NuxtLink>
             </template>
           </v-col>
         </template>
@@ -126,7 +130,10 @@
               cols="4"
               class="text-center cursor-pointer"
             >
-              <NuxtLink :to="`/actor/${item.id}`" class="text-decoration-none text-grey">
+              <NuxtLink
+                :to="`/actor/${item.id}`"
+                class="text-decoration-none text-grey"
+              >
                 <v-avatar
                   size="45"
                   class="mb-1"
