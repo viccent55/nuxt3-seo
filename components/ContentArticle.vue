@@ -84,8 +84,34 @@
 
 <template>
   <div
-    ref="contentRef"
     class="mt-5 text-body-1 article-content"
     style="max-width: 100%"
-  />
+  >
+    <!-- Raw/original content while decrypting -->
+    <div
+      v-if="loading"
+      v-html="content"
+    />
+
+    <!-- Final decrypted content -->
+    <div
+      v-show="!loading"
+      ref="contentRef"
+    />
+  </div>
 </template>
+
+<style scoped lang="scss">
+  .article-content {
+    max-width: 100% !important;
+    width: 100%;
+    display: block;
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin-inline: auto;
+    }
+  }
+</style>
