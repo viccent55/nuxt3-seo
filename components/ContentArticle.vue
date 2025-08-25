@@ -19,8 +19,8 @@
   const loading = ref(false);
 
   const initImgAndVideo = async () => {
+    loading.value = true;
     try {
-      loading.value = true;
       if (!props.content) return;
       // Parse content using DOMParser for images
       const parser = new DOMParser();
@@ -32,12 +32,12 @@
         images.map(async (img: EmptyObjectType) => {
           const lazySrc = img.getAttribute("data-lazy-src");
           if (!lazySrc) return;
-
+          console.log(lazySrc)
           try {
             const decrypted = await decryptImage(lazySrc); // use returned value per image
             if (decrypted) {
-              img.src = decrypted;
               img.removeAttribute("data-lazy-src");
+              img.src = decrypted;
             }
           } catch (err) {
             console.error("Error decrypting image:", err);
@@ -46,7 +46,7 @@
       );
 
       // Insert the parsed & decrypted content into the container
-      contentRef.value.innerHTML = "";
+      // contentRef.value.innerHTML = "";
       Array.from(doc.body.childNodes).forEach((node) => {
         contentRef.value?.appendChild(node);
       });

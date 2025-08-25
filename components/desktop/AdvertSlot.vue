@@ -5,14 +5,21 @@
       required: true,
     },
     heightImage: {
-      type: Number,
-      default: 120,
+      type: String || Number,
+      default: "120px",
+    },
+    class: {
+      type: String,
+      default: () => "",
     },
   });
 </script>
 
 <template>
-  <v-card elevation="0">
+  <v-card
+    elevation="0"
+    :class="class"
+  >
     <NuxtLink
       :to="advert?.url || '#'"
       target="_blank"

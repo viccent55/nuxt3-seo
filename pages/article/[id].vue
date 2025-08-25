@@ -123,17 +123,6 @@
             :content="articleDetail?.content"
             :skeleton="16"
           />
-          <!-- Ads after content -->
-          <v-row>
-            <v-col
-              cols="12"
-              v-for="(item, index) in store.advertisement
-                ?.POSITION_DETAIL_AFTER_CONTENT"
-              :key="index"
-            >
-              <DesktopAdvertSlot :advert="item" />
-            </v-col>
-          </v-row>
           <div class="my-4 d-flex ga-2 justify-end">
             <div
               v-if="articleDetail?.tags?.length"
@@ -149,6 +138,18 @@
               </v-chip>
             </div>
           </div>
+          <!-- Ads after content -->
+          <v-row>
+            <v-col
+              cols="12"
+              v-for="(item, index) in store.advertisement
+                ?.POSITION_DETAIL_AFTER_CONTENT"
+              :key="index"
+            >
+              <DesktopAdvertSlot :advert="item" />
+            </v-col>
+          </v-row>
+
           <!-- <div class="d-flex justify-center ga-5">
             <v-btn
               v-if="articleDetail?.prev"
@@ -284,36 +285,19 @@
           elevation="0"
           class="mt-5"
         >
-          <v-carousel
-            hide-delimiters
-            height="auto"
-            class="mobile-carousel"
-            cycle
-          >
-            <template v-slot:prev="{ props }">
-              <v-btn
-                density="compact"
-                icon="mdi-chevron-left"
-                variant="elevated"
-                @click="props.onClick"
-              />
-            </template>
-            <template v-slot:next="{ props }">
-              <v-btn
-                density="compact"
-                icon="mdi-chevron-right"
-                variant="elevated"
-                @click="props.onClick"
-              />
-            </template>
-            <v-carousel-item
+          <v-row>
+            <v-col
+              cols="12"
               v-for="(item, index) in store.advertisement
                 ?.POSITION_DETAIL_RIGHT"
               :key="index"
             >
-              <DesktopAdvertSlot :advert="item" />
-            </v-carousel-item>
-          </v-carousel>
+              <DesktopAdvertSlot
+                :advert="item"
+                height-image="80px"
+              />
+            </v-col>
+          </v-row>
         </v-card>
         <!-- 涉及专题 -->
         <v-card
@@ -347,38 +331,41 @@
         </v-card>
         <v-card
           elevation="0"
-          class="mt-5"
+          class="mt-5 pa-4"
         >
-          <v-carousel
-            hide-delimiters
-            height="auto"
-            class="mobile-carousel"
-            cycle
-          >
-            <template v-slot:prev="{ props }">
-              <v-btn
-                density="compact"
-                icon="mdi-chevron-left"
-                variant="elevated"
-                @click="props.onClick"
-              />
-            </template>
-            <template v-slot:next="{ props }">
-              <v-btn
-                density="compact"
-                icon="mdi-chevron-right"
-                variant="elevated"
-                @click="props.onClick"
-              />
-            </template>
-            <v-carousel-item
-              v-for="(item, index) in store.advertisement
-                ?.POSITION_DETAIL_RECOMMEND_APP"
-              :key="index"
+          <div>
+            <v-row
+              align="start"
+              dense
             >
-              <DesktopAdvertSlot :advert="item" />
-            </v-carousel-item>
-          </v-carousel>
+              <v-col
+                v-for="(item, index) in store.advertisement
+                  ?.POSITION_DETAIL_RECOMMEND_APP"
+                :key="index"
+                cols="4"
+                sm="3"
+                class="d-flex flex-column align-center"
+              >
+                <NuxtLink
+                  :to="item.url"
+                  class="text-decoration-none text-surface-variant"
+                  target="_blank"
+                >
+                  <Image
+                    :src="item.image"
+                    contain
+                    height="36px"
+                  ></Image>
+                  <div
+                    class="text-center text-caption mt-1 text-truncate"
+                    style="max-width: 100px"
+                  >
+                    {{ item.name }}
+                  </div>
+                </NuxtLink>
+              </v-col>
+            </v-row>
+          </div>
         </v-card>
       </v-col>
     </v-row>
