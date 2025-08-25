@@ -12,7 +12,7 @@
 </script>
 
 <template>
-  <v-card>
+  <v-card elevation="0">
     <NuxtLink
       :to="advert?.url || '#'"
       target="_blank"

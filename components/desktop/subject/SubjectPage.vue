@@ -140,20 +140,15 @@
                       相关文章：
                     </div>
                     <div v-for="(iten, index) in item.actors">
-                      <NuxtLink
-                        @click.stop
+                      <v-chip
+                        v-if="iten.name"
+                        size="x-small"
+                        class="text-capitalize"
+                        :key="index"
                         :to="`/actor/detail/${iten.id}`"
-                        class="text-decoration-none text-grey"
                       >
-                        <v-chip
-                          v-if="iten.name"
-                          size="x-small"
-                          class="text-capitalize"
-                          :key="index"
-                        >
-                          {{ iten.name }}
-                        </v-chip>
-                      </NuxtLink>
+                        {{ iten.name }}
+                      </v-chip>
                     </div>
                   </div>
                 </v-col>
@@ -165,13 +160,16 @@
                       v-for="(post, index) in item.posts"
                       :key="post.id"
                     >
-                      <NuxtLink
+                      <v-chip
                         v-if="index < 4"
                         :to="`/article/${post.id}`"
-                        class="text-decoration-none"
+                        color="transparent"
+                        variant="text"
+                        density="comfortable"
+                        class="px-1"
                       >
                         <div
-                          class="d-flex align-center active-color cursor-pointer"
+                          class="d-flex align-center active-color cursor-pointer w-100"
                         >
                           <v-icon
                             icon="mdi-circle-small"
@@ -179,11 +177,13 @@
                             class="mr-1"
                             color="grey"
                           />
-                          <div class="truncate-1 text-caption text-grey">
+                          <div
+                            class="text-caption text-grey truncate-1 flex-grow-1"
+                          >
                             {{ post.title }}
                           </div>
                         </div>
-                      </NuxtLink>
+                      </v-chip>
                     </v-col>
                   </v-row>
                 </v-col>
@@ -220,5 +220,12 @@
 <style scoped lang="scss">
   .active-color:hover * {
     color: rgb(var(--v-theme-primary)) !important;
+  }
+  .truncate-1 {
+    display: -webkit-box;
+    line-clamp: 1;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 </style>

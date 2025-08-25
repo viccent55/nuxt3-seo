@@ -79,7 +79,9 @@
                 </v-col>
                 <v-col class="d-flex flex-column">
                   <div>
-                    <h3 class="text-subtitle-1 font-weight-medium mb-1 text-surface-variant">
+                    <h3
+                      class="text-subtitle-1 font-weight-medium mb-1 text-surface-variant"
+                    >
                       {{ item.name }}
                     </h3>
                     <div class="text-body-2 text-grey-darken-1 mb-2 truncate-3">
@@ -88,21 +90,16 @@
                   </div>
                   <div class="text-caption d-flex text-grey mb-1 d-flex ga-2">
                     <div v-for="(actor, index) in item?.actors">
-                      <NuxtLink
-                        @click.stop
+                      <v-chip
+                        v-if="actor.name"
                         :to="`/actor/detail/${actor.id}`"
-                        class="text-decoration-none text-grey"
+                        size="x-small"
+                        class="text-capitalize"
+                        :key="index"
+                        variant="text"
                       >
-                        <v-chip
-                          v-if="actor.name"
-                          size="x-small"
-                          class="text-capitalize"
-                          :key="index"
-                          variant="text"
-                        >
-                          {{ actor.name }}
-                        </v-chip>
-                      </NuxtLink>
+                        {{ actor.name }}
+                      </v-chip>
                     </div>
                   </div>
                 </v-col>
@@ -114,10 +111,10 @@
                       v-for="(post, index) in item?.posts"
                       :key="post.id"
                     >
-                      <NuxtLink
+                      <v-chip
                         v-if="index < 4"
                         :to="`/article/${post.id}`"
-                        class="text-decoration-none text-grey"
+                        color="transparent"
                       >
                         <div
                           class="d-flex align-center active-color cursor-pointer"
@@ -131,7 +128,7 @@
                             {{ post.title }}
                           </div>
                         </div>
-                      </NuxtLink>
+                      </v-chip>
                     </v-col>
                   </v-row>
                 </v-col>
