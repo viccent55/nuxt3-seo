@@ -94,6 +94,11 @@ export const useStore = defineStore("store", {
         "1": "POSITION_HOME_LIST",
         "2": "POSITION_HOME_BOTTOM",
         "3": "POSITION_HOME_RIGHT",
+        "4": "POSITION_HOME_POPUP",
+        "5": "POSITION_DETAIL_AFTER_TITLE",
+        "6": "POSITION_DETAIL_AFTER_CONTENT",
+        "7": "POSITION_DETAIL_RIGHT",
+        "8": "POSITION_DETAIL_RECOMMEND_APP",
       };
 
       Object.entries(adsItems).forEach(([key, value]) => {

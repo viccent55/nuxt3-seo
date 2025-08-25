@@ -1,16 +1,11 @@
 <script lang="ts" setup>
-  import ContentDisplay from "~/components/desktop/home/ContentDisplay.vue";
   definePageMeta({
     keepalive: true,
   });
   useSeo({});
-  const { postFilter, actorFilter, tagTop, comments, subjectFilter, store } =
-    useHome();
-
   const state = reactive({
     latests: [] as EmptyArrayType,
     paginate: {
-      cid: 0,
       page: 1,
       limit: 30,
       total: 0,
@@ -25,21 +20,26 @@
   });
 
   const route = useRoute();
-  const catpage = computed(() => route.params.cid);
-  const page = computed(() => route.params.page || 1);
+  const cid = computed(() => route.params.cid);
+  const page = computed(() => {
+    const pageParam = route.params.page as string;
+    // Assuming page format is like 'p-2', we extract '2'
+    return pageParam?.split('-')[1] || '1';
+  });
+
   const { data: latest } = await useAsyncData<any>(
-    `latest-${route.params?.cid}-${route.params?.page}`,
+    `category-${cid.value}-${page.value}`,
     () =>
       $fetch("/api/category", {
         method: "POST",
         body: {
-          cid: route.params?.cid,
+          cid: cid.value,
           page: page.value,
           limit: state.paginate.limit,
         },
       }),
     {
-      watch: [catpage, page],
+      watch: [cid, page],
       transform: (res) => {
         state.latests = [];
         // ✅ Filter or map your data here
@@ -50,6 +50,7 @@
       },
     }
   );
+
   watchEffect(() => {
     if (latest.value?.items) {
       state.latests = latest.value.items ?? [];
@@ -61,16 +62,6 @@
 </script>
 
 <template>
-  <ContentDisplay
-    :subjects-card="subjectFilter?.items"
-    :latests="state.latests"
-    :paginate="state.paginate"
-    :actor-filters="actorFilter?.items"
-    :post-filters="postFilter?.items"
-    :tag-tops="tagTop?.items"
-    :comments="comments"
-    :adverts="store.advertisement"
-    :base-path="`/category_${catpage}_`"
-  />
+  <DesktopCategoryPage />
 </template>
 <style scoped lang="scss"></style>

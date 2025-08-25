@@ -50,7 +50,7 @@
                   v-for="item in state.bottom_menu"
                   :key="item.name"
                   :to="item.url"
-                  class="text-decoration-none text-black"
+                  class="text-decoration-none text-surface-variant"
                 >
                   {{ item.name }}
                 </NuxtLink>
@@ -79,7 +79,7 @@
                   v-for="(item, index) in state.friend_link"
                   :key="index"
                   :to="item.url"
-                  class="text-decoration-none text-black"
+                  class="text-decoration-none text-surface-variant"
                   target="_blank"
                   rel="noopener noreferrer"
                 >

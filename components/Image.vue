@@ -48,7 +48,7 @@
           color="grey-lighten-4"
           indeterminate
         />
-        <span v-else>Loading...</span>
+        <!-- <span v-else>Loading...</span> -->
       </div>
     </template>
     <slot />

@@ -46,7 +46,7 @@
     },
     basePath: {
       type: String,
-      default: () => "/page/",
+      default: () => "/page_",
     },
   });
 
@@ -85,7 +85,8 @@
     });
   };
   const displaySubject = computed(() => {
-    return route?.name == "index" || route?.params.page == "page";
+    // `/` or `/page_1`, `/page_2`, etc.
+    return route.path === "/" || /^\/page_\d+$/.test(route.path);
   });
 </script>
 <template>
@@ -275,7 +276,7 @@
             >
               <NuxtLink
                 :to="`/actor/${item.id}`"
-                class="text-decoration-none"
+                class="text-decoration-none text-surface-variant"
               >
                 <v-avatar
                   size="45"
@@ -283,7 +284,7 @@
                 >
                   <Image :src="item.avatar" />
                 </v-avatar>
-                <div class="text-caption truncate-1 text-black">
+                <div class="text-caption truncate-1">
                   {{ item.name }}
                 </div>
                 <div class="text-grey text-caption text-xs truncate-2">
@@ -307,7 +308,10 @@
         </v-card>
       </SidebarSection>
 
-      <SidebarSection title="热门评论" :more="false">
+      <SidebarSection
+        title="热门评论"
+        :more="false"
+      >
         <v-card
           elevation="0"
           variant="flat"

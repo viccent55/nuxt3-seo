@@ -4,7 +4,11 @@
   definePageMeta({
     keepalive: true,
   });
-  useSeo({});
+  useSeo({
+    seo_title: "标签",
+    seo_description: "标签",
+    seo_keywords: "标签",
+  });
 
   const { data: tagData, pending } = useAsyncData<EmptyObjectType>(
     () => `tag-group`,

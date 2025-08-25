@@ -91,8 +91,8 @@
             v-if="p !== '…'"
             :to="getPageUrl(Number(p))"
             class="page-btn"
-            :class="{ active: p == (route.params.id || 1) }"
-            :aria-current="p == route.params.id ? 'page' : undefined"
+            :class="{ active: p == (route.params.page || 1) }"
+            :aria-current="p == route.params.page ? 'page' : undefined"
           >
             {{ p }}
           </NuxtLink>

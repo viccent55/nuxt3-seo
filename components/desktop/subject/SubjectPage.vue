@@ -2,7 +2,6 @@
   definePageMeta({
     keepalive: true,
   });
-  useSeo({});
   const { isMobile, store, goto, route } = useVariable();
   const state = reactive({
     data: [] as EmptyArrayType,
@@ -14,7 +13,7 @@
     },
     total: 0,
   });
-  const page = computed(() => Number(route.params.id) || 1);
+  const page = computed(() => Number(route.params.page) || 1);
   const { data: subjects } = await useAsyncData<any>(
     `subject-${page.value}`,
     () =>
@@ -60,21 +59,16 @@
         :key="index"
       >
         <v-hover v-slot="{ isHovering, props }">
-          <NuxtLink
-            custom
-            v-slot="{ navigate, href }"
-            :to="`/subject/${item.id}`"
-            class="text-decoration-none"
+          <v-card
+            v-bind="props"
+            :color="isHovering ? 'white' : 'transparent'"
+            flat
+            class="pa-5"
+            min-height="230"
           >
-            <v-sheet
-              v-bind="props"
-              flat
-              :href="href"
-              @click="navigate"
-              class="pa-5 cursor-pointer rounded"
-              :class="isHovering ? 'hover-shadow' : 'bg-none'"
-              color="surface"
-              min-height="230"
+            <NuxtLink
+              class="text-decoration-none"
+              :to="`/subject/${item.id}`"
             >
               <v-row dense>
                 <v-col
@@ -127,7 +121,9 @@
                     >
                       经典
                     </v-chip>
-                    <h3 class="text-subtitle-1 font-weight-medium">
+                    <h3
+                      class="text-subtitle-1 font-weight-medium text-surface-variant"
+                    >
                       {{ item.name }}
                     </h3>
                   </div>
@@ -192,8 +188,8 @@
                   </v-row>
                 </v-col>
               </v-row>
-            </v-sheet>
-          </NuxtLink>
+            </NuxtLink>
+          </v-card>
         </v-hover>
       </v-col>
     </v-row>
@@ -201,7 +197,7 @@
       :page="state.page.page"
       :total="state.total"
       :limit="state.page.limit"
-      base-path="/subject/page/"
+      base-path="/subject_"
       @page-change="
         (p: number) => {
           goto('subjects');

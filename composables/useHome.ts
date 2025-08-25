@@ -98,6 +98,12 @@ export default function useHome() {
   const POSITION_HOME_LIST = 1;
   const POSITION_HOME_BOTTOM = 2;
   const POSITION_HOME_RIGHT = 3;
+  const POSITION_HOME_POPUP = 4;
+  const POSITION_DETAIL_AFTER_TITLE = 5;
+  const POSITION_DETAIL_AFTER_CONTENT = 6;
+  const POSITION_DETAIL_RIGHT = 7;
+  const POSITION_DETAIL_RECOMMEND_APP = 8;
+  
   const { data: advertData } = useFetch<any>("/api/home/ads", {
     method: "POST",
     body: {
@@ -105,6 +111,11 @@ export default function useHome() {
         POSITION_HOME_LIST,
         POSITION_HOME_BOTTOM,
         POSITION_HOME_RIGHT,
+        POSITION_HOME_POPUP,
+        POSITION_DETAIL_AFTER_TITLE,
+        POSITION_DETAIL_AFTER_CONTENT,
+        POSITION_DETAIL_RIGHT,
+        POSITION_DETAIL_RECOMMEND_APP
       ],
     },
   });
@@ -115,6 +126,11 @@ export default function useHome() {
         [POSITION_HOME_LIST]: "POSITION_HOME_LIST",
         [POSITION_HOME_BOTTOM]: "POSITION_HOME_BOTTOM",
         [POSITION_HOME_RIGHT]: "POSITION_HOME_RIGHT",
+        [POSITION_HOME_POPUP]: "POSITION_HOME_POPUP",
+        [POSITION_DETAIL_AFTER_TITLE]: "POSITION_DETAIL_AFTER_TITLE",
+        [POSITION_DETAIL_AFTER_CONTENT]: "POSITION_DETAIL_AFTER_CONTENT",
+        [POSITION_DETAIL_RIGHT]: "POSITION_DETAIL_RIGHT",
+        [POSITION_DETAIL_RECOMMEND_APP]: "POSITION_DETAIL_RECOMMEND_APP",
       };
 
       const adsItems = advertData.value.data;

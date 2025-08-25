@@ -9,7 +9,7 @@
   import CommentComponent from "./comment.vue";
 
   const mainContentCol = ref();
-  const { formatTime } = useVariable();
+  const { formatTime, store } = useVariable();
   const breadcrumbs = computed(() => {
     return [
       {
@@ -106,15 +106,37 @@
             {{ articleDetail?.intro }}
           </v-sheet>
 
-          <!-- Article Body -->
+          <!-- Ads before content -->
+          <v-row>
+            <v-col
+              cols="12"
+              v-for="(item, index) in store.advertisement
+                ?.POSITION_DETAIL_AFTER_TITLE"
+              :key="index"
+            >
+              <DesktopAdvertSlot :advert="item" />
+            </v-col>
+          </v-row>
           <!-- {{ articleDetail?.content }} -->
+
           <ContentArticle
             :content="articleDetail?.content"
             :skeleton="16"
           />
+          <!-- Ads after content -->
+          <v-row>
+            <v-col
+              cols="12"
+              v-for="(item, index) in store.advertisement
+                ?.POSITION_DETAIL_AFTER_CONTENT"
+              :key="index"
+            >
+              <DesktopAdvertSlot :advert="item" />
+            </v-col>
+          </v-row>
           <div class="my-4 d-flex ga-2 justify-end">
             <div
-              v-if="articleDetail?.tags.length"
+              v-if="articleDetail?.tags?.length"
               v-for="(tag, index) in articleDetail?.tags"
               :key="index"
             >
@@ -225,7 +247,7 @@
       >
         <!-- 人物名称 -->
         <h3 class="text-subtitle-1 font-weight-medium mb-2">相关人物</h3>
-        <v-card class="pa-4 mb-6 elevation-0">
+        <v-card class="pa-4 elevation-0">
           <v-row v-if="articleDetail?.related_actors?.length">
             <v-col
               align="center"
@@ -235,7 +257,7 @@
               class="text-center cursor-pointer"
             >
               <NuxtLink
-                :to="'/actor/detail/' + item.id"
+                :to="`/actor/${item.id}`"
                 class="text-decoration-none text-grey"
               >
                 <v-avatar
@@ -258,32 +280,106 @@
             没有相关演员....
           </v-row>
         </v-card>
-
+        <v-card
+          elevation="0"
+          class="mt-5"
+        >
+          <v-carousel
+            hide-delimiters
+            height="auto"
+            class="mobile-carousel"
+            cycle
+          >
+            <template v-slot:prev="{ props }">
+              <v-btn
+                density="compact"
+                icon="mdi-chevron-left"
+                variant="elevated"
+                @click="props.onClick"
+              />
+            </template>
+            <template v-slot:next="{ props }">
+              <v-btn
+                density="compact"
+                icon="mdi-chevron-right"
+                variant="elevated"
+                @click="props.onClick"
+              />
+            </template>
+            <v-carousel-item
+              v-for="(item, index) in store.advertisement
+                ?.POSITION_DETAIL_RIGHT"
+              :key="index"
+            >
+              <DesktopAdvertSlot :advert="item" />
+            </v-carousel-item>
+          </v-carousel>
+        </v-card>
         <!-- 涉及专题 -->
-        <h3 class="text-subtitle-1 font-weight-medium mb-2">涉及专题</h3>
-        <v-sheet class="pa-3">
-          <template
-            v-for="(item, index) in articleDetail?.subject_posts"
-            :key="index"
-            v-if="articleDetail?.subject_posts?.length"
+        <v-card
+          class="mt-5 elevation-0"
+          color="transparent"
+        >
+          <h3 class="text-subtitle-1 font-weight-medium mb-2">涉及专题</h3>
+          <v-sheet class="pa-3">
+            <template
+              v-for="(item, index) in articleDetail?.subject_posts"
+              :key="index"
+              v-if="articleDetail?.subject_posts?.length"
+            >
+              <ArticleListItem
+                class="pa-2"
+                :item="item"
+                :to="'/article/' + item.id"
+              />
+              <v-divider
+                class="my-2"
+                v-if="index < articleDetail?.subject_posts?.length - 1"
+              ></v-divider>
+            </template>
+            <v-row
+              class="pa-4"
+              v-else
+            >
+              没有数据显示...
+            </v-row>
+          </v-sheet>
+        </v-card>
+        <v-card
+          elevation="0"
+          class="mt-5"
+        >
+          <v-carousel
+            hide-delimiters
+            height="auto"
+            class="mobile-carousel"
+            cycle
           >
-            <ArticleListItem
-              class="pa-2"
-              :item="item"
-              :to="'/article/' + item.id"
-            />
-            <v-divider
-              class="my-2"
-              v-if="index < articleDetail?.subject_posts?.length - 1"
-            ></v-divider>
-          </template>
-          <v-row
-            class="pa-4"
-            v-else
-          >
-            没有数据显示...
-          </v-row>
-        </v-sheet>
+            <template v-slot:prev="{ props }">
+              <v-btn
+                density="compact"
+                icon="mdi-chevron-left"
+                variant="elevated"
+                @click="props.onClick"
+              />
+            </template>
+            <template v-slot:next="{ props }">
+              <v-btn
+                density="compact"
+                icon="mdi-chevron-right"
+                variant="elevated"
+                @click="props.onClick"
+              />
+            </template>
+            <v-carousel-item
+              v-for="(item, index) in store.advertisement
+                ?.POSITION_DETAIL_RECOMMEND_APP"
+              :key="index"
+            >
+              <DesktopAdvertSlot :advert="item" />
+            </v-carousel-item>
+          </v-carousel>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>

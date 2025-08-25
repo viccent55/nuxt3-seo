@@ -13,7 +13,7 @@
   });
 
   // your composable
-  const { decryptImage, decryptedImage } = useDecryption();
+  const { decryptImage } = useDecryption();
 
   const contentRef = ref<HTMLDivElement | null>(null);
   const loading = ref(false);
@@ -30,7 +30,7 @@
       // 🔹 decrypt images in parallel
       const images = Array.from(doc.querySelectorAll("img[data-lazy-src]"));
       await Promise.all(
-        images.map(async (img: EmptyObjectType) => {
+        images.map(async (img: HTMLImageElement) => {
           const lazySrc = img.getAttribute("data-lazy-src");
           if (!lazySrc) return;
 

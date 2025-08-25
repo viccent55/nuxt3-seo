@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-  useSeo({});
-
   const { isMobile, store, goto, route } = useVariable();
   const state = reactive({
     page: 1,
@@ -9,9 +7,9 @@
     data: [] as EmptyArrayType,
   });
 
-  const page = computed(() => route.params.id);
+  const page = computed(() => route.params.page);
   const { data: actors } = await useAsyncData<any>(
-    `actors-${page.value}`,
+    `actor-${page.value}`,
     () =>
       $fetch("/api/actor/latest", {
         method: "POST",
@@ -56,21 +54,16 @@
         :key="index"
       >
         <v-hover v-slot="{ isHovering, props }">
-          <NuxtLink
-            custom
-            v-slot="{ navigate, href }"
-            :to="`/actor/${item.id}`"
-            class="text-decoration-none"
+          <v-card
+            v-bind="props"
+            flat
+            class="pa-5 cursor-pointer rounded"
+            :color="isHovering ? 'white' : 'transparent'"
+            min-height="230"
           >
-            <v-sheet
-              v-bind="props"
-              flat
-              :href="href"
-              @click="navigate"
-              class="pa-5 cursor-pointer rounded"
-              :class="isHovering ? 'hover-shadow' : 'bg-none'"
-              color="surface"
-              min-height="230"
+            <NuxtLink
+              :to="`/actor/${item.id}`"
+              class="text-decoration-none"
             >
               <v-row dense>
                 <v-col
@@ -86,7 +79,7 @@
                 </v-col>
                 <v-col class="d-flex flex-column">
                   <div>
-                    <h3 class="text-subtitle-1 font-weight-medium mb-1">
+                    <h3 class="text-subtitle-1 font-weight-medium mb-1 text-surface-variant">
                       {{ item.name }}
                     </h3>
                     <div class="text-body-2 text-grey-darken-1 mb-2 truncate-3">
@@ -143,8 +136,8 @@
                   </v-row>
                 </v-col>
               </v-row>
-            </v-sheet>
-          </NuxtLink>
+            </NuxtLink>
+          </v-card>
         </v-hover>
       </v-col>
     </v-row>
@@ -152,7 +145,7 @@
       :page="state.page"
       :total="state.total"
       :limit="state.limit"
-      base-path="/actor/page/"
+      base-path="/actor_"
       @page-change="
         ($event) => {
           goto('actors');

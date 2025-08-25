@@ -3,9 +3,6 @@
     keepalive: true,
   });
   useSeo({});
-  const { postFilter, actorFilter, tagTop, comments, subjectFilter, store } =
-    useHome();
-
   const state = reactive({
     latests: [] as EmptyArrayType,
     paginate: {
@@ -23,29 +20,22 @@
   });
 
   const route = useRoute();
-  const catpage = computed(() => {
-    const pageParam = route.params.page;
-    // Check if pageParam is a string
-    if (typeof pageParam === "string") {
-      return pageParam.split("-");
-    }
-    // Handle the case where pageParam is not a string
-    return [];
-  });
+  const cid = computed(() => route.params.cid);
   const page = computed(() => state.paginate.page);
+
   const { data: latest } = await useAsyncData<any>(
-    `latest-${route.params?.page}`,
+    `category-${cid.value}-${page.value}`,
     () =>
       $fetch("/api/category", {
         method: "POST",
         body: {
-          cid: catpage.value[0],
+          cid: cid.value,
           page: state.paginate.page,
           limit: state.paginate.limit,
         },
       }),
     {
-      watch: [page],
+      watch: [cid, page],
       transform: (res) => {
         state.latests = [];
         // ✅ Filter or map your data here

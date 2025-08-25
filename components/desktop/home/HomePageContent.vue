@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-  useSeo({});
-
   const state = reactive({
     subjects: [] as EmptyArrayType,
     latests: [] as EmptyArrayType,
@@ -37,39 +35,29 @@
       state.subjects = subject.value.items ?? [];
     }
   });
-  const page = computed(() => route.params?.id);
-  const { data: latest } = await useAsyncData<any>(
-    `latest-${page.value}`,
-    () =>
-      $fetch("/api/home/latest", {
-        method: "POST",
-        body: {
-          page: page.value || 1,
-          limit: state.paginate.limit,
-        },
-      }),
-    {
-      watch: [page],
-      transform: (res) => {
-        state.latests = [];
-        // ✅ Filter or map your data here
-        return {
-          items: res.data.items || [],
-          count: res.data.count || 0,
-        };
-      },
-    }
-  );
+  const page = computed(() => route.params?.page);
+  const { data: latest } = useFetch<ApiResponse>("/api/home/latest", {
+    key: () => `latest-${page.value}`,
+    method: "POST",
+    body: {
+      page: page.value || 1,
+      limit: state.paginate.limit,
+    },
+    watch: [page],
+    transform: (res: EmptyObjectType) => {
+      return {
+        items: res.data.items || [],
+        count: res.data.count || 0,
+      };
+    },
+  });
 
   watchEffect(() => {
     if (latest.value?.items) {
       state.latests = latest.value.items ?? [];
       if (latest.value.count) {
-        state.paginate.total = latest.value.count;
+        state.paginate.total = Number(latest.value.count);
       }
-    }
-    if(route.params.id) {
-      state.paginate.page = Number(route.params.id);
     }
   });
 </script>
