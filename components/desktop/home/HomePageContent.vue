@@ -60,7 +60,6 @@
       }
     }
   });
-  const config = useNuxtApp().$config;
 </script>
 
 <template>
@@ -74,7 +73,7 @@
       :actor-filters="actorFilter?.items"
       :post-filters="postFilter?.items"
       :tag-tops="tagTop?.items"
-      :comments="comments"
+      :comments="comments?.items"
       :adverts="store.advertisement"
     />
   </v-container>

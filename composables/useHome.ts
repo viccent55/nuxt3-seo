@@ -62,38 +62,6 @@ export default function useHome() {
       };
     },
   });
-  const comments = [
-    {
-      text: "这里边有猫腻吧！炸了这么多次，马斯克是NASA领导亲儿子吗？",
-      author: "yangdy",
-      date: "12-21",
-      article: "赢得美国航天局29亿美元合同，SpaceX...",
-    },
-    {
-      text: "这里边有猫腻吧！炸了这么多次，马斯克是NASA领导亲儿子吗？",
-      author: "yangdy",
-      date: "12-21",
-      article: "赢得美国航天局29亿美元合同，SpaceX...",
-    },
-    {
-      text: "这里边有猫腻吧！炸了这么多次，马斯克是NASA领导亲儿子吗？",
-      author: "yangdy",
-      date: "12-21",
-      article: "赢得美国航天局29亿美元合同，SpaceX...",
-    },
-    {
-      text: "这里边有猫腻吧！炸了这么多次，马斯克是NASA领导亲儿子吗？",
-      author: "yangdy",
-      date: "12-21",
-      article: "赢得美国航天局29亿美元合同，SpaceX...",
-    },
-    {
-      text: "这里边有猫腻吧！炸了这么多次，马斯克是NASA领导亲儿子吗？",
-      author: "yangdy",
-      date: "12-21",
-      article: "赢得美国航天局29亿美元合同，SpaceX...",
-    },
-  ];
 
   const POSITION_HOME_LIST = 1;
   const POSITION_HOME_BOTTOM = 2;
@@ -103,7 +71,7 @@ export default function useHome() {
   const POSITION_DETAIL_AFTER_CONTENT = 6;
   const POSITION_DETAIL_RIGHT = 7;
   const POSITION_DETAIL_RECOMMEND_APP = 8;
-  
+
   const { data: advertData } = useFetch<any>("/api/home/ads", {
     method: "POST",
     body: {
@@ -115,7 +83,7 @@ export default function useHome() {
         POSITION_DETAIL_AFTER_TITLE,
         POSITION_DETAIL_AFTER_CONTENT,
         POSITION_DETAIL_RIGHT,
-        POSITION_DETAIL_RECOMMEND_APP
+        POSITION_DETAIL_RECOMMEND_APP,
       ],
     },
   });
@@ -147,6 +115,20 @@ export default function useHome() {
         }
       }
     }
+  });
+
+  const { data: comments } = useFetch<EmptyObjectType>("/api/home/latest-comment", {
+    method: "POST",
+    body: {
+      field: "hot",
+      limit: 9,
+    },
+    transform: (res: EmptyObjectType) => {
+      return {
+        items: res.data || [],
+        count: res.data.length || 0,
+      };
+    },
   });
   return {
     postFilter,

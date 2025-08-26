@@ -52,6 +52,7 @@
 
   const store = useStore();
   const emit = defineEmits(["page-change"]);
+  const { formatTime } = useVariable();
 
   const getAdvertAtIndex = (index: number) => {
     const list = props.adverts.POSITION_HOME_LIST || [];
@@ -350,12 +351,12 @@
                     class="d-flex align-center text-caption text-medium-emphasis justify-space-between mb-1 w-100"
                   >
                     <span class="font-weight-medium mr-3">
-                      {{ comment.author }}
+                      {{ comment.member?.nickname || comment.member?.username }}
                     </span>
-                    <span>{{ comment.date }}</span>
+                    <span>{{ formatTime(comment.created) }}</span>
                   </div>
                   <div class="text-caption text-disabled pl-2">
-                    评论文章：{{ comment.article }}
+                    评论文章：{{ comment.post?.title }}
                   </div>
                 </div>
                 <v-divider

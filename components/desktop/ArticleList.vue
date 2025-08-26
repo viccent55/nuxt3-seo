@@ -92,7 +92,7 @@
           class="text-content"
           v-if="isMobileSm"
         >
-          <h3 class="truncate-1">{{ item?.title }}</h3>
+          <h3>{{ item?.title }}</h3>
           <v-row
             no-gutters
             class="mt-1"
@@ -188,7 +188,7 @@
           v-else
         >
           <div>
-            <h3 class="truncate-1">{{ item?.title }}</h3>
+            <h3>{{ item?.title }}</h3>
             <div class="text-caption mt-1 text-grey truncatte-3">
               {{ item?.intro }}
             </div>
