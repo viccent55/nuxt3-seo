@@ -146,7 +146,8 @@
   const submitComment = async () => {
     if (!commentText.value.trim()) return;
     const access_token = useCookie("access_token");
-    if (!access_token.value) {
+    const refresh_token = useCookie("refresh_token");
+    if (!access_token.value && !refresh_token.value) {
       return snackbar.showSnackbar("请先登录!", "error", "center top");
     }
     try {
@@ -160,6 +161,7 @@
       });
       if (commentRes?.value.errcode === 0) {
         refresh();
+        snackbar.showSnackbar("成功!", "success", "center top");
       }
       commentText.value = "";
     } catch (error) {

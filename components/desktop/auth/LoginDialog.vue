@@ -42,6 +42,9 @@
         snackbar.showSnackbar("登录成功", "success", "top center");
         closeDialog();
       }
+        if (response.code === 429) {
+        return snackbar.showSnackbar(response.msg, "error", "top center");
+      }
       // navigateTo("/dashboard");
     } catch (error) {
       console.error("Login failed:", error);

@@ -24,8 +24,8 @@
     body: state.filter,
     transform: (res: EmptyObjectType) => {
       return {
-        items: res.data.items || [],
-        count: res.data.count || 0,
+        items: res.data?.items || [],
+        count: res.data?.count || 0,
       };
     },
   });
@@ -46,20 +46,21 @@
     watch: [page],
     transform: (res: EmptyObjectType) => {
       return {
-        items: res.data.items || [],
-        count: res.data.count || 0,
+        items: res.data?.items || [],
+        count: res.data?.count || 0,
       };
     },
   });
 
   watchEffect(() => {
     if (latest.value?.items) {
-      state.latests = latest.value.items ?? [];
+      state.latests = latest.value?.items ?? [];
       if (latest.value.count) {
         state.paginate.total = Number(latest.value.count);
       }
     }
   });
+  const config = useNuxtApp().$config;
 </script>
 
 <template>
