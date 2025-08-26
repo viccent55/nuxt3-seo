@@ -32,7 +32,7 @@
         images.map(async (img: EmptyObjectType) => {
           const lazySrc = img.getAttribute("data-lazy-src");
           if (!lazySrc) return;
-          console.log(lazySrc)
+          console.log(lazySrc);
           try {
             const decrypted = await decryptImage(lazySrc); // use returned value per image
             if (decrypted) {
@@ -52,31 +52,35 @@
       });
 
       // 🔹 handle videos in the inserted content
-      const videos = contentRef.value.querySelectorAll("video");
-      videos.forEach((video: HTMLVideoElement) => {
-        video.style.display = "block";
-        video.style.width = "100%";
+      const videos = contentRef.value?.querySelectorAll("video");
+      if (videos && videos.length > 0) {
+        videos.forEach((video: HTMLVideoElement) => {
+          video.style.display = "block";
+          video.style.width = "100%";
 
-        const src = video.getAttribute("src");
-        if (!src) return;
+          const src = video.getAttribute("src");
+          if (!src) return;
 
-        if (video.canPlayType("application/vnd.apple.mpegurl")) {
-          video.src = src; // Safari native
-        } else if (Hls.isSupported()) {
-          const hls = new Hls();
-          hls.loadSource(src);
-          hls.attachMedia(video);
-        }
-      });
+          if (video.canPlayType("application/vnd.apple.mpegurl")) {
+            video.src = src; // Safari native
+          } else if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.loadSource(src);
+            hls.attachMedia(video);
+          }
+        });
+      }
     } catch (e) {
       console.error("initImgAndVideo error:", e);
     } finally {
       loading.value = false;
     }
   };
-
   // re-run when content changes
   watchEffect(() => {
+    initImgAndVideo();
+  });
+  onMounted(() => {
     initImgAndVideo();
   });
 </script>
@@ -88,7 +92,7 @@
   >
     <!-- Raw/original content while decrypting -->
     <div
-      v-if="loading"
+      v-show="loading"
       v-html="content"
     />
 
