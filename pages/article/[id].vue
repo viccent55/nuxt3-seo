@@ -73,28 +73,60 @@
           <v-card-title class="text-h5 font-weight-bold text-wrap">
             {{ articleDetail?.title }}
           </v-card-title>
-          <v-card-subtitle
-            class="text-grey text-caption my-2 d-flex align-center"
-          >
-            <span class="mr-2">{{ formatTime(articleDetail?.created) }}</span>
-            <div
-              v-if="articleDetail?.categories?.length"
-              class="d-flex ga-2"
-              v-for="(category, index) in articleDetail?.categories"
-              :key="index"
-            >
-              <v-divider
-                thickness="2"
-                vertical
-              ></v-divider>
-              <v-chip
-                class="px-2"
-                variant="text"
-                size="small"
-                :to="`/category/${category.id}`"
+          <v-card-subtitle class="d-flex align-center justify-space-between">
+            <div class="d-flex text-grey text-caption my-2 align-center">
+              <span class="mr-2">{{ formatTime(articleDetail?.created) }}</span>
+              <div
+                v-if="articleDetail?.categories?.length"
+                class="d-flex ga-2"
+                v-for="(category, index) in articleDetail?.categories"
+                :key="index"
               >
-                {{ category.name }}
-              </v-chip>
+                <v-divider
+                  thickness="2"
+                  vertical
+                ></v-divider>
+                <v-chip
+                  class="px-2"
+                  variant="text"
+                  size="small"
+                  :to="`/category/${category.id}`"
+                >
+                  {{ category.name }}
+                </v-chip>
+              </div>
+            </div>
+            <div>
+              <div
+                v-if="articleDetail?.actors?.length"
+                class="d-flex ga-2"
+                v-for="(actor, index) in articleDetail?.actors"
+                :key="index"
+              >
+                <v-chip
+                  class="px-2"
+                  variant="text"
+                  size="small"
+                  :to="`/actor/${actor.id}`"
+                >
+                  {{ actor.name }}
+                </v-chip>
+              </div>
+              <div
+                v-if="articleDetail?.subjects?.length"
+                class="d-flex ga-2"
+                v-for="(subject, index) in articleDetail?.subjects"
+                :key="index"
+              >
+                <v-chip
+                  class="px-2"
+                  variant="text"
+                  size="small"
+                  :to="`/subject/${subject.id}`"
+                >
+                  {{ subject.name }}
+                </v-chip>
+              </div>
             </div>
           </v-card-subtitle>
 
@@ -247,40 +279,45 @@
         class="pl-md-12"
       >
         <!-- 人物名称 -->
-        <h3 class="text-subtitle-1 font-weight-medium mb-2">相关人物</h3>
-        <v-card class="pa-4 elevation-0">
-          <v-row v-if="articleDetail?.related_actors?.length">
-            <v-col
-              align="center"
-              cols="6"
-              v-for="(item, index) in articleDetail?.related_actors"
-              :key="index"
-              class="text-center cursor-pointer"
-            >
-              <NuxtLink
-                :to="`/actor/${item.id}`"
-                class="text-decoration-none text-grey"
+        <v-sheet
+          color="transparent"
+          class="d-none d-sm-block"
+        >
+          <h3 class="text-subtitle-1 font-weight-medium mb-2">相关人物</h3>
+          <v-card class="pa-4 elevation-0">
+            <v-row v-if="articleDetail?.related_actors?.length">
+              <v-col
+                align="center"
+                cols="6"
+                v-for="(item, index) in articleDetail?.related_actors"
+                :key="index"
+                class="text-center cursor-pointer"
               >
-                <v-avatar
-                  size="45"
-                  class="mb-1"
+                <NuxtLink
+                  :to="`/actor/${item.id}`"
+                  class="text-decoration-none text-grey"
                 >
-                  <Image :src="item.avatar" />
-                </v-avatar>
-                <div class="text-caption truncate-1">{{ item.name }}</div>
-                <div class="text-grey text-caption text-xs truncate-2">
-                  {{ item?.intro }}
-                </div>
-              </NuxtLink>
-            </v-col>
-          </v-row>
-          <v-row
-            class="pa-4"
-            v-else
-          >
-            没有相关演员....
-          </v-row>
-        </v-card>
+                  <v-avatar
+                    size="45"
+                    class="mb-1"
+                  >
+                    <Image :src="item.avatar" />
+                  </v-avatar>
+                  <div class="text-caption truncate-1">{{ item.name }}</div>
+                  <div class="text-grey text-caption text-xs truncate-2">
+                    {{ item?.intro }}
+                  </div>
+                </NuxtLink>
+              </v-col>
+            </v-row>
+            <v-row
+              class="pa-4"
+              v-else
+            >
+              没有相关演员....
+            </v-row>
+          </v-card>
+        </v-sheet>
         <v-card
           elevation="0"
           class="mt-5"

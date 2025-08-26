@@ -229,17 +229,27 @@
           "
         />
       </div>
+      <v-row class="mt-2">
+        <v-col
+          cols="12"
+          md="6"
+          v-for="(item, index) in store.advertisement?.POSITION_HOME_BOTTOM"
+          :key="index"
+        >
+          <DesktopAdvertSlot :advert="item" />
+        </v-col>
+      </v-row>
     </v-col>
 
     <!-- Sidebar -->
     <v-col
       cols="12"
       md="4"
-      class="d-none d-sm-block"
     >
       <SidebarSection
         title="推荐文章"
         :more="false"
+        class="d-none d-sm-block"
       >
         <v-sheet class="pa-3">
           <template
@@ -262,6 +272,7 @@
       <SidebarSection
         title="热门人物"
         :goto="actorFilters?.length > 0 ? `/actor/${actorFilters[0].id}` : ''"
+        class="d-none d-sm-block"
       >
         <v-card
           flat
@@ -298,6 +309,7 @@
       <SidebarSection
         title="热门专题"
         :goto="subjectsCard?.length > 0 ? `/subject/${subjectsCard[0].id}` : ''"
+        class="d-none d-sm-block"
       >
         <DesktopActorCard :items="subjectsCard" />
       </SidebarSection>
@@ -311,6 +323,7 @@
       <SidebarSection
         title="热门评论"
         :more="false"
+        class="d-none d-sm-block"
       >
         <v-card
           elevation="0"
@@ -360,14 +373,14 @@
       >
         <v-card
           elevation="0"
-          class="pa-4"
+          class="pl-md-4 pl-2 pt-4 pb-4"
         >
           <v-list
             class="pa-0"
             density="compact"
           >
             <v-list-item
-              class="rounded-sm mb-2"
+              class="rounded-sm"
               bg-color="blue-lighten-5"
             >
               <v-list-item-title class="text-caption">
@@ -375,7 +388,7 @@
                 <a
                   :href="store.configuration?.website_url"
                   target="_blank"
-                  class="text-primary text-caption font-weight-medium"
+                  class="text-primary text-caption font-weight-medium text-pre-wrap"
                 >
                   {{ store.configuration?.website_url }}
                 </a>
@@ -383,7 +396,7 @@
             </v-list-item>
 
             <v-list-item
-              class="rounded-sm mb-2"
+              class="rounded-sm"
               bg-color="blue-lighten-5"
             >
               <v-list-item-title class="text-caption">
@@ -391,7 +404,7 @@
                 <a
                   :href="store.configuration?.latest_url"
                   target="_blank"
-                  class="text-primary text-caption font-weight-medium"
+                  class="text-primary text-caption font-weight-medium text-pre-wrap"
                 >
                   {{ store.configuration?.latest_url }}
                 </a>
@@ -407,48 +420,58 @@
                 <a
                   :href="store.configuration?.backup_url"
                   target="_blank"
-                  class="text-primary text-caption font-weight-medium"
+                  class="text-primary text-caption font-weight-medium text-pre-wrap"
                 >
                   {{ store.configuration?.backup_url }}
                 </a>
               </v-list-item-title>
             </v-list-item>
+            <v-list-item
+              class="rounded-sm"
+              color="primary"
+            >
+              <v-list-item-title class="text-caption">
+                防失联邮箱：
+                <a
+                  :href="store.configuration?.email"
+                  target="_blank"
+                  class="text-primary text-caption font-weight-medium text-pre-wrap"
+                >
+                  {{ store.configuration?.email }}
+                </a>
+              </v-list-item-title>
+            </v-list-item>
           </v-list>
+          <v-row
+            justify="center"
+            class="mt-2"
+          >
+            <v-sheet
+              color="bg-none"
+              class="pb-4 d-flex ga-4 bg-none"
+            >
+              <v-icon
+                icon="mdi-github"
+                size="30"
+              />
+
+              <v-icon
+                icon="mdi-twitter"
+                size="30"
+              />
+              <v-icon
+                icon="mdi-gitlab"
+                size="30"
+              />
+            </v-sheet>
+          </v-row>
         </v-card>
       </SidebarSection>
 
-      <SidebarSection title="社群主页防失联">
-        <v-row
-          justify="center"
-          class="mt-2"
-        >
-          <v-sheet
-            color="bg-none"
-            class="py-3 d-flex ga-4 bg-none"
-          >
-            <v-icon
-              icon="mdi-github"
-              size="30"
-            />
-
-            <v-icon
-              icon="mdi-email"
-              size="30"
-            />
-            <v-icon
-              icon="mdi-twitter"
-              size="30"
-            />
-            <v-icon
-              icon="mdi-gitlab"
-              size="30"
-            />
-          </v-sheet>
-        </v-row>
-      </SidebarSection>
       <SidebarSection
         title="热门标签"
         :goto="tagTops?.length > 0 ? `/tag/${tagTops[0].id}` : ''"
+        class="d-none d-sm-block"
       >
         <v-row
           class="px-2 pt-2 pb-4"

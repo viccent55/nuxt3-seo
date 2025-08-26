@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import usePWA from "~/composables/usePwaInstall";
-import { useStore } from "~/store";
-  const store = useStore()
+  import { useStore } from "~/store";
+  const store = useStore();
   const {
     showInstallPrompt,
     isIOS,
@@ -43,47 +43,22 @@ import { useStore } from "~/store";
             width="120"
             src="/public/logo.png"
           />
-          <div>
-            <div class="text-body-1">Install {{ store.configuration?.website_name }}</div>
-            <div class="text-caption">
-              Add to home screen for a better experience.
-            </div>
-          </div>
         </v-card-title>
 
         <v-card-text v-if="isIOS">
-          <v-list-item>
-            <v-list-item-title>
-              1. Tap the 'Share' icon
-              <v-icon>mdi-share</v-icon>
-              in your browser menu.
-            </v-list-item-title>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-title>
-              2. Scroll down and tap 'Add to Home Screen'.
-            </v-list-item-title>
-          </v-list-item>
+          <div
+            class="text-body-2 text-break"
+            style="width: 100%"
+            v-html="store.configuration?.wap_popup_ios"
+          ></div>
         </v-card-text>
-
-        <v-card-actions
-          v-else
-          class="justify-end"
-        >
-          <v-btn
-            text
-            @click="closeInstallPrompt"
-          >
-            Not now
-          </v-btn>
-          <v-btn
-            color="primary"
-            @click="onInstall"
-          >
-            Install
-          </v-btn>
-        </v-card-actions>
-
+        <v-card-text v-else>
+          <div
+            class="text-body-2 text-break"
+            style="width: 100%"
+            v-html="store.configuration?.wap_popup"
+          ></div>
+        </v-card-text>
         <v-card-actions
           v-if="isIOS"
           class="justify-end"
@@ -92,7 +67,24 @@ import { useStore } from "~/store";
             text
             @click="closeInstallPrompt"
           >
-            I understand
+            关闭
+          </v-btn>
+        </v-card-actions>
+        <v-card-actions
+          v-else
+          class="justify-end"
+        >
+          <v-btn
+            text
+            @click="closeInstallPrompt"
+          >
+            现在不要
+          </v-btn>
+          <v-btn
+            color="primary"
+            @click="onInstall"
+          >
+            安装
           </v-btn>
         </v-card-actions>
       </v-card>

@@ -49,7 +49,17 @@
         tag="article"
         flat
       >
+        <Image
+          v-if="isMobileSm"
+          v-show="!isHovering"
+          :src="item?.cover"
+          @image-dimensions="(v) => (imageDimensions = v)"
+          contain
+          height="auto"
+          width="100%"
+        />
         <v-avatar
+          v-else
           size="180"
           rounded="0"
           class="mr-md-3"
@@ -61,19 +71,7 @@
             contain
             height="180"
             width="100%"
-          >
-            <!-- <v-chip
-              v-if="item?.cover"
-              class="chip-top-left"
-              color="primary"
-              variant="flat"
-              label
-              rounded="0"
-              size="x-small"
-            >
-              文章分类
-            </v-chip> -->
-          </Image>
+          />
         </v-avatar>
         <!-- {{ (imageDimensions?.width / height) * 180 }} == {{ (width, height) }} -->
         <Image

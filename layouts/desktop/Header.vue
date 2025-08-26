@@ -218,7 +218,7 @@
         <v-list-item
           v-for="(category, index) in store.configuration.categories"
           :key="index"
-          :to="`/category/${category.id}`"
+          :to="`/category_${category.id}`"
           :title="category.name"
         />
         <v-divider class="my-2" />

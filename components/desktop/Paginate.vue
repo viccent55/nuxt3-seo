@@ -18,7 +18,7 @@
   const maxPage = computed(() =>
     Math.max(1, Math.ceil(props.total / props.limit))
   );
-  const inputPage = ref(props.page);
+  const inputPage = ref(route.params.page || 1);
 
   const clampPage = (page: number) =>
     Math.min(Math.max(1, page), maxPage.value);

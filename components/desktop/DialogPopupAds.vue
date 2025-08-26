@@ -105,7 +105,6 @@
 <template>
   <v-dialog
     v-model="dialog"
-    style="max-width: 50vw; max-height: 70vh"
     @after-leave="onAfterLeave"
     content-class="overflow-visible bg-transparent elevation-0"
     persistent
@@ -148,7 +147,18 @@
     z-index: 20; // Ensure it's above the overlay
   }
   .height-dialog {
-    width: 50vw;
-    height: 70vh;
+    max-width: 50vw;
+    max-height: 70vh;
+    width: auto; // desktop: natural width
+    height: auto; // keep aspect ratio
+    display: block;
+    margin-inline: auto;
+
+    @media (max-width: 768px) {
+      max-width: 80vw;
+      width: 100%; // fill available width on mobile
+      max-height: 70vh;
+      height: auto; // maintain aspect ratio
+    }
   }
 </style>

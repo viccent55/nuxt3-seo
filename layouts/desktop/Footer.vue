@@ -38,7 +38,10 @@
     class="bg-background pa-0"
   >
     <v-container class="bg-none">
-      <div class="d-flex flex-column justify-start">
+      <div
+        class="d-flex flex-column justify-start"
+        v-if="$route.name == 'index'"
+      >
         <v-row dense>
           <v-col
             cols="12"

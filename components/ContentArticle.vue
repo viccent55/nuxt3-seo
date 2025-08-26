@@ -101,6 +101,10 @@
       v-show="!loading"
       ref="contentRef"
     />
+    <!-- Fallback if JS is disabled -->
+    <noscript>
+      <div v-html="content"></div>
+    </noscript>
   </div>
 </template>
 
