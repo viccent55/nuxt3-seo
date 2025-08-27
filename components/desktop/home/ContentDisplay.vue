@@ -25,8 +25,8 @@
       default: () => ({ page: 1, limit: 10, total: 0 }),
     },
     comments: {
-      type: Array as PropType<EmptyArrayType>,
-      default: () => [],
+      type: Object as PropType<{ items: EmptyObjectType[], total: number}>,
+      default: () => ({items: [], total: 0}),
     },
     postFilters: {
       type: Object as PropType<EmptyArrayType>,
@@ -336,7 +336,7 @@
             max-height="400"
           >
             <v-list-item
-              v-for="(comment, index) in comments"
+              v-for="(comment, index) in comments?.items"
               :key="index"
             >
               <template v-slot:default>
@@ -361,7 +361,7 @@
                 </div>
                 <v-divider
                   class="mt-4"
-                  v-if="index < comments.length - 1"
+                  v-if="index < comments.items?.length - 1"
                 ></v-divider>
               </template>
             </v-list-item>
