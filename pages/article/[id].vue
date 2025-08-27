@@ -39,12 +39,13 @@
     if (!mainContentCol.value?.$el) return;
 
     const rect = mainContentCol.value.$el.getBoundingClientRect();
+    const left = Math.max(8, rect.left - 60); // at least 8px padding on mobile
+
     floatingBarStyles.value = {
-      // Position it to the left of the main content column
-      left: `${rect.left - 60}px`,
-      // Vertically center it
+      left: `${left}px`,
       top: "50%",
       transform: "translateY(-50%)",
+      zIndex: 100,
     };
   };
   useSeo(
@@ -222,11 +223,11 @@
                 class="cursor-pointer"
                 @click="onCollect"
               >
-                <v-icon :color="isCollected ? 'primary' : 'grey'">
+                <v-icon :color="isCollected ? 'primary' : 'disabled'">
                   mdi-star
                 </v-icon>
               </v-avatar>
-              <span class="f12 text-grey">
+              <span class="f12 text-disabled">
                 {{
                   isCollected
                     ? articleDetail?.collect_count + 1
@@ -241,11 +242,11 @@
                 class="cursor-pointer"
                 @click="onLikeArticle"
               >
-                <v-icon :color="isLiked ? 'primary' : 'grey'">
+                <v-icon :color="isLiked ? 'primary' : 'disabled'">
                   mdi-thumb-up-outline
                 </v-icon>
               </v-avatar>
-              <span class="f12 text-grey">
+              <span class="f12 text-disabled">
                 {{
                   isLiked
                     ? articleDetail?.like_count + 1
@@ -261,9 +262,9 @@
                 size="36"
                 color="surface"
               >
-                <v-icon color="grey">mdi-comment</v-icon>
+                <v-icon color="disabled">mdi-comment</v-icon>
               </v-avatar>
-              <span class="f12 text-grey">
+              <span class="f12 text-disabled">
                 {{ articleDetail?.comment_count }}
               </span>
             </div>
