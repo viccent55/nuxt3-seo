@@ -35,7 +35,7 @@
 <template>
   <v-container>
     <Breadcrumbs :items="breadcrumb" />
-    <h2 class="text-h6 font-weight-bold mb-4">{{ subjectData?.name }} 专题</h2>
+    <h1 class="text-h6 font-weight-bold mb-4">{{ subjectData?.name }} 专题</h1>
     <v-row>
       <!-- Left content with transition -->
       <v-slide-y-transition mode="out-in">
