@@ -76,12 +76,17 @@
       loading.value = false;
     }
   };
-  // re-run when content changes
-  watchEffect(() => {
-    initImgAndVideo();
-  });
   onMounted(() => {
     initImgAndVideo();
+    watch(
+      () => props.content,
+      () => {
+        if (contentRef.value) {
+          contentRef.value.innerHTML = "";
+        }
+        initImgAndVideo();
+      }
+    );
   });
 </script>
 
@@ -102,9 +107,9 @@
       ref="contentRef"
     />
     <!-- Fallback if JS is disabled -->
-    <noscript>
+    <!-- <noscript>
       <div v-html="content"></div>
-    </noscript>
+    </noscript> -->
   </div>
 </template>
 

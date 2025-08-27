@@ -118,16 +118,10 @@
 </template>
 
 <script setup lang="ts">
-  import { useStore } from "~/store";
-
-  interface Member {
-    id: number;
-    username: string;
-    nickname: string;
-    avatar: string;
-  }
+  import { useGlobalDialog } from "~/store/globalDialog";
 
   const route = useRoute();
+  const storeDialog = useGlobalDialog();
   const commentText = ref("");
   const snackbar = useSnackbar();
   const { data, refresh } = await useFetch("/api/comment", {
@@ -148,7 +142,7 @@
     const access_token = useCookie("access_token");
     const refresh_token = useCookie("refresh_token");
     if (!access_token.value && !refresh_token.value) {
-      return snackbar.showSnackbar("请先登录!", "error", "center top");
+      return storeDialog.onLogin();
     }
     try {
       const { data: commentRes } = await useApiFetch("/api/comment/post", {
@@ -160,8 +154,8 @@
         },
       });
       if (commentRes?.value.errcode === 0) {
+        snackbar.showSnackbar("成功!", "success", "center center");
         refresh();
-        snackbar.showSnackbar("成功!", "success", "center top");
       }
       commentText.value = "";
     } catch (error) {
