@@ -102,7 +102,7 @@
         md="4"
       >
         <!-- 人物名称 -->
-        <h3 class="text-subtitle-1 font-weight-medium mb-2">人物名称</h3>
+        <!-- <h3 class="text-subtitle-1 font-weight-medium mb-2">人物名称</h3> -->
         <v-card class="pa-4 mb-6 elevation-0">
           <div class="text-center">
             <v-avatar
@@ -131,7 +131,7 @@
         </v-card>
 
         <!-- 涉及专题 -->
-        <h3 class="text-subtitle-1 font-weight-medium mb-2">涉及专题</h3>
+        <!-- <h3 class="text-subtitle-1 font-weight-medium mb-2">涉及专题</h3> -->
         <DesktopActorCard :items="actorData?.subjects" />
       </v-col>
     </v-row>

@@ -131,13 +131,14 @@
                     {{ item.intro }}
                   </div>
                   <div
+                    v-if="item.actors?.length"
                     class="d-flex align-center scroll-x text-grey mb-1 ga-2 align-center"
                   >
                     <div
                       class="f11 font-weight-bold"
                       style="min-width: 55px"
                     >
-                      相关文章：
+                      相关人物：
                     </div>
                     <div v-for="(iten, index) in item.actors">
                       <v-chip

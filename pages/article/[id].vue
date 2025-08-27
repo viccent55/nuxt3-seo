@@ -286,14 +286,16 @@
         md="4"
         class="pl-md-12"
       >
+        <SocialNetwork />
         <!-- 人物名称 -->
         <v-sheet
           color="transparent"
-          class="d-none d-sm-block"
+          class="d-none d-sm-block mt-2"
+          v-if="articleDetail?.related_actors?.length"
         >
           <h3 class="text-subtitle-1 font-weight-medium mb-2">相关人物</h3>
           <v-card class="pa-4 elevation-0">
-            <v-row v-if="articleDetail?.related_actors?.length">
+            <v-row>
               <v-col
                 align="center"
                 cols="6"
@@ -317,12 +319,6 @@
                   </div>
                 </NuxtLink>
               </v-col>
-            </v-row>
-            <v-row
-              class="pa-4"
-              v-else
-            >
-              没有相关演员....
             </v-row>
           </v-card>
         </v-sheet>
@@ -348,13 +344,13 @@
         <v-card
           class="mt-5 elevation-0"
           color="transparent"
+          v-if="articleDetail?.subject_posts.length"
         >
           <h3 class="text-subtitle-1 font-weight-medium mb-2">涉及专题</h3>
           <v-sheet class="pa-3">
             <template
               v-for="(item, index) in articleDetail?.subject_posts"
               :key="index"
-              v-if="articleDetail?.subject_posts?.length"
             >
               <ArticleListItem
                 class="pa-2"
@@ -366,12 +362,6 @@
                 v-if="index < articleDetail?.subject_posts?.length - 1"
               ></v-divider>
             </template>
-            <v-row
-              class="pa-4"
-              v-else
-            >
-              没有数据显示...
-            </v-row>
           </v-sheet>
         </v-card>
         <v-card

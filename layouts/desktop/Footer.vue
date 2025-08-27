@@ -37,79 +37,59 @@
     fluid
     class="bg-background pa-0"
   >
-    <v-container class="bg-none">
-      <div
-        class="d-flex flex-column justify-start"
-        v-if="$route.name == 'index'"
+    <v-footer>
+      <v-row
+        dense
+        class="pa-4"
       >
-        <v-row align="center">
-          <v-col
-            cols="12"
-            md="7"
-          >
-            <div class="d-flex flex-wrap flex-grow-1 ga-3 ga-md-8">
-              <div class="d-flex gap-md-5 flex-grow-1 ga-3">
-                <NuxtLink
-                  v-for="item in state.bottom_menu"
-                  :key="item.name"
-                  :to="item.url"
-                  class="text-decoration-none text-surface-variant"
-                >
-                  {{ item.name }}
-                </NuxtLink>
-              </div>
+        <v-col
+          cols="12"
+          v-if="$route.name == 'index'"
+        >
+          <div class="d-flex flex-wrap flex-grow-1 ga-3 ga-md-8">
+            <div class="d-flex gap-md-5 flex-grow-1 ga-3 justify-center">
+              <NuxtLink
+                v-for="item in state.bottom_menu"
+                :key="item.name"
+                :to="item.url"
+                class="text-decoration-none text-surface-variant"
+              >
+                {{ item.name }}
+              </NuxtLink>
             </div>
-          </v-col>
-          <v-col
-            cols="12"
-            md="5"
-          >
-            <div class="d-flex justify-end">
-              <v-btn
-                variant="text"
-                icon="mdi-wechat"
-                :to="store.configuration?.wechat"
+          </div>
+        </v-col>
+        <v-col
+          cols="12"
+          v-if="$route.name == 'index'"
+        >
+          <div class="d-flex w-100">
+            <div
+              class="d-flex ga-md-5 flex-grow-1 ga-3 text-caption justify-center"
+            >
+              <div class="text-body-2">友情链接 :</div>
+              <NuxtLink
+                v-for="(item, index) in state.friend_link"
+                :key="index"
+                :to="item.url"
+                class="text-decoration-none text-surface-variant"
                 target="_blank"
                 rel="noopener noreferrer"
-              ></v-btn>
-              <v-btn
-                variant="text"
-                icon="mdi-facebook"
-                :to="store.configuration?.facebook"
-                target="_blank"
-                rel="noopener noreferrer"
-              ></v-btn>
+              >
+                {{ item.name }}
+              </NuxtLink>
             </div>
-          </v-col>
-        </v-row>
-        <v-row dense>
-          <v-col
-            cols="12"
-            v-if="$route.name == 'index'"
-          >
-            <div class="d-flex flex-wrap flex-grow-1 ga-3 ga-md-5 align-center">
-              <div>友情链接 :</div>
-              <div class="d-flex ga-md-5 flex-grow-1 ga-3 text-caption">
-                <NuxtLink
-                  v-for="(item, index) in state.friend_link"
-                  :key="index"
-                  :to="item.url"
-                  class="text-decoration-none text-surface-variant"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {{ item.name }}
-                </NuxtLink>
-              </div>
-            </div>
-          </v-col>
-        </v-row>
-      </div>
-    </v-container>
-    <v-footer class="d-flex justify-center flex-wrap flex-grow-1">
-      <v-sheet class="pa-4">
-        {{ store.configuration?.copyright || "--" }}
-      </v-sheet>
+          </div>
+        </v-col>
+        <v-col
+          cols="12"
+          align="center"
+        >
+          <v-sheet>
+            {{ store.configuration?.copyright || "--" }}
+          </v-sheet>
+        </v-col>
+      </v-row>
     </v-footer>
   </v-container>
 </template>

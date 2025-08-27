@@ -35,7 +35,7 @@
 <template>
   <v-container>
     <Breadcrumbs :items="breadcrumb" />
-    <h2 class="text-h6 font-weight-bold mb-4">专题</h2>
+    <h2 class="text-h6 font-weight-bold mb-4">{{ subjectData?.name }} 专题</h2>
     <v-row>
       <!-- Left content with transition -->
       <v-slide-y-transition mode="out-in">
@@ -102,7 +102,6 @@
         md="4"
       >
         <!-- 人物名称 -->
-        <h3 class="text-subtitle-1 font-weight-medium mb-2">人物名称</h3>
         <v-card class="mb-6 elevation-0">
           <Image
             :src="subjectData?.cover"
@@ -127,8 +126,8 @@
         </v-card>
 
         <!-- 涉及专题 -->
-        <h3 class="text-subtitle-1 font-weight-medium mb-2">涉及人物</h3>
-        <v-sheet>
+        <!-- <h3 class="text-subtitle-1 font-weight-medium mb-2">涉及人物</h3> -->
+        <v-sheet v-if="subjectData?.actors?.length > 0">
           <v-row class="mt-2">
             <v-col
               v-for="(item, index) in subjectData?.actors"

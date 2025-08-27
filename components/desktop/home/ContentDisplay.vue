@@ -247,30 +247,10 @@
       cols="12"
       md="4"
     >
-      <SidebarSection
-        title="推荐文章"
-        :more="false"
-        class="d-none d-sm-block"
-      >
-        <v-sheet class="pa-3">
-          <template
-            v-for="(item, index) in postFilters"
-            :key="index"
-          >
-            <ArticleListItem
-              :item="item"
-              class="pa-2"
-              :to="'/article/' + item.id"
-            />
-            <v-divider
-              class="my-2"
-              v-if="index < postFilters.length - 1"
-            ></v-divider>
-          </template>
-        </v-sheet>
-      </SidebarSection>
+      <SocialNetwork />
 
       <SidebarSection
+        v-if="actorFilters.length > 0"
         title="热门人物"
         :goto="actorFilters?.length > 0 ? `/actor/${actorFilters[0].id}` : ''"
         class="d-none d-sm-block"
@@ -307,6 +287,11 @@
           </v-row>
         </v-card>
       </SidebarSection>
+      <SidebarSection :more="false">
+        <v-card elevation="0">
+          <DesktopAdvertSlot :advert="sideAds" />
+        </v-card>
+      </SidebarSection>
       <SidebarSection
         title="热门专题"
         :goto="subjectsCard?.length > 0 ? `/subject/${subjectsCard[0].id}` : ''"
@@ -315,10 +300,28 @@
         <DesktopActorCard :items="subjectsCard" />
       </SidebarSection>
 
-      <SidebarSection :more="false">
-        <v-card elevation="0">
-          <DesktopAdvertSlot :advert="sideAds" />
-        </v-card>
+      <SidebarSection
+        title="推荐文章"
+        :more="false"
+        class="d-none d-sm-block"
+        v-if="postFilters.length > 0"
+      >
+        <v-sheet class="pa-3">
+          <template
+            v-for="(item, index) in postFilters"
+            :key="index"
+          >
+            <ArticleListItem
+              :item="item"
+              class="pa-2"
+              :to="'/article/' + item.id"
+            />
+            <v-divider
+              class="my-2"
+              v-if="index < postFilters.length - 1"
+            ></v-divider>
+          </template>
+        </v-sheet>
       </SidebarSection>
 
       <SidebarSection
@@ -372,114 +375,6 @@
               </template>
             </v-list-item>
           </v-list>
-        </v-card>
-      </SidebarSection>
-      <SidebarSection
-        title="最新地址"
-        :more="false"
-      >
-        <v-card
-          elevation="0"
-          class="pl-md-4 pl-2 pt-4 pb-4"
-        >
-          <v-list
-            class="pa-0"
-            density="compact"
-          >
-            <v-list-item
-              class="rounded-sm"
-              bg-color="blue-lighten-5"
-            >
-              <v-list-item-title class="text-caption">
-                最新地址：
-                <a
-                  :href="store.configuration?.website_url"
-                  target="_blank"
-                  class="text-primary text-caption font-weight-medium text-pre-wrap"
-                >
-                  {{ store.configuration?.website_url }}
-                </a>
-              </v-list-item-title>
-            </v-list-item>
-
-            <v-list-item
-              class="rounded-sm"
-              bg-color="blue-lighten-5"
-            >
-              <v-list-item-title class="text-caption">
-                备用地址：
-                <a
-                  :href="store.configuration?.latest_url"
-                  target="_blank"
-                  class="text-primary text-caption font-weight-medium text-pre-wrap"
-                >
-                  {{ store.configuration?.latest_url }}
-                </a>
-              </v-list-item-title>
-            </v-list-item>
-
-            <v-list-item
-              class="rounded-sm"
-              color="primary"
-            >
-              <v-list-item-title class="text-caption">
-                永久域名：
-                <a
-                  :href="store.configuration?.backup_url"
-                  target="_blank"
-                  class="text-primary text-caption font-weight-medium text-pre-wrap"
-                >
-                  {{ store.configuration?.backup_url }}
-                </a>
-              </v-list-item-title>
-            </v-list-item>
-            <v-list-item
-              class="rounded-sm"
-              color="primary"
-            >
-              <v-list-item-title class="text-caption">
-                防失联邮箱：
-                <a
-                  :href="store.configuration?.email"
-                  target="_blank"
-                  class="text-primary text-caption font-weight-medium text-pre-wrap"
-                >
-                  {{ store.configuration?.email }}
-                </a>
-              </v-list-item-title>
-            </v-list-item>
-          </v-list>
-          <v-row
-            justify="center"
-            class="mt-2"
-          >
-            <v-sheet
-              color="bg-none"
-              class="pb-4 d-flex ga-2 bg-none"
-            >
-              <v-btn
-                variant="text"
-                icon="mdi-github"
-                :to="store.configuration?.github"
-                target="_blank"
-                rel="noopener noreferrer"
-              ></v-btn>
-              <v-btn
-                variant="text"
-                icon="mdi-twitter"
-                :to="store.configuration?.twitter"
-                target="_blank"
-                rel="noopener noreferrer"
-              ></v-btn>
-              <v-btn
-                variant="text"
-                icon="mdi-gitlab"
-                :to="store.configuration?.gitlab"
-                target="_blank"
-                rel="noopener noreferrer"
-              ></v-btn>
-            </v-sheet>
-          </v-row>
         </v-card>
       </SidebarSection>
 
