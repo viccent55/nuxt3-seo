@@ -104,7 +104,7 @@
                 </v-chip>
               </div>
             </div>
-            <div>
+            <div class="d-flex ga-2">
               <div
                 v-if="articleDetail?.actors?.length"
                 class="d-flex ga-2"
