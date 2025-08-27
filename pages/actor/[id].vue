@@ -5,6 +5,7 @@
 
   import Breadcrumbs from "~/components/desktop/Breadcrumbs.vue";
   import ArticleListItem from "~/components/desktop/ArticleList.vue";
+  import { useStore } from "~/store";
 
   const { actorData, actorFilters } = useActor();
   const breadcrumb = computed(() => {
@@ -29,6 +30,7 @@
     computed(() => actorData.value?.seo_description),
     computed(() => actorData.value?.seo_title)
   );
+  const store = useStore();
   const showContent = ref(false);
 </script>
 
@@ -103,7 +105,7 @@
       >
         <!-- 人物名称 -->
         <!-- <h3 class="text-subtitle-1 font-weight-medium mb-2">人物名称</h3> -->
-        <v-card class="pa-4 mb-6 elevation-0">
+        <v-card class="pa-4 elevation-0">
           <div class="text-center">
             <v-avatar
               size="80"
@@ -130,9 +132,22 @@
           </div>
         </v-card>
 
+        <v-card
+          class="mt-4"
+          elevation="0"
+          v-for="ads in store?.advertisement?.POSITION_HOME_RIGHT"
+          :key="ads.id"
+        >
+          <DesktopAdvertSlot :advert="ads" />
+        </v-card>
+
+        <SocialNetwork class="mt-4" />
         <!-- 涉及专题 -->
         <!-- <h3 class="text-subtitle-1 font-weight-medium mb-2">涉及专题</h3> -->
-        <DesktopActorCard :items="actorData?.subjects" />
+        <!-- <DesktopActorCard
+          class="mt-4"
+          :items="actorData?.subjects"
+        /> -->
       </v-col>
     </v-row>
   </v-container>

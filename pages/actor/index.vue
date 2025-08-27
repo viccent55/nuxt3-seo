@@ -1,8 +1,15 @@
 <script lang="ts" setup>
+  import { useStore } from "~/store";
+
   definePageMeta({
     keepalive: true,
   });
-  useSeo(ref("人物"), ref("人物"), ref("人物"));
+  const store = useStore();
+  useSeo(
+    computed(() => store.configuration?.actor_seo_title),
+    computed(() => store.configuration?.actor_seo_description),
+    computed(() => store.configuration?.actor_seo_keywords)
+  );
 </script>
 <template>
   <DesktopActorPage />

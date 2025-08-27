@@ -60,7 +60,6 @@
     return list.find((ad: any) => ad.position === index) || null;
   };
 
-  const sideAds = computed(() => props.adverts.POSITION_HOME_RIGHT?.[0]);
   const { isMobile, route } = useVariable();
   const chunkedSubjects = computed(() => {
     const chunkSize = 2;
@@ -288,8 +287,12 @@
         </v-card>
       </SidebarSection>
       <SidebarSection :more="false">
-        <v-card elevation="0">
-          <DesktopAdvertSlot :advert="sideAds" />
+        <v-card
+          elevation="0"
+          v-for="ads in props.adverts.POSITION_HOME_RIGHT"
+          :key="ads.id"
+        >
+          <DesktopAdvertSlot :advert="ads" />
         </v-card>
       </SidebarSection>
       <SidebarSection

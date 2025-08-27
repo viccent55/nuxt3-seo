@@ -19,17 +19,15 @@
   <v-card
     elevation="0"
     :class="class"
+    :to="advert?.url || '#'"
+    target="_blank"
+    rel="nofollow noopener noreferrer"
   >
-    <NuxtLink
-      :to="advert?.url || '#'"
-      target="_blank"
-    >
-      <Image
-        :src="advert?.image"
-        :alt="advert?.title"
-        :height="`${heightImage}`"
-        cover
-      />
-    </NuxtLink>
+    <Image
+      :src="advert?.image"
+      :alt="advert?.title"
+      height="auto"
+      contain
+    />
   </v-card>
 </template>

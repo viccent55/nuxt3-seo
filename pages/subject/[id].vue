@@ -5,6 +5,7 @@
 
   import Breadcrumbs from "~/components/desktop/Breadcrumbs.vue";
   import ArticleListItem from "~/components/desktop/ArticleList.vue";
+  import { useStore } from "~/store";
 
   const { subjectFilters, subjectData } = useSubject();
   const breadcrumb = computed(() => {
@@ -28,6 +29,7 @@
     computed(() => subjectData.value?.seo_description),
     computed(() => subjectData.value?.seo_title)
   );
+  const store = useStore();
 
   const showContent = ref(false);
 </script>
@@ -102,7 +104,7 @@
         md="4"
       >
         <!-- 人物名称 -->
-        <v-card class="mb-6 elevation-0">
+        <v-card class="elevation-0">
           <Image
             :src="subjectData?.cover"
             cover
@@ -125,10 +127,22 @@
           </v-card-text>
         </v-card>
 
+        <v-card
+          elevation="0"
+          class="mt-4"
+          v-for="ads in store?.advertisement?.POSITION_HOME_RIGHT"
+          :key="ads.id"
+        >
+          <DesktopAdvertSlot :advert="ads" />
+        </v-card>
+        <SocialNetwork class="mt-4" />
         <!-- 涉及专题 -->
         <!-- <h3 class="text-subtitle-1 font-weight-medium mb-2">涉及人物</h3> -->
-        <v-sheet v-if="subjectData?.actors?.length > 0">
-          <v-row class="mt-2">
+        <v-sheet
+          class="mt-4"
+          v-if="subjectData?.actors?.length > 0"
+        >
+          <v-row>
             <v-col
               v-for="(item, index) in subjectData?.actors"
               :key="index"

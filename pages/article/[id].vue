@@ -62,7 +62,7 @@
 </script>
 
 <template>
-  <v-container class="mt-2">
+  <v-container class="pt-0">
     <Breadcrumbs :items="breadcrumbs" />
     <v-row>
       <!-- Left Main Content -->
@@ -343,7 +343,7 @@
         </v-card>
         <!-- 涉及专题 -->
         <v-card
-          class="mt-5 elevation-0"
+          class="mt-5 elevation-0 d-none d-sm-block"
           color="transparent"
           v-if="articleDetail?.subject_posts.length"
         >
