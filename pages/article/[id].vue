@@ -323,24 +323,15 @@
             </v-row>
           </v-card>
         </v-sheet>
-        <v-card
-          elevation="0"
-          class="mt-5"
-        >
-          <v-row>
-            <v-col
-              cols="12"
-              v-for="(item, index) in store.advertisement
-                ?.POSITION_DETAIL_RIGHT"
-              :key="index"
-            >
-              <DesktopAdvertSlot
-                :advert="item"
-                height-image="80px"
-              />
-            </v-col>
-          </v-row>
-        </v-card>
+        <v-row class="mt-5">
+          <v-col
+            cols="12"
+            v-for="(item, index) in store.advertisement?.POSITION_DETAIL_RIGHT"
+            :key="index"
+          >
+            <DesktopAdvertSlot :advert="item" />
+          </v-col>
+        </v-row>
         <!-- 涉及专题 -->
         <v-card
           class="mt-5 elevation-0 d-none d-sm-block"
