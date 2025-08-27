@@ -2,6 +2,9 @@ import { useGlobalDialog } from "~/store/globalDialog";
 
 export default function useArticleDetail() {
   const route = useRoute();
+  const storeDialog = useGlobalDialog();
+  const accessToken = useCookie("access_token");
+
   const {
     data: articleDetail,
     pending,
@@ -18,25 +21,14 @@ export default function useArticleDetail() {
     {
       watch: [() => route.params.id],
       transform: (res: EmptyObjectType) => {
-        useSeo({
-          seo_title: res.data?.title,
-          seo_keywords: res.data?.seo_keywords,
-          home_description: res.data?.seo_description,
-        });
         return {
           ...res?.data,
         };
       },
     }
   );
-  useSeo({
-    seo_title: articleDetail.value?.title,
-    seo_keywords: articleDetail.value?.seo_keywords,
-    home_description: articleDetail.value?.seo_description,
-  });
 
-  const storeDialog = useGlobalDialog();
-  const accessToken = useCookie("access_token");
+ 
 
   const isLiked = ref(false);
   const onLikeArticle = async () => {

@@ -1,27 +1,20 @@
+import { computed, type Ref } from "vue";
 
-export const useSeo = (item?: EmptyObjectType) => {
+export const useSeo = (
+  title: Ref<string | undefined>,
+  description: Ref<string | undefined>,
+  keyword: Ref<string | undefined>
+) => {
   useHead({
-    title:
-      item?.seo_title ||
-      "Default Website Title",
+    title: computed(() => title?.value || "Default Website Title"),
     meta: [
       {
         name: "description",
-        content:
-          item?.seo_description ||
-          
-          "Default description.",
+        content: computed(() => description?.value || "Default description."),
       },
       {
         name: "keywords",
-        content:
-          item?.seo_keywords ||
-          "default, keywords, nuxt, vue",
-      },
-      {
-        name: "author",
-        content:
-          item?.seo_title|| "Author Name",
+        content: computed(() => keyword?.value || "default, keywords, nuxt, vue"),
       },
     ],
   });

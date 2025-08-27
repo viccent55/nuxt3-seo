@@ -2,7 +2,6 @@
   definePageMeta({
     keepalive: true,
   });
-  useSeo({});
 </script>
 
 <template>

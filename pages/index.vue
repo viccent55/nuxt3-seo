@@ -6,11 +6,11 @@
   });
   const store = useStore();
   const { configuration } = storeToRefs(store);
-  useSeo({
-    seo_title: configuration.value.home_title,
-    seo_description: configuration.value.home_description,
-    seo_keywords: configuration.value.home_keywords,
-  });
+  useSeo(
+    computed(() => configuration.value.home_title),
+    computed(() => configuration.value?.home_description),
+    computed(() => configuration.value?.home_keywords)
+  );
 </script>
 
 <template>

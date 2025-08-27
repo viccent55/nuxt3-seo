@@ -23,6 +23,12 @@
       },
     ];
   });
+  useSeo(
+    computed(() => subjectData.value?.seo_title),
+    computed(() => subjectData.value?.seo_description),
+    computed(() => subjectData.value?.seo_title)
+  );
+
   const showContent = ref(false);
 </script>
 

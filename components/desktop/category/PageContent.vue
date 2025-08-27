@@ -3,7 +3,7 @@
   definePageMeta({
     keepalive: true,
   });
-  useSeo({});
+ 
   const { postFilter, actorFilter, tagTop, comments, subjectFilter, store } =
     useHome();
 

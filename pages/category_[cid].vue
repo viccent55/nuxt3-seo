@@ -2,7 +2,7 @@
   definePageMeta({
     keepalive: true,
   });
-  useSeo({});
+
   const state = reactive({
     latests: [] as EmptyArrayType,
     paginate: {
@@ -42,6 +42,7 @@
         return {
           items: res.data.items || [],
           count: res.data.count || 0,
+          extends: res.data.extends || [],
         };
       },
     }
@@ -55,6 +56,13 @@
       }
     }
   });
+
+  useSeo(
+    computed(() => latest.value.extends.seo_title),
+    computed(() => latest.value.extends?.seo_description),
+    computed(() => latest.value.extends?.seo_title)
+  );
+  // );
 </script>
 
 <template>

@@ -47,9 +47,14 @@
       transform: "translateY(-50%)",
     };
   };
-
+  useSeo(
+    computed(() => articleDetail.value?.title),
+    computed(() => articleDetail.value?.seo_description),
+    computed(() => articleDetail.value?.seo_keywords)
+  );
   onMounted(() => {
     updateFloatingBarPosition();
+
     onViewCount();
   });
   useEventListener(window, "resize", updateFloatingBarPosition);

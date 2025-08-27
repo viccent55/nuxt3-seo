@@ -24,6 +24,11 @@
     ];
   });
 
+  useSeo(
+    computed(() => actorData.value?.seo_title),
+    computed(() => actorData.value?.seo_description),
+    computed(() => actorData.value?.seo_title)
+  );
   const showContent = ref(false);
 </script>
 

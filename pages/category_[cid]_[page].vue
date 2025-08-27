@@ -2,7 +2,6 @@
   definePageMeta({
     keepalive: true,
   });
-  useSeo({});
   const state = reactive({
     latests: [] as EmptyArrayType,
     paginate: {
@@ -50,7 +49,6 @@
       },
     }
   );
-
   watchEffect(() => {
     if (latest.value?.items) {
       state.latests = latest.value.items ?? [];

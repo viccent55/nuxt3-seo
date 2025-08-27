@@ -2,11 +2,7 @@
   definePageMeta({
     keepalive: true,
   });
-  useSeo({
-    seo_title: "人物",
-    seo_description: "人物",
-    seo_keywords: "人物",
-  });
+  useSeo(ref("人物"), ref("人物"), ref("人物"));
 </script>
 <template>
   <DesktopActorPage />
