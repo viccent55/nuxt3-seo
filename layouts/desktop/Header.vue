@@ -75,7 +75,7 @@
           class="d-flex align-center"
         >
           <!-- Logo -->
-
+          <h1 class="d-none">{{ store.configuration?.website_slogan }}</h1>
           <v-btn
             class="pa-0 text-body-1 font-weight-bold me-4"
             tag="h1"

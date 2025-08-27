@@ -152,7 +152,7 @@
                       :class="isHovering ? '' : 'bg-none text-grey'"
                       :color="isHovering ? 'primary' : ''"
                       @click.stop
-                      :to="`/category/${category.id}`"
+                      :to="`/category_${category.id}`"
                       flat
                     >
                       {{ category.name }}
@@ -229,7 +229,7 @@
                 <!-- Categories -->
                 <template
                   v-for="category in item?.categories"
-                  :key="'category-' + category.id"
+                  :key="'category_' + category.id"
                 >
                   <v-hover v-slot="{ isHovering, props }">
                     <v-chip
@@ -238,7 +238,7 @@
                       class="ma-1"
                       :class="isHovering ? '' : 'bg-none text-grey'"
                       :color="isHovering ? 'primary' : ''"
-                      :to="`/category/${category.id}`"
+                      :to="`/category_${category.id}`"
                       flat
                     >
                       {{ category.name }}

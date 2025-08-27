@@ -61,7 +61,7 @@
         <v-hover v-slot="{ isHovering, props }">
           <v-card
             v-bind="props"
-            :color="isHovering ? 'white' : 'transparent'"
+            :class="[isHovering ? 'bg-default' : 'bg-none']"
             flat
             class="pa-5"
             min-height="230"

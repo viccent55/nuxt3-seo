@@ -70,7 +70,10 @@
           flat
           color="transparent"
         >
-          <v-card-title class="text-h5 font-weight-bold text-wrap">
+          <v-card-title
+            class="text-h5 font-weight-bold text-wrap"
+            tag="h1"
+          >
             {{ articleDetail?.title }}
           </v-card-title>
           <v-card-subtitle class="d-flex align-center justify-space-between">
@@ -90,7 +93,7 @@
                   class="px-2"
                   variant="text"
                   size="small"
-                  :to="`/category/${category.id}`"
+                  :to="`/category_${category.id}`"
                 >
                   {{ category.name }}
                 </v-chip>

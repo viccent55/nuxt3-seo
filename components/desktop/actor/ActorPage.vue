@@ -58,7 +58,7 @@
             v-bind="props"
             flat
             class="pa-5 cursor-pointer rounded"
-            :color="isHovering ? 'white' : 'transparent'"
+            :class="[isHovering ? 'bg-default' : 'bg-none']"
             min-height="230"
           >
             <NuxtLink

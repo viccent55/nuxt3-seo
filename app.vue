@@ -74,6 +74,7 @@
   </v-snackbar>
   <v-app>
     <NuxtLayout :name="isMobile ? 'mobile' : 'desktop'">
+      <AnalyticsLoader :analytics="store.configuration?.analytics" />
       <NuxtLoadingIndicator />
       <NuxtPwaManifest />
       <NuxtPage />
@@ -96,7 +97,9 @@
     </div>
     <DesktopAuthLoginDialog />
     <DesktopAuthRegisterDialog />
-    <DesktopDialogPopupAds :adverts="store.advertisement?.POSITION_HOME_POPUP" />
+    <DesktopDialogPopupAds
+      :adverts="store.advertisement?.POSITION_HOME_POPUP"
+    />
   </v-app>
 </template>
 <style scoped>

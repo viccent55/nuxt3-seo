@@ -3,7 +3,6 @@
     keepalive: true,
   });
   useSeo({});
-  const { store } = useHome();
 </script>
 
 <template>
