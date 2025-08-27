@@ -42,7 +42,7 @@
         class="d-flex flex-column justify-start"
         v-if="$route.name == 'index'"
       >
-        <v-row dense>
+        <v-row align="center">
           <v-col
             cols="12"
             md="7"
@@ -64,9 +64,21 @@
             cols="12"
             md="5"
           >
-            <div class="d-flex justify-end ga-3">
-              <v-icon size="large">mdi-wechat</v-icon>
-              <v-icon size="large">mdi-facebook</v-icon>
+            <div class="d-flex justify-end">
+              <v-btn
+                variant="text"
+                icon="mdi-wechat"
+                :to="store.configuration?.wechat"
+                target="_blank"
+                rel="noopener noreferrer"
+              ></v-btn>
+              <v-btn
+                variant="text"
+                icon="mdi-facebook"
+                :to="store.configuration?.facebook"
+                target="_blank"
+                rel="noopener noreferrer"
+              ></v-btn>
             </div>
           </v-col>
         </v-row>

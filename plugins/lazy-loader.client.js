@@ -225,7 +225,7 @@ export default defineNuxtPlugin(() => {
         // å¤„ç†æ™®é€šå›¾ç‰‡
         else if (elem.getAttribute("data-lazy-src") !== null) {
           elementType = "image";
-          originalUrl =  '/loading.jpg';
+          originalUrl = "/loading.jpg";
 
           console.log(`å¤„ç†å›¾ç‰‡ [${i}]:`, originalUrl);
 

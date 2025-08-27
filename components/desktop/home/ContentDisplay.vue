@@ -449,21 +449,29 @@
           >
             <v-sheet
               color="bg-none"
-              class="pb-4 d-flex ga-4 bg-none"
+              class="pb-4 d-flex ga-2 bg-none"
             >
-              <v-icon
+              <v-btn
+                variant="text"
                 icon="mdi-github"
-                size="30"
-              />
-
-              <v-icon
+                :to="store.configuration?.github"
+                target="_blank"
+                rel="noopener noreferrer"
+              ></v-btn>
+              <v-btn
+                variant="text"
                 icon="mdi-twitter"
-                size="30"
-              />
-              <v-icon
+                :to="store.configuration?.twitter"
+                target="_blank"
+                rel="noopener noreferrer"
+              ></v-btn>
+              <v-btn
+                variant="text"
                 icon="mdi-gitlab"
-                size="30"
-              />
+                :to="store.configuration?.gitlab"
+                target="_blank"
+                rel="noopener noreferrer"
+              ></v-btn>
             </v-sheet>
           </v-row>
         </v-card>

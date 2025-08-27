@@ -87,13 +87,13 @@ export default defineNuxtConfig({
       globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
     },
     devOptions: {
-      enabled: true,
+      enabled: process.env.NODE_ENV === "development", // no SW in dev
       type: "module",
     },
   },
   devServer: {
     port: 3000,
-    // host: "0.0.0.0",
+    host: "0.0.0.0",
   },
   vite: {
     optimizeDeps: {
@@ -105,7 +105,7 @@ export default defineNuxtConfig({
       },
     },
     server: {
-      allowedHosts: ["cgbk.com"], // ✅ 添加你的域名/IP
+       allowedHosts: true,
     },
   },
 
