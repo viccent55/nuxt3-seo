@@ -25,8 +25,8 @@
       default: () => ({ page: 1, limit: 10, total: 0 }),
     },
     comments: {
-      type: Object as PropType<{ items: EmptyObjectType[], total: number}>,
-      default: () => ({items: [], total: 0}),
+      type: Object as PropType<{ items: EmptyArrayType; total: number }>,
+      default: () => ({ items: [], total: 0 }),
     },
     postFilters: {
       type: Object as PropType<EmptyArrayType>,
@@ -356,7 +356,13 @@
                     <span>{{ formatTime(comment.created) }}</span>
                   </div>
                   <div class="text-caption text-disabled pl-2">
-                    评论文章：{{ comment.post?.title }}
+                    评论文章：
+                    <NuxtLink
+                      class="text-disabled text-decoration-none"
+                      :to="`/article/${comment.post_id}`"
+                    >
+                      {{ comment.post?.title }}
+                    </NuxtLink>
                   </div>
                 </div>
                 <v-divider
