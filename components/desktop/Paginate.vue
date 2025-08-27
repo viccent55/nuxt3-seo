@@ -18,7 +18,7 @@
   const maxPage = computed(() =>
     Math.max(1, Math.ceil(props.total / props.limit))
   );
-  const inputPage = ref(route.params.page || 1);
+  const inputPage = ref(Number(route.params.page) || 1);
 
   const clampPage = (page: number) =>
     Math.min(Math.max(1, page), maxPage.value);
@@ -60,7 +60,10 @@
 </script>
 
 <template>
-  <v-row dense>
+  <v-row
+    dense
+    v-if="total > 0"
+  >
     <v-col :class="`d-flex align-center justify-${justify} flex-wrap`">
       <div
         v-if="!isMobile"
