@@ -110,6 +110,7 @@
     <noscript>
       <div v-html="content"></div>
     </noscript>
+    <!-- end js disabled -->
   </div>
 </template>
 
