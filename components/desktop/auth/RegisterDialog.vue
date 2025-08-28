@@ -36,13 +36,18 @@
         method: "POST",
         body: state.form,
       });
-      if (response.code == 0 || response.code == 200) {
-        snackbar.showSnackbar("登录成功", "success", "top center");
+      if (response.errcode == 0) {
+        snackbar.showSnackbar(response?.info, "success", "top center");
       } else {
-        snackbar.showSnackbar(response.msg, "error", "top center");
+        snackbar.showSnackbar(response.info, "error", "top center");
       }
-    } catch (error) {
-      console.error("Login failed:", error);
+    } catch (error: any) {
+      snackbar.showSnackbar(
+        error?.info || "Error registering ",
+        "error",
+        "top center"
+      );
+      console.error("registering failed:", error);
     }
   };
   const closeDialog = () => {

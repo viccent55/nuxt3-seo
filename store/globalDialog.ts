@@ -9,8 +9,8 @@ export const useGlobalDialog = defineStore("globalDialog", () => {
     },
     register: {
       isShowDialog: false,
-      title: "登录",
-      loginText: "登录",
+      title: "注册",
+      loginText: "注册",
     },
   });
 

@@ -33,17 +33,15 @@
         method: "POST",
         body: state.form,
       });
-      if (response.code === 400) {
-        return snackbar.showSnackbar("账户不正确!", "error", "top center");
-      }
       if (response.errcode === 0) {
         auth.setToken(response.data.token);
         store.setUserInfo(response.data.userinfo);
-        snackbar.showSnackbar("登录成功", "success", "top center");
+        snackbar.showSnackbar(response?.info, "success", "top center");
         closeDialog();
-      }
-        if (response.code === 429) {
-        return snackbar.showSnackbar(response.msg, "error", "top center");
+      } else if (response.code === 429) {
+        return snackbar.showSnackbar(response.info, "error", "top center");
+      } else {
+        return snackbar.showSnackbar(response?.info, "error", "top center");
       }
       // navigateTo("/dashboard");
     } catch (error) {
@@ -164,6 +162,6 @@
 </template>
 <style lang="scss" scoped>
   .text-primary {
-    color: rgba(var(--v-theme-primary))!important;
+    color: rgba(var(--v-theme-primary)) !important;
   }
 </style>
