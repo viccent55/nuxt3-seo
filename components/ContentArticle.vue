@@ -107,9 +107,9 @@
       ref="contentRef"
     />
     <!-- Fallback if JS is disabled -->
-    <!-- <noscript>
+    <noscript>
       <div v-html="content"></div>
-    </noscript> -->
+    </noscript>
   </div>
 </template>
 
