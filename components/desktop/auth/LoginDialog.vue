@@ -133,7 +133,7 @@
             block
             @click="login"
           >
-            登录
+            {{ storeDialog.login.loginText }}
           </v-btn>
         </v-form>
         <div class="d-flex justify-center mb-2">

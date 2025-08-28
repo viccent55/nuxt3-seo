@@ -139,7 +139,7 @@
             block
             @click="onRegister"
           >
-            登录
+            {{storeDialog.register.registerText}}
           </v-btn>
         </v-form>
 
