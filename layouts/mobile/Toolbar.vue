@@ -19,50 +19,25 @@
 </script>
 
 <template>
-  <v-sheet color="transparent">
-    <v-bottom-navigation
-      grow
-      class="d-md-none"
-      height="56"
-      color="surface"
-      elevation="3"
-    >
-      <template
-        v-for="(menu, index) in store.menusMobile"
-        :key="index"
+  <v-bottom-navigation
+    grow
+    class="d-md-none"
+    height="56"
+    color="surface"
+    elevation="3"
+    position="fixed"
+    border="t"
+  >
+    <template v-for="menu in store.menusMobile" :key="menu.value">
+      <v-btn
+        :to="menu.value !== '/dashboard' ? menu.value : undefined"
+        variant="text"
+        :color="isActive(menu.value) ? 'primary' : 'grey'"
+        @click="menu.value === '/dashboard' ? onToDashboard : undefined"
       >
-        <v-btn
-          v-if="menu.value === '/dashboard'"
-          @click="onToDashboard"
-          variant="text"
-          :color="isActive(menu.value) ? 'primary' : ''"
-          :class="isActive(menu.value) ? 'primary' : 'text-grey'"
-        >
-          <v-icon>{{ menu.icon }}</v-icon>
-          <span class="text-caption">{{ menu.name }}</span>
-        </v-btn>
-        <v-btn
-          v-else
-          :to="menu.value"
-          variant="text"
-          :color="isActive(menu.value) ? 'primary' : ''"
-          :class="isActive(menu.value) ? 'primary' : 'text-grey'"
-        >
-          <v-icon>{{ menu.icon }}</v-icon>
-          <span class="text-caption">{{ menu.name }}  </span>
-        </v-btn>
-      </template>
-    </v-bottom-navigation>
-  </v-sheet>
+        <v-icon>{{ menu.icon }}</v-icon>
+        <span class="text-caption">{{ menu.name }}</span>
+      </v-btn>
+    </template>
+  </v-bottom-navigation>
 </template>
-
-<style scoped>
-  .v-bottom-navigation {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    z-index: 100;
-    border-top: 1px solid rgba(var(--v-border-color), 0.12);
-    background-color: rgb(var(--v-theme-surface));
-  }
-</style>
