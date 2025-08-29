@@ -26,7 +26,7 @@
 </script>
 
 <template>
-  <v-container>
+  <v-container min-height="80vh">
     <v-row
       justify="center"
       class="my-md-10 my-5"
