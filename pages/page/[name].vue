@@ -14,15 +14,11 @@
       watch: [() => pageNamge.value],
     }
   );
-  watchEffect(() => {
-    if (page.value) {
-      useSeo(
-        page.value?.data.seo_title,
-        page.value.data.seo_description,
-        page.value.data.seo_keywords
-      );
-    }
-  });
+  useSeo(
+    computed(() => page.value?.data.seo_title),
+    computed(() => page.value?.data.seo_description),
+    computed(() => page.value?.data.seo_keywords)
+  );
 </script>
 
 <template>
