@@ -15,7 +15,7 @@
           const [name, url] = line.split("|");
           return {
             name,
-            url: url.startsWith("/page/") ? url.replace("/page", "") : url,
+            url: url.startsWith("/page/") ? url.replace("/page", "/page") : url,
           };
         });
 
