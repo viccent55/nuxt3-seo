@@ -17,6 +17,8 @@
 
 <template>
   <v-card
+    color="transparent"
+    flat
     elevation="0"
     :class="class"
   >

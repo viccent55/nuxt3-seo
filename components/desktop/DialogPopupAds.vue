@@ -147,18 +147,12 @@
     z-index: 20; // Ensure it's above the overlay
   }
   .height-dialog {
-    max-width: 50vw;
-    max-height: 70vh;
-    width: auto; // desktop: natural width
-    height: auto; // keep aspect ratio
     display: block;
     margin-inline: auto;
-
-    @media (max-width: 768px) {
-      max-width: 80vw;
-      width: 100%; // fill available width on mobile
-      max-height: 70vh;
-      height: auto; // maintain aspect ratio
-    }
+    width: 100%;
+    max-width: 530px;
+    aspect-ratio: 530 / 590; // auto-calc height from width
+    object-fit: contain;
+    max-height: 85vh;
   }
 </style>

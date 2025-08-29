@@ -155,7 +155,10 @@
                 ?.POSITION_DETAIL_AFTER_TITLE"
               :key="index"
             >
-              <DesktopAdvertSlot :advert="item" />
+              <DesktopAdvertSlot
+                :advert="item"
+                class="detail-ads-ratio"
+              />
             </v-col>
           </v-row>
           <!-- {{ articleDetail?.content }} -->
@@ -187,7 +190,10 @@
                 ?.POSITION_DETAIL_AFTER_CONTENT"
               :key="index"
             >
-              <DesktopAdvertSlot :advert="item" />
+              <DesktopAdvertSlot
+                :advert="item"
+                class="detail-ads-ratio"
+              />
             </v-col>
           </v-row>
 
@@ -329,7 +335,10 @@
             v-for="(item, index) in store.advertisement?.POSITION_DETAIL_RIGHT"
             :key="index"
           >
-            <DesktopAdvertSlot :advert="item" />
+            <DesktopAdvertSlot
+              :advert="item"
+              class="detail-right-ads-ratio"
+            />
           </v-col>
         </v-row>
         <!-- 涉及专题 -->
@@ -413,5 +422,19 @@
     display: block;
     margin-inline: auto;
     // border-radius: 4px;
+  }
+  .detail-ads-ratio {
+    display: block;
+    width: 100%;
+    max-width: 770px;
+    aspect-ratio: 770 / 90; 
+    object-fit: contain;
+  }
+  .detail-right-ads-ratio {
+    display: block;
+    width: 100%;
+    max-width: 373px;
+    aspect-ratio: 373 / 80; 
+    object-fit: contain;
   }
 </style>

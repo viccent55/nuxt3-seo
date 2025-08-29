@@ -229,14 +229,20 @@
           "
         />
       </div>
-      <v-row class="mt-2">
+      <v-row
+        class="mt-2"
+        dense
+      >
         <v-col
-          cols="12"
+          cols="6"
           md="6"
           v-for="(item, index) in store.advertisement?.POSITION_HOME_BOTTOM"
           :key="index"
         >
-          <DesktopAdvertSlot :advert="item" />
+          <DesktopAdvertSlot
+            :advert="item"
+            class="home-button-ads"
+          />
         </v-col>
       </v-row>
     </v-col>
@@ -432,5 +438,11 @@
     width: 32px;
     height: 32px;
     min-width: 32px;
+  }
+  .home-button-ads {
+    width: 100%;
+    max-width: 373px;
+    aspect-ratio: 373 / 78; // auto-calc height from width
+    object-fit: contain;
   }
 </style>
