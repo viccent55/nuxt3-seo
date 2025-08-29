@@ -157,6 +157,7 @@
             >
               <DesktopAdvertSlot
                 :advert="item"
+                color="transparent"
                 class="detail-ads-ratio"
               />
             </v-col>
@@ -192,6 +193,7 @@
             >
               <DesktopAdvertSlot
                 :advert="item"
+                color="transparent"
                 class="detail-ads-ratio"
               />
             </v-col>
@@ -331,7 +333,8 @@
         </v-sheet>
         <v-row class="mt-5">
           <v-col
-            cols="12"
+            cols="6"
+            md="12"
             v-for="(item, index) in store.advertisement?.POSITION_DETAIL_RIGHT"
             :key="index"
           >
@@ -427,14 +430,14 @@
     display: block;
     width: 100%;
     max-width: 770px;
-    aspect-ratio: 770 / 90; 
+    aspect-ratio: 770 / 100;
     object-fit: contain;
   }
   .detail-right-ads-ratio {
     display: block;
     width: 100%;
-    max-width: 373px;
-    aspect-ratio: 373 / 80; 
+    max-width: 373;
+    aspect-ratio: 373 / 80;
     object-fit: contain;
   }
 </style>

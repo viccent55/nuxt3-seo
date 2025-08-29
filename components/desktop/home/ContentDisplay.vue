@@ -294,11 +294,15 @@
       </SidebarSection>
       <SidebarSection :more="false">
         <v-card
-          elevation="0"
+          flat
           v-for="ads in props.adverts.POSITION_HOME_RIGHT"
           :key="ads.id"
         >
-          <DesktopAdvertSlot :advert="ads" />
+          <DesktopAdvertSlot
+            :advert="ads"
+            color="transparent"
+            class="right-ads-ratio"
+          />
         </v-card>
       </SidebarSection>
       <SidebarSection
@@ -443,6 +447,13 @@
     width: 100%;
     max-width: 373px;
     aspect-ratio: 373 / 78; // auto-calc height from width
+    object-fit: contain;
+  }
+  .right-ads-ratio {
+    display: block;
+    width: 100%;
+    max-width: 373px;
+    aspect-ratio: 373 / 80;
     object-fit: contain;
   }
 </style>
