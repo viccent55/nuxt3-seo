@@ -134,7 +134,7 @@
                 >
                   <DesktopActorProfile
                     :item="author"
-                    :to="`/actors/${author.id}`"
+                    :to="`/actor/${author.id}`"
                     class="cursor-pointer"
                   />
                 </div>
@@ -172,7 +172,7 @@
                       class="ma-1"
                       :class="isHovering ? '' : 'bg-none text-grey'"
                       :color="isHovering ? 'primary' : ''"
-                      :to="`/subjects/${subject.id}`"
+                      :to="`/subject/${subject.id}`"
                       flat
                     >
                       {{ subject.name }}

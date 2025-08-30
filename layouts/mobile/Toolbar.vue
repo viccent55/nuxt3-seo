@@ -28,12 +28,15 @@
     position="fixed"
     border="t"
   >
-    <template v-for="menu in store.menusMobile" :key="menu.value">
+    <template
+      v-for="menu in store.menusMobile"
+      :key="menu.value"
+    >
       <v-btn
         :to="menu.value !== '/dashboard' ? menu.value : undefined"
         variant="text"
         :color="isActive(menu.value) ? 'primary' : 'grey'"
-        @click="menu.value === '/dashboard' ? onToDashboard : undefined"
+        @click="menu.value === '/dashboard' ? onToDashboard() : undefined"
       >
         <v-icon>{{ menu.icon }}</v-icon>
         <span class="text-caption">{{ menu.name }}</span>
