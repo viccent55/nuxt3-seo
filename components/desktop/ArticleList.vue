@@ -42,7 +42,7 @@
         ref="articleCard"
         v-bind="isMobileSm ? {} : hoverProps"
         :class="[
-          'd-flex mb-0 mb-md-2 pb-0 pb-md-2 position-relative',
+          'd-flex mb-0 mb-md-2 py-0 py-md-2 position-relative',
           isMobileSm ? 'flex-column' : '',
           isHovering ? 'bg-default' : 'bg-none',
         ]"
