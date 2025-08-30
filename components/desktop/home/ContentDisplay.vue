@@ -141,8 +141,8 @@
                   class="text-decoration-none"
                 >
                   <ArticleCard
-                    cover
-                    height="80"
+                    contain
+                    height="100"
                     class="cursor-pointer"
                     :item="item"
                   />
@@ -455,7 +455,7 @@
   .right-ads-ratio {
     display: block;
     width: 100%;
-    max-width: 373px;
+    // max-width: 373px;
     aspect-ratio: 373 / 80;
     object-fit: contain;
   }

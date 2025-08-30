@@ -155,9 +155,9 @@
                 </v-col>
                 <v-col cols="12">
                   <v-divider class="my-2" />
-                  <v-row dense>
+                  <v-row no-gutters>
                     <v-col
-                      :cols="item?.posts.length > 2 ? 6 : 12"
+                      :cols="item?.posts.length > 2 ? (isMobile ? 12 : 6) : 12"
                       v-for="(post, index) in item.posts"
                       :key="post.id"
                     >

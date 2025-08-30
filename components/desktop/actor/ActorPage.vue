@@ -105,26 +105,32 @@
                 </v-col>
                 <v-col cols="12">
                   <v-divider class="my-2" />
-                  <v-row dense>
+                  <v-row no-gutters>
                     <v-col
-                      :cols="item?.posts.length > 2 ? 6 : 12"
-                      v-for="(post, index) in item?.posts"
+                      :cols="item?.posts.length > 2 ? (isMobile ? 12 : 6) : 12"
+                      v-for="(post, index) in item.posts"
                       :key="post.id"
                     >
                       <v-chip
                         v-if="index < 4"
                         :to="`/article/${post.id}`"
                         color="transparent"
+                        variant="text"
+                        density="comfortable"
+                        class="px-1"
                       >
                         <div
-                          class="d-flex align-center active-color cursor-pointer"
+                          class="d-flex align-center active-color cursor-pointer w-100"
                         >
                           <v-icon
                             icon="mdi-circle-small"
                             size="small"
                             class="mr-1"
+                            color="grey"
                           />
-                          <div class="truncate-1 text-caption text-grey">
+                          <div
+                            class="text-caption text-grey truncate-1 flex-grow-1"
+                          >
                             {{ post.title }}
                           </div>
                         </div>
