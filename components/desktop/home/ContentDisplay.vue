@@ -205,7 +205,10 @@
             <!-- Inject advert if 'sort' matches current index -->
             <template v-if="getAdvertAtIndex(index)">
               <div class="my-4 text-center">
-                <AdvertSlot :advert="getAdvertAtIndex(index)" />
+                <AdvertSlot
+                  :advert="getAdvertAtIndex(index)"
+                  class="latest-ads"
+                />
               </div>
             </template>
           </template>
@@ -454,6 +457,12 @@
     width: 100%;
     max-width: 373px;
     aspect-ratio: 373 / 80;
+    object-fit: contain;
+  }
+  .latest-ads {
+    width: 100%;
+    // max-width: 800px;
+    aspect-ratio: 600 / 150;
     object-fit: contain;
   }
 </style>
