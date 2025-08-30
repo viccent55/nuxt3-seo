@@ -42,7 +42,7 @@
         ref="articleCard"
         v-bind="isMobileSm ? {} : hoverProps"
         :class="[
-          'd-flex mb-0 mb-md-2 position-relative',
+          'd-flex mb-0 mb-md-2 pb-0 pb-md-2 position-relative',
           isMobileSm ? 'flex-column' : '',
           isHovering ? 'bg-default' : 'bg-none',
         ]"
@@ -89,10 +89,10 @@
           position="center"
         ></Image>
         <v-card-text
-          class="text-content"
+          class="pt-2 pb-0"
           v-if="isMobileSm"
         >
-          <h3>{{ item?.title }}</h3>
+          <h4>{{ item?.title }}</h4>
           <v-row
             no-gutters
             class="mt-1"
