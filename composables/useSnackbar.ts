@@ -1,18 +1,11 @@
-import { ref } from 'vue';
+// useSnackbar.ts
+import { inject } from 'vue'
 
-const snackbar = ref(false);
-const text = ref('');
-const color = ref('error');
-const timeout = ref(5000);
+export default function useSnackbar() {
+  const showSnackbar = inject<(msg: string, color?: string, location?: string, timeout?: number) => void>('showSnackbar')
 
-const showSnackbar = (message: string, snackbarColor = 'error') => {
-  text.value = message;
-  color.value = snackbarColor;
-  snackbar.value = true;
-};
-
-const useSnackbar = () => {
-  return { snackbar, text, color, timeout, showSnackbar };
-};
-
-export default useSnackbar;
+  if (!showSnackbar) {
+    throw new Error('Snackbar composable is not provided')
+  }
+  return { showSnackbar }
+}

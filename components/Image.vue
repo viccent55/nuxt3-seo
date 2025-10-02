@@ -1,0 +1,56 @@
+<script lang="ts" setup>
+  const props = defineProps({
+    src: String,
+    width: { type: String, default: "100%" },
+    height: { type: String, default: "160px" },
+  });
+
+  const emit = defineEmits(["imageDimensions"]);
+
+  const { decryptImage, decryptedImage } = useDecryption();
+
+  watchEffect(() => {
+    if (props.src) decryptImage(props.src); // decrypt async
+  });
+
+  const state = reactive({ width: 0, height: 0, isVertical: false });
+  const handleImageLoad = () => {
+    // We need to escape the URL for use in the selector
+    const escapedSrc = CSS.escape(decryptedImage.value);
+    const img = document.querySelector(
+      `img[src="${escapedSrc}"]`
+    ) as HTMLImageElement | null;
+
+    if (img) {
+      state.width = img.naturalWidth;
+      state.height = img.naturalHeight;
+      state.isVertical = state.height > state.width;
+      emit("imageDimensions", state);
+    } else {
+      console.error("Could not find image element in the DOM.");
+    }
+  };
+</script>
+
+<template>
+  <v-img
+    :src="decryptedImage || '/loading.jpg'"
+    :lazy-src="'/loading.jpg'"
+    :width="width"
+    :height="height"
+    alt="Image"
+    @load="handleImageLoad"
+  >
+    <template v-slot:placeholder>
+      <div class="d-flex align-center justify-center fill-height">
+        <v-progress-circular
+          v-if="!decryptedImage"
+          color="grey-lighten-4"
+          indeterminate
+        />
+        <!-- <span v-else>Loading...</span> -->
+      </div>
+    </template>
+    <slot />
+  </v-img>
+</template>

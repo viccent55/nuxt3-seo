@@ -1,10 +1,17 @@
 <script setup lang="ts">
+  import { NavigationItems } from "@/common";
 
   const state = reactive({
     keywords: "nuxt3, seo, vue, web development",
-    title: "Nuxt3 SEO",
-    description: "A Nuxt 3 project with SEO optimizations"
+    title: "",
+    description: "A Nuxt 3 project with SEO optimizations",
   });
+
+  const filteredNavItems = computed(() =>
+    NavigationItems.filter((item) =>
+      ["/", "/article", "/anime", "/creator"].includes(item.href)
+    )
+  );
 </script>
 <template>
   <header>
@@ -16,70 +23,54 @@
     >
       <!-- Left: Logo -->
       <v-container>
-        <v-row>
-          <v-col cols="8">
+        <v-row dense>
+          <v-col cols="4">
             <div class="d-flex align-center ga-5">
               <v-btn
                 variant="text"
                 class="pa-0 text-body-1 font-weight-bold"
-                to="/home"
-                tag="h1"
+                to="/"
               >
-                LOGO
+                <v-img
+                  src="/logo.png"
+                  width="80"
+                  alt="Logo"
+                ></v-img>
               </v-btn>
-              
+
               <!-- Navigation -->
               <nav
-                aria-label="Main navigation"
+                aria-label=" navigation"
                 class="d-flex ga-8"
               >
                 <NuxtLink
-                  to="/home"
+                  v-for="(item, index) in filteredNavItems"
+                  :to="item.href"
                   class="text-button"
+                  :key="index"
                 >
-                  首页
-                </NuxtLink>
-                <NuxtLink
-                  to="/topics"
-                  class="text-button"
-                >
-                  专题
-                </NuxtLink>
-                <NuxtLink
-                  to="/characters"
-                  class="text-button"
-                >
-                  人物
-                </NuxtLink>
-                <NuxtLink
-                  to="/tags"
-                  class="text-button"
-                >
-                  标签
+                  {{ item.name }}
                 </NuxtLink>
               </nav>
             </div>
+          </v-col>
+          <v-col cols="4">
+            <v-text-field
+              v-model="state.title"
+              hide-details
+              density="comfortable"
+              variant="outlined"
+              placeholder="请输入搜索内容"
+              append-inner-icon="mdi-magnify"
+              rounded="xl"
+              class="bg-grey-lighten-4 rounded-xl"
+            />
           </v-col>
           <v-col
             cols="4"
             class="d-flex justify-end"
           >
-            <div
-              class="d-flex align-center ga-6"
-              style="width: 350px"
-            >
-              <v-text-field
-                v-model="state.title"
-                hide-details
-                density="compact"
-                variant="outlined"
-                placeholder="请输入搜索内容"
-                prepend-inner-icon="mdi-magnify"
-                style="max-width: 240px"
-                rounded="lg"
-                class="bg-grey-lighten-4 rounded-lg"
-              />
-              <v-divider vertical></v-divider>
+            <div class="d-flex align-center ga-6">
               <div class="d-flex align-center text-caption">
                 <NuxtLink
                   to="/login"
@@ -108,6 +99,7 @@
     color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
     text-decoration: none;
     transition: color 0.2s ease-in-out;
+    font-size: large !important;
 
     &:hover {
       color: rgb(var(--v-theme-primary));
