@@ -112,3 +112,4 @@ declare interface TableType<T = any> {
 		[key: string]: T;
 	};
 }
+declare module 'vuetify/styles';
