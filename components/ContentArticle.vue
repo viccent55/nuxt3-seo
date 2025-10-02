@@ -11,7 +11,7 @@
       default: 4,
     },
   });
-
+  const clonedContent = computed(() => structuredClone(props.content));
   // your composable
   const { decryptImage } = useDecryption();
 
@@ -77,7 +77,6 @@
     }
   };
   onMounted(() => {
-    initImgAndVideo();
     watch(
       () => props.content,
       () => {
@@ -87,7 +86,10 @@
         initImgAndVideo();
       }
     );
+
+    initImgAndVideo();
   });
+
 </script>
 
 <template>
@@ -96,9 +98,10 @@
     style="max-width: 100%"
   >
     <!-- Raw/original content while decrypting -->
+    <!-- {{ placeholderContent }} -->
     <div
       v-show="loading"
-      v-html="content"
+      v-html="clonedContent"
     />
 
     <!-- Final decrypted content -->
@@ -108,7 +111,7 @@
     />
     <!-- Fallback if JS is disabled -->
     <noscript>
-      <div v-html="content"></div>
+      <div v-html="clonedContent"></div>
     </noscript>
     <!-- end js disabled -->
   </div>
