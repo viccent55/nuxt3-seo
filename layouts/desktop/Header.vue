@@ -1,31 +1,55 @@
 <script setup lang="ts">
   import { NavigationItems } from "@/common";
+  import { useTheme } from "vuetify/lib/composables/theme.mjs";
+  import { useStore } from "~/store";
 
   const state = reactive({
     keywords: "nuxt3, seo, vue, web development",
     title: "",
     description: "A Nuxt 3 project with SEO optimizations",
   });
-
+  const store = useStore();
+  const theme = useTheme();
   const filteredNavItems = computed(() =>
     NavigationItems.filter((item) =>
       ["/", "/article", "/anime", "/creator"].includes(item.href)
     )
   );
+  const toggleDark = () => {
+    store.setTheme(store.darkMode === "dark" ? "light" : "dark");
+    theme.change(store.darkMode);
+  };
+  const menuItems = computed(() => {
+    const links = store.configuration?.header_menu_link || ""; // fallback empty string
+    return links
+      .split("\n")
+      .filter((line: string) => line.includes("|")) // avoid bad lines
+      .map((line: string) => {
+        const [name, page] = line.split("|");
+        return { name: name.trim(), page: page.trim() };
+      });
+  });
+  const dialgInfo = ref();
+  const openLoginDialog = (item: Record<string, string>) => {
+    dialgInfo.value.open(item);
+  };
 </script>
 <template>
   <header>
     <v-app-bar
       flat
-      color="white"
+      color="surface"
       class="border-b"
       height="64"
     >
       <!-- Left: Logo -->
-      <v-container>
+      <v-container
+        fluid
+        max-width="1920px"
+      >
         <v-row dense>
-          <v-col cols="4">
-            <div class="d-flex align-center ga-5">
+          <v-col cols="12">
+            <div class="d-flex align-center ga-5 w-100 justify-space-between">
               <v-btn
                 variant="text"
                 class="pa-0 text-body-1 font-weight-bold"
@@ -52,45 +76,44 @@
                   {{ item.name }}
                 </NuxtLink>
               </nav>
-            </div>
-          </v-col>
-          <v-col cols="4">
-            <v-text-field
-              v-model="state.title"
-              hide-details
-              density="comfortable"
-              variant="outlined"
-              placeholder="请输入搜索内容"
-              append-inner-icon="mdi-magnify"
-              rounded="xl"
-              class="bg-grey-lighten-4 rounded-xl"
-            />
-          </v-col>
-          <v-col
-            cols="4"
-            class="d-flex justify-end"
-          >
-            <div class="d-flex align-center ga-6">
-              <div class="d-flex align-center text-caption">
-                <NuxtLink
-                  to="/login"
-                  class="me-2 text-button"
-                >
-                  登录
-                </NuxtLink>
-                |
-                <NuxtLink
-                  to="/register"
-                  class="ms-2 text-button"
-                >
-                  注册
-                </NuxtLink>
+              <v-text-field
+                v-model="state.title"
+                hide-details
+                density="comfortable"
+                variant="outlined"
+                placeholder="请输入搜索内容"
+                append-inner-icon="mdi-magnify"
+                rounded="xl"
+                color="surface-variant"
+                class="rounded-xl"
+                max-width="400px"
+              />
+              <div class="d-flex align-center ga-2">
+                <v-fab
+                  elevation="1"
+                  icon="mdi-brightness-6"
+                  color="surface"
+                  @click="toggleDark"
+                />
+                <div class="d-flex align-center text-caption">
+                  <div class="d-flex">
+                    <v-btn
+                      v-for="(item, index) in menuItems"
+                      :key="index"
+                      @click="openLoginDialog(item)"
+                    >
+                      {{ item.name }}
+                    </v-btn>
+                  </div>
+                </div>
               </div>
             </div>
           </v-col>
         </v-row>
       </v-container>
     </v-app-bar>
+    <DialogInfo ref="dialgInfo" />
+    <GlobalGuideIos ref="dialogIosGuide" />
   </header>
 </template>
 

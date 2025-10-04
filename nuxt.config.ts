@@ -36,7 +36,8 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE,
+      apiLocal: process.env.NUXT_LOCAL_API_BASE,
+      apiBase: process.env.NUXT_PROD_API_BASE,
     },
   },
 
@@ -53,7 +54,10 @@ export default defineNuxtConfig({
     "pinia-plugin-persistedstate/nuxt",
   ],
   pwa: {
-    registerType: "prompt",
+    client: {
+      installPrompt: true,
+    },
+    registerType: "autoUpdate",
     includeAssets: [
       "/icons/icon-128.webp",
       "/default-icon.svg",

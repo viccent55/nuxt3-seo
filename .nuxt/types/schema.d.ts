@@ -118,6 +118,8 @@ declare module 'nuxt/schema' {
    },
   }
   interface PublicRuntimeConfig {
+   apiLocal: string,
+
    apiBase: string,
 
    piniaPluginPersistedstate: any,

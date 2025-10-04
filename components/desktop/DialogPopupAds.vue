@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+  import { useLocalStorage } from "@vueuse/core";
   import type { PropType } from "vue";
 
   interface Advert {
@@ -36,10 +37,14 @@
   }
 
   function isSessionActive(advert: Advert): boolean {
+    if (!process.client) return false;
     try {
       const key = getSessionKey(advert);
-      const lastClosed = localStorage.getItem(key);
-      if (lastClosed && Date.now() - Number(lastClosed) < SESSION_DURATION) {
+      const lastCalled = useLocalStorage<string>(key, null);
+      if (
+        lastCalled.value &&
+        Date.now() - Number(lastCalled.value) < SESSION_DURATION
+      ) {
         return true;
       }
     } catch (e) {
@@ -49,9 +54,11 @@
   }
 
   function setSession(advert: Advert) {
+    if (!process.client) return;
     try {
       const key = getSessionKey(advert);
-      localStorage.setItem(key, String(Date.now()));
+      const storage = useLocalStorage<string>(key, "");
+      storage.value = Date.now().toString();
     } catch (e) {
       console.error("Failed to set localStorage item:", e);
     }

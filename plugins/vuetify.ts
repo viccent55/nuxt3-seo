@@ -23,8 +23,8 @@ export default defineNuxtPlugin((nuxtApp) => {
           colors: {
             background: colors.grey.lighten4,
             surface: "#fefefeff",
-            primary: "#1976D2",
-            secondary: "#424242",
+            primary: colors.red.darken1,
+            secondary: '#2196F3',
             accent: "#82B1FF",
             error: "#FF5252",
             info: "#2196F3",
@@ -37,8 +37,8 @@ export default defineNuxtPlugin((nuxtApp) => {
           colors: {
             background: "#121212",
             surface: "#212121",
-            primary: "#1976D2",
-            secondary: "#424242",
+            primary: colors.red.darken1,
+            secondary: '#2196F3',
             accent: "#82B1FF",
             error: "#FF5252",
             info: "#2196F3",

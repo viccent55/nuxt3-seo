@@ -1,17 +1,21 @@
 import { useWindowSize } from "@vueuse/core";
 import { useGoTo } from "vuetify";
 import { useStore } from "@/store";
+import { useUserStore } from "~/store/user";
+import { Capacitor } from "@capacitor/core";
 
 const useVaraible = () => {
   const { width } = useWindowSize();
   const store = useStore();
+  const storeUser = useUserStore();
   const route = useRoute();
   const router = useRouter();
   const isMobileSm = computed(() => width.value < 467);
   const isMobile = computed(() => width.value < 768);
   const isIpad = computed(() => width.value <= 1024 && width.value >= 768);
-  const goto = useGoTo()
-
+  const goto = useGoTo();
+  const platform = computed(() => Capacitor.getPlatform());
+  const isNativePlatform = computed(() => Capacitor.isNativePlatform());
   const onCopy = (text: string) => {
     const el = document.createElement("textarea");
     el.value = text;
@@ -43,6 +47,76 @@ const useVaraible = () => {
       return createdAt.toLocaleDateString();
     }
   };
+
+  const getDeviceInfo = () => {
+    const ua = navigator.userAgent.toLowerCase();
+
+    const isIos = /iphone|ipad|ipod/.test(ua);
+    const isAndroid = /android/.test(ua);
+    const isMobile = isIos || isAndroid || /mobile/.test(ua);
+
+    const isWindows = /windows nt/.test(ua);
+    const isMac = /macintosh|mac os x/.test(ua) && !isIos;
+
+    const isPc = !isMobile && (isWindows || isMac);
+
+    let type:
+      | "ios"
+      | "android"
+      | "windows"
+      | "macos"
+      | "pwa"
+      | "other"
+      | "unknown" = "unknown";
+
+    if (isIos) type = "ios";
+    else if (isAndroid) type = "android";
+    else if (isWindows) type = "windows";
+    else if (isMac) type = "macos";
+
+    // Check if the app is running as a PWA
+    const isPwa =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      (window.navigator as any).standalone ||
+      document.referrer.startsWith("android-app://");
+
+    return {
+      isPc,
+      isMobile,
+      isIos,
+      isAndroid,
+      isWindows,
+      isMac,
+      type,
+      isPwa,
+    };
+  };
+  const getTypeDevice = () => {
+    const device = getDeviceInfo();
+    let type = 0;
+    switch (true) {
+      case device.isPc:
+        type = 1; // PC
+        break;
+      case device.isPwa:
+        type = 2; // PWA
+        break;
+      case device.isAndroid:
+        type = 3; // ANDROID
+        break;
+      case device.isIos:
+        type = 4; // IOS
+        break;
+      default:
+        type = 6; // OTHER
+    }
+    return type;
+  };
+  const clearQuery = () => {
+    const { origin, pathname, hash } = window.location;
+    const newUrl = `${origin}${pathname}${hash}`;
+    window.history.replaceState({}, "", newUrl);
+  };
   return {
     isMobileSm,
     isMobile,
@@ -54,6 +128,12 @@ const useVaraible = () => {
     formatTime,
     width,
     goto,
+    getDeviceInfo,
+    getTypeDevice,
+    clearQuery,
+    storeUser,
+    platform,
+    isNativePlatform,
   };
 };
 export default useVaraible;

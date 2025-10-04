@@ -1,9 +1,6 @@
-<template>
-  <div>
-    <h1>hello world</h1>
-  </div>
-</template>
-
 <script setup lang="ts"></script>
+<template>
+  <div>Hi dear sis</div>
+</template>
 
 <style scoped></style>

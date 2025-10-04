@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { decrypt } from "~/utils/crypto";
 
 export const useStore = defineStore("store", {
   state: () => {
@@ -8,9 +9,15 @@ export const useStore = defineStore("store", {
       categories: [],
       darkMode: "light",
       configuration: <EmptyObjectType>{},
-      userInfo: {} as EmptyObjectType,
-      advertisement: {} as EmptyObjectType,
+      localVersion: 0,
+      homePopupAds: [] as EmptyArrayType,
+      recommendAds: [] as EmptyArrayType,
+      detailAppAds: [] as EmptyArrayType,
+      detailAds: [] as EmptyArrayType,
+      homeAds: [] as EmptyArrayType,
       dbRouteName: "profile",
+      channel: "001",
+      chan: "",
     };
   },
   actions: {
@@ -27,48 +34,34 @@ export const useStore = defineStore("store", {
     setTheme(name: "light" | "dark") {
       this.darkMode = name;
     },
-    setUserInfo(userinfo: EmptyObjectType) {
-      this.userInfo = userinfo;
-    },
-    clearUserInfo() {
-      this.userInfo = {};
-    },
-    async fetchMenuCategories() {
+    async getConfiguration() {
       try {
         const response = await $fetch<any>("/api/config", {
-          method: "POST",
-          body: {},
+          method: "GET",
+          params: {},
         });
-
-        this.configuration = response?.data || {};
+        const item = decrypt(response?.data);
+        this.configuration = item.data || {};
       } catch (error) {
         console.error("Failed to fetch config:", error);
       }
     },
-    setAdvertisement(adsItems: Record<string, any>) {
-      const mapping: Record<string, string> = {
-        "1": "POSITION_HOME_LIST",
-        "2": "POSITION_HOME_BOTTOM",
-        "3": "POSITION_HOME_RIGHT",
-        "4": "POSITION_HOME_POPUP",
-        "5": "POSITION_DETAIL_AFTER_TITLE",
-        "6": "POSITION_DETAIL_AFTER_CONTENT",
-        "7": "POSITION_DETAIL_RIGHT",
-        "8": "POSITION_DETAIL_RECOMMEND_APP",
-      };
-
-      Object.entries(adsItems).forEach(([key, value]) => {
-        const mappedKey = mapping[key];
-        if (mappedKey) {
-          this.advertisement[mappedKey] = value;
-        }
-      });
-    },
   },
   persist: [
     {
-      pick: ["darkMode", "userInfo", "advertisement", "configuration"],
-      storage: piniaPluginPersistedstate.localStorage(),
+      pick: [
+        "darkMode",
+        "configuration",
+        "homePopupAds",
+        "recommendAds",
+        "detailAppAds",
+        "detailAds",
+        "homeAds",
+        "chan",
+        "mode",
+        "localVersion",
+      ],
+      storage: piniaPluginPersistedstate?.localStorage(),
       key: "store",
     },
   ],

@@ -3,112 +3,80 @@
 </script>
 
 <template>
-  <DesktopSidebarSection
-    title="最新地址"
-    :more="false"
+  <v-card
+    elevation="0"
+    border
   >
-    <v-card
-      elevation="0"
-      class="pl-md-4 pl-2 pt-4 pb-4"
+    <v-list
+      class="pa-0"
+      density="compact"
     >
-      <v-list
-        class="pa-0"
-        density="compact"
+      <v-list-item
+        class="rounded-sm"
+        bg-color="blue-lighten-5"
       >
-        <v-list-item
-          class="rounded-sm"
-          bg-color="blue-lighten-5"
-        >
-          <v-list-item-title class="text-caption">
-            最新地址：
-            <a
-              :href="store.configuration?.website_url"
-              target="_blank"
-              class="text-primary text-caption font-weight-medium text-pre-wrap"
-            >
-              {{ store.configuration?.website_url }}
-            </a>
-          </v-list-item-title>
-        </v-list-item>
+        <h4 class="text-center pb-2">
+          {{ store.configuration?.name || "最新地址" }}
+        </h4>
+        <v-list-item-title class="text-caption">
+          最新地址：
 
-        <v-list-item
-          class="rounded-sm"
-          bg-color="blue-lighten-5"
-        >
-          <v-list-item-title class="text-caption">
-            备用地址：
-            <a
-              :href="store.configuration?.latest_url"
-              target="_blank"
-              class="text-primary text-caption font-weight-medium text-pre-wrap"
-            >
-              {{ store.configuration?.latest_url }}
-            </a>
-          </v-list-item-title>
-        </v-list-item>
+          <nuxt-link
+            :href="store.configuration?.home_url"
+            target="_blank"
+            class="text-primary text-caption font-weight-medium text-pre-wrap"
+          >
+            {{ store.configuration?.home_url }}
+          </nuxt-link>
+        </v-list-item-title>
+      </v-list-item>
 
-        <v-list-item
-          class="rounded-sm"
-          color="primary"
-        >
-          <v-list-item-title class="text-caption">
-            永久域名：
-            <a
-              :href="store.configuration?.backup_url"
-              target="_blank"
-              class="text-primary text-caption font-weight-medium text-pre-wrap"
-            >
-              {{ store.configuration?.backup_url }}
-            </a>
-          </v-list-item-title>
-        </v-list-item>
-        <v-list-item
-          class="rounded-sm"
-          color="primary"
-        >
-          <v-list-item-title class="text-caption">
-            防失联邮箱：
-            <a
-              :href="'mailto:' + store.configuration?.email"
-              target="_blank"
-              class="text-primary text-caption font-weight-medium text-pre-wrap"
-            >
-              {{ store.configuration?.email }}
-            </a>
-          </v-list-item-title>
-        </v-list-item>
-      </v-list>
-      <v-row
-        justify="center"
-        class="mt-2"
+      <v-list-item
+        class="rounded-sm"
+        bg-color="blue-lighten-5"
       >
-        <v-sheet
-          color="bg-none"
-          class="pb-4 d-flex ga-2 bg-none"
-        >
-          <v-btn
-            variant="text"
-            icon="mdi-github"
-            :to="store.configuration?.github"
+        <v-list-item-title class="text-caption">
+          备用地址：
+          <a
+            :href="store.configuration?.domain_next"
             target="_blank"
-            rel="noopener noreferrer"
-          ></v-btn>
-          <v-btn
-            variant="text"
-            icon="mdi-twitter"
-            :to="store.configuration?.twitter"
+            class="text-primary text-caption font-weight-medium text-pre-wrap"
+          >
+            {{ store.configuration?.domain_next }}
+          </a>
+        </v-list-item-title>
+      </v-list-item>
+
+      <v-list-item
+        class="rounded-sm"
+        color="primary"
+      >
+        <v-list-item-title class="text-caption">
+          永久域名：
+          <a
+            :href="store.configuration?.domain_latest"
             target="_blank"
-            rel="noopener noreferrer"
-          ></v-btn>
-          <v-btn
-            variant="text"
-            icon="mdi-gitlab"
-            :to="store.configuration?.gitlab"
+            class="text-primary text-caption font-weight-medium text-pre-wrap"
+          >
+            {{ store.configuration?.domain_latest }}
+          </a>
+        </v-list-item-title>
+      </v-list-item>
+      <v-list-item
+        class="rounded-sm"
+        color="primary"
+      >
+        <v-list-item-title class="text-caption">
+          防失联邮箱：
+          <a
+            :href="'mailto:' + store.configuration?.email"
             target="_blank"
-            rel="noopener noreferrer"
-          ></v-btn>
-        </v-sheet>
-      </v-row>
-    </v-card>
-  </DesktopSidebarSection>
+            class="text-primary text-caption font-weight-medium text-pre-wrap"
+          >
+            {{ store.configuration?.email }}
+          </a>
+        </v-list-item-title>
+      </v-list-item>
+    </v-list>
+  </v-card>
 </template>

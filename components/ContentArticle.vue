@@ -13,7 +13,7 @@
   });
   const clonedContent = computed(() => structuredClone(props.content));
   // your composable
-  const { decryptImage } = useDecryption();
+  const { decryptImage, decryptedImage } = useDecryption();
 
   const contentRef = ref<HTMLDivElement | any>(null);
   const loading = ref(false);
@@ -34,10 +34,10 @@
           if (!lazySrc) return;
           console.log(lazySrc);
           try {
-            const decrypted = await decryptImage(lazySrc); // use returned value per image
-            if (decrypted) {
+            await decryptImage(lazySrc); // use returned value per image
+            if (decryptedImage.value) {
               img.removeAttribute("data-lazy-src");
-              img.src = decrypted;
+              img.src = decryptedImage.value;
             }
           } catch (err) {
             console.error("Error decrypting image:", err);
@@ -89,7 +89,6 @@
 
     initImgAndVideo();
   });
-
 </script>
 
 <template>

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
   const props = defineProps({
     src: String,
-    width: { type: String, default: "100%" },
-    height: { type: String, default: "160px" },
+    width: { type: String || Number, default: "100%" },
+    height: { type: String || Number, default: "160px" },
   });
 
   const emit = defineEmits(["imageDimensions"]);

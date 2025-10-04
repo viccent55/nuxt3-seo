@@ -1,0 +1,24 @@
+import { dataEncrypt } from "~/utils/crypto";
+
+export default defineEventHandler(async (event) => {
+  const body = await readBody(event);
+  const method = getMethod(event);
+  const config = useRuntimeConfig();
+  const baseURL = import.meta.dev
+    ? config.public.apiLocal
+    : config.public.apiBase;
+  try {
+    const data = dataEncrypt(body);
+    // console.log("Encrypted data being sent to external API:", data);
+    const result = await $fetch(`${baseURL}/app/pwaInstalled`, {
+      method,
+      body: data,
+    });
+
+    return result;
+  } catch (error) {
+    // Handle errors gracefully
+    console.error("Error fetching data:", error);
+    return { error: "Failed to fetch data" };
+  }
+});
