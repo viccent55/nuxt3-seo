@@ -424,10 +424,3 @@ export function stableUserCode(id: number) {
 
   return code + id;
 }
-
-export function openPage(url: string) {
-  const newWindow = window.open(url, "_blank");
-  if (!newWindow) {
-    console.error("打开页面失败");
-  }
-}

@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { ref, reactive } from "vue";
   // import CloseButton from "@/components/global/CloseButton.vue";
-  import { forgotPassword, resetPassword } from "@/composables/useAppApi";
+  import { forgotPassword, resetPassword } from "@/service/auth";
   import { useDisplay } from "vuetify";
 
   const state = reactive({

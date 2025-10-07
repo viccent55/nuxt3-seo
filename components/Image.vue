@@ -1,8 +1,9 @@
 <script lang="ts" setup>
   const props = defineProps({
     src: String,
-    width: { type: String || Number, default: "100%" },
-    height: { type: String || Number, default: "160px" },
+    width: { type: String || Number, default: "" },
+    height: { type: String || Number, default: "" },
+    cover: { type: Boolean, default: false },
   });
 
   const emit = defineEmits(["imageDimensions"]);
@@ -35,11 +36,12 @@
 <template>
   <v-img
     :src="decryptedImage || '/loading.jpg'"
-    :lazy-src="'/loading.jpg'"
+    :lazy-src="decryptedImage"
     :width="width"
     :height="height"
     alt="Image"
     @load="handleImageLoad"
+    :cover="cover"
   >
     <template v-slot:placeholder>
       <div class="d-flex align-center justify-center fill-height">

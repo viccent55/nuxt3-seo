@@ -16,8 +16,10 @@ export const useStore = defineStore("store", {
       detailAds: [] as EmptyArrayType,
       homeAds: [] as EmptyArrayType,
       dbRouteName: "profile",
+      mode: "0",
       channel: "001",
       chan: "",
+      search: "",
     };
   },
   actions: {
@@ -36,9 +38,8 @@ export const useStore = defineStore("store", {
     },
     async getConfiguration() {
       try {
-        const response = await $fetch<any>("/api/config", {
+        const response = await $fetch<EmptyObjectType>("/api/config", {
           method: "GET",
-          params: {},
         });
         const item = decrypt(response?.data);
         this.configuration = item.data || {};

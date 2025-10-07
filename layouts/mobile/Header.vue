@@ -1,8 +1,8 @@
 <script setup lang="ts">
   import { useTheme } from "vuetify/lib/composables/theme.mjs";
   import { useStore } from "~/store";
-  import { openPage } from "@/utils/toolsValidate";
-  import { adsClick } from "@/composables/useAppApi";
+  import { openPage } from "@/service";
+  import { adsClick } from "@/service/advert";
 
   const state = reactive({
     keywords: "nuxt3, seo, vue, web development",
@@ -67,10 +67,7 @@
       height="64"
     >
       <!-- Left: Logo -->
-      <v-container
-        fluid
-        max-width="1920px"
-      >
+      <v-container fluid>
         <v-row dense>
           <v-col cols="12">
             <div class="d-flex align-center ga-5 w-100 justify-space-between">
@@ -228,7 +225,7 @@
             class="mt-2"
             :apps="store?.recommendAds"
             v-if="store?.recommendAds?.length > 0"
-            @item-click="(v: EmptyObjectType) => adsClick(v)"
+            @item-click="(v: EmptyObjectType) => adsClick(v.id)"
             height="100%"
           />
         </v-card-text>

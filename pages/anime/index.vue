@@ -1,0 +1,176 @@
+<script setup lang="ts">
+  import { useInfiniteScroll } from "@vueuse/core";
+  //   import { useNoteArticleDialog } from "@/hooks/useNoteArticleDialog";
+  import useVariable from "@/composables/useVariable";
+
+  const state = reactive({
+    data: [] as EmptyArrayType,
+    page: 1,
+    isNoMore: false,
+    loadmore: false,
+    total: 0,
+  });
+
+  const { clearQuery } = useVariable();
+  //   const noteDialog = useNoteArticleDialog();
+  const containerRef = ref<HTMLElement | null>(null);
+
+  /* ---------------------------
+     1. Centralized fetch function
+  ---------------------------- */
+  const fetchData = async () => {
+    try {
+      const request = {
+        page: state.page,
+        limit: 30,
+      };
+      const response = await $fetch<EmptyObjectType>("/api/anime/select", {
+        method: "POST",
+        body: dataEncrypt(request),
+      });
+      const result = decrypt(response.data);
+      state.total = result.data.count;
+      if (result?.errcode === 0 && Array.isArray(result.data.items)) {
+        return result.data;
+      }
+      state.isNoMore = true;
+
+      return [];
+    } catch (err) {
+      console.error("fetchData failed:", err);
+      state.isNoMore = true;
+      return [];
+    }
+  };
+
+  /* ---------------------------
+     2. Initial SSR fetch
+  ---------------------------- */
+
+  const { data, pending } = await useAsyncData(
+    `anime-select`,
+    () => fetchData(),
+
+    { transform: (data) => data || [] } // SSR-safe
+  );
+
+  // Assign only once
+  if (data.value?.items) {
+    state.total = data.value.counts;
+    state.data = data.value.items;
+  }
+  let initialized = false;
+  const onLoadMore = async () => {
+    if (pending.value || state.data.length >= state.total) return;
+    if (!initialized) {
+      initialized = true;
+      return; // skip the first trigger
+    }
+    try {
+      state.loadmore = true;
+      state.page++;
+      const data = await fetchData();
+      if (data.items.length) {
+        state.data.push(...data.items);
+      }
+    } finally {
+      state.loadmore = false;
+    }
+  };
+  useInfiniteScroll(containerRef, onLoadMore, {
+    distance: 300,
+    canLoadMore: () => !state.loadmore && !state.isNoMore,
+  });
+  const openDialog = (id: string) => {
+    clearQuery();
+    // noteDialog.openNoteDialog(String(id));
+  };
+</script>
+
+<template>
+  <div
+    class="anime-wrapper pb-6 md:pb-0"
+    ref="containerRef"
+  >
+    <v-container fluid>
+      <v-row dense>
+        <v-col
+          v-for="(item, index) in state.data"
+          :key="index"
+          cols="4"
+          sm="4"
+          md="3"
+          lg="3"
+          class="d-flex flex-column align-center mb-4"
+        >
+          <v-card
+            elevation="0"
+            class="news-card"
+            @click="openDialog(item.id)"
+          >
+            <Image
+              :src="item.cover"
+              class="rounded-lg"
+              :aspect-ratio="400 / 250"
+              cover
+            />
+          </v-card>
+          <div class="title mt-2 text-center">
+            {{ item.title }}
+          </div>
+        </v-col>
+
+        <!-- Loading Indicator -->
+        <v-col
+          cols="12"
+          class="text-center"
+        >
+          <ExploreLoading :loading="state.loadmore" />
+        </v-col>
+      </v-row>
+
+      <!-- Empty State -->
+      <div
+        v-if="state.data.length >= state.total"
+        class="d-flex justify-center align-center text-center py-4"
+      >
+        <v-empty-state
+          icon="mdi-image-off"
+          title="没有更多了"
+          text="暂无内容"
+        />
+      </div>
+    </v-container>
+  </div>
+</template>
+
+<style scoped lang="scss">
+  .anime-wrapper {
+    width: 100%;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+    padding: 0 12px;
+    scrollbar-width: none;
+  }
+
+  .news-card {
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    border: none;
+    transition: transform 0.2s ease;
+    cursor: pointer;
+
+    &:hover {
+      transform: translateY(-4px);
+    }
+  }
+
+  .title {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.5;
+    text-align: center;
+    word-break: break-word;
+  }
+</style>

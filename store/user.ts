@@ -77,5 +77,7 @@ export const useUserStore = defineStore("user", {
       "token",
       "isUseToRegister",
     ],
+    storage: piniaPluginPersistedstate?.localStorage(),
+    key: "user",
   },
 });

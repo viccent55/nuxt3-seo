@@ -44,12 +44,45 @@
 <template>
   <Header />
   <v-main>
-    <DesktopAside
-      :items="NavigationItems"
-      @click-nav-item="clickNavigationItem"
-    />
-    <slot />
-    
+    <v-container
+      fluid
+      max-width="1720px"
+      class="pa-0"
+    >
+      <v-row dense>
+        <v-col
+          class="d-none d-md-block aside-column"
+          md="3"
+          lg="2"
+          cols="12"
+        >
+          <DesktopAside
+            :items="NavigationItems"
+            @click-nav-item="clickNavigationItem"
+          />
+        </v-col>
+        <v-col
+          md="9"
+          lg="10"
+          cols="12"
+        >
+          <div class="content-column">
+            <slot />
+          </div>
+        </v-col>
+      </v-row>
+    </v-container>
   </v-main>
-  <Footer />
 </template>
+<style scoped>
+  .aside-column {
+    position: sticky;
+    top: 80px;
+    height: calc(100vh - 80px);
+  }
+  .content-column {
+    overflow-y: auto;
+    height: calc(100vh - 80px);
+    scrollbar-width: none;
+  }
+</style>

@@ -2,12 +2,13 @@
   import { ref, reactive, watch } from "vue";
   import { useUserStore } from "@/store/user";
   import { useStore } from "@/store";
-  import { login, register } from "@/composables/useAppApi";
+  import { login, register } from "@/service/auth";
   import { closeLoginDialog, loginDialogVisible } from "@/hooks/useLoginDialog";
   import { screenMode } from "@/hooks/useScreenMode";
   import { generateCode } from "@/utils/toolsValidate";
   import useVariable from "@/composables/useVariable";
   import ForgotPassword from "./ForgotPassword.vue";
+  import { openPage } from "~/service";
 
   const dialogMode = ref<"all" | "left" | "right">();
   const store = useStore();

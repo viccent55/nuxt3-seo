@@ -1,19 +1,16 @@
 export default defineEventHandler(async (event) => {
-  const query = getQuery(event); // { position: "123" }
+  const { position } = getQuery(event) as { position?: string };
   const config = useRuntimeConfig();
   const baseURL = import.meta.dev
     ? config.public.apiLocal
     : config.public.apiBase;
+  const pos = Number(position);
 
   try {
-    const result: EmptyObjectType = await $fetch(
-      `${baseURL}/advert/${query.position}`,
-      { method: "GET" }
-    );
-
+    const result = await $fetch(`${baseURL}/advert/${pos}`, { method: "GET" });
     return result;
   } catch (error) {
-    console.error("Error fetching group data:", error);
-    return { error: "Failed to fetch group data" };
+    console.error("Error fetching ad data:", error);
+    return { error: "Failed to fetch ad data" };
   }
 });

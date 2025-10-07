@@ -35,86 +35,84 @@
   };
 </script>
 <template>
-  <header>
-    <v-app-bar
-      flat
-      color="surface"
-      class="border-b"
-      height="64"
+  <v-app-bar
+    flat
+    color="surface"
+    class="border-b"
+    height="64"
+  >
+    <!-- Left: Logo -->
+    <v-container
+      fluid
+      max-width="1720px"
     >
-      <!-- Left: Logo -->
-      <v-container
-        fluid
-        max-width="1920px"
-      >
-        <v-row dense>
-          <v-col cols="12">
-            <div class="d-flex align-center ga-5 w-100 justify-space-between">
-              <v-btn
-                variant="text"
-                class="pa-0 text-body-1 font-weight-bold"
-                to="/"
-              >
-                <v-img
-                  src="/logo.png"
-                  width="80"
-                  alt="Logo"
-                ></v-img>
-              </v-btn>
+      <v-row dense>
+        <v-col cols="12">
+          <div class="d-flex align-center ga-5 w-100 justify-space-between">
+            <v-btn
+              variant="text"
+              class="pa-0 text-body-1 font-weight-bold"
+              to="/"
+            >
+              <v-img
+                src="/logo.png"
+                width="80"
+                alt="Logo"
+              ></v-img>
+            </v-btn>
 
-              <!-- Navigation -->
-              <nav
-                aria-label=" navigation"
-                class="d-flex ga-8"
+            <!-- Navigation -->
+            <nav
+              aria-label=" navigation"
+              class="d-flex ga-8"
+            >
+              <NuxtLink
+                v-for="(item, index) in filteredNavItems"
+                :to="item.href"
+                class="text-button"
+                :key="index"
               >
-                <NuxtLink
-                  v-for="(item, index) in filteredNavItems"
-                  :to="item.href"
-                  class="text-button"
-                  :key="index"
-                >
-                  {{ item.name }}
-                </NuxtLink>
-              </nav>
-              <v-text-field
-                v-model="state.title"
-                hide-details
-                density="comfortable"
-                variant="outlined"
-                placeholder="请输入搜索内容"
-                append-inner-icon="mdi-magnify"
-                rounded="xl"
-                color="surface-variant"
-                class="rounded-xl"
-                max-width="400px"
+                {{ item.name }}
+              </NuxtLink>
+            </nav>
+            <v-text-field
+              v-model="state.title"
+              hide-details
+              density="comfortable"
+              variant="outlined"
+              placeholder="请输入搜索内容"
+              append-inner-icon="mdi-magnify"
+              rounded="xl"
+              color="surface-variant"
+              class="rounded-xl"
+              max-width="400px"
+            />
+            <div class="d-flex align-center ga-2">
+              <v-fab
+                elevation="1"
+                icon="mdi-brightness-6"
+                color="surface"
+                @click="toggleDark"
               />
-              <div class="d-flex align-center ga-2">
-                <v-fab
-                  elevation="1"
-                  icon="mdi-brightness-6"
-                  color="surface"
-                  @click="toggleDark"
-                />
-                <div class="d-flex align-center text-caption">
-                  <div class="d-flex">
-                    <v-btn
-                      v-for="(item, index) in menuItems"
-                      :key="index"
-                      @click="openLoginDialog(item)"
-                    >
-                      {{ item.name }}
-                    </v-btn>
-                  </div>
+              <div class="d-flex align-center text-caption">
+                <div class="d-flex">
+                  <v-btn
+                    v-for="(item, index) in menuItems"
+                    :key="index"
+                    @click="openLoginDialog(item)"
+                  >
+                    {{ item.name }}
+                  </v-btn>
                 </div>
               </div>
             </div>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-app-bar>
-    <DialogInfo ref="dialgInfo" />
-    <GlobalGuideIos ref="dialogIosGuide" />
-  </header>
+          </div>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-app-bar>
+  <DialogInfo ref="dialgInfo" />
+  <GuideIos ref="dialogIosGuide" />
 </template>
 
 <style lang="scss" scoped>

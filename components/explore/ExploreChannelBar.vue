@@ -2,9 +2,7 @@
   import { ref, onMounted, onUnmounted } from "vue";
   import type { ExploreChannelItem } from "@/types/item";
   import useVariable from "@/composables/useVariable";
-  import { screenMode } from "@/hooks/useScreenMode";
-  import { adsClick } from "@/composables/useAppApi";
-  import { VIcon } from "vuetify/components";
+  import { adsClick } from "@/service/advert";
 
   defineProps<{
     items: ExploreChannelItem[];
@@ -13,100 +11,45 @@
 
   defineEmits(["click-item"]);
 
-  const { isNativePlatform, store } = useVariable();
-  const scrollbarRef = ref<HTMLElement | null>(null);
-  const showArrows = ref(false);
+  const { store, route } = useVariable();
 
-  const scroll = (direction: "left" | "right") => {
-    if (!scrollbarRef.value) return;
-    const scrollAmount = direction === "left" ? -200 : 200;
-    scrollbarRef.value.scrollBy({
-      left: scrollAmount,
-      behavior: "smooth",
-    });
-  };
-
-  const updateArrowsVisibility = () => {
-    const scrollContainer = scrollbarRef.value;
-    if (scrollContainer) {
-      showArrows.value =
-        scrollContainer.scrollWidth > scrollContainer.clientWidth;
-    }
-  };
+  const selected = computed(() => route.params.cid || "001");
 
   const itemClick = (item: any) => {
     adsClick(item.id);
   };
 
-  let resizeObserver: ResizeObserver;
+  onMounted(() => {});
 
-  onMounted(() => {
-    const scrollContainer = scrollbarRef.value;
-    if (scrollContainer) {
-      updateArrowsVisibility();
-      resizeObserver = new ResizeObserver(updateArrowsVisibility);
-      resizeObserver.observe(scrollContainer);
-      if (scrollContainer.firstElementChild) {
-        resizeObserver.observe(scrollContainer.firstElementChild);
-      }
-    }
-  });
-
-  onUnmounted(() => {
-    if (resizeObserver) {
-      resizeObserver.disconnect();
-    }
-  });
+  onUnmounted(() => {});
 </script>
 
 <template>
   <div>
     <!-- Channel Bar -->
-    <div
-      class="channel-bar-container"
-      :class="isNativePlatform ? 'mt-4' : ''"
+    <!-- Scrollable category bar -->
+    <v-slide-group
+      ref="group"
+      show-arrows
+      class="flex-grow-1 pt-4 pb-0"
     >
-      <!-- Left Arrow -->
-      <div
-        v-if="showArrows"
-        class="arrow-wrapper left"
-        @click="scroll('left')"
+      <v-slide-group-item
+        v-for="(item, index) in items"
+        :key="index"
+        :value="item.value"
       >
-        <v-icon>mdi-chevron-left</v-icon>
-      </div>
-
-      <!-- Scrollable Buttons -->
-      <div
-        ref="scrollbarRef"
-        class="channel-scrollbar"
-      >
-        <div class="button-group">
-          <v-btn
-            v-for="(item, index) in items"
-            :key="index"
-            rounded="pill"
-            :variant="item.value === activeValue ? 'flat' : 'text'"
-            :color="item.value === activeValue ? 'error' : 'default'"
-            @click="$emit('click-item', item)"
-            :style="
-              screenMode === 'phone' ? 'padding: 5px 10px; margin-left: 0' : ''
-            "
-          >
-            {{ item.name }}
-          </v-btn>
-        </div>
-      </div>
-
-      <!-- Right Arrow -->
-      <div
-        v-if="showArrows"
-        class="arrow-wrapper right"
-        @click="scroll('right')"
-      >
-        <v-icon>mdi-chevron-right</v-icon>
-      </div>
-    </div>
-
+        <v-btn
+          :color="selected == item.value ? 'red' : undefined"
+          :variant="selected == item.value ? 'flat' : 'text'"
+          rounded="xl"
+          class="mx-1 text-button"
+          @click="$emit('click-item', item)"
+          :to="item.value == '001' ? '/' : `cat_${item.value}`"
+        >
+          {{ item.name }}
+        </v-btn>
+      </v-slide-group-item>
+    </v-slide-group>
     <!-- Ads Grid -->
     <div
       class="grid grid-cols-5 md:grid-cols-10 gap-1 justify-items-center mb-5"
@@ -132,7 +75,7 @@
   </div>
 </template>
 
-<style scoped lang="less">
+<style scoped lang="scss">
   .channel-bar-container {
     display: flex;
     align-items: center;
@@ -151,7 +94,7 @@
 
     .channel-scrollbar {
       flex-grow: 1;
-      height: 32px;
+
       overflow-x: auto;
       overflow-y: hidden;
       scroll-behavior: smooth;

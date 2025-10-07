@@ -5,8 +5,8 @@
   import SocialNetwork from "@/components/SocialNetwork.vue";
   import AppLink from "@/components/AppLink.vue";
   import { useStore } from "@/store";
-  import { adsClick } from "@/composables/useAppApi";
-  import { openPage } from "@/utils/toolsValidate";
+  import { adsClick } from "@/service/advert";
+  import { openPage } from "@/service";
 
   const userStore = useUserStore();
 
@@ -29,11 +29,7 @@
 </script>
 
 <template>
-  <v-navigation-drawer
-    permanent
-    width="340"
-    class="pa-4 d-flex flex-column"
-  >
+  <div class="pa-4 d-flex flex-column">
     <!-- Social Links -->
     <SocialNetwork class="mb-4" />
 
@@ -88,5 +84,5 @@
     >
       个人中心
     </v-btn>
-  </v-navigation-drawer>
+  </div>
 </template>

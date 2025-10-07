@@ -1,3 +1,5 @@
+import { decrypt } from "~/utils/crypto";
+
 export default defineEventHandler(async (event) => {
   if (import.meta.dev) {
     const method = getMethod(event);
@@ -10,7 +12,7 @@ export default defineEventHandler(async (event) => {
         console.log("[DEV][QUERY]", getQuery(event));
       } else {
         const body = await readBody(event);
-        console.log("[DEV][BODY]", body);
+        console.log("[DEV][BODY]", decrypt(body.data));
       }
     } catch (e) {
     }

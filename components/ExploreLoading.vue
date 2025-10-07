@@ -5,23 +5,12 @@
 </script>
 
 <template>
-  <div
-    class="loading-wrapper"
-    v-loading="loading"
-    :class="{ active: loading }"
-  ></div>
+  <div class="d-flex justify-center py-2">
+    <v-progress-circular
+      v-if="loading"
+      :width="3"
+      color="red"
+      indeterminate
+    ></v-progress-circular>
+  </div>
 </template>
-
-<style scoped lang="less">
-  .loading-wrapper {
-    width: 100%;
-    height: 0;
-    transition: height 0.5s ease;
-    position: sticky;
-    top: 0;
-
-    &.active {
-      height: 100px;
-    }
-  }
-</style>

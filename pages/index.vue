@@ -1,6 +1,26 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+  import { useStore } from "~/store";
+
+  definePageMeta({
+    keepalive: true,
+  });
+  const store = useStore();
+  const { configuration } = storeToRefs(store);
+  useSeo(
+    computed(() => configuration.value.home_title),
+    computed(() => configuration.value?.home_description),
+    computed(() => configuration.value?.home_keywords)
+  );
+</script>
+
 <template>
-  <div>Hi dear sis</div>
+  <ExplorePageContent />
 </template>
 
-<style scoped></style>
+<style scoped>
+  .explore-wrapper {
+    width: 100%;
+    height: 100%;
+    padding: 0 24px;
+  }
+</style>
