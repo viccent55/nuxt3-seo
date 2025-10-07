@@ -12,6 +12,8 @@ declare global {
   const computed: typeof import('vue')['computed']
   const createError: typeof import('../../node_modules/nuxt/dist/app/composables/error')['createError']
   const customRef: typeof import('vue')['customRef']
+  const dataEncrypt: typeof import('../../utils/crypto')['dataEncrypt']
+  const decrypt: typeof import('../../utils/crypto')['decrypt']
   const defineAppConfig: typeof import('../../node_modules/nuxt/dist/app/nuxt')['defineAppConfig']
   const defineAsyncComponent: typeof import('vue')['defineAsyncComponent']
   const defineComponent: typeof import('vue')['defineComponent']
@@ -26,6 +28,8 @@ declare global {
   const defineStore: typeof import('../../node_modules/@pinia/nuxt/dist/runtime/composables')['defineStore']
   const effect: typeof import('vue')['effect']
   const effectScope: typeof import('vue')['effectScope']
+  const encrypt: typeof import('../../utils/crypto')['encrypt']
+  const generateCode: typeof import('../../utils/toolsValidate')['generateCode']
   const getAppManifest: typeof import('../../node_modules/nuxt/dist/app/composables/manifest')['getAppManifest']
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
   const getCurrentScope: typeof import('vue')['getCurrentScope']
@@ -44,6 +48,7 @@ declare global {
   const isVue2: typeof import('../../node_modules/nuxt/dist/app/compat/vue-demi')['isVue2']
   const isVue3: typeof import('../../node_modules/nuxt/dist/app/compat/vue-demi')['isVue3']
   const loadPayload: typeof import('../../node_modules/nuxt/dist/app/composables/payload')['loadPayload']
+  const makeSign: typeof import('../../utils/crypto')['makeSign']
   const markRaw: typeof import('vue')['markRaw']
   const mergeModels: typeof import('vue')['mergeModels']
   const navigateTo: typeof import('../../node_modules/nuxt/dist/app/composables/router')['navigateTo']
@@ -79,7 +84,6 @@ declare global {
   const refreshCookie: typeof import('../../node_modules/nuxt/dist/app/composables/cookie')['refreshCookie']
   const refreshNuxtData: typeof import('../../node_modules/nuxt/dist/app/composables/asyncData')['refreshNuxtData']
   const reloadNuxtApp: typeof import('../../node_modules/nuxt/dist/app/composables/chunk')['reloadNuxtApp']
-  const request: typeof import('../../utils/request')['default']
   const requestIdleCallback: typeof import('../../node_modules/nuxt/dist/app/compat/idle-callback')['requestIdleCallback']
   const resolveComponent: typeof import('vue')['resolveComponent']
   const setInterval: typeof import('../../node_modules/nuxt/dist/app/compat/interval')['setInterval']
@@ -89,6 +93,7 @@ declare global {
   const shallowReadonly: typeof import('vue')['shallowReadonly']
   const shallowRef: typeof import('vue')['shallowRef']
   const showError: typeof import('../../node_modules/nuxt/dist/app/composables/error')['showError']
+  const stableUserCode: typeof import('../../utils/toolsValidate')['stableUserCode']
   const storeToRefs: typeof import('../../node_modules/@pinia/nuxt/dist/runtime/composables')['storeToRefs']
   const toRaw: typeof import('vue')['toRaw']
   const toRef: typeof import('vue')['toRef']
@@ -98,6 +103,7 @@ declare global {
   const tryUseNuxtApp: typeof import('../../node_modules/nuxt/dist/app/nuxt')['tryUseNuxtApp']
   const unref: typeof import('vue')['unref']
   const updateAppConfig: typeof import('../../node_modules/nuxt/dist/app/config')['updateAppConfig']
+  const useApiFetch: typeof import('../../composables/useApiFetch')['useApiFetch']
   const useAppConfig: typeof import('../../node_modules/nuxt/dist/app/config')['useAppConfig']
   const useApplePwaIcon: typeof import('../../node_modules/@vite-pwa/nuxt/dist/runtime/composables/index')['useApplePwaIcon']
   const useAppleSplashScreenPwaIcon: typeof import('../../node_modules/@vite-pwa/nuxt/dist/runtime/composables/index')['useAppleSplashScreenPwaIcon']
@@ -106,11 +112,13 @@ declare global {
   const useCookie: typeof import('../../node_modules/nuxt/dist/app/composables/cookie')['useCookie']
   const useCssModule: typeof import('vue')['useCssModule']
   const useCssVars: typeof import('vue')['useCssVars']
+  const useDecryption: typeof import('../../composables/useDecryption')['useDecryption']
   const useError: typeof import('../../node_modules/nuxt/dist/app/composables/error')['useError']
   const useFaviconPwaIcon: typeof import('../../node_modules/@vite-pwa/nuxt/dist/runtime/composables/index')['useFaviconPwaIcon']
   const useFetch: typeof import('../../node_modules/nuxt/dist/app/composables/fetch')['useFetch']
   const useHead: typeof import('../../node_modules/nuxt/dist/app/composables/head')['useHead']
   const useHeadSafe: typeof import('../../node_modules/nuxt/dist/app/composables/head')['useHeadSafe']
+  const useHome: typeof import('../../composables/useHome')['default']
   const useHydration: typeof import('../../node_modules/nuxt/dist/app/composables/hydrate')['useHydration']
   const useId: typeof import('vue')['useId']
   const useLazyAsyncData: typeof import('../../node_modules/nuxt/dist/app/composables/asyncData')['useLazyAsyncData']
@@ -121,9 +129,11 @@ declare global {
   const useModel: typeof import('vue')['useModel']
   const useNuxtApp: typeof import('../../node_modules/nuxt/dist/app/nuxt')['useNuxtApp']
   const useNuxtData: typeof import('../../node_modules/nuxt/dist/app/composables/asyncData')['useNuxtData']
+  const useNuxtDevTools: typeof import('../../node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools')['useNuxtDevTools']
   const usePWA: typeof import('../../node_modules/@vite-pwa/nuxt/dist/runtime/composables/index')['usePWA']
   const usePinia: typeof import('../../node_modules/@pinia/nuxt/dist/runtime/composables')['usePinia']
   const usePreviewMode: typeof import('../../node_modules/nuxt/dist/app/composables/preview')['usePreviewMode']
+  const usePwaInstall: typeof import('../../composables/usePwaInstall')['default']
   const useRequestEvent: typeof import('../../node_modules/nuxt/dist/app/composables/ssr')['useRequestEvent']
   const useRequestFetch: typeof import('../../node_modules/nuxt/dist/app/composables/ssr')['useRequestFetch']
   const useRequestHeader: typeof import('../../node_modules/nuxt/dist/app/composables/ssr')['useRequestHeader']
@@ -162,6 +172,7 @@ declare global {
   const useScriptVimeoPlayer: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptVimeoPlayer']
   const useScriptXPixel: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptXPixel']
   const useScriptYouTubePlayer: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptYouTubePlayer']
+  const useSeo: typeof import('../../composables/useSeo')['useSeo']
   const useSeoMeta: typeof import('../../node_modules/nuxt/dist/app/composables/head')['useSeoMeta']
   const useServerHead: typeof import('../../node_modules/nuxt/dist/app/composables/head')['useServerHead']
   const useServerHeadSafe: typeof import('../../node_modules/nuxt/dist/app/composables/head')['useServerHeadSafe']
@@ -173,6 +184,30 @@ declare global {
   const useTemplateRef: typeof import('vue')['useTemplateRef']
   const useTransitionState: typeof import('vue')['useTransitionState']
   const useTransparentPwaIcon: typeof import('../../node_modules/@vite-pwa/nuxt/dist/runtime/composables/index')['useTransparentPwaIcon']
+  const useVariable: typeof import('../../composables/useVariable')['default']
+  const verifiyNumberInteger: typeof import('../../utils/toolsValidate')['verifiyNumberInteger']
+  const verifyAccount: typeof import('../../utils/toolsValidate')['verifyAccount']
+  const verifyAndSpace: typeof import('../../utils/toolsValidate')['verifyAndSpace']
+  const verifyCarNum: typeof import('../../utils/toolsValidate')['verifyCarNum']
+  const verifyCnAndSpace: typeof import('../../utils/toolsValidate')['verifyCnAndSpace']
+  const verifyEmail: typeof import('../../utils/toolsValidate')['verifyEmail']
+  const verifyEnAndSpace: typeof import('../../utils/toolsValidate')['verifyEnAndSpace']
+  const verifyFullName: typeof import('../../utils/toolsValidate')['verifyFullName']
+  const verifyIPAddress: typeof import('../../utils/toolsValidate')['verifyIPAddress']
+  const verifyIdCard: typeof import('../../utils/toolsValidate')['verifyIdCard']
+  const verifyNumberCnUppercase: typeof import('../../utils/toolsValidate')['verifyNumberCnUppercase']
+  const verifyNumberComma: typeof import('../../utils/toolsValidate')['verifyNumberComma']
+  const verifyNumberIntegerAndFloat: typeof import('../../utils/toolsValidate')['verifyNumberIntegerAndFloat']
+  const verifyNumberPercentage: typeof import('../../utils/toolsValidate')['verifyNumberPercentage']
+  const verifyNumberPercentageFloat: typeof import('../../utils/toolsValidate')['verifyNumberPercentageFloat']
+  const verifyPassword: typeof import('../../utils/toolsValidate')['verifyPassword']
+  const verifyPasswordPowerful: typeof import('../../utils/toolsValidate')['verifyPasswordPowerful']
+  const verifyPasswordStrength: typeof import('../../utils/toolsValidate')['verifyPasswordStrength']
+  const verifyPhone: typeof import('../../utils/toolsValidate')['verifyPhone']
+  const verifyPostalCode: typeof import('../../utils/toolsValidate')['verifyPostalCode']
+  const verifyTelPhone: typeof import('../../utils/toolsValidate')['verifyTelPhone']
+  const verifyTextColor: typeof import('../../utils/toolsValidate')['verifyTextColor']
+  const verifyUrl: typeof import('../../utils/toolsValidate')['verifyUrl']
   const watch: typeof import('vue')['watch']
   const watchEffect: typeof import('vue')['watchEffect']
   const watchPostEffect: typeof import('vue')['watchPostEffect']
@@ -205,6 +240,8 @@ declare module 'vue' {
     readonly computed: UnwrapRef<typeof import('vue')['computed']>
     readonly createError: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/error')['createError']>
     readonly customRef: UnwrapRef<typeof import('vue')['customRef']>
+    readonly dataEncrypt: UnwrapRef<typeof import('../../utils/crypto')['dataEncrypt']>
+    readonly decrypt: UnwrapRef<typeof import('../../utils/crypto')['decrypt']>
     readonly defineAppConfig: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/nuxt')['defineAppConfig']>
     readonly defineAsyncComponent: UnwrapRef<typeof import('vue')['defineAsyncComponent']>
     readonly defineComponent: UnwrapRef<typeof import('vue')['defineComponent']>
@@ -219,6 +256,8 @@ declare module 'vue' {
     readonly defineStore: UnwrapRef<typeof import('../../node_modules/@pinia/nuxt/dist/runtime/composables')['defineStore']>
     readonly effect: UnwrapRef<typeof import('vue')['effect']>
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
+    readonly encrypt: UnwrapRef<typeof import('../../utils/crypto')['encrypt']>
+    readonly generateCode: UnwrapRef<typeof import('../../utils/toolsValidate')['generateCode']>
     readonly getAppManifest: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/manifest')['getAppManifest']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
@@ -237,6 +276,7 @@ declare module 'vue' {
     readonly isVue2: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/compat/vue-demi')['isVue2']>
     readonly isVue3: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/compat/vue-demi')['isVue3']>
     readonly loadPayload: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/payload')['loadPayload']>
+    readonly makeSign: UnwrapRef<typeof import('../../utils/crypto')['makeSign']>
     readonly markRaw: UnwrapRef<typeof import('vue')['markRaw']>
     readonly mergeModels: UnwrapRef<typeof import('vue')['mergeModels']>
     readonly navigateTo: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/router')['navigateTo']>
@@ -272,7 +312,6 @@ declare module 'vue' {
     readonly refreshCookie: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/cookie')['refreshCookie']>
     readonly refreshNuxtData: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/asyncData')['refreshNuxtData']>
     readonly reloadNuxtApp: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/chunk')['reloadNuxtApp']>
-    readonly request: UnwrapRef<typeof import('../../utils/request')['default']>
     readonly requestIdleCallback: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/compat/idle-callback')['requestIdleCallback']>
     readonly resolveComponent: UnwrapRef<typeof import('vue')['resolveComponent']>
     readonly setInterval: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/compat/interval')['setInterval']>
@@ -282,6 +321,7 @@ declare module 'vue' {
     readonly shallowReadonly: UnwrapRef<typeof import('vue')['shallowReadonly']>
     readonly shallowRef: UnwrapRef<typeof import('vue')['shallowRef']>
     readonly showError: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/error')['showError']>
+    readonly stableUserCode: UnwrapRef<typeof import('../../utils/toolsValidate')['stableUserCode']>
     readonly storeToRefs: UnwrapRef<typeof import('../../node_modules/@pinia/nuxt/dist/runtime/composables')['storeToRefs']>
     readonly toRaw: UnwrapRef<typeof import('vue')['toRaw']>
     readonly toRef: UnwrapRef<typeof import('vue')['toRef']>
@@ -291,6 +331,7 @@ declare module 'vue' {
     readonly tryUseNuxtApp: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/nuxt')['tryUseNuxtApp']>
     readonly unref: UnwrapRef<typeof import('vue')['unref']>
     readonly updateAppConfig: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/config')['updateAppConfig']>
+    readonly useApiFetch: UnwrapRef<typeof import('../../composables/useApiFetch')['useApiFetch']>
     readonly useAppConfig: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/config')['useAppConfig']>
     readonly useApplePwaIcon: UnwrapRef<typeof import('../../node_modules/@vite-pwa/nuxt/dist/runtime/composables/index')['useApplePwaIcon']>
     readonly useAppleSplashScreenPwaIcon: UnwrapRef<typeof import('../../node_modules/@vite-pwa/nuxt/dist/runtime/composables/index')['useAppleSplashScreenPwaIcon']>
@@ -299,11 +340,13 @@ declare module 'vue' {
     readonly useCookie: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/cookie')['useCookie']>
     readonly useCssModule: UnwrapRef<typeof import('vue')['useCssModule']>
     readonly useCssVars: UnwrapRef<typeof import('vue')['useCssVars']>
+    readonly useDecryption: UnwrapRef<typeof import('../../composables/useDecryption')['useDecryption']>
     readonly useError: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/error')['useError']>
     readonly useFaviconPwaIcon: UnwrapRef<typeof import('../../node_modules/@vite-pwa/nuxt/dist/runtime/composables/index')['useFaviconPwaIcon']>
     readonly useFetch: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/fetch')['useFetch']>
     readonly useHead: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/head')['useHead']>
     readonly useHeadSafe: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/head')['useHeadSafe']>
+    readonly useHome: UnwrapRef<typeof import('../../composables/useHome')['default']>
     readonly useHydration: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/hydrate')['useHydration']>
     readonly useId: UnwrapRef<typeof import('vue')['useId']>
     readonly useLazyAsyncData: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/asyncData')['useLazyAsyncData']>
@@ -314,9 +357,11 @@ declare module 'vue' {
     readonly useModel: UnwrapRef<typeof import('vue')['useModel']>
     readonly useNuxtApp: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/nuxt')['useNuxtApp']>
     readonly useNuxtData: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/asyncData')['useNuxtData']>
+    readonly useNuxtDevTools: UnwrapRef<typeof import('../../node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools')['useNuxtDevTools']>
     readonly usePWA: UnwrapRef<typeof import('../../node_modules/@vite-pwa/nuxt/dist/runtime/composables/index')['usePWA']>
     readonly usePinia: UnwrapRef<typeof import('../../node_modules/@pinia/nuxt/dist/runtime/composables')['usePinia']>
     readonly usePreviewMode: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/preview')['usePreviewMode']>
+    readonly usePwaInstall: UnwrapRef<typeof import('../../composables/usePwaInstall')['default']>
     readonly useRequestEvent: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/ssr')['useRequestEvent']>
     readonly useRequestFetch: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/ssr')['useRequestFetch']>
     readonly useRequestHeader: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/ssr')['useRequestHeader']>
@@ -355,6 +400,7 @@ declare module 'vue' {
     readonly useScriptVimeoPlayer: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptVimeoPlayer']>
     readonly useScriptXPixel: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptXPixel']>
     readonly useScriptYouTubePlayer: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptYouTubePlayer']>
+    readonly useSeo: UnwrapRef<typeof import('../../composables/useSeo')['useSeo']>
     readonly useSeoMeta: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/head')['useSeoMeta']>
     readonly useServerHead: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/head')['useServerHead']>
     readonly useServerHeadSafe: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/head')['useServerHeadSafe']>
@@ -366,6 +412,30 @@ declare module 'vue' {
     readonly useTemplateRef: UnwrapRef<typeof import('vue')['useTemplateRef']>
     readonly useTransitionState: UnwrapRef<typeof import('vue')['useTransitionState']>
     readonly useTransparentPwaIcon: UnwrapRef<typeof import('../../node_modules/@vite-pwa/nuxt/dist/runtime/composables/index')['useTransparentPwaIcon']>
+    readonly useVariable: UnwrapRef<typeof import('../../composables/useVariable')['default']>
+    readonly verifiyNumberInteger: UnwrapRef<typeof import('../../utils/toolsValidate')['verifiyNumberInteger']>
+    readonly verifyAccount: UnwrapRef<typeof import('../../utils/toolsValidate')['verifyAccount']>
+    readonly verifyAndSpace: UnwrapRef<typeof import('../../utils/toolsValidate')['verifyAndSpace']>
+    readonly verifyCarNum: UnwrapRef<typeof import('../../utils/toolsValidate')['verifyCarNum']>
+    readonly verifyCnAndSpace: UnwrapRef<typeof import('../../utils/toolsValidate')['verifyCnAndSpace']>
+    readonly verifyEmail: UnwrapRef<typeof import('../../utils/toolsValidate')['verifyEmail']>
+    readonly verifyEnAndSpace: UnwrapRef<typeof import('../../utils/toolsValidate')['verifyEnAndSpace']>
+    readonly verifyFullName: UnwrapRef<typeof import('../../utils/toolsValidate')['verifyFullName']>
+    readonly verifyIPAddress: UnwrapRef<typeof import('../../utils/toolsValidate')['verifyIPAddress']>
+    readonly verifyIdCard: UnwrapRef<typeof import('../../utils/toolsValidate')['verifyIdCard']>
+    readonly verifyNumberCnUppercase: UnwrapRef<typeof import('../../utils/toolsValidate')['verifyNumberCnUppercase']>
+    readonly verifyNumberComma: UnwrapRef<typeof import('../../utils/toolsValidate')['verifyNumberComma']>
+    readonly verifyNumberIntegerAndFloat: UnwrapRef<typeof import('../../utils/toolsValidate')['verifyNumberIntegerAndFloat']>
+    readonly verifyNumberPercentage: UnwrapRef<typeof import('../../utils/toolsValidate')['verifyNumberPercentage']>
+    readonly verifyNumberPercentageFloat: UnwrapRef<typeof import('../../utils/toolsValidate')['verifyNumberPercentageFloat']>
+    readonly verifyPassword: UnwrapRef<typeof import('../../utils/toolsValidate')['verifyPassword']>
+    readonly verifyPasswordPowerful: UnwrapRef<typeof import('../../utils/toolsValidate')['verifyPasswordPowerful']>
+    readonly verifyPasswordStrength: UnwrapRef<typeof import('../../utils/toolsValidate')['verifyPasswordStrength']>
+    readonly verifyPhone: UnwrapRef<typeof import('../../utils/toolsValidate')['verifyPhone']>
+    readonly verifyPostalCode: UnwrapRef<typeof import('../../utils/toolsValidate')['verifyPostalCode']>
+    readonly verifyTelPhone: UnwrapRef<typeof import('../../utils/toolsValidate')['verifyTelPhone']>
+    readonly verifyTextColor: UnwrapRef<typeof import('../../utils/toolsValidate')['verifyTextColor']>
+    readonly verifyUrl: UnwrapRef<typeof import('../../utils/toolsValidate')['verifyUrl']>
     readonly watch: UnwrapRef<typeof import('vue')['watch']>
     readonly watchEffect: UnwrapRef<typeof import('vue')['watchEffect']>
     readonly watchPostEffect: UnwrapRef<typeof import('vue')['watchPostEffect']>

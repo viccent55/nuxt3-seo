@@ -12,7 +12,45 @@ type HydrationStrategies = {
 }
 type LazyComponent<T> = (T & DefineComponent<HydrationStrategies, {}, {}, {}, {}, {}, {}, { hydrated: () => void }>)
 interface _GlobalComponents {
-      'NuxtWelcome': typeof import("../node_modules/nuxt/dist/app/components/welcome.vue")['default']
+      'BottomMore': typeof import("../components/global/BottomMore.vue")['default']
+    'CloseButton': typeof import("../components/global/CloseButton.vue")['default']
+    'Dropdown': typeof import("../components/global/Dropdown.vue")['default']
+    'FollowButton': typeof import("../components/global/FollowButton.vue")['default']
+    'GuideIos': typeof import("../components/global/GuideIos.vue")['default']
+    'Heart': typeof import("../components/global/Heart.vue")['default']
+    'AdvertSlot': typeof import("../components/AdvertSlot.vue")['default']
+    'AnalyticsLoader': typeof import("../components/AnalyticsLoader.vue")['default']
+    'AppLink': typeof import("../components/AppLink.vue")['default']
+    'Avatar': typeof import("../components/Avatar.vue")['default']
+    'ContentArticle': typeof import("../components/ContentArticle.vue")['default']
+    'DialogInfo': typeof import("../components/DialogInfo.vue")['default']
+    'ExploreLoading': typeof import("../components/ExploreLoading.vue")['default']
+    'ForgotPassword': typeof import("../components/ForgotPassword.vue")['default']
+    'Image': typeof import("../components/Image.vue")['default']
+    'InstallPWA': typeof import("../components/InstallPWA.vue")['default']
+    'LoginDialog': typeof import("../components/LoginDialog.vue")['default']
+    'NotificationDialog': typeof import("../components/NotificationDialog.vue")['default']
+    'OverlayLoading': typeof import("../components/OverlayLoading.vue")['default']
+    'SocialNetwork': typeof import("../components/SocialNetwork.vue")['default']
+    'DesktopActorCard': typeof import("../components/desktop/ActorCard.vue")['default']
+    'DesktopActorProfile': typeof import("../components/desktop/ActorProfile.vue")['default']
+    'DesktopAdvertSlot': typeof import("../components/desktop/AdvertSlot.vue")['default']
+    'DesktopArticleCard': typeof import("../components/desktop/ArticleCard.vue")['default']
+    'DesktopArticleList': typeof import("../components/desktop/ArticleList.vue")['default']
+    'DesktopArticleListItem': typeof import("../components/desktop/ArticleListItem.vue")['default']
+    'DesktopAside': typeof import("../components/desktop/Aside.vue")['default']
+    'DesktopBreadcrumbs': typeof import("../components/desktop/Breadcrumbs.vue")['default']
+    'DesktopDialogPopupAds': typeof import("../components/desktop/DialogPopupAds.vue")['default']
+    'DesktopPaginate': typeof import("../components/desktop/Paginate.vue")['default']
+    'DesktopSectionTitle': typeof import("../components/desktop/SectionTitle.vue")['default']
+    'ExploreChannelBar': typeof import("../components/explore/ExploreChannelBar.vue")['default']
+    'ExploreContainer': typeof import("../components/explore/ExploreContainer.vue")['default']
+    'ExploreFeed': typeof import("../components/explore/ExploreFeed.vue")['default']
+    'ExplorePageContent': typeof import("../components/explore/PageContent.vue")['default']
+    'ExploreCategoryPage': typeof import("../components/explore/category/CategoryPage.vue")['default']
+    'MobileSettingProfile': typeof import("../components/mobile/setting/profile.vue")['default']
+    'MobileSettingSecurity': typeof import("../components/mobile/setting/security.vue")['default']
+    'NuxtWelcome': typeof import("../node_modules/nuxt/dist/app/components/welcome.vue")['default']
     'NuxtLayout': typeof import("../node_modules/nuxt/dist/app/components/nuxt-layout")['default']
     'NuxtErrorBoundary': typeof import("../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']
     'ClientOnly': typeof import("../node_modules/nuxt/dist/app/components/client-only")['default']
@@ -44,7 +82,45 @@ interface _GlobalComponents {
     'Body': typeof import("../node_modules/nuxt/dist/head/runtime/components")['Body']
     'NuxtIsland': typeof import("../node_modules/nuxt/dist/app/components/nuxt-island")['default']
     'NuxtRouteAnnouncer': typeof import("../node_modules/nuxt/dist/app/components/server-placeholder")['default']
-      'LazyNuxtWelcome': LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/welcome.vue")['default']>
+      'LazyBottomMore': LazyComponent<typeof import("../components/global/BottomMore.vue")['default']>
+    'LazyCloseButton': LazyComponent<typeof import("../components/global/CloseButton.vue")['default']>
+    'LazyDropdown': LazyComponent<typeof import("../components/global/Dropdown.vue")['default']>
+    'LazyFollowButton': LazyComponent<typeof import("../components/global/FollowButton.vue")['default']>
+    'LazyGuideIos': LazyComponent<typeof import("../components/global/GuideIos.vue")['default']>
+    'LazyHeart': LazyComponent<typeof import("../components/global/Heart.vue")['default']>
+    'LazyAdvertSlot': LazyComponent<typeof import("../components/AdvertSlot.vue")['default']>
+    'LazyAnalyticsLoader': LazyComponent<typeof import("../components/AnalyticsLoader.vue")['default']>
+    'LazyAppLink': LazyComponent<typeof import("../components/AppLink.vue")['default']>
+    'LazyAvatar': LazyComponent<typeof import("../components/Avatar.vue")['default']>
+    'LazyContentArticle': LazyComponent<typeof import("../components/ContentArticle.vue")['default']>
+    'LazyDialogInfo': LazyComponent<typeof import("../components/DialogInfo.vue")['default']>
+    'LazyExploreLoading': LazyComponent<typeof import("../components/ExploreLoading.vue")['default']>
+    'LazyForgotPassword': LazyComponent<typeof import("../components/ForgotPassword.vue")['default']>
+    'LazyImage': LazyComponent<typeof import("../components/Image.vue")['default']>
+    'LazyInstallPWA': LazyComponent<typeof import("../components/InstallPWA.vue")['default']>
+    'LazyLoginDialog': LazyComponent<typeof import("../components/LoginDialog.vue")['default']>
+    'LazyNotificationDialog': LazyComponent<typeof import("../components/NotificationDialog.vue")['default']>
+    'LazyOverlayLoading': LazyComponent<typeof import("../components/OverlayLoading.vue")['default']>
+    'LazySocialNetwork': LazyComponent<typeof import("../components/SocialNetwork.vue")['default']>
+    'LazyDesktopActorCard': LazyComponent<typeof import("../components/desktop/ActorCard.vue")['default']>
+    'LazyDesktopActorProfile': LazyComponent<typeof import("../components/desktop/ActorProfile.vue")['default']>
+    'LazyDesktopAdvertSlot': LazyComponent<typeof import("../components/desktop/AdvertSlot.vue")['default']>
+    'LazyDesktopArticleCard': LazyComponent<typeof import("../components/desktop/ArticleCard.vue")['default']>
+    'LazyDesktopArticleList': LazyComponent<typeof import("../components/desktop/ArticleList.vue")['default']>
+    'LazyDesktopArticleListItem': LazyComponent<typeof import("../components/desktop/ArticleListItem.vue")['default']>
+    'LazyDesktopAside': LazyComponent<typeof import("../components/desktop/Aside.vue")['default']>
+    'LazyDesktopBreadcrumbs': LazyComponent<typeof import("../components/desktop/Breadcrumbs.vue")['default']>
+    'LazyDesktopDialogPopupAds': LazyComponent<typeof import("../components/desktop/DialogPopupAds.vue")['default']>
+    'LazyDesktopPaginate': LazyComponent<typeof import("../components/desktop/Paginate.vue")['default']>
+    'LazyDesktopSectionTitle': LazyComponent<typeof import("../components/desktop/SectionTitle.vue")['default']>
+    'LazyExploreChannelBar': LazyComponent<typeof import("../components/explore/ExploreChannelBar.vue")['default']>
+    'LazyExploreContainer': LazyComponent<typeof import("../components/explore/ExploreContainer.vue")['default']>
+    'LazyExploreFeed': LazyComponent<typeof import("../components/explore/ExploreFeed.vue")['default']>
+    'LazyExplorePageContent': LazyComponent<typeof import("../components/explore/PageContent.vue")['default']>
+    'LazyExploreCategoryPage': LazyComponent<typeof import("../components/explore/category/CategoryPage.vue")['default']>
+    'LazyMobileSettingProfile': LazyComponent<typeof import("../components/mobile/setting/profile.vue")['default']>
+    'LazyMobileSettingSecurity': LazyComponent<typeof import("../components/mobile/setting/security.vue")['default']>
+    'LazyNuxtWelcome': LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/welcome.vue")['default']>
     'LazyNuxtLayout': LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/nuxt-layout")['default']>
     'LazyNuxtErrorBoundary': LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']>
     'LazyClientOnly': LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/client-only")['default']>
@@ -82,6 +158,44 @@ declare module 'vue' {
   export interface GlobalComponents extends _GlobalComponents { }
 }
 
+export const BottomMore: typeof import("../components/global/BottomMore.vue")['default']
+export const CloseButton: typeof import("../components/global/CloseButton.vue")['default']
+export const Dropdown: typeof import("../components/global/Dropdown.vue")['default']
+export const FollowButton: typeof import("../components/global/FollowButton.vue")['default']
+export const GuideIos: typeof import("../components/global/GuideIos.vue")['default']
+export const Heart: typeof import("../components/global/Heart.vue")['default']
+export const AdvertSlot: typeof import("../components/AdvertSlot.vue")['default']
+export const AnalyticsLoader: typeof import("../components/AnalyticsLoader.vue")['default']
+export const AppLink: typeof import("../components/AppLink.vue")['default']
+export const Avatar: typeof import("../components/Avatar.vue")['default']
+export const ContentArticle: typeof import("../components/ContentArticle.vue")['default']
+export const DialogInfo: typeof import("../components/DialogInfo.vue")['default']
+export const ExploreLoading: typeof import("../components/ExploreLoading.vue")['default']
+export const ForgotPassword: typeof import("../components/ForgotPassword.vue")['default']
+export const Image: typeof import("../components/Image.vue")['default']
+export const InstallPWA: typeof import("../components/InstallPWA.vue")['default']
+export const LoginDialog: typeof import("../components/LoginDialog.vue")['default']
+export const NotificationDialog: typeof import("../components/NotificationDialog.vue")['default']
+export const OverlayLoading: typeof import("../components/OverlayLoading.vue")['default']
+export const SocialNetwork: typeof import("../components/SocialNetwork.vue")['default']
+export const DesktopActorCard: typeof import("../components/desktop/ActorCard.vue")['default']
+export const DesktopActorProfile: typeof import("../components/desktop/ActorProfile.vue")['default']
+export const DesktopAdvertSlot: typeof import("../components/desktop/AdvertSlot.vue")['default']
+export const DesktopArticleCard: typeof import("../components/desktop/ArticleCard.vue")['default']
+export const DesktopArticleList: typeof import("../components/desktop/ArticleList.vue")['default']
+export const DesktopArticleListItem: typeof import("../components/desktop/ArticleListItem.vue")['default']
+export const DesktopAside: typeof import("../components/desktop/Aside.vue")['default']
+export const DesktopBreadcrumbs: typeof import("../components/desktop/Breadcrumbs.vue")['default']
+export const DesktopDialogPopupAds: typeof import("../components/desktop/DialogPopupAds.vue")['default']
+export const DesktopPaginate: typeof import("../components/desktop/Paginate.vue")['default']
+export const DesktopSectionTitle: typeof import("../components/desktop/SectionTitle.vue")['default']
+export const ExploreChannelBar: typeof import("../components/explore/ExploreChannelBar.vue")['default']
+export const ExploreContainer: typeof import("../components/explore/ExploreContainer.vue")['default']
+export const ExploreFeed: typeof import("../components/explore/ExploreFeed.vue")['default']
+export const ExplorePageContent: typeof import("../components/explore/PageContent.vue")['default']
+export const ExploreCategoryPage: typeof import("../components/explore/category/CategoryPage.vue")['default']
+export const MobileSettingProfile: typeof import("../components/mobile/setting/profile.vue")['default']
+export const MobileSettingSecurity: typeof import("../components/mobile/setting/security.vue")['default']
 export const NuxtWelcome: typeof import("../node_modules/nuxt/dist/app/components/welcome.vue")['default']
 export const NuxtLayout: typeof import("../node_modules/nuxt/dist/app/components/nuxt-layout")['default']
 export const NuxtErrorBoundary: typeof import("../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']
@@ -114,6 +228,44 @@ export const Html: typeof import("../node_modules/nuxt/dist/head/runtime/compone
 export const Body: typeof import("../node_modules/nuxt/dist/head/runtime/components")['Body']
 export const NuxtIsland: typeof import("../node_modules/nuxt/dist/app/components/nuxt-island")['default']
 export const NuxtRouteAnnouncer: typeof import("../node_modules/nuxt/dist/app/components/server-placeholder")['default']
+export const LazyBottomMore: LazyComponent<typeof import("../components/global/BottomMore.vue")['default']>
+export const LazyCloseButton: LazyComponent<typeof import("../components/global/CloseButton.vue")['default']>
+export const LazyDropdown: LazyComponent<typeof import("../components/global/Dropdown.vue")['default']>
+export const LazyFollowButton: LazyComponent<typeof import("../components/global/FollowButton.vue")['default']>
+export const LazyGuideIos: LazyComponent<typeof import("../components/global/GuideIos.vue")['default']>
+export const LazyHeart: LazyComponent<typeof import("../components/global/Heart.vue")['default']>
+export const LazyAdvertSlot: LazyComponent<typeof import("../components/AdvertSlot.vue")['default']>
+export const LazyAnalyticsLoader: LazyComponent<typeof import("../components/AnalyticsLoader.vue")['default']>
+export const LazyAppLink: LazyComponent<typeof import("../components/AppLink.vue")['default']>
+export const LazyAvatar: LazyComponent<typeof import("../components/Avatar.vue")['default']>
+export const LazyContentArticle: LazyComponent<typeof import("../components/ContentArticle.vue")['default']>
+export const LazyDialogInfo: LazyComponent<typeof import("../components/DialogInfo.vue")['default']>
+export const LazyExploreLoading: LazyComponent<typeof import("../components/ExploreLoading.vue")['default']>
+export const LazyForgotPassword: LazyComponent<typeof import("../components/ForgotPassword.vue")['default']>
+export const LazyImage: LazyComponent<typeof import("../components/Image.vue")['default']>
+export const LazyInstallPWA: LazyComponent<typeof import("../components/InstallPWA.vue")['default']>
+export const LazyLoginDialog: LazyComponent<typeof import("../components/LoginDialog.vue")['default']>
+export const LazyNotificationDialog: LazyComponent<typeof import("../components/NotificationDialog.vue")['default']>
+export const LazyOverlayLoading: LazyComponent<typeof import("../components/OverlayLoading.vue")['default']>
+export const LazySocialNetwork: LazyComponent<typeof import("../components/SocialNetwork.vue")['default']>
+export const LazyDesktopActorCard: LazyComponent<typeof import("../components/desktop/ActorCard.vue")['default']>
+export const LazyDesktopActorProfile: LazyComponent<typeof import("../components/desktop/ActorProfile.vue")['default']>
+export const LazyDesktopAdvertSlot: LazyComponent<typeof import("../components/desktop/AdvertSlot.vue")['default']>
+export const LazyDesktopArticleCard: LazyComponent<typeof import("../components/desktop/ArticleCard.vue")['default']>
+export const LazyDesktopArticleList: LazyComponent<typeof import("../components/desktop/ArticleList.vue")['default']>
+export const LazyDesktopArticleListItem: LazyComponent<typeof import("../components/desktop/ArticleListItem.vue")['default']>
+export const LazyDesktopAside: LazyComponent<typeof import("../components/desktop/Aside.vue")['default']>
+export const LazyDesktopBreadcrumbs: LazyComponent<typeof import("../components/desktop/Breadcrumbs.vue")['default']>
+export const LazyDesktopDialogPopupAds: LazyComponent<typeof import("../components/desktop/DialogPopupAds.vue")['default']>
+export const LazyDesktopPaginate: LazyComponent<typeof import("../components/desktop/Paginate.vue")['default']>
+export const LazyDesktopSectionTitle: LazyComponent<typeof import("../components/desktop/SectionTitle.vue")['default']>
+export const LazyExploreChannelBar: LazyComponent<typeof import("../components/explore/ExploreChannelBar.vue")['default']>
+export const LazyExploreContainer: LazyComponent<typeof import("../components/explore/ExploreContainer.vue")['default']>
+export const LazyExploreFeed: LazyComponent<typeof import("../components/explore/ExploreFeed.vue")['default']>
+export const LazyExplorePageContent: LazyComponent<typeof import("../components/explore/PageContent.vue")['default']>
+export const LazyExploreCategoryPage: LazyComponent<typeof import("../components/explore/category/CategoryPage.vue")['default']>
+export const LazyMobileSettingProfile: LazyComponent<typeof import("../components/mobile/setting/profile.vue")['default']>
+export const LazyMobileSettingSecurity: LazyComponent<typeof import("../components/mobile/setting/security.vue")['default']>
 export const LazyNuxtWelcome: LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/welcome.vue")['default']>
 export const LazyNuxtLayout: LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/nuxt-layout")['default']>
 export const LazyNuxtErrorBoundary: LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']>

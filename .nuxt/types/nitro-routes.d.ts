@@ -3,6 +3,75 @@ import type { Serialize, Simplify } from "nitropack/types";
 declare module "nitropack/types" {
   type Awaited<T> = T extends PromiseLike<infer U> ? Awaited<U> : T
   interface InternalApi {
+    '/api/ads/adClick': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/ads/adClick').default>>>>
+    }
+    '/api/ads/itemAdClick': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/ads/itemAdClick').default>>>>
+    }
+    '/api/ads/position': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/ads/position').default>>>>
+    }
+    '/api/anime/comment': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/anime/comment').default>>>>
+    }
+    '/api/anime/comments': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/anime/comments').default>>>>
+    }
+    '/api/anime/detail': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/anime/detail').default>>>>
+    }
+    '/api/anime/like': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/anime/like').default>>>>
+    }
+    '/api/anime/select': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/anime/select').default>>>>
+    }
+    '/api/app/firstVisitInApp': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/app/firstVisitInApp').default>>>>
+    }
+    '/api/app/pwa': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/app/pwa').default>>>>
+    }
+    '/api/article/comment': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/article/comment').default>>>>
+    }
+    '/api/article/detail': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/article/detail').default>>>>
+    }
+    '/api/article/select': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/article/select').default>>>>
+    }
+    '/api/auth/fogot-password': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/auth/fogot-password').default>>>>
+    }
+    '/api/auth/login': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/auth/login').default>>>>
+    }
+    '/api/auth/register': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/auth/register').default>>>>
+    }
+    '/api/config': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/config/index').default>>>>
+    }
+    '/api/explore/activeVisitor': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/explore/activeVisitor').default>>>>
+    }
+    '/api/explore/feed': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/explore/feed').default>>>>
+    }
+    '/api/explore/newVisitor': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/explore/newVisitor').default>>>>
+    }
+    '/api/member': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/member/index').default>>>>
+    }
+    '/api/member/refresh-token': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/member/refresh-token').default>>>>
+    }
+    '/api/pageinfo': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/pageinfo/index').default>>>>
+    }
     '/__nuxt_error': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../node_modules/nuxt/dist/core/runtime/nitro/handlers/renderer').default>>>>
     }
