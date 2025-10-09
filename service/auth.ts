@@ -1,12 +1,61 @@
-export function login(params: object) {
-  return $fetch("/api/auth/login", { method: "POST", params });
+export async function login(params: object) {
+  const res = await $fetch<EmptyObjectType>("/api/auth/login", {
+    method: "POST",
+    body: dataEncrypt(params),
+  });
+  if (res.data) {
+    return decrypt(res.data);
+  }
+  return res;
 }
-export function register(params: object) {
-  return $fetch("/api/app/register", { method: "POST", params });
+export async function prepareRegister(params: object) {
+  const res = await $fetch<EmptyObjectType>("/api/auth/prepare-register", {
+    method: "POST",
+    body: dataEncrypt(params),
+  });
+  if (res.data) {
+    return decrypt(res.data);
+  }
+  return res;
 }
-export function forgotPassword(params?: object) {
-  return $fetch("/api/auth/forgotPassword", { method: "POST", params });
+export async function register(params: object) {
+  const res = await $fetch<EmptyObjectType>("/api/auth/register", {
+    method: "POST",
+    body: dataEncrypt(params),
+  });
+  if (res.data) {
+    return decrypt(res.data);
+  }
+  return res;
 }
-export function resetPassword(params: object) {
-  return $fetch("/api/app/setPassword", { method: "POST", params });
+export async function forgotPassword(params: object) {
+  const res: EmptyObjectType = await $fetch("/api/auth/forgot-password", {
+    method: "POST",
+    body: dataEncrypt(params),
+  });
+  if (res.data) {
+    return decrypt(res.data);
+  }
+  return res;
+}
+export async function resetPassword(params: object) {
+  const res = await $fetch<EmptyObjectType>("/api/auth/set-password", {
+    method: "POST",
+    body: dataEncrypt(params),
+  });
+  if (res.data) {
+    return decrypt(res.data);
+  }
+  return res;
+}
+
+export async function changePassword(params: object) {
+  const res = await $fetch<EmptyObjectType>("/api/auth/change-password", {
+    method: "POST",
+    body: dataEncrypt(params),
+  });
+  if (res.data) {
+    return decrypt(res.data);
+  }
+  return res;
 }

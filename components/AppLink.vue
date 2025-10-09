@@ -18,8 +18,8 @@
 
 <template>
   <v-card
-    class="rounded-xl border"
-    elevation="0"
+    class="rounded-xl"
+    flat
     :style="{ maxHeight: height, overflow: 'auto' }"
   >
     <v-card-text>

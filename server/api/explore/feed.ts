@@ -13,6 +13,6 @@ export default defineEventHandler(async (event) => {
   } catch (error) {
     // Handle errors gracefully
     console.error("Error fetching data:", error);
-    return { error: "Failed to fetch data data" };
+    return { error: "Failed to fetch data" };
   }
 });

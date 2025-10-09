@@ -41,7 +41,7 @@
         page: pageNum,
         limit: 30,
       };
-      console.log("home", request);
+
       const response = await $fetch<EmptyObjectType>("/api/explore/feed", {
         method: "POST",
         body: dataEncrypt(request),
@@ -87,9 +87,6 @@
 
     if (newFeeds?.length) {
       feeds.value = [...feeds.value, ...newFeeds];
-
-      // Wait for the DOM to update with the new items
-      await nextTick();
     } else {
       isNoMore.value = true;
     }
@@ -104,7 +101,7 @@
       if (item.mode === 3) itemAdClick(item.id);
       else {
         clearQuery();
-        noteDialog.openNoteDialog(String(item.id));
+        noteDialog.openNoteDialog(item.id);
       }
     },
     clickLike(item: ExploreFeedInfo) {
@@ -160,6 +157,7 @@
     height: calc(100vh - 80px);
     display: flex;
     flex-direction: column;
-    padding: 0 24px;
+    padding: 0 12px;
+    scrollbar-width: none;
   }
 </style>

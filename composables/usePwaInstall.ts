@@ -1,6 +1,6 @@
 import { useRegisterSW } from "virtual:pwa-register/vue";
 import { onMounted, ref } from "vue";
-import { pwaInstalled } from "@/composables/useAppApi";
+import { pwaInstalled } from "@/service/app";
 import { useLocalStorage } from "@vueuse/core";
 
 // This will hold the event from 'beforeinstallprompt'

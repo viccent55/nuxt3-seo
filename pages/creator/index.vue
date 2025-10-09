@@ -1,6 +1,7 @@
 <script setup lang="ts">
-  import { onMounted } from "vue";
-
+  definePageMeta({
+    keepalive: true,
+  });
   const handleClick = () => {
     window.open("https://t.me/HFDHG9985", "_blank");
   };

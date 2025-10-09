@@ -43,13 +43,13 @@
 </script>
 <template>
   <Header />
-  <v-main>
+  <v-main class="bg-background">
     <v-container
       fluid
       max-width="1720px"
       class="pa-0"
     >
-      <v-row dense>
+      <v-row no-gutters>
         <v-col
           class="d-none d-md-block aside-column"
           md="3"

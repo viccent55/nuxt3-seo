@@ -1,4 +1,3 @@
-import { encrypt } from "~/utils/crypto";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
@@ -6,13 +5,12 @@ export default defineEventHandler(async (event) => {
   const baseURL = import.meta.dev
     ? config.public.apiLocal
     : config.public.apiBase;
-  const encryptedBody = encrypt(body);
 
   try {
     // forward request to real backend
-    const result = await $fetch(`${baseURL}/index/forgotPassword`, {
+    const result = await $fetch(`${baseURL}/member/resetPassword`, {
       method: "POST",
-      body: encryptedBody,
+      body,
     });
     return result;
   } catch (error) {

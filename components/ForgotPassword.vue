@@ -1,6 +1,5 @@
 <script setup lang="ts">
   import { ref, reactive } from "vue";
-  // import CloseButton from "@/components/global/CloseButton.vue";
   import { forgotPassword, resetPassword } from "@/service/auth";
   import { useDisplay } from "vuetify";
 
@@ -28,7 +27,7 @@
     }
     const response: any = await forgotPassword({ email: state.email });
     if (response.errcode !== 0) {
-      alert(response.info);
+      snackbar.showSnackbar(response.info, "warning", "top");
       return;
     }
     alert(`邮件已发送至您的邮箱: ${state.email}`);

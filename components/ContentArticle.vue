@@ -32,7 +32,7 @@
         images.map(async (img: EmptyObjectType) => {
           const lazySrc = img.getAttribute("data-lazy-src");
           if (!lazySrc) return;
-          console.log(lazySrc);
+
           try {
             await decryptImage(lazySrc); // use returned value per image
             if (decryptedImage.value) {
@@ -57,6 +57,8 @@
         videos.forEach((video: HTMLVideoElement) => {
           video.style.display = "block";
           video.style.width = "100%";
+          video.style.maxHeight = "400px"; // 🔹 your desired limit
+          video.style.objectFit = "contain"; // keeps aspect ratio
 
           const src = video.getAttribute("src");
           if (!src) return;

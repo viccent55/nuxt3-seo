@@ -18,16 +18,18 @@ export const useApiFetch = async (
       return false;
     }
     const { data, error } = await useFetch<EmptyObjectType>(
-      "/api/member/refresh-token", // calls your local API handler
+      "/api/auth/refreshToken", // calls your local API handler
       {
         method: "POST",
-        body: { refreshToken: refreshToken },
+        headers: {
+          Authorization: `Bearer ${refreshToken}`,
+        },
+        body: dataEncrypt({ refresh_token: refreshToken }),
       }
     );
     const decrypted = decrypt(data.value?.data);
     // res.data = decrypted;
     if (decrypted.data) {
-      console.log("data", decrypted.data);
       accessToken = decrypted.data.data.access_token;
       refreshToken = decrypted.data.data.refresh_token;
       return true;
@@ -41,16 +43,18 @@ export const useApiFetch = async (
 
   // The core request logic
   const makeRequest = async (attemptedRefresh = false) => {
-    const { data, error } = await useFetch<any>(url, {
+    const res: EmptyObjectType = await $fetch<EmptyObjectType>(url, {
       ...options,
       headers: {
         ...options.headers,
         Authorization: `Bearer ${accessToken}`, // always fresh
       },
     });
-
+    if (res.data) {
+      return res;
+    }
     if (
-      (data.value?.code === 401013 || data.value?.code === 401015) &&
+      (res.errcode === 401013 || res.errcode === 401015) &&
       !attemptedRefresh
     ) {
       const refreshed = await refreshAccessToken();
@@ -58,12 +62,11 @@ export const useApiFetch = async (
         return makeRequest(true); // retry with new token
       } else {
         const store = useStore();
-        store.setUserInfo({});
+        // store.setUserInfo({});
         return { data: null, error: 1, message: "Login required!" };
       }
     }
-
-    return { data, error };
+    return res;
   };
 
   return await makeRequest();

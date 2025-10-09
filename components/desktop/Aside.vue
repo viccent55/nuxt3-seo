@@ -80,7 +80,7 @@
       rounded="pill"
       variant="outlined"
       prepend-icon="mdi-account-circle"
-      @click="$router.push(`/user/${userStore.useId}`)"
+      :to="`/user/${userStore.useId}`"
     >
       个人中心
     </v-btn>

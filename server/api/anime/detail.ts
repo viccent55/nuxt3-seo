@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
     ? config.public.apiLocal // when running `npm run dev`
     : config.public.apiBase;
   try {
-    const result: EmptyObjectType = await $fetch(`${baseURL}/scand/detail`, {
+    const result: EmptyObjectType = await $fetch(`${baseURL}/cartoonVideo/detail`, {
       method: "POST",
       body,
     });

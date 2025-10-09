@@ -7,8 +7,6 @@
   import { checkPermissions } from "@/hooks/usePermisions";
   import { PERMISSION } from "@/common/permision";
   import { openPage } from "~/service";
-  import { useUserStore } from "@/store/user";
-  import { useStore } from "@/store/index";
   import { storeToRefs } from "pinia";
   import { itemAdClick } from "@/service/advert";
   import useVariable from "@/composables/useVariable";
@@ -180,6 +178,6 @@
     height: calc(100vh - 80px);
     display: flex;
     flex-direction: column;
-    padding: 0 24px;
+    padding: 0 12px;
   }
 </style>

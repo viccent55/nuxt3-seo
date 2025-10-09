@@ -16,12 +16,25 @@ const useVaraible = () => {
   const goto = useGoTo();
   const platform = computed(() => Capacitor.getPlatform());
   const isNativePlatform = computed(() => Capacitor.isNativePlatform());
-  const onCopy = (text: string) => {
-    const el = document.createElement("textarea");
-    el.value = text;
-    document.body.appendChild(el);
-    el.select();
+  const onCopy = async (text: string) => {
+    if (navigator.clipboard && window.isSecureContext) {
+      try {
+        await navigator.clipboard.writeText(text);
+        console.log("✅ Copied via Clipboard API!");
+        return true;
+      } catch (err) {
+        console.warn("Clipboard API failed, falling back:", err);
+      }
+    }
+    // Fallback for insecure contexts
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
     document.execCommand("copy");
+    document.body.removeChild(textarea);
+    return true;
   };
   const formatTime = (timestamp: string | number | Date) => {
     const createdAt =
@@ -117,6 +130,16 @@ const useVaraible = () => {
     const newUrl = `${origin}${pathname}${hash}`;
     window.history.replaceState({}, "", newUrl);
   };
+  const debounce = <T extends (...args: any[]) => void>(
+    fn: T,
+    delay: number
+  ) => {
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    return function (this: ThisParameterType<T>, ...args: Parameters<T>) {
+      if (timeoutId) clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => fn.apply(this, args), delay);
+    };
+  };
   return {
     isMobileSm,
     isMobile,
@@ -134,6 +157,7 @@ const useVaraible = () => {
     storeUser,
     platform,
     isNativePlatform,
+    debounce,
   };
 };
 export default useVaraible;

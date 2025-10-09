@@ -9,7 +9,6 @@ export default defineEventHandler(async (event) => {
     : config.public.apiBase;
   try {
     const data = dataEncrypt(body);
-    // console.log("Encrypted data being sent to external API:", data);
     const result = await $fetch(`${baseURL}/app/pwaInstalled`, {
       method,
       body: data,

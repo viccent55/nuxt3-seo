@@ -3,10 +3,7 @@
 </script>
 
 <template>
-  <v-card
-    elevation="0"
-    border
-  >
+  <v-card flat>
     <v-list
       class="pa-0"
       density="compact"
@@ -22,7 +19,7 @@
           最新地址：
 
           <nuxt-link
-            :href="store.configuration?.home_url"
+            :to="store.configuration?.home_url"
             target="_blank"
             class="text-primary text-caption font-weight-medium text-pre-wrap"
           >

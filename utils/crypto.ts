@@ -1,5 +1,6 @@
 import CryptoJS from "crypto-js";
 import md5 from "crypto-js/md5";
+import dayjs from "dayjs";
 
 const SIGN_KEY = "super-secret-sign";
 const SECRET_KEY = "mHZ3LVwW8ukKEVvWM1dQi5cyP8pXHFpN"; // 32 chars
@@ -18,7 +19,9 @@ export function encrypt(data: any): string {
     mode: CryptoJS.mode.CBC,
     padding: CryptoJS.pad.Pkcs7,
   });
-
+  // if (import.meta.env.MODE === "development") {
+  //   console.log(`Encrypt => `, encrypted);
+  // }
   return encrypted.toString(); // base64 string
 }
 
@@ -31,6 +34,9 @@ export function decrypt(ciphertext: string): any {
   });
 
   const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+  // if (import.meta.env.MODE === "development") {
+  //   console.log(`Decrypt => `, decrypted);
+  // }
   try {
     return JSON.parse(decrypted);
   } catch {
@@ -43,9 +49,9 @@ export function makeSign(timestamp: number, encryptedData: string): string {
   return md5(`${timestamp}${encryptedData}${SIGN_KEY}`).toString();
 }
 
-export function dataEncrypt (data: EmptyObjectType) {
+export function dataEncrypt(data: EmptyObjectType) {
   const encryptedData = encrypt(data);
-  const timestamp = Date.now();
+  const timestamp = dayjs().unix();
   const sign = makeSign(timestamp, encryptedData);
   return {
     timestamp,

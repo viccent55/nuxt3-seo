@@ -4,12 +4,37 @@
   import { openLoginDialog } from "@/hooks/useLoginDialog";
   import NotificationDialog from "@/components/NotificationDialog.vue";
   import { screenMode } from "@/hooks/useScreenMode";
+  import NoteDialog from "@/components/explore/NoteDialog.vue";
+  import {
+    checkPermissions,
+    initPermissions,
+    setDefaultPermission,
+    setDefaultRejectCallback,
+  } from "./hooks/usePermisions";
+  import { PERMISSION } from "@/common/permision";
+  import { useLocalStorage } from "@vueuse/core";
+  import { useNoteDialog } from "./hooks/useNoteDialog";
+  import { useNoteArticleDialog } from "./hooks/useNoteArticleDialog";
+  import { useNoteAnimeDialog } from "./hooks/useNoteAnimeDialog";
+
   const { storeUser, store } = useVariable();
   const { initAds } = useHome();
   const theme = useTheme();
   const allAdsClosed = ref(false);
   const showButton = ref(false);
   const notificationDialogRef = ref<InstanceType<typeof NotificationDialog>>();
+  const { generateVisitCode, initVisitor } = useHome();
+  const noteDialog = useNoteDialog();
+  const noteArticleDetail = useNoteArticleDialog();
+  const noteAnimeDetail = useNoteAnimeDialog();
+  const permissions = [PERMISSION.Visitor, PERMISSION.User];
+  initPermissions(permissions);
+
+  setDefaultPermission(
+    storeUser.isLogin ? PERMISSION.User : PERMISSION.Visitor
+  );
+
+  setDefaultRejectCallback(openLoginDialog);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -41,44 +66,81 @@
   };
   provide("showSnackbar", triggerSnackbar);
 
-  // const initializeApp = async () => {
-  //   const NOTIFICATION_COOLDOWN = 60 * 60 * 1000; // 1 hour
-  //   try {
-  //     localStorage.removeItem("lastNotificationTimestamp");
-  //     const LOGIN_DIALOG_COOLDOWN = 24 * 60 * 60 * 1000; // 24 hours
-  //     // If initMode is successful, check for login
-  //     if (!storeUser.isLogin) {
-  //       const lastLoginPrompt = localStorage.getItem(
-  //         "lastLoginPromptTimestamp"
-  //       );
-  //       const now = Date.now();
-  //       if (
-  //         !lastLoginPrompt ||
-  //         now - Number(lastLoginPrompt) > LOGIN_DIALOG_COOLDOWN
-  //       ) {
-  //         openLoginDialog();
-  //         localStorage.setItem("lastLoginPromptTimestamp", String(now));
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error("Server is down or initial fetch failed:", error);
-  //     const now = Date.now();
-  //     const lastShown = localStorage.getItem("lastNotificationTimestamp");
-  //     if (!lastShown || now - Number(lastShown) > NOTIFICATION_COOLDOWN) {
-  //       notificationDialogRef.value?.open();
-  //       localStorage.setItem("lastNotificationTimestamp", String(now));
-  //     }
-  //     allAdsClosed.value = false;
-  //   }
-  // };
+  const initializeApp = () => {
+    const LOGIN_DIALOG_COOLDOWN = 24 * 60 * 60 * 1000; // 24 hours
+    // SSR-safe localStorage refs
+    const lastLoginPromptTimestamp = useLocalStorage<number | null>(
+      "lastLoginPromptTimestamp",
+      null
+    );
+    // --- login check ---
+    if (!storeUser.isLogin) {
+      const now = Date.now();
+      if (
+        !lastLoginPromptTimestamp.value ||
+        now - lastLoginPromptTimestamp.value > LOGIN_DIALOG_COOLDOWN
+      ) {
+        openLoginDialog();
+        lastLoginPromptTimestamp.value = now;
+      }
+    }
+  };
+
+  const handleFetchError = (error: any) => {
+    console.error("Server is down or initial fetch failed:", error);
+
+    if (process.client) {
+      const NOTIFICATION_COOLDOWN = 60 * 60 * 1000; // 1 hour
+      const lastNotificationTimestamp = useLocalStorage<number | null>(
+        "lastNotificationTimestamp",
+        null
+      );
+
+      // --- notification cooldown ---
+      const now = Date.now();
+      if (
+        !lastNotificationTimestamp.value ||
+        now - lastNotificationTimestamp.value > NOTIFICATION_COOLDOWN
+      ) {
+        notificationDialogRef.value?.open();
+        lastNotificationTimestamp.value = now;
+      }
+
+      allAdsClosed.value = false;
+    }
+  };
+
+  const reloadPage = () => {
+    window.location.reload();
+  };
+
+  onBeforeMount(async () => {
+    if (!storeUser.visitCode) {
+      generateVisitCode();
+    } else {
+      initVisitor();
+    }
+  });
+
   onBeforeUnmount(() => {
     window.removeEventListener("scroll", checkScroll);
   });
-  await store.getConfiguration();
+
+  try {
+    await store.getConfiguration();
+  } catch (error) {
+    handleFetchError(error);
+  }
   onMounted(() => {
     theme.change(store.darkMode);
     window.addEventListener("scroll", checkScroll);
+    setTimeout(() => {
+      noteDialog.queryNoteDialogId();
+      noteArticleDetail.queryNoteDialogId();
+      noteAnimeDetail.queryNoteDialogId();
+    }, 500);
     initAds();
+    initializeApp();
   });
 </script>
 <template>
@@ -101,7 +163,7 @@
       </v-btn>
     </template>
   </v-snackbar>
-  <v-app>
+  <v-app class="bg-white">
     <NuxtLayout :name="screenMode == 'phone' ? 'mobile' : 'desktop'">
       <NuxtLoadingIndicator />
       <NuxtPwaManifest />
@@ -118,6 +180,13 @@
       />
     </div>
     <LoginDialog></LoginDialog>
+    <NotificationDialog
+      ref="notificationDialogRef"
+      @retry="reloadPage"
+    />
+    <NoteDialog />
+    <ArticleNoteDialog />
+    <AnimeNoteDialog />
     <DesktopDialogPopupAds
       v-if="!storeUser.loginDialogVisible"
       :adverts="store.homePopupAds"

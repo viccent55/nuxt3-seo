@@ -100,21 +100,12 @@ export const useDecryption = () => {
       isLoading.value = false;
     }
   };
-  const encryptData = (res: any) => {
-    console.log(res);
-    const decrypted = decrypt(res.data);
-    res.data = decrypted;
-    if (import.meta.env.MODE === "development") {
-      console.log(`Decrypted: Get`, decrypted);
-    }
-    return res.data;
-  };
+
   return {
     decryptedImage,
     isLoading,
     error,
     decryptImage,
     clearCache,
-    encryptData,
   };
 };

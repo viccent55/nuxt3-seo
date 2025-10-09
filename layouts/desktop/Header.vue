@@ -78,7 +78,7 @@
             <v-text-field
               v-model="state.title"
               hide-details
-              density="comfortable"
+              density="compact"
               variant="outlined"
               placeholder="请输入搜索内容"
               append-inner-icon="mdi-magnify"

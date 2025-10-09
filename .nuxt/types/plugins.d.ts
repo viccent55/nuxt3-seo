@@ -24,6 +24,7 @@ type NuxtAppInjections =
   InjectionType<typeof import("../pwa-icons-plugin")> &
   InjectionType<typeof import("../../node_modules/nuxt/dist/app/plugins/dev-server-logs.js")> &
   InjectionType<typeof import("../../node_modules/nuxt/dist/app/plugins/check-if-layout-used.js")> &
+  InjectionType<typeof import("../../plugins/screenMode")> &
   InjectionType<typeof import("../../plugins/vue-masonry-wall")> &
   InjectionType<typeof import("../../plugins/vuetify")> &
   InjectionType<typeof import("../../node_modules/@vite-pwa/nuxt/dist/runtime/plugins/pwa.client.js")>

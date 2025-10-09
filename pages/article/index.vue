@@ -1,8 +1,12 @@
 <script setup lang="ts">
+  definePageMeta({
+    keepalive: true,
+  });
+
   import { useInfiniteScroll } from "@vueuse/core";
-  //   import { useNoteArticleDialog } from "@/hooks/useNoteArticleDialog";
   import useVariable from "@/composables/useVariable";
   import ExploreLoading from "@/components/ExploreLoading.vue";
+  import { useNoteArticleDialog } from "~/hooks/useNoteArticleDialog";
 
   const state = reactive({
     data: [] as EmptyArrayType,
@@ -79,9 +83,10 @@
     distance: 300,
     canLoadMore: () => !state.loadmore && !state.isNoMore,
   });
-  const openDialog = (id: string) => {
+  const noteDialog = useNoteArticleDialog();
+  const openDialog = (id: number) => {
     clearQuery();
-    // noteDialog.openNoteDialog(String(id));
+    noteDialog.openNoteDialog(id);
   };
 </script>
 
@@ -101,8 +106,9 @@
         >
           <v-card
             flat
-            class="my-2 md:my-4 cursor-pointer article-card"
+            class="my-2 md:my-4 article-card"
             @click="openDialog(item.id)"
+            tag="a"
           >
             <Image
               :src="item.cover"
@@ -117,7 +123,7 @@
             </Image>
 
             <v-card-text
-              class="text-center pb-0 pt-2 font-weight-medium text-subtitle-1"
+              class="text-center pb-md-2 pb-0 pt-2 font-weight-medium text-md-subtitle-1 text-subtitle-2"
             >
               {{ item.title }}
             </v-card-text>
@@ -160,6 +166,7 @@
   .article-card {
     border: none;
     transition: transform 0.2s ease;
+    background-color: transparent;
   }
   .article-card:hover {
     transform: translateY(-2px);

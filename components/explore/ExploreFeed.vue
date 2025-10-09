@@ -34,6 +34,7 @@
     elevation="0"
     rounded="lg"
     @click="$emit('click')"
+    tag="a"
   >
     <!-- Media Section -->
     <div
@@ -59,7 +60,17 @@
         广告
       </div>
     </div>
+    <DesktopAdvertSlot
+      v-if="feed.mode === 3"
+      :advert="{
+        image: feed?.cover,
+        url: feed?.advert.value,
+      }"
+      class="height-dialog"
+    />
+
     <Image
+      v-if="feed.mode !== 3"
       :src="feed.cover"
       cover
       :aspect-ratio="feed.cover_w / feed.cover_h"
@@ -75,9 +86,11 @@
       <!-- Author + Like -->
       <div class="d-flex justify-space-between align-center">
         <!-- Author -->
-        <div
-          class="d-flex align-center cursor-pointer"
-          @click.stop="$emit('clickAuthor')"
+        <v-chip
+          class="d-flex align-center"
+          @click.stop
+          variant="text"
+          :to="'/user/' + feed.author?.id"
         >
           <Avatar
             :src="feed.author?.avatar"
@@ -87,15 +100,24 @@
           <span class="text-caption ml-2">
             {{ feed.author?.name || feed.author?.nickname }}
           </span>
-        </div>
+        </v-chip>
 
         <!-- Like -->
         <div
           class="d-flex align-center cursor-pointer"
           @click.stop="onClickLike(feed)"
         >
-          <Heart :class="{ 'text-red': feed.isLike }" />
-          <span class="text-caption ml-1">{{ feed.like_count }}</span>
+          <v-btn
+            variant="text"
+            density="comfortable"
+            @click.stop="onClickLike(feed)"
+            class="px-0"
+          >
+            <v-icon :color="feed.isLike ? 'primary' : ''">
+              mdi-heart-outline
+            </v-icon>
+            <span class="ml-1">{{ feed.like_count }}</span>
+          </v-btn>
         </div>
       </div>
     </v-card-text>

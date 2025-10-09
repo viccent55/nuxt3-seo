@@ -1,8 +1,8 @@
-import { getPositionAds } from "@/composables/useAppApi";
+import { getPositionAds } from "@/service/advert";
 import { useStore } from "@/store";
-import { firstVisitInApp } from "@/composables/useAppApi";
+import { firstVisitInApp } from "@/service/app";
 import { generateCode } from "@/utils/toolsValidate";
-// import { newVisitor, activeVisitor } from "@/api/explore";
+import { newVisitor, activeVisitor } from "@/service/explore";
 // import { getMemberActive } from "@/api/member";
 import useVariable from "./useVariable";
 import { useLocalStorage } from "@vueuse/core";
@@ -40,8 +40,7 @@ export default function useHome() {
         chan: cleanedChan,
         platform: deviceType,
       };
-      //   await newVisitor(request);
-      // console.log(response);
+      await newVisitor(request);
     } catch (e) {
       console.error(e);
     }
@@ -91,7 +90,6 @@ export default function useHome() {
         // await getMemberActive(request);
         lastCalled.value = now.toString();
       }
-      // console.log(response);
     } catch (e) {
       console.error(e);
     }
@@ -111,10 +109,9 @@ export default function useHome() {
           visitor: storeUser.visitCode,
           platform: getTypeDevice(),
         };
-        // await activeVisitor(request);
+        await activeVisitor(request);
         lastCalled.value = now.toString();
       }
-      // console.log(response);
     } catch (e) {
       console.error(e);
     }
@@ -142,7 +139,6 @@ export default function useHome() {
     getAdsPosition(5);
   };
   return {
-    getAdsPosition,
     generateVisitCode,
     initVisitor,
     getFirstVisitInApp,

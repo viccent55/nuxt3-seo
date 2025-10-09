@@ -2,7 +2,7 @@
   import { ref, reactive, watch } from "vue";
   import { useUserStore } from "@/store/user";
   import { useStore } from "@/store";
-  import { login, register } from "@/service/auth";
+  import { login, prepareRegister, register } from "@/service/auth";
   import { closeLoginDialog, loginDialogVisible } from "@/hooks/useLoginDialog";
   import { screenMode } from "@/hooks/useScreenMode";
   import { generateCode } from "@/utils/toolsValidate";
@@ -57,18 +57,18 @@
 
   const onLogin = async () => {
     if (!state.login.email)
-      return snackbar.showSnackbar("请输入您的电子邮件", "warning");
+      return snackbar.showSnackbar("请输入您的电子邮件", "warning", "top");
     if (!state.login.password)
-      return snackbar.showSnackbar("请输入您的密码", "warning");
+      return snackbar.showSnackbar("请输入您的密码", "warning", "top");
 
     try {
-      const response: any = await login(state.login);
+      const response = await login(state.login);
       if (response.errcode === 0) {
         storeUser.login(response.data?.token, response.data?.userinfo);
-        snackbar.showSnackbar("登录成功", "success");
+        snackbar.showSnackbar("登录成功", "success", 'top');
         closeLoginDialog();
       } else {
-        snackbar.showSnackbar(response.info, "error");
+        snackbar.showSnackbar(response.info, "error", 'top');
       }
     } catch (e) {
       console.error("Error during login:", e);
@@ -77,11 +77,11 @@
 
   const onPrepareRegister = async () => {
     if (!state.register.email)
-      return snackbar.showSnackbar("请输入您的电子邮件", "warning");
+      return snackbar.showSnackbar("请输入您的电子邮件", "warning", "top");
     if (!state.register.password || !state.register.password_repeat)
-      return snackbar.showSnackbar("请输入您的密码", "warning");
+      return snackbar.showSnackbar("请输入您的密码", "warning", "top");
     if (state.register.password !== state.register.password_repeat)
-      return snackbar.showSnackbar("两次密码不一致", "warning");
+      return snackbar.showSnackbar("两次密码不一致", "warning", "top");
 
     try {
       const request = {
@@ -91,14 +91,14 @@
           : storeUser.visitCode,
         chan: store.chan ?? "",
       };
-      const response: any = await register(request);
+      const response = await prepareRegister(request);
       if (response.errcode === 0) {
-        snackbar.showSnackbar("已申请注册!", "success");
+        snackbar.showSnackbar("已申请注册!", "success", "top");
         resetRegisterForm();
         state.isLogin = true;
         storeUser.isUseToRegister = true;
       } else {
-        snackbar.showSnackbar(response.info, "error");
+        snackbar.showSnackbar(response.info, "error", "top");
       }
     } catch (e) {
       console.error("Error during register:", e);
@@ -177,29 +177,33 @@
 
           <!-- Register -->
           <v-tabs-window-item :value="false">
-            <v-form>
+            <v-form class="mt-5">
               <v-text-field
                 v-model="state.register.email"
                 label="邮箱或用户名 (最少6位)"
                 type="email"
                 variant="outlined"
+                density="comfortable"
               />
               <v-text-field
                 v-model="state.register.password"
                 label="密码"
                 type="password"
                 variant="outlined"
+                density="comfortable"
               />
               <v-text-field
                 v-model="state.register.password_repeat"
                 label="重复密码"
                 type="password"
                 variant="outlined"
+                density="comfortable"
               />
               <v-text-field
                 v-model="state.register.invite_code"
                 label="邀请码"
                 variant="outlined"
+                density="comfortable"
               />
               <v-btn
                 block
@@ -293,7 +297,7 @@
                 @click="
                   () => {
                     onCopy(store.configuration?.email);
-                    snackbar.showSnackbar('复制成功', 'success');
+                    snackbar.showSnackbar('复制成功', 'success', 'top');
                   }
                 "
               >

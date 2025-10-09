@@ -1,7 +1,10 @@
 <script setup lang="ts">
+  definePageMeta({
+    keepalive: true,
+  });
   import { useInfiniteScroll } from "@vueuse/core";
-  //   import { useNoteArticleDialog } from "@/hooks/useNoteArticleDialog";
   import useVariable from "@/composables/useVariable";
+  import { useNoteAnimeDialog } from "~/hooks/useNoteAnimeDialog";
 
   const state = reactive({
     data: [] as EmptyArrayType,
@@ -12,7 +15,6 @@
   });
 
   const { clearQuery } = useVariable();
-  //   const noteDialog = useNoteArticleDialog();
   const containerRef = ref<HTMLElement | null>(null);
 
   /* ---------------------------
@@ -81,9 +83,10 @@
     distance: 300,
     canLoadMore: () => !state.loadmore && !state.isNoMore,
   });
-  const openDialog = (id: string) => {
+  const noteDialog = useNoteAnimeDialog();
+  const openDialog = (id: number) => {
     clearQuery();
-    // noteDialog.openNoteDialog(String(id));
+    noteDialog.openNoteDialog(id);
   };
 </script>
 
@@ -107,6 +110,7 @@
             elevation="0"
             class="news-card"
             @click="openDialog(item.id)"
+            tag="a"
           >
             <Image
               :src="item.cover"

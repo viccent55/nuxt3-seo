@@ -1,14 +1,22 @@
+import { decrypt } from "~/utils/crypto";
+
 export default defineEventHandler(async (event) => {
+  const headers = getHeaders(event);
   const body = await readBody(event);
   const config = useRuntimeConfig();
   const baseURL = import.meta.dev
     ? config.public.apiLocal // when running `npm run dev`
     : config.public.apiBase;
   try {
-    const result: EmptyObjectType = await $fetch(`${baseURL}/behavior/commentScand`, {
-      method: "POST",
-      body,
-    });
+    const result: EmptyObjectType = await $fetch(
+      `${baseURL}/index/userinfo-${body?.id}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: headers.authorization!,
+        },
+      }
+    );
     return result;
   } catch (error) {
     // Handle errors gracefully
@@ -16,3 +24,4 @@ export default defineEventHandler(async (event) => {
     return { error: "Failed to fetch data" };
   }
 });
+
