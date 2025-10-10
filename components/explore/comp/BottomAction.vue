@@ -61,9 +61,9 @@
 <template>
   <v-card
     elevation="0"
-    class="bottom-action rounded-br-2xl pa-0"
+    class="bottom-action rounded-br-2xl"
   >
-    <v-card-text>
+    <v-card-text class="pa-0 mt-1">
       <div class="d-flex justify-space-between ga-2">
         <v-text-field
           ref="inputRef"
@@ -150,9 +150,10 @@
     position: sticky;
     background-color: rgb(var(--v-theme-surface));
     border-top: 1px solid rgba(0, 0, 0, 0.1);
-    height: 70px;
+    height: 75px;
     display: flex;
     align-items: center;
+    bottom: 5px;
   }
 
   .actions-container .v-btn {

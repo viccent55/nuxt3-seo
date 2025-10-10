@@ -14,13 +14,13 @@
 
 <template>
   <div class="author-header rounded-r-2xl">
-    <NuxtLink
-      :to="'/user/' + author?.id"
-      class="text-button text-grey text-decoration-none"
+    <a
+      :href="'/user/' + author?.id"
+      class="text-grey-darken-1 text-decoration-none"
     >
       <Avatar :src="props.author?.avatar" />
       <span class="ml-2 text-body-2">{{ props.author?.nickname }}</span>
-    </NuxtLink>
+    </a>
 
     <FollowButton
       :is-follow="author?.isFollow"

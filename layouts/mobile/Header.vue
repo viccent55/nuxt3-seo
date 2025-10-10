@@ -3,16 +3,14 @@
   import { useStore } from "~/store";
   import { openPage } from "@/service";
   import { adsClick } from "@/service/advert";
+  import { checkPermissions } from "@/hooks/usePermisions";
+  import { PERMISSION } from "@/common/permision";
 
-  const state = reactive({
-    keywords: "nuxt3, seo, vue, web development",
-    title: "",
-    description: "A Nuxt 3 project with SEO optimizations",
-  });
   const store = useStore();
   const theme = useTheme();
-  const { onInstall, dialogIosGuide, openDialogIos } = usePwaInstall();
-  const { route, getDeviceInfo } = useVariable();
+  const { isIOS, promptInstall, showInstallPrompt } = usePwaInstall();
+  const { route } = useVariable();
+  const dialogIosGuide = ref();
 
   const toggleDark = () => {
     store.setTheme(store.darkMode === "dark" ? "light" : "dark");
@@ -57,6 +55,12 @@
   const clickMenuItem = (item: Record<string, string>) => {
     store.channel = item.value;
   };
+
+  const searchDisabled = ref(false);
+  const onFocusSearch = () => {
+    if (searchDisabled.value) return;
+    checkPermissions(PERMISSION.User, () => {});
+  };
 </script>
 <template>
   <header>
@@ -74,7 +78,8 @@
               <v-btn
                 variant="text"
                 class="pa-0 text-body-1 font-weight-bold"
-                to="/"
+                href="/"
+                rounded="xl"
               >
                 <v-img
                   src="/logo.png"
@@ -83,7 +88,7 @@
                 ></v-img>
               </v-btn>
               <v-text-field
-                v-model="state.title"
+                v-model="store.search"
                 hide-details
                 density="compact"
                 variant="outlined"
@@ -93,6 +98,8 @@
                 color="surface-variant"
                 class="rounded-xl"
                 max-width="400px"
+                @focus="onFocusSearch"
+                @keydown.enter="onFocusSearch"
               />
               <div class="d-flex align-center ga-2">
                 <v-fab
@@ -136,15 +143,15 @@
                       </v-list-item-title>
                     </v-list-item>
 
-                    <v-divider class="my-1" />
+                    <v-divider class="my-1 border-opacity-50" />
 
                     <!-- Install to Desktop (iOS/Android/Desktop) -->
                     <v-list-item>
                       <v-list-item-title>
                         <div
-                          v-if="getDeviceInfo().isIos"
+                          v-if="isIOS"
                           class="text-base px-3 py-1 cursor-pointer"
-                          @click="openDialogIos"
+                          @click="dialogIosGuide.openDialog()"
                         >
                           安装到桌面
                           <v-icon
@@ -158,7 +165,7 @@
                         <div
                           v-else
                           class="px-3 py-1 cursor-pointer"
-                          @click="onInstall"
+                          @click="promptInstall"
                         >
                           安装到桌面
                           <v-icon
@@ -178,10 +185,7 @@
                       </v-list-item-title>
                     </v-list-item>
 
-                    <v-divider
-                      thickness="3"
-                      class="my-1"
-                    />
+                    <v-divider class="my-1 border-opacity-50" />
 
                     <!-- Menu items + Ads -->
                     <v-list-item
@@ -207,7 +211,7 @@
       </v-container>
     </v-app-bar>
     <DialogInfo ref="dialgInfo" />
-    <GlobalGuideIos ref="dialogIosGuide" />
+    <GuideIos ref="dialogIosGuide" />
     <v-dialog
       v-model="dialogVisible"
       max-width="320"

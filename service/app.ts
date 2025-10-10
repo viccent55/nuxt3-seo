@@ -1,7 +1,17 @@
-export function pwaInstalled(params: object) {
-  return $fetch("/api/app/pwa", { method: "POST", body: params });
+export async function pwaInstalled(params: object) {
+  const res: EmptyObjectType = await $fetch("/api/app/pwa", {
+    method: "POST",
+    body: dataEncrypt(params),
+  });
+  if (res.data) return decrypt(res.data);
+  return res;
 }
 
-export function firstVisitInApp(params: object) {
-  return $fetch("/api/app/firstVisitInApp", { method: "POST", params });
+export async function firstVisitInApp(params: object) {
+  const res: EmptyObjectType = await $fetch("/api/app/firstVisitInApp", {
+    method: "POST",
+    body: dataEncrypt(params),
+  });
+  if (res.data) return decrypt(res.data);
+  return res;
 }

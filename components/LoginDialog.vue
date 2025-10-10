@@ -65,10 +65,10 @@
       const response = await login(state.login);
       if (response.errcode === 0) {
         storeUser.login(response.data?.token, response.data?.userinfo);
-        snackbar.showSnackbar("登录成功", "success", 'top');
+        snackbar.showSnackbar("登录成功", "success", "top");
         closeLoginDialog();
       } else {
-        snackbar.showSnackbar(response.info, "error", 'top');
+        snackbar.showSnackbar(response.info, "error", "top");
       }
     } catch (e) {
       console.error("Error during login:", e);
@@ -123,7 +123,7 @@
     persistent
   >
     <v-card rounded="xl">
-      <v-card-title class="d-flex justify-end">
+      <v-card-title class="d-flex justify-end pb-0 mb-0 py-2">
         <v-btn
           icon="mdi-close"
           size="small"
@@ -135,9 +135,10 @@
         <!-- Tabs -->
         <v-tabs
           v-model="state.isLogin"
-          class="mb-4"
+          class="mb-md-4 mb-3"
           grow
           color="primary"
+          :height="$vuetify.display.mobile ? '30' : '40'"
         >
           <v-tab :value="true">登录</v-tab>
           <v-tab :value="false">注册</v-tab>
@@ -146,7 +147,7 @@
         <v-tabs-window v-model="state.isLogin">
           <!-- Login -->
           <v-tabs-window-item :value="true">
-            <v-form class="mt-5">
+            <v-form>
               <v-text-field
                 v-model="state.login.email"
                 label="邮箱或用户名"
@@ -165,7 +166,7 @@
               <v-btn
                 block
                 color="error"
-                class="mt-4"
+                class="mt-md-4 mt-0"
                 size="large"
                 rounded="pill"
                 @click="onAuth"
@@ -177,7 +178,7 @@
 
           <!-- Register -->
           <v-tabs-window-item :value="false">
-            <v-form class="mt-5">
+            <v-form>
               <v-text-field
                 v-model="state.register.email"
                 label="邮箱或用户名 (最少6位)"
@@ -208,8 +209,7 @@
               <v-btn
                 block
                 color="error"
-                class="mt-4"
-                size="large"
+                size="default"
                 rounded="pill"
                 @click="onPrepareRegister"
               >
@@ -220,7 +220,7 @@
         </v-tabs-window>
 
         <!-- Extra actions -->
-        <div class="mt-6">
+        <div class="mt-md-3 mt-2">
           <v-btn
             v-if="state.isLogin"
             block
@@ -249,38 +249,41 @@
         <!-- Mobile extra links -->
         <div
           v-if="screenMode === 'phone'"
-          class="mt-4"
+          class="mt-2"
         >
-          <v-list density="compact">
-            <v-list-item>
-              <v-list-item-title>备用地址：</v-list-item-title>
-              <v-list-item-subtitle>
+          <v-list
+            density="compact"
+            class="pa-0"
+          >
+            <v-list-item class="px-1 py-0">
+              <v-list-item-subtitle style="word-break: break-all">
+                <strong>备用地址：</strong>
                 <a
                   :href="store.configuration?.home_url"
                   target="_blank"
-                  class="text-primary"
+                  class="text-primary f14"
                 >
                   {{ store.configuration?.home_url }}
                 </a>
               </v-list-item-subtitle>
             </v-list-item>
 
-            <v-list-item>
-              <v-list-item-title>备用地址：</v-list-item-title>
-              <v-list-item-subtitle>
+            <v-list-item class="px-1 py-0">
+              <v-list-item-subtitle style="word-break: break-all">
+                <strong>备用地址：</strong>
                 <a
                   :href="store.configuration?.domain_next"
                   target="_blank"
-                  class="text-primary"
+                  class="text-primary f14"
                 >
                   {{ store.configuration?.domain_next }}
                 </a>
               </v-list-item-subtitle>
             </v-list-item>
 
-            <v-list-item>
-              <v-list-item-title>永久域名：</v-list-item-title>
-              <v-list-item-subtitle>
+            <v-list-item class="px-1 py-0">
+              <v-list-item-subtitle style="word-break: break-all">
+                <strong>永久域名：</strong>
                 <a
                   :href="store.configuration?.domain_latest"
                   target="_blank"
@@ -291,8 +294,7 @@
               </v-list-item-subtitle>
             </v-list-item>
 
-            <v-list-item>
-              <v-list-item-title>防失联邮箱：</v-list-item-title>
+            <v-list-item class="px-1 py-0">
               <v-list-item-subtitle
                 @click="
                   () => {
@@ -300,9 +302,11 @@
                     snackbar.showSnackbar('复制成功', 'success', 'top');
                   }
                 "
+                style="word-break: break-all"
               >
+                <strong>防失联邮箱：</strong>
                 <span class="text-primary">
-                  {{ store.configuration?.email }}
+                  {{ store.configuration?.email }}asdfsadf
                 </span>
               </v-list-item-subtitle>
             </v-list-item>

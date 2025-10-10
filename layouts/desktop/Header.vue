@@ -50,7 +50,8 @@
             <v-btn
               variant="text"
               class="pa-0 text-body-1 font-weight-bold"
-              to="/"
+              rounded="xl"
+              href="/"
             >
               <v-img
                 src="/logo.png"
@@ -113,7 +114,6 @@
     </v-container>
   </v-app-bar>
   <DialogInfo ref="dialgInfo" />
-  <GuideIos ref="dialogIosGuide" />
 </template>
 
 <style lang="scss" scoped>

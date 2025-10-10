@@ -79,30 +79,31 @@ export default defineNuxtConfig({
         {
           src: "/icons/icon-128.webp",
           sizes: "128x128",
-          type: "image/png",
+          type: "image/webp",
         },
         {
           src: "/icons/icon-192.webp",
           sizes: "192x192",
-          type: "image/png",
+          type: "image/webp",
         },
         {
           src: "/icons/icon-256.webp",
           sizes: "256x256",
-          type: "image/png",
+          type: "image/webp",
         },
         {
           src: "/icons/icon-512.webp",
           sizes: "512x512",
-          type: "image/png",
+          type: "image/webp",
         },
       ],
     },
     workbox: {
+      navigateFallback: "/",
       globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
     },
     devOptions: {
-      enabled: process.env.NODE_ENV === "development", // no SW in dev
+      enabled: true,
       type: "module",
     },
   },

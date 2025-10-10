@@ -6,7 +6,7 @@
   });
 
   const store = useStore();
-
+``
   const { configuration, channel } = storeToRefs(store);
   const indexChannel = ref<string>(channel.value);
   const categories = computed(() => [

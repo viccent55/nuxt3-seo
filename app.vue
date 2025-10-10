@@ -20,7 +20,6 @@
   const { storeUser, store } = useVariable();
   const { initAds } = useHome();
   const theme = useTheme();
-  const allAdsClosed = ref(false);
   const showButton = ref(false);
   const notificationDialogRef = ref<InstanceType<typeof NotificationDialog>>();
   const { generateVisitCode, initVisitor } = useHome();
@@ -28,6 +27,7 @@
   const noteArticleDetail = useNoteArticleDialog();
   const noteAnimeDetail = useNoteAnimeDialog();
   const permissions = [PERMISSION.Visitor, PERMISSION.User];
+
   initPermissions(permissions);
 
   setDefaultPermission(
@@ -35,13 +35,6 @@
   );
 
   setDefaultRejectCallback(openLoginDialog);
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-  const checkScroll = () => {
-    showButton.value = window.scrollY > 300;
-  };
 
   type SnackbarLocation = VSnackbar["$props"]["location"];
 
@@ -105,8 +98,6 @@
         notificationDialogRef.value?.open();
         lastNotificationTimestamp.value = now;
       }
-
-      allAdsClosed.value = false;
     }
   };
 
@@ -122,10 +113,6 @@
     }
   });
 
-  onBeforeUnmount(() => {
-    window.removeEventListener("scroll", checkScroll);
-  });
-
   try {
     await store.getConfiguration();
   } catch (error) {
@@ -133,7 +120,6 @@
   }
   onMounted(() => {
     theme.change(store.darkMode);
-    window.addEventListener("scroll", checkScroll);
     setTimeout(() => {
       noteDialog.queryNoteDialogId();
       noteArticleDetail.queryNoteDialogId();
@@ -176,7 +162,6 @@
         class="scroll-to-top"
         size="small"
         icon="mdi-arrow-up"
-        @click="scrollToTop"
       />
     </div>
     <LoginDialog></LoginDialog>
@@ -188,14 +173,10 @@
     <ArticleNoteDialog />
     <AnimeNoteDialog />
     <DesktopDialogPopupAds
-      v-if="!storeUser.loginDialogVisible"
+      v-if="!storeUser.loginDialogVisible && store.homePopupAds?.length"
       :adverts="store.homePopupAds"
-      @all-ads-closed="allAdsClosed = true"
     />
-    <InstallPWA
-      v-if="allAdsClosed"
-      v-show="!storeUser.loginDialogVisible"
-    />
+    <!-- <InstallPWA v-if="!storeUser.loginDialogVisible" /> -->
 
     <AnalyticsLoader :analytics="store.configuration?.analytics" />
   </v-app>

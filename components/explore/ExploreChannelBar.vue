@@ -50,7 +50,7 @@
           :color="selected == item.value ? 'red' : undefined"
           :variant="selected == item.value ? 'flat' : 'text'"
           rounded="xl"
-          class="mx-1 text-button px-2 px-md-4"
+          class="mx-1 text-surface-variant px-2 px-md-4"
           @click="$emit('click-item', item)"
           :to="item.value == '001' ? '/' : `/category/${item.value}`"
           :density="isMobile ? 'compact' : 'default'"

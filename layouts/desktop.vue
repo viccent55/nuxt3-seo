@@ -1,6 +1,5 @@
 <script setup lang="ts">
   import Header from "./desktop/Header.vue";
-  import Footer from "./desktop/Footer.vue";
   import type { NavigationItem } from "@/types/item";
   import { PERMISSION } from "@/common/permision";
   import { NavigationItems } from "@/common";
@@ -10,11 +9,10 @@
     setDefaultPermission,
     setDefaultRejectCallback,
   } from "@/hooks/usePermisions";
-  import { useUserStore } from "~/store/user";
   // 点击导航项
   import { openLoginDialog } from "@/hooks/useLoginDialog";
 
-  const { store, router, storeUser } = useVariable();
+  const { store, router, storeUser, isMobile } = useVariable();
   const permissions = [PERMISSION.Visitor, PERMISSION.User];
   initPermissions(permissions);
 
@@ -42,8 +40,8 @@
   };
 </script>
 <template>
-  <Header />
   <v-main class="bg-background">
+    <Header />
     <v-container
       fluid
       max-width="1720px"

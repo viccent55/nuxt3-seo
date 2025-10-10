@@ -38,7 +38,7 @@
 <style scoped>
   .explore-wrapper {
     width: 100%;
-    height: calc(100vh - 160px);
+    height: calc(100vh - 170px);
     display: flex;
     flex-direction: column;
     padding: 0 8px;

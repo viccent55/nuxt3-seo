@@ -1,6 +1,7 @@
 <script setup lang="ts">
-  import usePWA from "~/composables/usePwaInstall";
+  import usePWA from "@/composables/usePwaInstall";
   import { useStore } from "~/store";
+  import { ref, onMounted, watch } from "vue";
   const store = useStore();
   const {
     showInstallPrompt,
@@ -26,10 +27,15 @@
       setTimeout(() => closeReloadPrompt(), 15000);
     }
   });
+
+  const canShow = ref(false);
+  onMounted(() => {
+    canShow.value = true;
+  });
 </script>
 
 <template>
-  <div>
+  <div v-if="canShow">
     <!-- Install Prompt -->
     <v-dialog
       v-model="showInstallPrompt"
@@ -38,9 +44,9 @@
       persistent
     >
       <v-card>
-        <v-card-title class="d-flex align-center flex-column ga-2">
+        <v-card-title class="d-flex align-center flex-column ga-2 mt-2">
           <img
-            width="120"
+            width="100"
             src="/logo.png"
           />
         </v-card-title>
