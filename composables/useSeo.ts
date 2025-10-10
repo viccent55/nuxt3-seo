@@ -1,17 +1,20 @@
 import { computed, type Ref } from "vue";
+import { useStore } from "~/store";
 
 export const useSeo = (
   title: Ref<string | undefined>,
   description: Ref<string | undefined>,
-  keyword: Ref<string | undefined>,
-  author: Ref<string | undefined> = computed(() => "")
+  keyword: Ref<string | undefined>
 ) => {
+  const store = useStore();
+  const { configuration } = storeToRefs(store);
+
   useHead({
     title: computed(() => title?.value || "Default Website Title"),
     meta: [
       {
         name: "author",
-        content: computed(() => author?.value || "Default name."),
+        content: computed(() => configuration.value?.name || "Default name."),
       },
       {
         name: "description",
