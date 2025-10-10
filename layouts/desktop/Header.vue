@@ -2,12 +2,9 @@
   import { NavigationItems } from "@/common";
   import { useTheme } from "vuetify/lib/composables/theme.mjs";
   import { useStore } from "~/store";
+  import { checkPermissions } from "@/hooks/usePermisions";
+  import { PERMISSION } from "@/common/permision";
 
-  const state = reactive({
-    keywords: "nuxt3, seo, vue, web development",
-    title: "",
-    description: "A Nuxt 3 project with SEO optimizations",
-  });
   const store = useStore();
   const theme = useTheme();
 
@@ -28,6 +25,11 @@
   const dialgInfo = ref();
   const openLoginDialog = (item: Record<string, string>) => {
     dialgInfo.value.open(item);
+  };
+  const searchDisabled = ref(false);
+  const onFocusSearch = () => {
+    if (searchDisabled.value) return;
+    checkPermissions(PERMISSION.User, () => {});
   };
 </script>
 <template>
@@ -67,13 +69,13 @@
                 :to="item.href"
                 class="text-button"
                 :key="index"
-                v-show="item.href != '/#'"
+                v-show="item.href != '/user'"
               >
                 {{ item.name }}
               </NuxtLink>
             </nav>
             <v-text-field
-              v-model="state.title"
+              v-model="store.search"
               hide-details
               density="compact"
               variant="outlined"
@@ -83,6 +85,8 @@
               color="surface-variant"
               class="rounded-xl"
               max-width="400px"
+              @focus="onFocusSearch"
+              @keydown.enter="onFocusSearch"
             />
             <div class="d-flex align-center ga-2">
               <v-fab

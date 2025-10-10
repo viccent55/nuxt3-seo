@@ -75,8 +75,6 @@
     font-weight: 500;
     // background-color: var(--background-color-dark);
 
-    .btn-base();
-
     .icon {
       display: none;
     }

@@ -107,12 +107,6 @@ export const NavigationItems: NavigationItem[] = [
     mode: "#",
     href: "/user",
   },
-  // {
-  //   name: '会员中心',
-  //   icon: 'Setting',
-  //   type: 'router-link',
-  //   href: '/member',
-  // },
 ];
 
 export const ExploreChannelItems: EmptyArrayType = [
