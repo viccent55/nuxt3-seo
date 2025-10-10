@@ -32,7 +32,7 @@ export default defineNuxtConfig({
     // "/": { redirect: "/home" },
   },
   build: {
-    transpile: ["vuetify"],
+    transpile: ["vuetify", "crypto-js"],
   },
   runtimeConfig: {
     public: {
