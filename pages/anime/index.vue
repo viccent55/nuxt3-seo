@@ -109,8 +109,9 @@
           <v-card
             elevation="0"
             class="news-card"
-            @click="openDialog(item.id)"
+            @click.prevent="openDialog(item.id)"
             tag="a"
+            :to="'/anime/' + item.id"
           >
             <Image
               :src="item.cover"
@@ -151,7 +152,7 @@
 <style scoped lang="scss">
   .anime-wrapper {
     width: 100%;
-    max-height: calc(100vh - 80px);
+    max-height: calc(100vh - 100px);
     overflow-y: auto;
     padding: 0 12px;
     scrollbar-width: none;

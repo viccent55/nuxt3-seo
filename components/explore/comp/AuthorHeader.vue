@@ -14,13 +14,13 @@
 
 <template>
   <div class="author-header rounded-r-2xl">
-    <a
-      :href="'/user/' + author?.id"
+    <NuxtLink
+      :to="'/user/' + author?.id"
       class="text-button text-grey text-decoration-none"
     >
       <Avatar :src="props.author?.avatar" />
-      <span>{{ props.author?.nickname }}</span>
-    </a>
+      <span class="ml-2 text-body-2">{{ props.author?.nickname }}</span>
+    </NuxtLink>
 
     <FollowButton
       :is-follow="author?.isFollow"
@@ -50,16 +50,6 @@
       height: 40px;
       border: 1px solid var(--border-color);
       border-radius: 50%;
-    }
-
-    span {
-      margin-left: 12px;
-      font-size: 16px;
-      line-height: 16px;
-
-      &:hover {
-        color: var(--text-color-dark);
-      }
     }
   }
 

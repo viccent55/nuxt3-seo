@@ -13,12 +13,10 @@ export async function detail(params: object) {
   if (res.data) return decrypt(res.data);
   return res;
 }
-export async function comments(id: string | number) {
+export async function comments(params: object) {
   const res: EmptyObjectType = await useApiFetch("/api/article/comments", {
     method: "POST",
-    body: dataEncrypt({
-      id,
-    }),
+    body: dataEncrypt(params),
   });
   if (res.data) return decrypt(res.data);
   return res;

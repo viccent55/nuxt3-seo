@@ -1,15 +1,21 @@
 <script setup lang="ts">
   import { ref, defineAsyncComponent, defineExpose } from "vue";
-  import { useDisplay } from "vuetify"; // for screen size check
   import Image from "@/components/Image.vue";
 
   const VideoPlayer = defineAsyncComponent(
     () => import("@/components/Video.vue")
   );
 
-  defineProps<{
-    mediaInfo: Array<{ name: string; value: string }>;
-  }>();
+  defineProps({
+    mediaInfo: {
+      type: Array as PropType<{ name: string; value: string }[]>,
+      default: () => [],
+    },
+    height: {
+      type: String,
+      default: () => "100%",
+    },
+  });
 
   const videoPlayerRef = ref<InstanceType<typeof VideoPlayer>[]>([]);
   const carousel = ref();
@@ -28,8 +34,6 @@
     next,
     prev,
   });
-
-  const { mdAndUp } = useDisplay();
 </script>
 
 <template>
@@ -46,20 +50,21 @@
       :key="index"
       class="fill-height"
     >
-      <div class="wrapper">
-        <Image
-          v-if="item.name === 'image'"
-          :src="item?.value"
-          :cover="false"
-          class="media"
-        />
-        <VideoPlayer
-          v-else-if="item.name === 'video'"
-          ref="videoPlayerRef"
-          :src="item.value"
-          class="media"
-        />
-      </div>
+      <Image
+        v-if="item.name === 'image'"
+        :src="item?.value"
+        :cover="false"
+        class="media"
+      />
+      <VideoPlayer
+        v-else-if="item.name === 'video'"
+        ref="videoPlayerRef"
+        :src="item.value"
+        class="video"
+        :style="{
+          maxHeight: height,
+        }"
+      />
     </v-carousel-item>
   </v-carousel>
 </template>
@@ -68,7 +73,7 @@
   .swiper {
     width: 100%;
     max-height: 95vh;
-    min-height: 300px;
+    // min-height: 300px;
   }
 
   .wrapper {
@@ -81,7 +86,11 @@
 
   .media {
     width: 100%;
-    height: 100%;
+    // height: 100%;
     object-fit: contain;
+  }
+  .video {
+    width: 100%;
+    height: 100%;
   }
 </style>

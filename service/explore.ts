@@ -24,12 +24,13 @@ export async function getExploreFeeds(
     method: "POST",
     body: dataEncrypt(params),
   });
-  return decrypt(res.data);
+  if(res.data) return decrypt(res.data)
+  return res;
 }
-export async function getComments(id: string | number) {
+export async function comments(params: object) {
   const res: EmptyObjectType = await $fetch("/api/explore/comments", {
     method: "POST",
-    body: dataEncrypt({ id }),
+    body: dataEncrypt(params),
   });
   return decrypt(res.data);
 }
@@ -69,7 +70,8 @@ export async function detail(params: EmptyObjectType) {
     method: "POST",
     body: params,
   });
-  return decrypt(res.data);
+  if (res.data) return decrypt(res.data);
+  return res;
 }
 
 // export function search(id: string | number) {

@@ -1,12 +1,10 @@
 <script setup lang="ts">
-  import { getCurrentDomain } from "~/service";
   import type { ExploreFeedInfo } from "@/types/info";
   import { like } from "@/service/explore";
   import { useInfiniteScroll } from "@vueuse/core";
   import { useNoteDialog } from "@/hooks/useNoteDialog";
   import { checkPermissions } from "@/hooks/usePermisions";
   import { PERMISSION } from "@/common/permision";
-  import { openPage } from "~/service";
   import { storeToRefs } from "pinia";
   import { itemAdClick } from "@/service/advert";
   import useVariable from "@/composables/useVariable";
@@ -21,15 +19,6 @@
   const { generateVisitCode } = useHome();
   const page = ref(Number(route.params.page) || 1);
 
-  const { configuration, channel, mode } = storeToRefs(store);
-  const indexChannel = ref<string>(channel.value);
-  const categories = computed(() => [
-    { name: "发现", value: "001" },
-    ...(configuration.value.categories || []).map((item: EmptyObjectType) => ({
-      name: item.name,
-      value: item.id,
-    })),
-  ]);
   /* ---------------------------
    1. Centralized fetch function
 ---------------------------- */
@@ -45,7 +34,6 @@
         limit: 30,
         category: Number(route.params.cid),
       };
-      console.log(request);
       const response = await $fetch<EmptyObjectType>("/api/explore/feed", {
         method: "POST",
         body: dataEncrypt(request),
@@ -84,61 +72,42 @@
 ---------------------------- */
   const onLoadMore = async () => {
     if (pending.value || isNoMore.value) return;
-    page.value++;
-
     isLoadMore.value = true;
-    const newFeeds = await fetchFeeds(page.value);
-
-    if (newFeeds?.length) {
-      feeds.value = [...feeds.value, ...newFeeds];
-      // Wait for the DOM to update with the new items
-      await nextTick();
-    } else {
-      isNoMore.value = true;
+    page.value++;
+    try {
+      const newFeeds = await fetchFeeds(page.value);
+      if (newFeeds?.length) {
+        feeds.value = [...feeds.value, ...newFeeds];
+        await nextTick(); // wait for DOM to update
+      } else {
+        isNoMore.value = true;
+      }
+    } catch (error) {
+      console.error("Error loading more feeds:", error);
+    } finally {
+      isLoadMore.value = false;
     }
-    isLoadMore.value = false;
   };
 
   /* ---------------------------
    4. Click handlers
 ---------------------------- */
   const handle = {
-    clickChannel(item: Record<string, string>) {
-      if (item.value === store.channel) return;
-
-      indexChannel.value = item.value;
-      store.channel = item.value;
-      store.mode = "0";
-      page.value = 1;
-      isNoMore.value = false;
-
-      // Use a separate state for loading to avoid clearing the existing feeds
-      const { data: newFeeds, pending } = useAsyncData(
-        `explore-feed-${item.value}`,
-        () => fetchFeeds(1)
-      );
-
-      // Watch for the new data to arrive, then update the feeds
-      watch(newFeeds, (result) => (feeds.value = result || []), { once: true });
-    },
     clickFeed(item: ExploreFeedInfo) {
       if (item.mode === 3) itemAdClick(item.id);
       else {
         clearQuery();
-        noteDialog.openNoteDialog(String(item.id));
+        noteDialog.openNoteDialog(item.id);
       }
     },
     clickLike(item: ExploreFeedInfo) {
       checkPermissions(PERMISSION.User, () => {
-        like(item.id).then((res) => {
+        like({ id: item.id }).then((res) => {
           if (res.code !== 200) return;
           item.isLiked = !item.isLiked;
           item.likeCount += item.isLiked ? 1 : -1;
         });
       });
-    },
-    clickAuthor(item: ExploreFeedInfo) {
-      openPage(`${getCurrentDomain()}/#/user/${item.id}`);
     },
   };
 
@@ -156,28 +125,12 @@
 </script>
 
 <template>
-  <div class="explore-wrapper">
-    <h1 class="d-none">小红书成人版-记录性福每一天</h1>
-    <ExploreChannelBar
-      :items="categories"
-      :active-value="indexChannel"
-    />
-    <ExploreContainer
-      ref="exploreContainerRef"
-      :items="feeds"
-      :is-load-more="isLoadMore"
-      :is-no-more="isNoMore"
-      @click-item="handle.clickFeed"
-    />
-  </div>
+  <ExploreContainer
+    ref="exploreContainerRef"
+    :items="feeds"
+    :is-load-more="isLoadMore"
+    :is-no-more="isNoMore"
+    @click-item="handle.clickFeed"
+  />
 </template>
-
-<style scoped>
-  .explore-wrapper {
-    width: 100%;
-    height: calc(100vh - 80px);
-    display: flex;
-    flex-direction: column;
-    padding: 0 12px;
-  }
-</style>
+<style scoped lang="scss"></style>

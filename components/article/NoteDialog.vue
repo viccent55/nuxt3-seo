@@ -15,7 +15,7 @@ _
 
   const noteDIalogRef = useTemplateRef("note-dialog");
   const bottomRef = useTemplateRef("bottomActions");
-  const { store, onCopy, route } = useVariable();
+  const { store, onCopy, route, isMobile } = useVariable();
   const loading = ref(false);
   const noteDialog = useNoteArticleDialog();
   const state = reactive({
@@ -50,7 +50,7 @@ _
 
   const getComments = async () => {
     if (!noteDialog.id.value) return;
-    const response = await comments(noteDialog.id.value);
+    const response = await comments({ id: noteDialog.id.value });
     if (response.data.length) {
       state.comments = response.data;
     }
@@ -135,6 +135,11 @@ _
       });
     },
   };
+  const getStyle = computed(() =>
+    isMobile.value
+      ? "scrollbar-width: none;"
+      : "max-height: calc(100vh - 160px); overflow-y: scroll"
+  );
 </script>
 
 <template>
@@ -145,11 +150,22 @@ _
     height="100%"
     @after-enter="onOpenNoteDialog"
     scrollable
+    :fullscreen="isMobile"
   >
-    <v-card
-      class="rounded-xl overflow-hidden"
-      :loading="loading"
-    >
+    <v-card :loading="loading">
+      <div
+        class="d-flex justify-end py-2"
+        v-if="isMobile"
+      >
+        <v-btn
+          icon
+          color="primary"
+          size="small"
+          @click="noteDialog.closeNoteDialog"
+        >
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </div>
       <v-row no-gutters>
         <!-- Left: Video area -->
         <v-col
@@ -157,16 +173,18 @@ _
           md="7"
           lg="8"
           class="d-flex justify-center"
-          style="border-right: 1px solid #ccc"
+          :class="isMobile ? '' : 'border-e-thin'"
         >
           <v-card
             flat
             class="py-3"
           >
-            <v-card-title>{{ state.data?.title }}</v-card-title>
-            <v-card-text
-              style="max-height: calc(100vh - 130px); overflow-y: scroll"
+            <v-card-title
+              class="text-break text-wrap overflow-visible whitespace-normal"
             >
+              {{ state.data?.title }}
+            </v-card-title>
+            <v-card-text :style="getStyle">
               <ContentArticle
                 :content="state.data?.content"
                 ref="contentArticleRef"
@@ -181,9 +199,11 @@ _
           md="5"
           lg="4"
           class="d-flex flex-column"
-          style="max-height: calc(100vh - 40px)"
         >
-          <div class="d-flex justify-end mt-2 py-0 pr-4">
+          <div
+            class="d-flex justify-end mt-2 py-0 pr-4"
+            v-if="!isMobile"
+          >
             <v-btn
               icon
               size="small"
@@ -195,7 +215,7 @@ _
 
           <!-- Scrollable Content Area -->
           <div
-            class="flex-grow-1 overflow-y-auto px-4"
+            class="flex-grow-1 overflow-y-auto px-4 pb-10 pb-md-0"
             ref="note-dialog"
           >
             <div class="text-body-2 text-grey-darken-1 mb-4">
@@ -259,6 +279,7 @@ _
                   />
                 </a>
               </v-card>
+
               <template
                 v-for="block in state.comments"
                 :key="block.id"
@@ -295,6 +316,6 @@ _
   }
   .media-container {
     width: 100%;
-    height: 100%;
+    height: auto;
   }
 </style>

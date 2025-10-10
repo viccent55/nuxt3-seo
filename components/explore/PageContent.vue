@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { getCurrentDomain } from "~/service";
   import type { ExploreFeedInfo } from "@/types/info";
-  import { like } from "@/service/explore";
+  import { like, getExploreFeeds } from "@/service/explore";
   import { useInfiniteScroll } from "@vueuse/core";
   import { useNoteDialog } from "@/hooks/useNoteDialog";
   import { checkPermissions } from "@/hooks/usePermisions";
@@ -42,13 +42,9 @@
         limit: 30,
       };
 
-      const response = await $fetch<EmptyObjectType>("/api/explore/feed", {
-        method: "POST",
-        body: dataEncrypt(request),
-      });
-      const result = decrypt(response.data);
-      if (result?.errcode === 0 && Array.isArray(result.data)) {
-        return result.data;
+      const response = await getExploreFeeds(request);
+      if (response?.errcode === 0 && Array.isArray(response.data)) {
+        return response.data;
       }
       isNoMore.value = true;
       return [];
@@ -80,17 +76,21 @@
   ---------------------------- */
   const onLoadMore = async () => {
     if (pending.value || isNoMore.value) return;
-
     isLoadMore.value = true;
-    page.value++;
-    const newFeeds = await fetchFeeds(page.value);
-
-    if (newFeeds?.length) {
-      feeds.value = [...feeds.value, ...newFeeds];
-    } else {
-      isNoMore.value = true;
+    try {
+      page.value++;
+      const newFeeds = await fetchFeeds(page.value);
+      if (newFeeds.length) {
+        feeds.value = [...feeds.value, ...newFeeds];
+        await nextTick(); // wait for DOM update
+      } else {
+        isNoMore.value = true;
+      }
+    } catch (error) {
+      console.error("Failed to load more feeds:", error);
+    } finally {
+      isLoadMore.value = false;
     }
-    isLoadMore.value = false;
   };
 
   /* ---------------------------
@@ -106,7 +106,9 @@
     },
     clickLike(item: ExploreFeedInfo) {
       checkPermissions(PERMISSION.User, () => {
-        like(item.id).then((res) => {
+        like({
+          id: item.id,
+        }).then((res) => {
           if (res.code !== 200) return;
           item.isLiked = !item.isLiked;
           item.likeCount += item.isLiked ? 1 : -1;
@@ -135,11 +137,10 @@
 
 <template>
   <div class="explore-wrapper">
-    <h1 class="d-none">小红书成人版-记录性福每一天</h1>
-    <ExploreChannelBar
+    <!-- <ExploreChannelBar
       :items="categories"
       :active-value="indexChannel"
-    />
+    /> -->
     <ExploreContainer
       ref="exploreContainerRef"
       :items="feeds"
@@ -151,13 +152,4 @@
   </div>
 </template>
 
-<style scoped>
-  .explore-wrapper {
-    width: 100%;
-    height: calc(100vh - 80px);
-    display: flex;
-    flex-direction: column;
-    padding: 0 12px;
-    scrollbar-width: none;
-  }
-</style>
+<style scoped lang="scss"></style>

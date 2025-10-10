@@ -1,7 +1,6 @@
 <script setup lang="ts">
   import { PERMISSION } from "@/common/permision";
   import Avatar from "@/components/Avatar.vue";
-  import Heart from "@/components/global/Heart.vue";
   import Image from "@/components/Image.vue";
   import { checkPermissions } from "@/hooks/usePermisions";
   import type { PropType } from "vue";
@@ -33,8 +32,9 @@
     class="feed-wrapper position-relative"
     elevation="0"
     rounded="lg"
-    @click="$emit('click')"
     tag="a"
+    :to="'/detail/' + feed.id"
+    @click.prevent="$emit('click')"
   >
     <!-- Media Section -->
     <div
@@ -73,7 +73,7 @@
       v-if="feed.mode !== 3"
       :src="feed.cover"
       cover
-      :aspect-ratio="feed.cover_w / feed.cover_h"
+      :aspect-ratio="(feed.cover_w / feed.cover_h) * 1.5"
     />
 
     <!-- Info Section -->

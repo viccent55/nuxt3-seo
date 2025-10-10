@@ -19,7 +19,7 @@
   const noteDIalogRef = useTemplateRef("note-dialog");
   const bottomRef = useTemplateRef("bottomActions");
   const videoPlayerRef = ref();
-  const { store, onCopy, route } = useVariable();
+  const { store, onCopy, route, isMobile } = useVariable();
   const loading = ref(false);
   const noteDialog = useNoteAnimeDialog();
   const state = reactive({
@@ -126,26 +126,51 @@
     persistent
     @after-enter="onOpenNoteDialog"
     scrollable
+    :fullscreen="isMobile"
   >
     <v-card
-      class="rounded-xl overflow-hidden"
+      class="overflow-hidden"
       :loading="loading"
     >
+      <div
+        class="d-flex justify-end py-1 pr-2"
+        v-if="isMobile"
+      >
+        <v-btn
+          icon
+          size="small"
+          color="primary"
+          @click="
+            () => {
+              noteDialog.closeNoteDialog();
+              videoPlayerRef.value?.closeVideo();
+              state.data = {};
+            }
+          "
+        >
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </div>
       <v-row no-gutters>
         <!-- Left: Video area -->
         <v-col
           cols="12"
           md="7"
           lg="8"
-          class="d-flex justify-center"
-          style="border-right: 1px solid #ccc"
+          :style="{
+            height: isMobile ? '200px' : '100%',
+          }"
         >
           <v-card
             flat
-            class="py-3"
+            class=""
           >
-            <v-card-title>{{ state.data?.title }}</v-card-title>
-            <v-card-text>
+            <v-card-title
+              class="text-break text-wrap overflow-visible whitespace-normal"
+            >
+              {{ state.data?.title }}
+            </v-card-title>
+            <v-card-text class="pa-0">
               <VideoPlayer
                 v-if="state.data?.m3u8"
                 :src="state.data?.m3u8"
@@ -163,7 +188,10 @@
           class="d-flex flex-column"
           style="max-height: calc(100vh - 40px)"
         >
-          <div class="d-flex justify-end mt-2 py-0 pr-4">
+          <div
+            class="d-flex justify-end mt-2 py-0 pr-4"
+            v-if="!isMobile"
+          >
             <v-btn
               icon
               size="small"

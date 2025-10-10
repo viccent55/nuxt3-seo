@@ -12,11 +12,8 @@ declare module "nitropack/types" {
     '/api/ads/position': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/ads/position').default>>>>
     }
-    '/api/anime/comment': {
-      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/anime/comment').default>>>>
-    }
-    '/api/anime/comments': {
-      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/anime/comments').default>>>>
+    '/api/anime/collect': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/anime/collect').default>>>>
     }
     '/api/anime/detail': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/anime/detail').default>>>>
@@ -33,23 +30,44 @@ declare module "nitropack/types" {
     '/api/app/pwa': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/app/pwa').default>>>>
     }
+    '/api/article/collect': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/article/collect').default>>>>
+    }
     '/api/article/comment': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/article/comment').default>>>>
+    }
+    '/api/article/comments': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/article/comments').default>>>>
     }
     '/api/article/detail': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/article/detail').default>>>>
     }
+    '/api/article/like': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/article/like').default>>>>
+    }
     '/api/article/select': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/article/select').default>>>>
     }
-    '/api/auth/fogot-password': {
-      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/auth/fogot-password').default>>>>
+    '/api/auth/change-password': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/auth/change-password').default>>>>
+    }
+    '/api/auth/forgot-password': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/auth/forgot-password').default>>>>
     }
     '/api/auth/login': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/auth/login').default>>>>
     }
+    '/api/auth/prepare-register': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/auth/prepare-register').default>>>>
+    }
+    '/api/auth/refreshToken': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/auth/refreshToken').default>>>>
+    }
     '/api/auth/register': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/auth/register').default>>>>
+    }
+    '/api/auth/set-password': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/auth/set-password').default>>>>
     }
     '/api/config': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/config/index').default>>>>
@@ -57,8 +75,26 @@ declare module "nitropack/types" {
     '/api/explore/activeVisitor': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/explore/activeVisitor').default>>>>
     }
+    '/api/explore/collect': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/explore/collect').default>>>>
+    }
+    '/api/explore/comment': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/explore/comment').default>>>>
+    }
+    '/api/explore/comments': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/explore/comments').default>>>>
+    }
+    '/api/explore/detail': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/explore/detail').default>>>>
+    }
     '/api/explore/feed': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/explore/feed').default>>>>
+    }
+    '/api/explore/follow': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/explore/follow').default>>>>
+    }
+    '/api/explore/like': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/explore/like').default>>>>
     }
     '/api/explore/newVisitor': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/explore/newVisitor').default>>>>
@@ -71,6 +107,27 @@ declare module "nitropack/types" {
     }
     '/api/pageinfo': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/pageinfo/index').default>>>>
+    }
+    '/api/user/change-password': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/user/change-password').default>>>>
+    }
+    '/api/user': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/user/index').default>>>>
+    }
+    '/api/user/like-feed': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/user/like-feed').default>>>>
+    }
+    '/api/user/send-email-code': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/user/send-email-code').default>>>>
+    }
+    '/api/user/set-user-info': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/user/set-user-info').default>>>>
+    }
+    '/api/user/star-feed': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/user/star-feed').default>>>>
+    }
+    '/api/user/user-feed': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/user/user-feed').default>>>>
     }
     '/__nuxt_error': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../node_modules/nuxt/dist/core/runtime/nitro/handlers/renderer').default>>>>

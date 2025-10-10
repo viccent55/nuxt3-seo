@@ -8,7 +8,6 @@
 
 <template>
   <v-btn
-    size="default"
     :color="isFollow ? '' : 'primary'"
     @click="$emit('click')"
   >
@@ -21,7 +20,7 @@
     margin-left: auto;
     font-size: 16px;
     font-weight: 600;
-    width: 96px;
+    width: 76px;
     border-radius: 100px;
   }
 </style>

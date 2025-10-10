@@ -1,67 +1,65 @@
-<script setup lang="ts">
-  import { ref } from "vue";
-  import { useNoteDialog, noteDialogVisible } from "@/hooks/useNoteDialog";
-  import AuthorHeader from "./comp/AuthorHeader.vue";
-  import { checkPermissions } from "@/hooks/usePermisions";
-  import { PERMISSION } from "@/common/permision";
-  import { detail, like, collect, follow, reply } from "@/service/explore";
-  import CommentBlock from "./comp/CommentBlock.vue";
-  import BottomAction from "./comp/BottomAction.vue";
+<script lang="ts" setup>
   import { adsClick } from "@/service/advert";
   import { getCurrentDomain } from "@/service";
-
-  const Swiper = defineAsyncComponent(() => import("../Swiper.vue"));
-  const noteDIalogRef = useTemplateRef("note-dialog");
+  import { checkPermissions } from "@/hooks/usePermisions";
+  import { PERMISSION } from "@/common/permision";
+  import Swiper from "@/components/Swiper.vue";
+  import CommentBlock from "@/components/explore/comp/CommentBlock.vue";
+  import BottomAction from "@/components/explore/comp/BottomAction.vue";
+  import {
+    like,
+    collect,
+    follow,
+    reply,
+    detail,
+    comments,
+  } from "@/service/explore";
   const bottomRef = useTemplateRef("bottomActions");
-  const { storeUser, store, onCopy, route, isMobile } = useVariable();
-  const loading = ref(false);
-  const noteDialog = useNoteDialog();
+
   const state = reactive({
     data: {} as EmptyObjectType,
     comments: [] as EmptyObjectType[],
+    loading: false,
   });
-
+  const { store, onCopy, route, isMobile, storeUser } = useVariable();
   const snackbar = useSnackbar();
-  const onOpenNoteDialog = async () => {
-    if (noteDIalogRef.value) noteDIalogRef.value.scrollTop = 0;
-    loading.value = true;
-    try {
-      const request = {
-        id: noteDialog.id.value,
-        code: storeUser.visitCode,
-      };
-      const response = await detail(request);
-      if (response.data) {
-        state.data = response.data;
-        getComments();
-      }
-      if (response.data?.errcode === 0 && Array.isArray(response.data.data)) {
-        return response.data;
-      }
-    } catch (err) {
-      console.error("fetchFeeds failed:", err);
-    } finally {
-      loading.value = false;
+  /* ---------------------------
+     2. Initial SSR fetch
+  ---------------------------- */
+  const getComments = async () => {
+    const response = await comments({ id: route.params.id as string });
+    if (response.data) {
+      state.comments = response.data;
     }
-
-    // disableHorizontalSwipe();
   };
+  const { data: fetchedData, pending } = await useAsyncData(
+    `detail-feed-${route.params.id}`,
+    async () => {
+      try {
+        const request = {
+          id: route.params.id as string,
+          code: !storeUser.visitCode ? generateCode() : storeUser.visitCode,
+        };
+        console.log(request);
+        const response = await detail(request);
+        return response.data || {};
+      } catch (err) {
+        console.error("fetchDetail failed:", err);
+        return {};
+      }
+    },
+    { watch: [() => route.params.id] }
+  );
+
+  // Assign the fetched data to the reactive state
+  if (fetchedData.value) {
+    console.log(fetchedData);
+    state.data = fetchedData.value;
+    getComments();
+  }
 
   const swiperInstanceRef = ref<InstanceType<typeof Swiper> | null>(null);
 
-  const getComments = async () => {
-    if (!noteDialog.id.value) return;
-    const response = await $fetch<EmptyObjectType>(`/api/explore/comments`, {
-      method: "POST",
-      body: dataEncrypt({
-        id: noteDialog.id.value,
-      }),
-    });
-    const result = decrypt(response.data);
-    if (result.data) {
-      state.comments = result.data;
-    }
-  };
   const handle = {
     clickAuthor(id: string) {
       const url = `${window.location.origin}/user/${id}`;
@@ -155,25 +153,14 @@
       });
     },
   };
-  const getStyle = computed(() => {
-    return isMobile.value
-      ? "max-height: calc(100vh - 360px)"
-      : "max-height: calc(100vh - 40px";
-  });
 </script>
 
 <template>
-  <v-dialog
-    v-model="noteDialogVisible"
-    max-width="1200"
-    persistent
-    height="100%"
-    @after-enter="onOpenNoteDialog"
-    :fullscreen="isMobile"
-  >
+  <v-container>
     <v-card
-      class="overflow-hidden"
-      :loading="loading"
+      class="main-contain mt-0 mt-md-6"
+      flat
+      :loading="state.loading"
     >
       <v-row no-gutters>
         <!-- Left: Video area -->
@@ -198,7 +185,6 @@
           md="5"
           lg="4"
           class="d-flex flex-column"
-          :style="getStyle"
         >
           <div
             class="d-flex justify-space-between align-center mb-2 py-0 pr-4 d-none"
@@ -208,17 +194,9 @@
                 ...state.data?.author,
                 isFollow: state.data?.isFollow,
               }"
-              @click-close="noteDialog.closeNoteDialog"
               @click-author="handle.clickAuthor"
               @click-follow="handle.clickFollow"
             />
-            <v-btn
-              icon
-              size="small"
-              @click="noteDialog.closeNoteDialog"
-            >
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
           </div>
           <!-- Scrollable Content Area -->
           <div
@@ -320,15 +298,11 @@
         </v-col>
       </v-row>
     </v-card>
-  </v-dialog>
+  </v-container>
 </template>
-
-<style scoped>
-  .v-dialog > .v-overlay__content {
-    overflow: hidden;
-  }
-  .media-container {
-    width: 100%;
-    height: auto;
+<style scoped lang="scss">
+  .main-contain {
+    max-height: calc(100vh - 10rem);
+    overflow-y: scroll;
   }
 </style>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, onMounted, onUnmounted } from "vue";
+  import { onMounted, onUnmounted } from "vue";
   import type { ExploreChannelItem } from "@/types/item";
   import useVariable from "@/composables/useVariable";
   import { adsClick } from "@/service/advert";
@@ -11,15 +11,22 @@
 
   defineEmits(["click-item"]);
 
-  const { store, route } = useVariable();
+  const { store, route, isMobile } = useVariable();
 
-  const selected = computed(() => route.params.cid || "001");
+  const selected = ref(route.params.id || "001");
 
   const itemClick = (item: any) => {
     adsClick(item.id);
   };
 
   onMounted(() => {});
+
+  watch(
+    () => route.params.id,
+    (newCid) => {
+      selected.value = newCid || "001";
+    }
+  );
 
   onUnmounted(() => {});
 </script>
@@ -30,8 +37,9 @@
     <!-- Scrollable category bar -->
     <v-slide-group
       ref="group"
+      v-model="selected"
       show-arrows
-      class="flex-grow-1 pt-4 pb-0"
+      class="flex-grow-1 pt-4 pb-0 custom-slide"
     >
       <v-slide-group-item
         v-for="(item, index) in items"
@@ -42,11 +50,12 @@
           :color="selected == item.value ? 'red' : undefined"
           :variant="selected == item.value ? 'flat' : 'text'"
           rounded="xl"
-          class="mx-1 text-button"
+          class="mx-1 text-button px-2 px-md-4"
           @click="$emit('click-item', item)"
-          :to="item.value == '001' ? '/' : `cat_${item.value}`"
+          :to="item.value == '001' ? '/' : `/category/${item.value}`"
+          :density="isMobile ? 'compact' : 'default'"
         >
-          {{ item.name }}
+          <span class="text-xs pa-0 ma-0 text-body-2">{{ item.name }}</span>
         </v-btn>
       </v-slide-group-item>
     </v-slide-group>
@@ -103,16 +112,13 @@
         display: none;
       }
     }
+  }
 
-    .button-group {
-      display: flex;
-      align-items: center;
-      flex-wrap: nowrap;
-      padding: 0 10px;
-
-      .v-btn {
-        flex-shrink: 0;
-      }
+  :deep(.custom-slide) {
+    .v-slide-group__next,
+    .v-slide-group__prev {
+      flex: 0 1 40px;
+      min-width: 40px;
     }
   }
 </style>

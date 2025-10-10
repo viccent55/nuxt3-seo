@@ -13,7 +13,6 @@ type HydrationStrategies = {
 type LazyComponent<T> = (T & DefineComponent<HydrationStrategies, {}, {}, {}, {}, {}, {}, { hydrated: () => void }>)
 interface _GlobalComponents {
       'BottomMore': typeof import("../components/global/BottomMore.vue")['default']
-    'CloseButton': typeof import("../components/global/CloseButton.vue")['default']
     'Dropdown': typeof import("../components/global/Dropdown.vue")['default']
     'FollowButton': typeof import("../components/global/FollowButton.vue")['default']
     'GuideIos': typeof import("../components/global/GuideIos.vue")['default']
@@ -22,6 +21,8 @@ interface _GlobalComponents {
     'AnalyticsLoader': typeof import("../components/AnalyticsLoader.vue")['default']
     'AppLink': typeof import("../components/AppLink.vue")['default']
     'Avatar': typeof import("../components/Avatar.vue")['default']
+    'AvatarUpload': typeof import("../components/AvatarUpload.vue")['default']
+    'ConfirmDialog': typeof import("../components/ConfirmDialog.vue")['default']
     'ContentArticle': typeof import("../components/ContentArticle.vue")['default']
     'DialogInfo': typeof import("../components/DialogInfo.vue")['default']
     'ExploreLoading': typeof import("../components/ExploreLoading.vue")['default']
@@ -32,6 +33,16 @@ interface _GlobalComponents {
     'NotificationDialog': typeof import("../components/NotificationDialog.vue")['default']
     'OverlayLoading': typeof import("../components/OverlayLoading.vue")['default']
     'SocialNetwork': typeof import("../components/SocialNetwork.vue")['default']
+    'Swiper': typeof import("../components/Swiper.vue")['default']
+    'Video': typeof import("../components/Video.vue")['default']
+    'AnimeNoteDialog': typeof import("../components/anime/NoteDialog.vue")['default']
+    'AnimeCompBottomAction': typeof import("../components/anime/comp/BottomAction.vue")['default']
+    'AnimeCompComment': typeof import("../components/anime/comp/Comment.vue")['default']
+    'AnimeCompCommentBlock': typeof import("../components/anime/comp/CommentBlock.vue")['default']
+    'ArticleNoteDialog': typeof import("../components/article/NoteDialog.vue")['default']
+    'ArticleCompBottomAction': typeof import("../components/article/comp/BottomAction.vue")['default']
+    'ArticleCompComment': typeof import("../components/article/comp/Comment.vue")['default']
+    'ArticleCompCommentBlock': typeof import("../components/article/comp/CommentBlock.vue")['default']
     'DesktopActorCard': typeof import("../components/desktop/ActorCard.vue")['default']
     'DesktopActorProfile': typeof import("../components/desktop/ActorProfile.vue")['default']
     'DesktopAdvertSlot': typeof import("../components/desktop/AdvertSlot.vue")['default']
@@ -46,8 +57,13 @@ interface _GlobalComponents {
     'ExploreChannelBar': typeof import("../components/explore/ExploreChannelBar.vue")['default']
     'ExploreContainer': typeof import("../components/explore/ExploreContainer.vue")['default']
     'ExploreFeed': typeof import("../components/explore/ExploreFeed.vue")['default']
+    'ExploreNoteDialog': typeof import("../components/explore/NoteDialog.vue")['default']
     'ExplorePageContent': typeof import("../components/explore/PageContent.vue")['default']
     'ExploreCategoryPage': typeof import("../components/explore/category/CategoryPage.vue")['default']
+    'ExploreCompAuthorHeader': typeof import("../components/explore/comp/AuthorHeader.vue")['default']
+    'ExploreCompBottomAction': typeof import("../components/explore/comp/BottomAction.vue")['default']
+    'ExploreCompComment': typeof import("../components/explore/comp/Comment.vue")['default']
+    'ExploreCompCommentBlock': typeof import("../components/explore/comp/CommentBlock.vue")['default']
     'MobileSettingProfile': typeof import("../components/mobile/setting/profile.vue")['default']
     'MobileSettingSecurity': typeof import("../components/mobile/setting/security.vue")['default']
     'NuxtWelcome': typeof import("../node_modules/nuxt/dist/app/components/welcome.vue")['default']
@@ -83,7 +99,6 @@ interface _GlobalComponents {
     'NuxtIsland': typeof import("../node_modules/nuxt/dist/app/components/nuxt-island")['default']
     'NuxtRouteAnnouncer': typeof import("../node_modules/nuxt/dist/app/components/server-placeholder")['default']
       'LazyBottomMore': LazyComponent<typeof import("../components/global/BottomMore.vue")['default']>
-    'LazyCloseButton': LazyComponent<typeof import("../components/global/CloseButton.vue")['default']>
     'LazyDropdown': LazyComponent<typeof import("../components/global/Dropdown.vue")['default']>
     'LazyFollowButton': LazyComponent<typeof import("../components/global/FollowButton.vue")['default']>
     'LazyGuideIos': LazyComponent<typeof import("../components/global/GuideIos.vue")['default']>
@@ -92,6 +107,8 @@ interface _GlobalComponents {
     'LazyAnalyticsLoader': LazyComponent<typeof import("../components/AnalyticsLoader.vue")['default']>
     'LazyAppLink': LazyComponent<typeof import("../components/AppLink.vue")['default']>
     'LazyAvatar': LazyComponent<typeof import("../components/Avatar.vue")['default']>
+    'LazyAvatarUpload': LazyComponent<typeof import("../components/AvatarUpload.vue")['default']>
+    'LazyConfirmDialog': LazyComponent<typeof import("../components/ConfirmDialog.vue")['default']>
     'LazyContentArticle': LazyComponent<typeof import("../components/ContentArticle.vue")['default']>
     'LazyDialogInfo': LazyComponent<typeof import("../components/DialogInfo.vue")['default']>
     'LazyExploreLoading': LazyComponent<typeof import("../components/ExploreLoading.vue")['default']>
@@ -102,6 +119,16 @@ interface _GlobalComponents {
     'LazyNotificationDialog': LazyComponent<typeof import("../components/NotificationDialog.vue")['default']>
     'LazyOverlayLoading': LazyComponent<typeof import("../components/OverlayLoading.vue")['default']>
     'LazySocialNetwork': LazyComponent<typeof import("../components/SocialNetwork.vue")['default']>
+    'LazySwiper': LazyComponent<typeof import("../components/Swiper.vue")['default']>
+    'LazyVideo': LazyComponent<typeof import("../components/Video.vue")['default']>
+    'LazyAnimeNoteDialog': LazyComponent<typeof import("../components/anime/NoteDialog.vue")['default']>
+    'LazyAnimeCompBottomAction': LazyComponent<typeof import("../components/anime/comp/BottomAction.vue")['default']>
+    'LazyAnimeCompComment': LazyComponent<typeof import("../components/anime/comp/Comment.vue")['default']>
+    'LazyAnimeCompCommentBlock': LazyComponent<typeof import("../components/anime/comp/CommentBlock.vue")['default']>
+    'LazyArticleNoteDialog': LazyComponent<typeof import("../components/article/NoteDialog.vue")['default']>
+    'LazyArticleCompBottomAction': LazyComponent<typeof import("../components/article/comp/BottomAction.vue")['default']>
+    'LazyArticleCompComment': LazyComponent<typeof import("../components/article/comp/Comment.vue")['default']>
+    'LazyArticleCompCommentBlock': LazyComponent<typeof import("../components/article/comp/CommentBlock.vue")['default']>
     'LazyDesktopActorCard': LazyComponent<typeof import("../components/desktop/ActorCard.vue")['default']>
     'LazyDesktopActorProfile': LazyComponent<typeof import("../components/desktop/ActorProfile.vue")['default']>
     'LazyDesktopAdvertSlot': LazyComponent<typeof import("../components/desktop/AdvertSlot.vue")['default']>
@@ -116,8 +143,13 @@ interface _GlobalComponents {
     'LazyExploreChannelBar': LazyComponent<typeof import("../components/explore/ExploreChannelBar.vue")['default']>
     'LazyExploreContainer': LazyComponent<typeof import("../components/explore/ExploreContainer.vue")['default']>
     'LazyExploreFeed': LazyComponent<typeof import("../components/explore/ExploreFeed.vue")['default']>
+    'LazyExploreNoteDialog': LazyComponent<typeof import("../components/explore/NoteDialog.vue")['default']>
     'LazyExplorePageContent': LazyComponent<typeof import("../components/explore/PageContent.vue")['default']>
     'LazyExploreCategoryPage': LazyComponent<typeof import("../components/explore/category/CategoryPage.vue")['default']>
+    'LazyExploreCompAuthorHeader': LazyComponent<typeof import("../components/explore/comp/AuthorHeader.vue")['default']>
+    'LazyExploreCompBottomAction': LazyComponent<typeof import("../components/explore/comp/BottomAction.vue")['default']>
+    'LazyExploreCompComment': LazyComponent<typeof import("../components/explore/comp/Comment.vue")['default']>
+    'LazyExploreCompCommentBlock': LazyComponent<typeof import("../components/explore/comp/CommentBlock.vue")['default']>
     'LazyMobileSettingProfile': LazyComponent<typeof import("../components/mobile/setting/profile.vue")['default']>
     'LazyMobileSettingSecurity': LazyComponent<typeof import("../components/mobile/setting/security.vue")['default']>
     'LazyNuxtWelcome': LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/welcome.vue")['default']>
@@ -159,7 +191,6 @@ declare module 'vue' {
 }
 
 export const BottomMore: typeof import("../components/global/BottomMore.vue")['default']
-export const CloseButton: typeof import("../components/global/CloseButton.vue")['default']
 export const Dropdown: typeof import("../components/global/Dropdown.vue")['default']
 export const FollowButton: typeof import("../components/global/FollowButton.vue")['default']
 export const GuideIos: typeof import("../components/global/GuideIos.vue")['default']
@@ -168,6 +199,8 @@ export const AdvertSlot: typeof import("../components/AdvertSlot.vue")['default'
 export const AnalyticsLoader: typeof import("../components/AnalyticsLoader.vue")['default']
 export const AppLink: typeof import("../components/AppLink.vue")['default']
 export const Avatar: typeof import("../components/Avatar.vue")['default']
+export const AvatarUpload: typeof import("../components/AvatarUpload.vue")['default']
+export const ConfirmDialog: typeof import("../components/ConfirmDialog.vue")['default']
 export const ContentArticle: typeof import("../components/ContentArticle.vue")['default']
 export const DialogInfo: typeof import("../components/DialogInfo.vue")['default']
 export const ExploreLoading: typeof import("../components/ExploreLoading.vue")['default']
@@ -178,6 +211,16 @@ export const LoginDialog: typeof import("../components/LoginDialog.vue")['defaul
 export const NotificationDialog: typeof import("../components/NotificationDialog.vue")['default']
 export const OverlayLoading: typeof import("../components/OverlayLoading.vue")['default']
 export const SocialNetwork: typeof import("../components/SocialNetwork.vue")['default']
+export const Swiper: typeof import("../components/Swiper.vue")['default']
+export const Video: typeof import("../components/Video.vue")['default']
+export const AnimeNoteDialog: typeof import("../components/anime/NoteDialog.vue")['default']
+export const AnimeCompBottomAction: typeof import("../components/anime/comp/BottomAction.vue")['default']
+export const AnimeCompComment: typeof import("../components/anime/comp/Comment.vue")['default']
+export const AnimeCompCommentBlock: typeof import("../components/anime/comp/CommentBlock.vue")['default']
+export const ArticleNoteDialog: typeof import("../components/article/NoteDialog.vue")['default']
+export const ArticleCompBottomAction: typeof import("../components/article/comp/BottomAction.vue")['default']
+export const ArticleCompComment: typeof import("../components/article/comp/Comment.vue")['default']
+export const ArticleCompCommentBlock: typeof import("../components/article/comp/CommentBlock.vue")['default']
 export const DesktopActorCard: typeof import("../components/desktop/ActorCard.vue")['default']
 export const DesktopActorProfile: typeof import("../components/desktop/ActorProfile.vue")['default']
 export const DesktopAdvertSlot: typeof import("../components/desktop/AdvertSlot.vue")['default']
@@ -192,8 +235,13 @@ export const DesktopSectionTitle: typeof import("../components/desktop/SectionTi
 export const ExploreChannelBar: typeof import("../components/explore/ExploreChannelBar.vue")['default']
 export const ExploreContainer: typeof import("../components/explore/ExploreContainer.vue")['default']
 export const ExploreFeed: typeof import("../components/explore/ExploreFeed.vue")['default']
+export const ExploreNoteDialog: typeof import("../components/explore/NoteDialog.vue")['default']
 export const ExplorePageContent: typeof import("../components/explore/PageContent.vue")['default']
 export const ExploreCategoryPage: typeof import("../components/explore/category/CategoryPage.vue")['default']
+export const ExploreCompAuthorHeader: typeof import("../components/explore/comp/AuthorHeader.vue")['default']
+export const ExploreCompBottomAction: typeof import("../components/explore/comp/BottomAction.vue")['default']
+export const ExploreCompComment: typeof import("../components/explore/comp/Comment.vue")['default']
+export const ExploreCompCommentBlock: typeof import("../components/explore/comp/CommentBlock.vue")['default']
 export const MobileSettingProfile: typeof import("../components/mobile/setting/profile.vue")['default']
 export const MobileSettingSecurity: typeof import("../components/mobile/setting/security.vue")['default']
 export const NuxtWelcome: typeof import("../node_modules/nuxt/dist/app/components/welcome.vue")['default']
@@ -229,7 +277,6 @@ export const Body: typeof import("../node_modules/nuxt/dist/head/runtime/compone
 export const NuxtIsland: typeof import("../node_modules/nuxt/dist/app/components/nuxt-island")['default']
 export const NuxtRouteAnnouncer: typeof import("../node_modules/nuxt/dist/app/components/server-placeholder")['default']
 export const LazyBottomMore: LazyComponent<typeof import("../components/global/BottomMore.vue")['default']>
-export const LazyCloseButton: LazyComponent<typeof import("../components/global/CloseButton.vue")['default']>
 export const LazyDropdown: LazyComponent<typeof import("../components/global/Dropdown.vue")['default']>
 export const LazyFollowButton: LazyComponent<typeof import("../components/global/FollowButton.vue")['default']>
 export const LazyGuideIos: LazyComponent<typeof import("../components/global/GuideIos.vue")['default']>
@@ -238,6 +285,8 @@ export const LazyAdvertSlot: LazyComponent<typeof import("../components/AdvertSl
 export const LazyAnalyticsLoader: LazyComponent<typeof import("../components/AnalyticsLoader.vue")['default']>
 export const LazyAppLink: LazyComponent<typeof import("../components/AppLink.vue")['default']>
 export const LazyAvatar: LazyComponent<typeof import("../components/Avatar.vue")['default']>
+export const LazyAvatarUpload: LazyComponent<typeof import("../components/AvatarUpload.vue")['default']>
+export const LazyConfirmDialog: LazyComponent<typeof import("../components/ConfirmDialog.vue")['default']>
 export const LazyContentArticle: LazyComponent<typeof import("../components/ContentArticle.vue")['default']>
 export const LazyDialogInfo: LazyComponent<typeof import("../components/DialogInfo.vue")['default']>
 export const LazyExploreLoading: LazyComponent<typeof import("../components/ExploreLoading.vue")['default']>
@@ -248,6 +297,16 @@ export const LazyLoginDialog: LazyComponent<typeof import("../components/LoginDi
 export const LazyNotificationDialog: LazyComponent<typeof import("../components/NotificationDialog.vue")['default']>
 export const LazyOverlayLoading: LazyComponent<typeof import("../components/OverlayLoading.vue")['default']>
 export const LazySocialNetwork: LazyComponent<typeof import("../components/SocialNetwork.vue")['default']>
+export const LazySwiper: LazyComponent<typeof import("../components/Swiper.vue")['default']>
+export const LazyVideo: LazyComponent<typeof import("../components/Video.vue")['default']>
+export const LazyAnimeNoteDialog: LazyComponent<typeof import("../components/anime/NoteDialog.vue")['default']>
+export const LazyAnimeCompBottomAction: LazyComponent<typeof import("../components/anime/comp/BottomAction.vue")['default']>
+export const LazyAnimeCompComment: LazyComponent<typeof import("../components/anime/comp/Comment.vue")['default']>
+export const LazyAnimeCompCommentBlock: LazyComponent<typeof import("../components/anime/comp/CommentBlock.vue")['default']>
+export const LazyArticleNoteDialog: LazyComponent<typeof import("../components/article/NoteDialog.vue")['default']>
+export const LazyArticleCompBottomAction: LazyComponent<typeof import("../components/article/comp/BottomAction.vue")['default']>
+export const LazyArticleCompComment: LazyComponent<typeof import("../components/article/comp/Comment.vue")['default']>
+export const LazyArticleCompCommentBlock: LazyComponent<typeof import("../components/article/comp/CommentBlock.vue")['default']>
 export const LazyDesktopActorCard: LazyComponent<typeof import("../components/desktop/ActorCard.vue")['default']>
 export const LazyDesktopActorProfile: LazyComponent<typeof import("../components/desktop/ActorProfile.vue")['default']>
 export const LazyDesktopAdvertSlot: LazyComponent<typeof import("../components/desktop/AdvertSlot.vue")['default']>
@@ -262,8 +321,13 @@ export const LazyDesktopSectionTitle: LazyComponent<typeof import("../components
 export const LazyExploreChannelBar: LazyComponent<typeof import("../components/explore/ExploreChannelBar.vue")['default']>
 export const LazyExploreContainer: LazyComponent<typeof import("../components/explore/ExploreContainer.vue")['default']>
 export const LazyExploreFeed: LazyComponent<typeof import("../components/explore/ExploreFeed.vue")['default']>
+export const LazyExploreNoteDialog: LazyComponent<typeof import("../components/explore/NoteDialog.vue")['default']>
 export const LazyExplorePageContent: LazyComponent<typeof import("../components/explore/PageContent.vue")['default']>
 export const LazyExploreCategoryPage: LazyComponent<typeof import("../components/explore/category/CategoryPage.vue")['default']>
+export const LazyExploreCompAuthorHeader: LazyComponent<typeof import("../components/explore/comp/AuthorHeader.vue")['default']>
+export const LazyExploreCompBottomAction: LazyComponent<typeof import("../components/explore/comp/BottomAction.vue")['default']>
+export const LazyExploreCompComment: LazyComponent<typeof import("../components/explore/comp/Comment.vue")['default']>
+export const LazyExploreCompCommentBlock: LazyComponent<typeof import("../components/explore/comp/CommentBlock.vue")['default']>
 export const LazyMobileSettingProfile: LazyComponent<typeof import("../components/mobile/setting/profile.vue")['default']>
 export const LazyMobileSettingSecurity: LazyComponent<typeof import("../components/mobile/setting/security.vue")['default']>
 export const LazyNuxtWelcome: LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/welcome.vue")['default']>

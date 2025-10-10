@@ -1,65 +1,53 @@
-<script setup lang="ts">
-  import { ref } from "vue";
-  import { useNoteDialog, noteDialogVisible } from "@/hooks/useNoteDialog";
-  import AuthorHeader from "./comp/AuthorHeader.vue";
-  import { checkPermissions } from "@/hooks/usePermisions";
-  import { PERMISSION } from "@/common/permision";
-  import { detail, like, collect, follow, reply } from "@/service/explore";
-  import CommentBlock from "./comp/CommentBlock.vue";
-  import BottomAction from "./comp/BottomAction.vue";
+<script lang="ts" setup>
   import { adsClick } from "@/service/advert";
   import { getCurrentDomain } from "@/service";
-
-  const Swiper = defineAsyncComponent(() => import("../Swiper.vue"));
-  const noteDIalogRef = useTemplateRef("note-dialog");
+  import { checkPermissions } from "@/hooks/usePermisions";
+  import { PERMISSION } from "@/common/permision";
+  import CommentBlock from "@/components/explore/comp/CommentBlock.vue";
+  import BottomAction from "@/components/explore/comp/BottomAction.vue";
+  import { detail, like, collect, comment, comments } from "@/service/article";
   const bottomRef = useTemplateRef("bottomActions");
-  const { storeUser, store, onCopy, route, isMobile } = useVariable();
-  const loading = ref(false);
-  const noteDialog = useNoteDialog();
+
   const state = reactive({
     data: {} as EmptyObjectType,
     comments: [] as EmptyObjectType[],
+    loading: false,
   });
-
+  const { store, onCopy, route, isMobile } = useVariable();
   const snackbar = useSnackbar();
-  const onOpenNoteDialog = async () => {
-    if (noteDIalogRef.value) noteDIalogRef.value.scrollTop = 0;
-    loading.value = true;
+  const _id = route.params.id;
+
+  const fetchDetail = async () => {
+    state.loading = true;
     try {
       const request = {
-        id: noteDialog.id.value,
-        code: storeUser.visitCode,
+        id: _id,
       };
       const response = await detail(request);
       if (response.data) {
         state.data = response.data;
         getComments();
       }
-      if (response.data?.errcode === 0 && Array.isArray(response.data.data)) {
-        return response.data;
-      }
+      return response.data;
     } catch (err) {
       console.error("fetchFeeds failed:", err);
     } finally {
-      loading.value = false;
+      state.loading = false;
     }
 
     // disableHorizontalSwipe();
   };
 
-  const swiperInstanceRef = ref<InstanceType<typeof Swiper> | null>(null);
+  /* ---------------------------
+     2. Initial SSR fetch
+  ---------------------------- */
+  await fetchDetail();
 
   const getComments = async () => {
-    if (!noteDialog.id.value) return;
-    const response = await $fetch<EmptyObjectType>(`/api/explore/comments`, {
-      method: "POST",
-      body: dataEncrypt({
-        id: noteDialog.id.value,
-      }),
-    });
-    const result = decrypt(response.data);
-    if (result.data) {
-      state.comments = result.data;
+    if (!_id) return;
+    const response = await comments({ id: _id });
+    if (response.data.length) {
+      state.comments = response.data;
     }
   };
   const handle = {
@@ -67,19 +55,6 @@
       const url = `${window.location.origin}/user/${id}`;
       window.location.href = url;
       //   window.location.reload();
-    },
-    // 关注
-    clickFollow(id: number) {
-      checkPermissions(PERMISSION.User, async () => {
-        const response: EmptyObjectType = await follow({
-          id: id,
-        });
-        if (response.errcode == 0) {
-          state.data.isFollow = !state.data.isFollow;
-        } else {
-          snackbar.showSnackbar(response.info, "warning");
-        }
-      });
     },
     // 点赞
     clickLike(item: EmptyObjectType) {
@@ -147,7 +122,7 @@
           content: content,
           to: to,
         };
-        const res: EmptyObjectType = await reply(request);
+        const res: EmptyObjectType = await comment(request);
         if (res.errcode != 0) return;
         state.data.comment_count++;
         getComments();
@@ -155,25 +130,14 @@
       });
     },
   };
-  const getStyle = computed(() => {
-    return isMobile.value
-      ? "max-height: calc(100vh - 360px)"
-      : "max-height: calc(100vh - 40px";
-  });
 </script>
 
 <template>
-  <v-dialog
-    v-model="noteDialogVisible"
-    max-width="1200"
-    persistent
-    height="100%"
-    @after-enter="onOpenNoteDialog"
-    :fullscreen="isMobile"
-  >
+  <v-container>
     <v-card
-      class="overflow-hidden"
-      :loading="loading"
+      class="main-contain"
+      :loading="state.loading"
+      flat
     >
       <v-row no-gutters>
         <!-- Left: Video area -->
@@ -181,15 +145,25 @@
           cols="12"
           md="7"
           lg="8"
-          class="d-flex align-center justify-center"
+          class="d-flex justify-center"
           :class="isMobile ? '' : 'border-e-thin'"
         >
-          <Swiper
-            ref="swiperInstanceRef"
-            v-if="state.data?.fields"
-            :media-info="state.data.fields"
-            :height="isMobile ? '300px' : '100%'"
-          />
+          <v-card
+            flat
+            class="py-3"
+          >
+            <v-card-title
+              class="text-break text-wrap overflow-visible whitespace-normal"
+            >
+              {{ state.data?.title }}
+            </v-card-title>
+            <v-card-text>
+              <ContentArticle
+                :content="state.data?.content"
+                ref="contentArticleRef"
+              />
+            </v-card-text>
+          </v-card>
         </v-col>
 
         <!-- Right: Info & Comments -->
@@ -198,43 +172,15 @@
           md="5"
           lg="4"
           class="d-flex flex-column"
-          :style="getStyle"
         >
-          <div
-            class="d-flex justify-space-between align-center mb-2 py-0 pr-4 d-none"
-          >
-            <AuthorHeader
-              :author="{
-                ...state.data?.author,
-                isFollow: state.data?.isFollow,
-              }"
-              @click-close="noteDialog.closeNoteDialog"
-              @click-author="handle.clickAuthor"
-              @click-follow="handle.clickFollow"
-            />
-            <v-btn
-              icon
-              size="small"
-              @click="noteDialog.closeNoteDialog"
-            >
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-          </div>
           <!-- Scrollable Content Area -->
           <div
-            class="flex-grow-1 overflow-y-auto px-4"
+            class="flex-grow-1 overflow-y-auto px-4 pb-10 pb-md-0"
             ref="note-dialog"
           >
-            <div class="text-body-1 font-weight-bold mb-2">
-              {{ state.data?.title }}
-            </div>
             <div class="text-body-2 text-grey-darken-1 mb-4">
-              {{ state.data?.content }}
+              发布日期: {{ state.data?.created_at?.split("T")[0] }}
             </div>
-            <div class="text-body-2 text-grey-darken-1 mb-4">
-              发布日期: {{ state.data?.created_at }}
-            </div>
-
             <v-row dense>
               <v-col
                 v-for="(app, index) in store?.detailAppAds"
@@ -293,6 +239,7 @@
                   />
                 </a>
               </v-card>
+
               <template
                 v-for="block in state.comments"
                 :key="block.id"
@@ -320,15 +267,11 @@
         </v-col>
       </v-row>
     </v-card>
-  </v-dialog>
+  </v-container>
 </template>
-
-<style scoped>
-  .v-dialog > .v-overlay__content {
-    overflow: hidden;
-  }
-  .media-container {
-    width: 100%;
-    height: auto;
+<style scoped lang="scss">
+  .main-contain {
+    max-height: calc(100vh - 10rem);
+    overflow-y: scroll;
   }
 </style>

@@ -1,8 +1,11 @@
 <script lang="ts" setup>
+  import { useStore } from "~/store";
+
   definePageMeta({
     keepalive: true,
   });
 
+  const store = useStore();
   // const state = reactive({
   //   latests: [] as EmptyArrayType,
   //   paginate: {
@@ -62,9 +65,22 @@
   // computed(() => latest.value.extends?.seo_description),
   // computed(() => latest.value.extends?.seo_title)
   // );
+  const { configuration, channel, mode } = storeToRefs(store);
 </script>
 
 <template>
-  <ExploreCategoryPage />
+  <div class="explore-wrapper">
+    <!-- <h1 class="d-none">小红书成人版-记录性福每一天</h1> -->
+    <ExploreCategoryPage />
+  </div>
 </template>
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+  .explore-wrapper {
+    width: 100%;
+    height: calc(100vh - 180px);
+    display: flex;
+    flex-direction: column;
+    padding: 0 12px;
+    scrollbar-width: none;
+  }
+</style>

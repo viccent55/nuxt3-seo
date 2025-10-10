@@ -10,11 +10,7 @@
   });
   const store = useStore();
   const theme = useTheme();
-  const filteredNavItems = computed(() =>
-    NavigationItems.filter((item) =>
-      ["/", "/article", "/anime", "/creator"].includes(item.href)
-    )
-  );
+
   const toggleDark = () => {
     store.setTheme(store.darkMode === "dark" ? "light" : "dark");
     theme.change(store.darkMode);
@@ -67,10 +63,11 @@
               class="d-flex ga-8"
             >
               <NuxtLink
-                v-for="(item, index) in filteredNavItems"
+                v-for="(item, index) in NavigationItems"
                 :to="item.href"
                 class="text-button"
                 :key="index"
+                v-show="item.href != '/#'"
               >
                 {{ item.name }}
               </NuxtLink>

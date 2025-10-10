@@ -63,82 +63,85 @@
     elevation="0"
     class="bottom-action rounded-br-2xl py-3"
   >
-    <div class="d-flex justify-space-between align-center ga-2">
-      <v-text-field
-        ref="inputRef"
-        v-model="inputValue"
-        variant="outlined"
-        density="compact"
-        rounded="pill"
-        hide-details
-        :placeholder="replayTo.name ? `回复@${replayTo.name}` : '输入评论'"
-        @focus="isFocusing = true"
-        class="flex-1"
-        min-width="120px"
-      />
-
-      <v-btn
-        v-if="isFocusing"
-        color="primary"
-        rounded="pill"
-        @click="clickReply"
-      >
-        提交
-      </v-btn>
-      <v-btn
-        v-if="isFocusing"
-        rounded="pill"
-        variant="tonal"
-        @click="cancelInput"
-      >
-        取消
-      </v-btn>
-      <div
-        v-if="!isFocusing"
-        class="d-flex align-center"
-      >
-        <v-btn
-          variant="text"
-          density="comfortable"
-          @click="$emit('click-like', action)"
-          class="px-0"
-        >
-          <v-icon :color="action?.isLike ? 'primary' : ''">
-            mdi-thumb-up-outline
-          </v-icon>
-          <span class="ml-1">{{ action?.like_count }}</span>
-        </v-btn>
-        <v-btn
-          variant="text"
-          density="comfortable"
-          @click="$emit('click-star', action)"
-          class="px-0"
-        >
-          <v-icon :color="action?.isStar ? 'primary' : ''">
-            mdi-star-outline
-          </v-icon>
-          <span class="ml-1">{{ action?.collect_count }}</span>
-        </v-btn>
+    <v-card-text>
+      <div class="d-flex justify-space-between ga-2">
+        <v-text-field
+          ref="inputRef"
+          v-model="inputValue"
+          variant="outlined"
+          density="compact"
+          rounded="pill"
+          hide-details
+          :placeholder="replayTo.name ? `回复@${replayTo.name}` : '输入评论'"
+          @focus="isFocusing = true"
+          class="flex-1"
+          min-width="80px"
+          style="height: 32px"
+        />
 
         <v-btn
-          variant="text"
-          density="comfortable"
-          @click="$emit('click-reply')"
-          class="px-0"
+          v-if="isFocusing"
+          color="primary"
+          rounded="pill"
+          @click="clickReply"
         >
-          <v-icon class="mt-1">mdi-message-outline</v-icon>
-          <span class="ml-1">{{ action?.comment_count }}</span>
+          提交
         </v-btn>
-
         <v-btn
-          variant="text"
-          density="comfortable"
-          @click="$emit('click-share')"
-          class="px-0"
-          icon="mdi-share-outline"
-        ></v-btn>
+          v-if="isFocusing"
+          rounded="pill"
+          variant="tonal"
+          @click="cancelInput"
+        >
+          取消
+        </v-btn>
+        <div
+          v-if="!isFocusing"
+          class="d-flex align-center"
+        >
+          <v-btn
+            variant="text"
+            size="small"
+            @click="$emit('click-like', action)"
+            class="px-0 mr-1"
+          >
+            <v-icon :color="action?.isLike ? 'primary' : ''">
+              mdi-thumb-up-outline
+            </v-icon>
+            <span class="ml-1">{{ action?.like_count }}</span>
+          </v-btn>
+          <v-btn
+            variant="text"
+            size="small"
+            @click="$emit('click-star', action)"
+            class="px-0 mr-1"
+          >
+            <v-icon :color="action?.isStar ? 'primary' : ''">
+              mdi-star-outline
+            </v-icon>
+            <span class="ml-1">{{ action?.collect_count }}</span>
+          </v-btn>
+
+          <v-btn
+            variant="text"
+            size="small mr-1"
+            @click="$emit('click-reply')"
+            class="px-0"
+          >
+            <v-icon class="mt-1">mdi-message-outline</v-icon>
+            <span class="ml-1">{{ action?.comment_count }}</span>
+          </v-btn>
+
+          <v-btn
+            variant="text"
+            size="small"
+            @click="$emit('click-share')"
+            class="px-0"
+            icon="mdi-share-outline"
+          ></v-btn>
+        </div>
       </div>
-    </div>
+    </v-card-text>
   </v-card>
 </template>
 
@@ -148,6 +151,7 @@
     bottom: 5px;
     background-color: rgb(var(--v-theme-surface));
     border-top: 1px solid rgba(0, 0, 0, 0.1);
+    height: 70px;
   }
 
   .actions-container .v-btn {

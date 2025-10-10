@@ -136,7 +136,7 @@
 <style scoped>
   .video-container {
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
     margin: auto;
   }
   .video-js {

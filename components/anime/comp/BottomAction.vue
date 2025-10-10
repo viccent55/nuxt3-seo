@@ -78,6 +78,7 @@
     bottom: 5px;
     background-color: rgb(var(--v-theme-surface));
     border-top: 1px solid rgba(0, 0, 0, 0.1);
+    height: 50px;
   }
 
   .actions-container .v-btn {

@@ -6,9 +6,12 @@ export default defineEventHandler(async (event) => {
     : config.public.apiBase;
 
   try {
-    const result: EmptyObjectType = await $fetch(`${baseURL}/item/${body.id}/${body.code}`, {
-      method: "GET",
-    });
+    const result: EmptyObjectType = await $fetch(
+      `${baseURL}/item/${body?.id}/${body.code}`,
+      {
+        method: "GET",
+      }
+    );
     return result;
   } catch (error) {
     // Handle errors gracefully

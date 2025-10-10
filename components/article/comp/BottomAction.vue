@@ -74,7 +74,7 @@
         :placeholder="replayTo.name ? `回复@${replayTo.name}` : '输入评论'"
         @focus="isFocusing = true"
         class="flex-1"
-        min-width="120px"
+        min-width="80px"
       />
 
       <v-btn
@@ -99,7 +99,7 @@
       >
         <v-btn
           variant="text"
-          density="comfortable"
+          size="small"
           @click="$emit('click-like', action)"
           class="px-0"
         >
@@ -110,7 +110,7 @@
         </v-btn>
         <v-btn
           variant="text"
-          density="comfortable"
+          size="small"
           @click="$emit('click-star', action)"
           class="px-0"
         >
@@ -122,7 +122,7 @@
 
         <v-btn
           variant="text"
-          density="comfortable"
+          size="small"
           @click="$emit('click-reply')"
           class="px-0"
         >
@@ -132,7 +132,7 @@
 
         <v-btn
           variant="text"
-          density="comfortable"
+          size="small"
           @click="$emit('click-share')"
           class="px-0"
           icon="mdi-share-outline"
@@ -148,6 +148,7 @@
     bottom: 5px;
     background-color: rgb(var(--v-theme-surface));
     border-top: 1px solid rgba(0, 0, 0, 0.1);
+    height: 60px;
   }
 
   .actions-container .v-btn {

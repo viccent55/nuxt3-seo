@@ -109,6 +109,8 @@
             class="my-2 md:my-4 article-card"
             @click="openDialog(item.id)"
             tag="a"
+            @click.prevent="openDialog(item.id)"
+            :to="'/article/' + item.id"
           >
             <Image
               :src="item.cover"
@@ -157,7 +159,7 @@
 <style scoped>
   .article-wrapper {
     width: 100%;
-    max-height: calc(100vh - 80px);
+    max-height: calc(100vh - 100px);
     overflow-y: auto;
     padding: 0 12px;
     scrollbar-width: none;
