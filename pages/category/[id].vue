@@ -77,7 +77,7 @@
 <style scoped lang="scss">
   .explore-wrapper {
     width: 100%;
-    height: calc(100vh - 180px);
+    height: calc(100vh - 160px);
     display: flex;
     flex-direction: column;
     padding: 0 12px;

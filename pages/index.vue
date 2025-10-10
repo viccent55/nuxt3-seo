@@ -22,21 +22,26 @@
 </script>
 
 <template>
-  <h1 class="d-none">小红书成人版-记录性福每一天</h1>
-  <ExploreChannelBar
-    :items="categories"
-    :active-value="indexChannel"
-  />
-  <ExplorePageContent />
+  <v-container
+    class="pa-0"
+    fluid
+  >
+    <h1 class="d-none">小红书成人版-记录性福每一天</h1>
+    <ExploreChannelBar
+      :items="categories"
+      :active-value="indexChannel"
+    />
+    <ExplorePageContent />
+  </v-container>
 </template>
 
 <style scoped>
   .explore-wrapper {
     width: 100%;
-    height: calc(100vh - 180px);
+    height: calc(100vh - 160px);
     display: flex;
     flex-direction: column;
-    padding: 0 12px;
+    padding: 0 8px;
     scrollbar-width: none;
   }
 </style>

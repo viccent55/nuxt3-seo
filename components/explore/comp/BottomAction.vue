@@ -61,7 +61,7 @@
 <template>
   <v-card
     elevation="0"
-    class="bottom-action rounded-br-2xl py-3"
+    class="bottom-action rounded-br-2xl pa-0"
   >
     <v-card-text>
       <div class="d-flex justify-space-between ga-2">
@@ -148,10 +148,11 @@
 <style scoped lang="scss">
   .bottom-action {
     position: sticky;
-    bottom: 5px;
     background-color: rgb(var(--v-theme-surface));
     border-top: 1px solid rgba(0, 0, 0, 0.1);
     height: 70px;
+    display: flex;
+    align-items: center;
   }
 
   .actions-container .v-btn {

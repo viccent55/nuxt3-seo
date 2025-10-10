@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { getCurrentDomain } from "~/service";
   import type { ExploreFeedInfo } from "@/types/info";
-  import { like, getExploreFeeds } from "@/service/explore";
+  import { like, getExploreFeeds, search } from "@/service/explore";
   import { useInfiniteScroll } from "@vueuse/core";
   import { useNoteDialog } from "@/hooks/useNoteDialog";
   import { checkPermissions } from "@/hooks/usePermisions";
@@ -14,20 +14,11 @@
   const feeds = ref<ExploreFeedInfo[]>([]);
   const isLoadMore = ref(false);
   const isNoMore = ref(false);
-  const { clearQuery, route, store, storeUser } = useVariable();
+  const { clearQuery, route, store, storeUser, debounce } = useVariable();
   const exploreContainerRef = ref<{ element: HTMLElement } | null>(null);
   const { generateVisitCode } = useHome();
   const page = ref(Number(route.params.page) || 1);
 
-  const { configuration, channel, mode } = storeToRefs(store);
-  const indexChannel = ref<string>(channel.value);
-  const categories = computed(() => [
-    { name: "发现", value: "001" },
-    ...(configuration.value.categories || []).map((item: EmptyObjectType) => ({
-      name: item.name,
-      value: item.id,
-    })),
-  ]);
   /* ---------------------------
      1. Centralized fetch function
   ---------------------------- */
@@ -43,11 +34,7 @@
       };
 
       const response = await getExploreFeeds(request);
-      if (response?.errcode === 0 && Array.isArray(response.data)) {
-        return response.data;
-      }
-      isNoMore.value = true;
-      return [];
+      return response.data;
     } catch (err) {
       console.error("fetchFeeds failed:", err);
       isNoMore.value = true;
@@ -131,6 +118,29 @@
     {
       distance: 300,
       canLoadMore: () => !isLoadMore.value && !isNoMore.value,
+    }
+  );
+  const searchParam = async () => {
+    if (store.search === "" || !store.search) return;
+    try {
+      const respnse = await search({
+        keyword: store.search,
+      });
+      const data = respnse.data;
+      feeds.value = data ?? [];
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const debouncedSearch = debounce(searchParam, 500);
+  watch(
+    () => store.search,
+    async (v) => {
+      if (v && route.path == "/") {
+        debouncedSearch();
+      } else {
+        feeds.value = await fetchFeeds(1);
+      }
     }
   );
 </script>

@@ -103,19 +103,14 @@
         </v-chip>
 
         <!-- Like -->
-        <div
-          class="d-flex align-center cursor-pointer"
-          @click.stop="onClickLike(feed)"
-        >
+        <div class="d-flex align-center">
           <v-btn
             variant="text"
-            density="comfortable"
-            @click.stop="onClickLike(feed)"
+            size="small"
             class="px-0"
+            disabled
           >
-            <v-icon :color="feed.isLike ? 'primary' : ''">
-              mdi-heart-outline
-            </v-icon>
+            <v-icon>mdi-heart-outline</v-icon>
             <span class="ml-1">{{ feed.like_count }}</span>
           </v-btn>
         </div>

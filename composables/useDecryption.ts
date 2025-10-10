@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import CryptoJS from "crypto-js";
+import * as CryptoJS from "crypto-js";
 import { decrypt } from "@/utils/crypto";
 // The decryption key and IV are extracted from your original code.
 const encryptionKey = CryptoJS.enc.Utf8.parse(

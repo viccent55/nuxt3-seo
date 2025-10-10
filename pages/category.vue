@@ -77,11 +77,16 @@
 </script>
 
 <template>
-  <ExploreChannelBar
-    :items="categories"
-    :active-value="indexChannel"
-    @click-item="(v) => (indexChannel = v.value)"
-  />
-  <NuxtPage />
+  <v-container
+    class="pa-0"
+    fluid
+  >
+    <ExploreChannelBar
+      :items="categories"
+      :active-value="indexChannel"
+      @click-item="(v: EmptyObjectType) => (indexChannel = v.value)"
+    />
+    <NuxtPage />
+  </v-container>
 </template>
 <style scoped lang="scss"></style>

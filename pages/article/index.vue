@@ -16,9 +16,15 @@
     total: 0,
   });
 
-  const { clearQuery } = useVariable();
-  //   const noteDialog = useNoteArticleDialog();
+  const { clearQuery, store } = useVariable();
   const containerRef = ref<HTMLElement | null>(null);
+  const { configuration } = storeToRefs(store);
+
+  useSeo(
+    computed(() => configuration.value?.scand_title),
+    computed(() => configuration.value?.scand_description),
+    computed(() => configuration.value?.scand_keywords)
+  );
 
   /* ---------------------------
      1. Centralized fetch function
@@ -91,11 +97,14 @@
 </script>
 
 <template>
-  <div
-    class="article-wrapper pb-6 md:pb-0"
-    ref="containerRef"
+  <v-container
+    class="px-0"
+    fluid
   >
-    <v-container fluid>
+    <div
+      class="article-wrapper pb-6 md:pb-0"
+      ref="containerRef"
+    >
       <v-row :no-gutters="$vuetify.display.mobile">
         <!-- Each Article Card -->
         <v-col
@@ -140,7 +149,6 @@
           <ExploreLoading :loading="state.loadmore" />
         </v-col>
       </v-row>
-
       <!-- Empty State -->
       <div
         v-if="state.data.length >= state.total"
@@ -152,8 +160,8 @@
           icon="mdi-folder-open"
         />
       </div>
-    </v-container>
-  </div>
+    </div>
+  </v-container>
 </template>
 
 <style scoped>

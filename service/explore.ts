@@ -1,11 +1,12 @@
 import { decrypt, dataEncrypt } from "~/utils/crypto";
 
-export function newVisitor(params: object): Promise<EmptyObjectType> {
+export async function newVisitor(params: object): Promise<EmptyObjectType> {
   const res: EmptyObjectType = $fetch("/api/explore/newVisitor", {
     method: "POST",
     body: dataEncrypt(params),
   });
-  return decrypt(res.data);
+  if (res.data) return decrypt(res.data);
+  return res;
 }
 
 // Active Visitor
@@ -14,7 +15,8 @@ export async function activeVisitor(params: object): Promise<EmptyObjectType> {
     method: "POST",
     body: dataEncrypt(params),
   });
-  return decrypt(res.data);
+  if (res.data) return decrypt(res.data);
+  return res;
 }
 
 export async function getExploreFeeds(
@@ -24,7 +26,7 @@ export async function getExploreFeeds(
     method: "POST",
     body: dataEncrypt(params),
   });
-  if(res.data) return decrypt(res.data)
+  if (res.data) return decrypt(res.data);
   return res;
 }
 export async function comments(params: object) {
@@ -32,7 +34,8 @@ export async function comments(params: object) {
     method: "POST",
     body: dataEncrypt(params),
   });
-  return decrypt(res.data);
+  if (res.data) return decrypt(res.data);
+  return res;
 }
 
 export async function like(params: object) {
@@ -40,6 +43,7 @@ export async function like(params: object) {
     method: "POST",
     body: dataEncrypt(params),
   });
+  if (res.data) return decrypt(res.data);
   return res;
 }
 export async function collect(params: object) {
@@ -47,6 +51,7 @@ export async function collect(params: object) {
     method: "POST",
     body: dataEncrypt(params),
   });
+  if (res.data) return decrypt(res.data);
   return res;
 }
 
@@ -62,6 +67,7 @@ export async function reply(params: EmptyObjectType) {
     method: "POST",
     body: dataEncrypt(params),
   });
+  if (res.data) return decrypt(res.data);
   return res;
 }
 
@@ -74,9 +80,12 @@ export async function detail(params: EmptyObjectType) {
   return res;
 }
 
-// export function search(id: string | number) {
-//   return $fetch("/api/ads/advert.ad.click", {
-//     method: "POST",
-//     body: dataEncrypt({ id }),
-//   });
-// }
+export async function search(params: EmptyObjectType) {
+  const res: EmptyObjectType = await useApiFetch("/api/explore/search", {
+    method: "POST",
+    body: dataEncrypt(params),
+  });
+  console.log(res);
+  if (res.data) return decrypt(res.data);
+  return res;
+}

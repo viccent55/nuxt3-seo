@@ -5,7 +5,6 @@
   import { useNoteDialog } from "@/hooks/useNoteDialog";
   import { checkPermissions } from "@/hooks/usePermisions";
   import { PERMISSION } from "@/common/permision";
-  import { storeToRefs } from "pinia";
   import { itemAdClick } from "@/service/advert";
   import useVariable from "@/composables/useVariable";
   import { ref } from "vue";

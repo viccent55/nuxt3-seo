@@ -1,4 +1,13 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+  const { store } = useVariable();
+  const { configuration } = storeToRefs(store);
+
+  useSeo(
+    computed(() => configuration.value?.novel_title),
+    computed(() => configuration.value?.novel_description),
+    computed(() => configuration.value?.novel_keywords)
+  );
+</script>
 
 <template>
   <div class="d-flex fill-height align-center justify-center">

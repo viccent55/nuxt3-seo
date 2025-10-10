@@ -7,7 +7,8 @@
   import { useStore } from "@/store";
   import { adsClick } from "@/service/advert";
   import { openPage } from "@/service";
-
+  import { useDisplay } from "vuetify";
+  const { lgAndDown } = useDisplay();
   const userStore = useUserStore();
 
   defineEmits(["click-menu-item", "click-nav-item"]);
@@ -29,7 +30,7 @@
 </script>
 
 <template>
-  <div class="pa-4 d-flex flex-column">
+  <div class="py-4 px-2 d-flex flex-column">
     <!-- Social Links -->
     <SocialNetwork class="mb-4" />
 
@@ -67,9 +68,9 @@
     <AppLink
       v-if="store?.recommendAds?.length > 0"
       :apps="store?.recommendAds"
-      height="300px"
       @item-click="itemClick"
       class="mb-6"
+      :height="lgAndDown ? '200px' : '350px'"
     />
 
     <!-- 登录后显示个人中心 -->
@@ -81,8 +82,30 @@
       variant="outlined"
       prepend-icon="mdi-account-circle"
       :to="`/user/${userStore.useId}`"
+      class="btn-glow transition-all border"
     >
       个人中心
     </v-btn>
   </div>
 </template>
+
+<style scoped lang="scss">
+  .btn-glow {
+    border-width: 2px !important;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-glow:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px rgba(var(--v-theme-primary), 0.6);
+    background-color: rgb(var(--v-theme-primary));
+    color: white !important;
+  }
+
+  .btn-glow:active {
+    transform: scale(0.98);
+    box-shadow: 0 0 5px rgba(var(--v-theme-primary), 0.4);
+  }
+</style>

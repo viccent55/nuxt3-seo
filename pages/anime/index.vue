@@ -14,8 +14,15 @@
     total: 0,
   });
 
-  const { clearQuery } = useVariable();
+  const { clearQuery, store } = useVariable();
   const containerRef = ref<HTMLElement | null>(null);
+
+  const { configuration } = storeToRefs(store);
+  useSeo(
+    computed(() => configuration.value?.cartoon_title),
+    computed(() => configuration.value?.cartoon_description),
+    computed(() => configuration.value?.cartoon_keywords)
+  );
 
   /* ---------------------------
      1. Centralized fetch function
@@ -91,11 +98,14 @@
 </script>
 
 <template>
-  <div
-    class="anime-wrapper pb-6 md:pb-0"
-    ref="containerRef"
+  <v-container
+    class="px-0"
+    fluid
   >
-    <v-container fluid>
+    <div
+      class="anime-wrapper pb-6 md:pb-0"
+      ref="containerRef"
+    >
       <v-row dense>
         <v-col
           v-for="(item, index) in state.data"
@@ -145,8 +155,8 @@
           text="暂无内容"
         />
       </div>
-    </v-container>
-  </div>
+    </div>
+  </v-container>
 </template>
 
 <style scoped lang="scss">

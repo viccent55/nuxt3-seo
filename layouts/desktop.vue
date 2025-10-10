@@ -78,11 +78,28 @@
   .aside-column {
     position: sticky;
     top: 80px;
-    height: calc(100vh - 80px);
+    height: calc(100vh - 100px);
+    overflow: auto;
+    /* Firefox */
+    scrollbar-width: thin; /* makes it thinner */
+    scrollbar-color: #aaa transparent; /* optional colors */
   }
-  .content-column {
-    overflow-y: auto;
-    height: calc(100vh - 80px);
-    scrollbar-width: none;
+
+  /* Chrome, Edge, Safari (WebKit browsers) */
+  .aside-column::-webkit-scrollbar {
+    width: 2px; /* 👈 adjust scrollbar thickness here */
+  }
+
+  .aside-column::-webkit-scrollbar-thumb {
+    background-color: rgba(100, 100, 100, 0.4); /* scrollbar handle color */
+    border-radius: 4px;
+  }
+
+  .aside-column::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(100, 100, 100, 0.6);
+  }
+
+  .aside-column::-webkit-scrollbar-track {
+    background: transparent; /* or a light gray if you prefer */
   }
 </style>
