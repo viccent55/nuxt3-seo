@@ -111,7 +111,7 @@
     },
   };
   useSeo(
-    computed(() => state.data?.seo_title),
+    computed(() => state.data?.title),
     computed(() => state.data?.seo_description),
     computed(() => state.data?.seo_keywords)
   );

@@ -2,10 +2,10 @@ import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
 export default defineNuxtConfig({
   app: {
     head: {
-      title: "吃瓜百科",
+      title: "小红书成人版",
       meta: [
         { name: "description", content: "Default description" },
-        { name: "author", content: "吃瓜百科" },
+        { name: "author", content: "小红书成人版" },
         { name: "keywords", content: "nuxt, vue, web" },
         { property: "og:type", content: "website" },
         { name: "twitter:card", content: "summary_large_image" },
@@ -32,7 +32,10 @@ export default defineNuxtConfig({
     // "/": { redirect: "/home" },
   },
   build: {
-    transpile: ["vuetify", "crypto-js"],
+    transpile: [
+      "vuetify",
+      process.env.NODE_ENV === "development" ? "" : "crypto-js",
+    ],
   },
   runtimeConfig: {
     public: {
@@ -115,6 +118,9 @@ export default defineNuxtConfig({
       template: {
         transformAssetUrls,
       },
+    },
+    optimizeDeps: {
+      include: ["crypto-js"],
     },
   },
 
