@@ -135,10 +135,31 @@
     computed(() => state.data?.seo_description),
     computed(() => state.data?.seo_keywords)
   );
+  const breadcrumbs = computed(() => [
+    {
+      title: store.configuration?.name,
+      to: "/",
+      disabled: false,
+    },
+    {
+      title: "吃瓜",
+      to: "/article",
+      disabled: false,
+    },
+  ]);
+  const hashtagList = computed(() => {
+    const keywords = state.data?.seo_keywords?.trim();
+    if (!keywords) return [];
+    return keywords.split(",").map((tag: string) => `#${tag.trim()}`);
+  });
 </script>
 
 <template>
   <v-container>
+    <v-breadcrumbs
+      :items="breadcrumbs"
+      class="pa-0"
+    ></v-breadcrumbs>
     <v-card
       class="main-contain"
       :loading="state.loading"
@@ -272,11 +293,32 @@
         </v-col>
       </v-row>
     </v-card>
+    <!-- <v-sheet
+      class="mt-4 pa-2"
+      color="red-lighten-4"
+    >
+      51吃瓜 最新国内地址 https://51cgi365.com
+      发邮件获取51吃瓜最新网址👇长按复制👇 51cgfun@pm.me 51吃瓜
+      海外永久地址(需翻墙) https://51cg1.com
+      推荐使用edge/夸克/UC/chrome/safar浏览器访问网站
+    </v-sheet> -->
+    <v-footer
+      class="d-flex justify-center ga-3 mt-4"
+      v-if="hashtagList.length"
+    >
+      <div
+        class="font-weight-bold"
+        v-for="hashtag in hashtagList"
+        :key="hashtag"
+      >
+        {{ hashtag }}
+      </div>
+    </v-footer>
   </v-container>
 </template>
 <style scoped lang="scss">
   .main-contain {
-    max-height: calc(100vh - 10rem);
+    max-height: calc(100vh - 22rem);
     overflow-y: scroll;
   }
 </style>

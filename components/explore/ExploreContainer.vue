@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import { useDisplay } from "vuetify";
   import ExploreFeed from "./ExploreFeed.vue";
   import { screenMode } from "~/hooks/useScreenMode";
 
@@ -29,11 +30,13 @@
 
   const feedsContainer = ref<HTMLElement | null>(null);
   const masonryRef = ref<any>(null);
+  const { lg, md } = useDisplay();
 
   // Masonry layout properties
   const minColumns = computed(() => {
     if (screenMode.value == "phone") return 2;
     if (screenMode.value == "pad") return 3;
+    if (lg.value || md.value) return 4;
     return 5;
   });
   const gap = computed(() => (screenMode.value === "phone" ? 12 : 28));
