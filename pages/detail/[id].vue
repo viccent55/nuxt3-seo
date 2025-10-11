@@ -186,7 +186,7 @@
 
   const chan = computed(() => route.query.chan);
   const onOpenPage = () => {
-    openPage(`${store.configuration?.download_app_url}?chan=${chan.value}`);
+    openPage(`${store.configuration?.download_app_url}?chan=${chan.value ?? ''}`);
   };
   const handleClick = () => {
     window.open(store.configuration?.tg_chan, "_blank");
@@ -426,7 +426,7 @@
           </a>
           发布，转载请注明来源并附上原文链接：
           <a
-            :href="`/article/${_id}`"
+            :href="`/detail/${_id}`"
             class="text-primary"
           >
             {{ state.data?.title }}
