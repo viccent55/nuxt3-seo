@@ -215,7 +215,13 @@
     onInit();
   });
 
-  onUnmounted(() => {});
+  const filterTabs = computed(() => {
+    if (self.value) {
+      return UserChannelItems;
+    } else {
+      return UserChannelItems.filter((item) => item.value == "note");
+    }
+  });
 </script>
 
 <template>
@@ -231,7 +237,7 @@
     ></div>
 
     <div class="user-content-container">
-      <div class="user-content">
+      <div class="user-content mx-md-4">
         <UserInfo
           :user="userInfo"
           @click-follow="handle.clickFollow"
@@ -263,7 +269,7 @@
           >
             <v-btn
               active-color="primary"
-              v-for="(item, index) in UserChannelItems"
+              v-for="(item, index) in filterTabs"
               :value="item.value"
               :key="index"
             >

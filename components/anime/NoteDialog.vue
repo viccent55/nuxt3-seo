@@ -11,6 +11,7 @@
   import BottomAction from "./comp/BottomAction.vue";
   import { adsClick } from "@/service/advert";
   import { getCurrentDomain } from "@/service";
+  import { useDialogUXLock } from "@/hooks/useDialogUXLock";
 
   const VideoPlayer = defineAsyncComponent(
     () => import("@/components/Video.vue")
@@ -116,6 +117,7 @@
       });
     },
   };
+  useDialogUXLock(noteDialogVisible);
 </script>
 
 <template>

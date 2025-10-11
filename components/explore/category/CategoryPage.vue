@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import type { ExploreFeedInfo } from "@/types/info";
-  import { like } from "@/service/explore";
+  import { like, getExploreFeeds } from "@/service/explore";
   import { useInfiniteScroll } from "@vueuse/core";
   import { useNoteDialog } from "@/hooks/useNoteDialog";
   import { checkPermissions } from "@/hooks/usePermisions";
@@ -31,18 +31,10 @@
         visitor: storeUser.visitCode,
         page: pageNum,
         limit: 30,
-        category: Number(route.params.cid),
+        category: route.params.id,
       };
-      const response = await $fetch<EmptyObjectType>("/api/explore/feed", {
-        method: "POST",
-        body: dataEncrypt(request),
-      });
-      const result = decrypt(response.data);
-      if (result?.errcode === 0 && Array.isArray(result.data)) {
-        return result.data;
-      }
-      isNoMore.value = true;
-      return [];
+      const response = await getExploreFeeds(request);
+      return response.data || [];
     } catch (err) {
       console.error("fetchFeeds failed:", err);
       isNoMore.value = true;

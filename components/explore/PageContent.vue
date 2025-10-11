@@ -34,7 +34,7 @@
       };
 
       const response = await getExploreFeeds(request);
-      return response.data;
+      return response.data || [];
     } catch (err) {
       console.error("fetchFeeds failed:", err);
       isNoMore.value = true;
@@ -47,7 +47,7 @@
   ---------------------------- */
 
   const { data: initialFeeds, pending } = await useAsyncData(
-    `explore-feed`,
+    `explore-feed-${page.value}`,
     () => fetchFeeds(page.value),
 
     { transform: (data) => data || [] } // SSR-safe
@@ -67,7 +67,7 @@
     try {
       page.value++;
       const newFeeds = await fetchFeeds(page.value);
-      if (newFeeds.length) {
+      if (newFeeds?.length) {
         feeds.value = [...feeds.value, ...newFeeds];
         await nextTick(); // wait for DOM update
       } else {
@@ -107,13 +107,11 @@
     },
   };
 
-  useInfiniteScroll(
+  const { reset } = useInfiniteScroll(
     () => exploreContainerRef.value?.element,
     () => {
       // load more
-      if (!pending.value) {
-        onLoadMore();
-      }
+      onLoadMore();
     },
     {
       distance: 300,
@@ -135,10 +133,12 @@
   const debouncedSearch = debounce(searchParam, 500);
   watch(
     () => store.search,
-    async (v) => {
+    async (v, oldValue) => {
       if (v && route.path == "/") {
         debouncedSearch();
-      } else {
+      } else if (!v && route.path == "/" && oldValue) {
+        page.value = 1;
+        isNoMore.value = false;
         feeds.value = await fetchFeeds(1);
       }
     }
@@ -151,6 +151,7 @@
       :items="categories"
       :active-value="indexChannel"
     /> -->
+
     <ExploreContainer
       ref="exploreContainerRef"
       :items="feeds"

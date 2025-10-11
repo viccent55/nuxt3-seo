@@ -12,6 +12,7 @@ _
   import BottomAction from "./comp/BottomAction.vue";
   import { adsClick } from "@/service/advert";
   import { getCurrentDomain } from "@/service";
+  import { useDialogUXLock } from "@/hooks/useDialogUXLock";
 
   const noteDIalogRef = useTemplateRef("note-dialog");
   const bottomRef = useTemplateRef("bottomActions");
@@ -140,6 +141,7 @@ _
       ? "scrollbar-width: none;"
       : "max-height: calc(100vh - 160px); overflow-y: scroll"
   );
+  useDialogUXLock(noteDialogVisible);
 </script>
 
 <template>

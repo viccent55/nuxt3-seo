@@ -147,27 +147,27 @@
         <v-tabs-window v-model="state.isLogin">
           <!-- Login -->
           <v-tabs-window-item :value="true">
-            <v-form>
+            <v-form class="mt-2">
               <v-text-field
                 v-model="state.login.email"
                 label="邮箱或用户名"
                 type="email"
                 variant="outlined"
-                density="comfortable"
+                density="compact"
               />
               <v-text-field
                 v-model="state.login.password"
                 label="密码"
                 type="password"
                 variant="outlined"
-                density="comfortable"
+                density="compact"
                 @keyup.enter="onAuth"
               />
               <v-btn
                 block
                 color="error"
                 class="mt-md-4 mt-0"
-                size="large"
+                size="default"
                 rounded="pill"
                 @click="onAuth"
               >
@@ -178,33 +178,33 @@
 
           <!-- Register -->
           <v-tabs-window-item :value="false">
-            <v-form>
+            <v-form class="mt-2">
               <v-text-field
                 v-model="state.register.email"
                 label="邮箱或用户名 (最少6位)"
                 type="email"
                 variant="outlined"
-                density="comfortable"
+                density="compact"
               />
               <v-text-field
                 v-model="state.register.password"
                 label="密码"
                 type="password"
                 variant="outlined"
-                density="comfortable"
+                density="compact"
               />
               <v-text-field
                 v-model="state.register.password_repeat"
                 label="重复密码"
                 type="password"
                 variant="outlined"
-                density="comfortable"
+                density="compact"
               />
               <v-text-field
                 v-model="state.register.invite_code"
                 label="邀请码"
                 variant="outlined"
-                density="comfortable"
+                density="compact"
               />
               <v-btn
                 block
@@ -226,7 +226,7 @@
             block
             color="secondary"
             variant="tonal"
-            size="large"
+            size="default"
             rounded="pill"
             @click="openFogotDialog"
           >

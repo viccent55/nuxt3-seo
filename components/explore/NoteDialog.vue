@@ -9,6 +9,7 @@
   import BottomAction from "./comp/BottomAction.vue";
   import { adsClick } from "@/service/advert";
   import { getCurrentDomain } from "@/service";
+  import { useDialogUXLock } from "@/hooks/useDialogUXLock";
 
   const Swiper = defineAsyncComponent(() => import("../Swiper.vue"));
   const noteDIalogRef = useTemplateRef("note-dialog");
@@ -160,6 +161,7 @@
       ? "max-height: calc(100vh - 360px)"
       : "max-height: calc(100vh - 40px";
   });
+  useDialogUXLock(noteDialogVisible);
 </script>
 
 <template>

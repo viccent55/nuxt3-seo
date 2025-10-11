@@ -1,7 +1,6 @@
 <script lang="ts" setup>
   import { ref, watchEffect, reactive, nextTick } from "vue";
   import { useDecryption } from "@/composables/useDecryption";
-  import md5 from "crypto-js/md5";
 
   const props = defineProps({
     src: {
@@ -50,8 +49,7 @@
   };
 
   const generateAvatar = () => {
-    const id = props.id ? md5(props.id.toString()) : "";
-    return `https://cravatar.cn/avatar/${id}`;
+    return `/icons/icon-48.webp`;
   };
 </script>
 

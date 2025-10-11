@@ -1,10 +1,8 @@
 <script setup lang="ts">
   import FollowButton from "@/components/global/FollowButton.vue";
   import Dialog from "./Dialog.vue";
-
   import type { UserDetailInfo } from "@/types/info";
   import { useUserStore } from "@/store/user";
-  import md5 from "crypto-js/md5";
   import { computed } from "vue";
   import Image from "@/components/Image.vue";
   import { screenMode } from "@/hooks/useScreenMode";
@@ -21,8 +19,7 @@
   const self = computed(() => userStore.useId === props.user.id);
 
   const gravatarUrl = computed(() => {
-    const emailHash = props.user.email ? md5(props.user.email.toString()) : "";
-    return `https://cravatar.cn/avatar/${emailHash}`;
+    return `/icons/icon-128.webp`;
   });
 
   function clickFollow() {

@@ -45,13 +45,13 @@
         v-if="feed.mode === 1"
         icon="mdi-play-circle-outline"
         size="24"
-        color="primary"
+        color="white"
       />
       <v-icon
         v-if="feed.mode === 2"
         icon="mdi-image-outline"
         size="24"
-        color="primary"
+        color="white"
       />
       <div
         v-if="feed.mode === 3"
@@ -79,7 +79,7 @@
     <!-- Info Section -->
     <v-card-text class="pt-3">
       <!-- Title -->
-      <div class="text-body-2 font-medium mb-2">
+      <div class="text-body-2 font-medium mb-2 text-surface-variant">
         {{ feed.title }}
       </div>
 
@@ -87,7 +87,7 @@
       <div class="d-flex justify-space-between align-center">
         <!-- Author -->
         <v-chip
-          class="d-flex align-center"
+          class="d-flex align-center px-0"
           @click.stop
           variant="text"
           :to="'/user/' + feed.author?.id"
@@ -97,7 +97,7 @@
             :id="feed.id"
             size="24"
           />
-          <span class="text-caption ml-2">
+          <span class="text-caption text-surface-variant ml-2">
             {{ feed.author?.name || feed.author?.nickname }}
           </span>
         </v-chip>
@@ -137,9 +137,10 @@
     border-radius: 9999px; /* rounded-full */
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* shadow */
     animation: bounce 1s infinite; /* animate-bounce */
-    background-color: rgb(var(--v-theme-primary));
+    background-color: rgb(var(--v-theme-warning));
     color: white;
     display: inline-block;
+    width: 44px;
   }
 
   /* Bounce animation similar to Tailwind's animate-bounce */
