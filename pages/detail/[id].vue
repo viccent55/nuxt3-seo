@@ -186,7 +186,9 @@
 
   const chan = computed(() => route.query.chan);
   const onOpenPage = () => {
-    openPage(`${store.configuration?.download_app_url}?chan=${chan.value ?? ''}`);
+    openPage(
+      `${store.configuration?.download_app_url}?chan=${chan.value ?? ""}`
+    );
   };
   const handleClick = () => {
     window.open(store.configuration?.tg_chan, "_blank");
@@ -444,8 +446,8 @@
 </template>
 <style scoped lang="scss">
   .main-contain {
-    max-height: calc(100vh - 30rem);
-    overflow-y: scroll;
+    // max-height: calc(100vh - 20rem);
+    // overflow-y: scroll;
   }
   p {
     margin: 2px;

@@ -411,8 +411,8 @@
 </template>
 <style scoped lang="scss">
   .main-contain {
-    max-height: calc(100vh - 30rem);
-    overflow-y: scroll;
+    // max-height: calc(100vh - 30rem);
+    // overflow-y: scroll;
   }
   p {
     margin: 2px;

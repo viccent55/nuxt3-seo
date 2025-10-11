@@ -168,7 +168,6 @@
                 v-if="state.data?.m3u8"
                 :src="state.data?.m3u8"
                 ref="videoPlayerRef"
-                style="max-width: 450px"
               ></Video>
             </v-card-text>
           </v-card>
