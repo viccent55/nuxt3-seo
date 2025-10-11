@@ -84,29 +84,32 @@
       >
         <v-sheet
           color="bg-none"
-          class="pb-4 d-flex ga-2 bg-none"
+          class="pb-4 d-flex ga-5 bg-none"
         >
-          <v-btn
-            variant="text"
-            icon="mdi-github"
-            :to="store.configuration?.github"
+          <a
+            :href="store.configuration?.github"
             target="_blank"
             rel="noopener noreferrer"
-          ></v-btn>
-          <v-btn
-            variant="text"
-            icon="mdi-twitter"
-            :to="store.configuration?.twitter"
+            class="text-surface-variant"
+          >
+            <v-icon>mdi-github</v-icon>
+          </a>
+          <a
+            :href="store.configuration?.twitter"
             target="_blank"
             rel="noopener noreferrer"
-          ></v-btn>
-          <v-btn
-            variant="text"
-            icon="mdi-gitlab"
-            :to="store.configuration?.gitlab"
+            class="text-surface-variant"
+          >
+            <v-icon>mdi-twitter</v-icon>
+          </a>
+          <a
+            :href="store.configuration?.gitlab"
             target="_blank"
             rel="noopener noreferrer"
-          ></v-btn>
+            class="text-surface-variant"
+          >
+            <v-icon>mdi-gitlab</v-icon>
+          </a>
         </v-sheet>
       </v-row>
     </v-card>
