@@ -12,7 +12,7 @@
         class="rounded-sm"
         bg-color="blue-lighten-5"
       >
-        <h4 class="text-center pb-2">
+        <h4 class="text-center pb-2 text-surface-variant">
           {{ store.configuration?.name || "最新地址" }}
         </h4>
         <v-list-item-title class="text-caption">

@@ -136,7 +136,7 @@
             <v-card-text
               class="text-center pb-md-2 pb-0 pt-2 font-weight-medium text-md-subtitle-1 text-subtitle-2"
             >
-              {{ item.title }}
+              <span class="text-surface-variant">{{ item.title }}</span>
             </v-card-text>
           </v-card>
         </v-col>

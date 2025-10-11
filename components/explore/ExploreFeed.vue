@@ -61,6 +61,7 @@
       </div>
     </div>
     <DesktopAdvertSlot
+      @click.stop
       v-if="feed.mode === 3"
       :advert="{
         image: feed?.cover,

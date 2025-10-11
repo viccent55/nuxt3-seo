@@ -150,7 +150,7 @@
     position: sticky;
     background-color: rgb(var(--v-theme-surface));
     border-top: 1px solid rgba(0, 0, 0, 0.1);
-    height: 75px;
+    height: 88px;
     display: flex;
     align-items: center;
     bottom: 5px;

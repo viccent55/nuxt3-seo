@@ -117,11 +117,11 @@
           class="d-flex flex-column align-center mb-4"
         >
           <v-card
-            elevation="0"
             class="news-card"
             @click.prevent="openDialog(item.id)"
             tag="a"
             :to="'/anime/' + item.id"
+            flat
           >
             <Image
               :src="item.cover"
@@ -129,10 +129,10 @@
               :aspect-ratio="400 / 250"
               cover
             />
+            <div class="text-surface-variant my-1 text-center">
+              {{ item.title }}
+            </div>
           </v-card>
-          <div class="title mt-2 text-center">
-            {{ item.title }}
-          </div>
         </v-col>
 
         <!-- Loading Indicator -->
@@ -170,7 +170,7 @@
 
   .news-card {
     width: 100%;
-    border-radius: 8px;
+    background-color: transparent;
     overflow: hidden;
     border: none;
     transition: transform 0.2s ease;

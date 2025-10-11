@@ -156,7 +156,7 @@ _
   >
     <v-card :loading="loading">
       <div
-        class="d-flex justify-end py-2"
+        class="d-flex justify-end py-1 pr-2"
         v-if="isMobile"
       >
         <v-btn
