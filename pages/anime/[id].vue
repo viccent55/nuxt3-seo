@@ -132,7 +132,9 @@
 
   const chan = computed(() => route.query.chan);
   const onOpenPage = () => {
-    openPage(`${store.configuration?.download_app_url}?chan=${chan.value}`);
+    openPage(
+      `${store.configuration?.download_app_url}?chan=${chan.value ?? ""}`
+    );
   };
   const handleClick = () => {
     window.open(store.configuration?.tg_chan, "_blank");
