@@ -177,6 +177,31 @@
       class="overflow-hidden"
       :loading="loading"
     >
+      <v-card-title v-if="isMobile">
+        <v-toolbar
+          class="d-flex justify-space-between align-center mb-2 py-0 rounded"
+          density="compact"
+        >
+          <AuthorHeader
+            :author="{
+              ...state.data?.author,
+              isFollow: state.data?.isFollow,
+            }"
+            @click-close="noteDialog.closeNoteDialog"
+            @click-author="handle.clickAuthor"
+            @click-follow="handle.clickFollow"
+          />
+          <v-btn
+            icon
+            size="small"
+            @click="noteDialog.closeNoteDialog"
+            color="primary"
+            flat
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-toolbar>
+      </v-card-title>
       <v-row no-gutters>
         <!-- Left: Video area -->
         <v-col
@@ -203,7 +228,8 @@
           :style="getStyle"
         >
           <div
-            class="d-flex justify-space-between align-center mb-2 py-0 pr-4 d-none"
+            class="d-flex justify-space-between align-center mb-2 py-0 pr-4"
+            v-if="!isMobile"
           >
             <AuthorHeader
               :author="{

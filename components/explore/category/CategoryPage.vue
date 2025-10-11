@@ -21,6 +21,7 @@
   /* ---------------------------
    1. Centralized fetch function
 ---------------------------- */
+  const cat_id = computed(() => route.params.id);
   async function fetchFeeds(pageNum: number) {
     try {
       if (storeUser.visitCode === "") {
@@ -31,7 +32,7 @@
         visitor: storeUser.visitCode,
         page: pageNum,
         limit: 30,
-        category: route.params.id,
+        category: cat_id.value,
       };
       const response = await getExploreFeeds(request);
       return response.data || [];
@@ -47,7 +48,7 @@
 ---------------------------- */
 
   const { data: initialFeeds, pending } = await useAsyncData(
-    `explore-cat-${page.value}`,
+    `explore-cat-${cat_id.value}`,
     () => fetchFeeds(page.value),
     { transform: (data) => data || [] } // SSR-safe
   );

@@ -146,7 +146,7 @@
                     <v-divider class="my-1 border-opacity-50" />
 
                     <!-- Install to Desktop (iOS/Android/Desktop) -->
-                    <v-list-item>
+                    <!-- <v-list-item>
                       <v-list-item-title>
                         <div
                           v-if="isIOS"
@@ -176,7 +176,7 @@
                           </v-icon>
                         </div>
                       </v-list-item-title>
-                    </v-list-item>
+                    </v-list-item> -->
 
                     <!-- Download App -->
                     <v-list-item @click="onOpenPage">
