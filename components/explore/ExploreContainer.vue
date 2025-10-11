@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import ExploreFeed from "./ExploreFeed.vue";
-  import { useDisplay } from "vuetify";
+  import { screenMode } from "~/hooks/useScreenMode";
 
   const props = defineProps({
     items: {
@@ -30,13 +30,13 @@
   const feedsContainer = ref<HTMLElement | null>(null);
   const masonryRef = ref<any>(null);
 
-  const { mobile, mdAndDown } = useDisplay();
-
   // Masonry layout properties
-  const minColumns = computed(() =>
-    mobile.value ? 2 : mdAndDown.value ? 3 : 5
-  );
-  const gap = computed(() => (mobile.value ? 12 : 28));
+  const minColumns = computed(() => {
+    if (screenMode.value == "phone") return 2;
+    if (screenMode.value == "pad") return 3;
+    return 5;
+  });
+  const gap = computed(() => (screenMode.value === "phone" ? 12 : 28));
   const updateColumnWidth = () => {
     // This function can be defined here or imported if it's complex
   };

@@ -63,7 +63,7 @@
             <!-- Navigation -->
             <nav
               aria-label=" navigation"
-              class="d-flex ga-8"
+              class="d-flex ga-lg-8 ga-sm-3"
             >
               <NuxtLink
                 v-for="(item, index) in NavigationItems"
