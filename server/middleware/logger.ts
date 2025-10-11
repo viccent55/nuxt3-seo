@@ -2,7 +2,7 @@ import { decrypt } from "~/utils/crypto";
 
 export default defineEventHandler(async (event) => {
   if (import.meta.dev) {
-    const method = getMethod(event);
+    const method = event.method;
     const url = getRequestURL(event);
 
     console.log(`\n[DEV][REQUEST] ${method} ${url.href}`);
@@ -14,7 +14,6 @@ export default defineEventHandler(async (event) => {
         const body = await readBody(event);
         console.log("[DEV][BODY]", decrypt(body.data));
       }
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 });
