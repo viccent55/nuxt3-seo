@@ -158,7 +158,7 @@
   };
   const getStyle = computed(() => {
     return isMobile.value
-      ? "max-height: calc(100vh - 360px)"
+      ? "max-height: calc(80vh - 280px)"
       : "max-height: calc(100vh - 40px";
   });
   useDialogUXLock(noteDialogVisible);
@@ -215,7 +215,7 @@
             ref="swiperInstanceRef"
             v-if="state.data?.fields"
             :media-info="state.data.fields"
-            :height="isMobile ? '300px' : '100%'"
+            :height="isMobile ? '250px' : '100%'"
           />
         </v-col>
 
@@ -343,7 +343,7 @@
             @click-reply="handle.clickReply"
             @click-share="handle.clickShare"
             @click-reply-to="handle.clickReplyTo"
-            class="px-4"
+            class="px-4 py-6"
           />
         </v-col>
       </v-row>

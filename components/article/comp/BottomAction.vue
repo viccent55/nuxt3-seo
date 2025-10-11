@@ -74,7 +74,7 @@
         :placeholder="replayTo.name ? `回复@${replayTo.name}` : '输入评论'"
         @focus="isFocusing = true"
         class="flex-1"
-        min-width="80px"
+        min-width="140px"
       />
 
       <v-btn
@@ -144,9 +144,6 @@
 
 <style scoped lang="scss">
   .bottom-action {
-    position: sticky;
-    background-color: rgb(var(--v-theme-surface));
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
     height: 60px;
     display: flex;
     align-items: center;

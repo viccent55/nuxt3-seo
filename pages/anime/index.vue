@@ -114,7 +114,7 @@
           sm="4"
           md="3"
           lg="3"
-          class="d-flex flex-column align-center mb-4"
+          class="d-flex flex-column align-center mb-0 mb-md-2"
         >
           <v-card
             class="news-card"

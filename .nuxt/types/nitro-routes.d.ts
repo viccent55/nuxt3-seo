@@ -99,6 +99,9 @@ declare module "nitropack/types" {
     '/api/explore/newVisitor': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/explore/newVisitor').default>>>>
     }
+    '/api/explore/search': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/explore/search').default>>>>
+    }
     '/api/member': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/member/index').default>>>>
     }

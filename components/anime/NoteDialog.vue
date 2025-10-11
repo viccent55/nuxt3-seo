@@ -134,169 +134,173 @@
       class="overflow-hidden"
       :loading="loading"
     >
-      <div
-        class="d-flex justify-end py-1 pr-2"
-        v-if="isMobile"
-      >
-        <v-btn
-          icon
-          size="small"
-          color="primary"
-          @click="
-            () => {
-              noteDialog.closeNoteDialog();
-              videoPlayerRef.value?.closeVideo();
-              state.data = {};
-            }
-          "
-        >
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </div>
-      <v-row no-gutters>
-        <!-- Left: Video area -->
-        <v-col
-          cols="12"
-          md="7"
-          lg="8"
-          :style="{
-            height: isMobile ? '200px' : '100%',
-          }"
-        >
-          <v-card
-            flat
-            class=""
+      <v-card-title v-if="isMobile">
+        <div class="d-flex justify-end">
+          <v-btn
+            icon
+            size="small"
+            color="primary"
+            @click="
+              () => {
+                noteDialog.closeNoteDialog();
+                videoPlayerRef.value?.closeVideo();
+                state.data = {};
+              }
+            "
           >
-            <v-card-title
-              class="text-break text-wrap overflow-visible whitespace-normal"
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </div>
+      </v-card-title>
+      <v-card-text class="pa-0 pb-4">
+        <v-row no-gutters>
+          <!-- Left: Video area -->
+          <v-col
+            cols="12"
+            md="7"
+            lg="8"
+            :style="{
+              height: isMobile ? '200px' : '100%',
+            }"
+          >
+            <v-card
+              flat
+              class=""
             >
-              {{ state.data?.title }}
-            </v-card-title>
-            <v-card-text class="pa-0">
-              <VideoPlayer
-                v-if="state.data?.m3u8"
-                :src="state.data?.m3u8"
-                ref="videoPlayerRef"
-              ></VideoPlayer>
-            </v-card-text>
-          </v-card>
-        </v-col>
+              <v-card-title
+                class="text-break text-wrap overflow-visible whitespace-normal"
+              >
+                {{ state.data?.title }}
+              </v-card-title>
+              <v-card-text class="pa-0">
+                <VideoPlayer
+                  v-if="state.data?.m3u8"
+                  :src="state.data?.m3u8"
+                  ref="videoPlayerRef"
+                ></VideoPlayer>
+              </v-card-text>
+            </v-card>
+          </v-col>
 
-        <!-- Right: Info & Comments -->
-        <v-col
-          cols="12"
-          md="5"
-          lg="4"
-          class="d-flex flex-column"
-          style="max-height: calc(100vh - 40px)"
-        >
-          <div
-            class="d-flex justify-end mt-2 py-0 pr-4"
-            v-if="!isMobile"
+          <!-- Right: Info & Comments -->
+          <v-col
+            cols="12"
+            md="5"
+            lg="4"
+            class="d-flex flex-column"
+            style="max-height: calc(100vh - 40px)"
           >
-            <v-btn
-              icon
-              size="small"
-              @click="
-                () => {
-                  noteDialog.closeNoteDialog();
-                  videoPlayerRef.value?.closeVideo();
-                  state.data = {};
-                }
-              "
+            <div
+              class="d-flex justify-end mt-2 py-0 pr-4"
+              v-if="!isMobile"
             >
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-          </div>
-
-          <!-- Scrollable Content Area -->
-          <div
-            class="flex-grow-1 overflow-y-auto px-4"
-            ref="note-dialog"
-          >
-            <div class="text-body-2 text-grey-darken-1 mb-4">
-              发布日期: {{ state.data?.created_at?.split("T")[0] }}
+              <v-btn
+                icon
+                size="small"
+                @click="
+                  () => {
+                    noteDialog.closeNoteDialog();
+                    videoPlayerRef.value?.closeVideo();
+                    state.data = {};
+                  }
+                "
+              >
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
             </div>
-            <v-row dense>
-              <v-col
-                v-for="(app, index) in store?.detailAppAds"
-                :key="index"
-                :cols="3"
-              >
-                <NuxtLink
-                  :to="app.url || '#'"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="text-decoration-none text-grey-darken-1 d-flex flex-column ga-1 align-center"
-                  @click="$emit('click-ads', app.id)"
-                >
-                  <AdvertSlot
-                    :advert="{
-                      title: app.name,
-                      image: app.image,
-                      url: app?.url,
-                    }"
-                    fit="cover"
-                    style="width: 28px; height: 28px"
-                  />
-                  {{ app.name }}
-                </NuxtLink>
-              </v-col>
-            </v-row>
-            <v-divider
-              :thickness="1"
-              class="my-3 border-opacity-75"
-            />
 
-            <div>
-              <v-card
-                v-for="(app, index) in store.detailAds"
-                :key="index"
-                class="pa-0 my-2"
-              >
-                <a
-                  :href="app.url"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class=""
-                  @click="adsClick(app.id)"
+            <!-- Scrollable Content Area -->
+            <div
+              class="flex-grow-1 overflow-y-auto px-4"
+              ref="note-dialog"
+            >
+              <div class="text-body-2 text-grey-darken-1 mb-4">
+                发布日期: {{ state.data?.created_at?.split("T")[0] }}
+              </div>
+              <v-row dense>
+                <v-col
+                  v-for="(app, index) in store?.detailAppAds"
+                  :key="index"
+                  :cols="3"
                 >
-                  <AdvertSlot
-                    :advert="{
-                      title: app.name,
-                      image: app.image,
-                      url: app?.url,
-                    }"
-                    height="100%"
-                    fit="contain"
+                  <NuxtLink
+                    :to="app.url || '#'"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-decoration-none text-grey-darken-1 d-flex flex-column ga-1 align-center"
+                    @click="$emit('click-ads', app.id)"
+                  >
+                    <AdvertSlot
+                      :advert="{
+                        title: app.name,
+                        image: app.image,
+                        url: app?.url,
+                      }"
+                      fit="cover"
+                      style="width: 28px; height: 28px"
+                    />
+                    {{ app.name }}
+                  </NuxtLink>
+                </v-col>
+              </v-row>
+              <v-divider
+                :thickness="1"
+                class="my-3 border-opacity-75"
+              />
+
+              <div>
+                <v-card
+                  v-for="(app, index) in store.detailAds"
+                  :key="index"
+                  class="pa-0 my-2"
+                >
+                  <a
+                    :href="app.url"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class=""
+                    @click="adsClick(app.id)"
+                  >
+                    <AdvertSlot
+                      :advert="{
+                        title: app.name,
+                        image: app.image,
+                        url: app?.url,
+                      }"
+                      height="100%"
+                      fit="contain"
+                    />
+                  </a>
+                </v-card>
+                <template
+                  v-for="block in state.comments"
+                  :key="block.id"
+                >
+                  <CommentBlock
+                    :comment="block"
+                    @click-avatar="handle.clickAuthor"
+                    @click-like="handle.clickLike"
+                    @click-reply="handle.clickReply"
                   />
-                </a>
-              </v-card>
-              <template
-                v-for="block in state.comments"
-                :key="block.id"
-              >
-                <CommentBlock
-                  :comment="block"
-                  @click-avatar="handle.clickAuthor"
-                  @click-like="handle.clickLike"
-                  @click-reply="handle.clickReply"
-                />
-              </template>
+                </template>
+              </div>
             </div>
-          </div>
-          <BottomAction
-            ref="bottomActions"
-            :action="state.data"
-            :total="state.data?.comment_count"
-            @click-like="handle.clickLike"
-            @click-star="handle.clickStar"
-            @click-reply="handle.clickReply"
-            @click-share="handle.clickShare"
-            class="px-4"
-          />
-        </v-col>
-      </v-row>
+          </v-col>
+        </v-row>
+      </v-card-text>
+
+      <v-card-action class="d-flex justify-end border-t">
+        <BottomAction
+          ref="bottomActions"
+          :action="state.data"
+          :total="state.data?.comment_count"
+          @click-like="handle.clickLike"
+          @click-star="handle.clickStar"
+          @click-reply="handle.clickReply"
+          @click-share="handle.clickShare"
+          class="px-4"
+        />
+      </v-card-action>
     </v-card>
   </v-dialog>
 </template>

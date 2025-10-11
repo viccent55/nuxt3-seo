@@ -6,8 +6,9 @@
   import CommentBlock from "@/components/explore/comp/CommentBlock.vue";
   import BottomAction from "@/components/explore/comp/BottomAction.vue";
   import { detail, like, collect, comment, comments } from "@/service/article";
-  const bottomRef = useTemplateRef("bottomActions");
+  import { openPage } from "@/service";
 
+  const bottomRef = useTemplateRef("bottomActions");
   const state = reactive({
     data: {} as EmptyObjectType,
     comments: [] as EmptyObjectType[],
@@ -15,13 +16,13 @@
   });
   const { store, onCopy, route, isMobile } = useVariable();
   const snackbar = useSnackbar();
-  const _id = route.params.id;
+  const _id = computed(() => route.params.id);
 
   const fetchDetail = async () => {
     state.loading = true;
     try {
       const request = {
-        id: _id,
+        id: _id.value,
       };
       const response = await detail(request);
       if (response.data) {
@@ -44,8 +45,8 @@
   await fetchDetail();
 
   const getComments = async () => {
-    if (!_id) return;
-    const response = await comments({ id: _id });
+    if (!_id.value) return;
+    const response = await comments({ id: _id.value });
     if (response.data.length) {
       state.comments = response.data;
     }
@@ -152,6 +153,14 @@
     if (!keywords) return [];
     return keywords.split(",").map((tag: string) => `#${tag.trim()}`);
   });
+
+  const chan = computed(() => route.query.chan);
+  const onOpenPage = () => {
+    openPage(`${store.configuration?.download_app_url}?chan=${chan.value}`);
+  };
+  const handleClick = () => {
+    window.open(store.configuration?.tg_chan, "_blank");
+  };
 </script>
 
 <template>
@@ -293,15 +302,6 @@
         </v-col>
       </v-row>
     </v-card>
-    <!-- <v-sheet
-      class="mt-4 pa-2"
-      color="red-lighten-4"
-    >
-      51吃瓜 最新国内地址 https://51cgi365.com
-      发邮件获取51吃瓜最新网址👇长按复制👇 51cgfun@pm.me 51吃瓜
-      海外永久地址(需翻墙) https://51cg1.com
-      推荐使用edge/夸克/UC/chrome/safar浏览器访问网站
-    </v-sheet> -->
     <v-footer
       class="d-flex justify-center ga-3 mt-4"
       v-if="hashtagList.length"
@@ -314,11 +314,107 @@
         {{ hashtag }}
       </div>
     </v-footer>
+    <v-sheet class="mt-4 pa-4">
+      <!-- Notice Section -->
+      <div class="mb-2">
+        <p>
+          创作不易：喜欢的朋友 请多多分享，您的支持是
+          <strong class="text-primary">{{ store.configuration?.name }}</strong>
+          前进的动力
+        </p>
+
+        <p>
+          最新国内地址：
+          <a
+            :href="store.configuration?.home_url"
+            target="_blank"
+            class="text-primary"
+          >
+            {{ store.configuration?.home_url }}
+          </a>
+        </p>
+        <p>
+          备用地址：
+          <a
+            :href="store.configuration?.domain_next"
+            target="_blank"
+            class="text-primary"
+          >
+            {{ store.configuration?.domain_next }}
+          </a>
+        </p>
+        <p>
+          发邮件获取
+          <strong>{{ store.configuration?.email }}</strong>
+        </p>
+        <p>
+          海外永久地址(需翻墙)：
+          <a
+            :href="store.configuration?.domain_latest"
+            target="_blank"
+            class="text-primary"
+          >
+            {{ store.configuration?.domain_latest }}
+          </a>
+        </p>
+        <p>推荐使用 Edge / 夸克 / UC / Chrome / Safari 浏览器访问 网站。</p>
+
+        <p>
+          视频播放异常？请刷新或使用
+          <a
+            @click="onOpenPage"
+            target="_blank"
+            class="text-primary cursor-pointer"
+          >
+            {{ store.configuration?.name }} APP
+          </a>
+          |
+          <a
+            @click="handleClick"
+            target="_blank"
+            class="text-primary cursor-pointer"
+          >
+            点击加入 {{ store.configuration?.name }} 官方TG群
+          </a>
+        </p>
+      </div>
+
+      <!-- Divider -->
+
+      <!-- Copyright Section -->
+      <div>
+        <p>
+          该文章由
+          <a
+            href="/"
+            class="text-primary"
+          >
+            {{ store.configuration?.name }}
+          </a>
+          发布，转载请注明来源并附上原文链接：
+          <a
+            :href="`/article/${_id}`"
+            class="text-primary"
+          >
+            {{ state.data?.title }}
+          </a>
+        </p>
+        <p>
+          版权声明：本文著作权归
+          <strong>{{ store.configuration?.name }}</strong>
+          所有。任何媒体、
+          网站或个人未经授权不得复制、转载、摘编或以其他方式使用，否则将依法追究法律责任。
+        </p>
+      </div>
+    </v-sheet>
   </v-container>
 </template>
 <style scoped lang="scss">
   .main-contain {
-    max-height: calc(100vh - 22rem);
+    max-height: calc(100vh - 30rem);
     overflow-y: scroll;
+  }
+  p {
+    margin: 2px;
   }
 </style>

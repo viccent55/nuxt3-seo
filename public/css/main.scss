@@ -1,5 +1,12 @@
 @use "./tinymce.scss";
 
+.scroll-locked {
+  overflow: hidden !important;
+  /* For iOS momentum scrolling */
+  position: fixed !important;
+  width: 100% !important;
+}
+
 html {
   scroll-behavior: smooth;
   scrollbar-width: none;

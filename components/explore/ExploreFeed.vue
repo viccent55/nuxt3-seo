@@ -65,7 +65,7 @@
       v-if="feed.mode === 3"
       :advert="{
         image: feed?.cover,
-        url: feed?.advert.value,
+        url: feed?.advert?.value,
       }"
       class="height-dialog"
     />

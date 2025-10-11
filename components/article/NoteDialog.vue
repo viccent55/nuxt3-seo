@@ -139,7 +139,7 @@ _
   const getStyle = computed(() =>
     isMobile.value
       ? "scrollbar-width: none;"
-      : "max-height: calc(100vh - 160px); overflow-y: scroll"
+      : "max-height: calc(100vh - 200px); overflow-y: scroll"
   );
   useDialogUXLock(noteDialogVisible);
 </script>
@@ -155,159 +155,166 @@ _
     :fullscreen="isMobile"
   >
     <v-card :loading="loading">
-      <div
-        class="d-flex justify-end py-1 pr-2"
-        v-if="isMobile"
-      >
-        <v-btn
-          icon
-          color="primary"
-          size="small"
-          @click="noteDialog.closeNoteDialog"
-        >
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </div>
-      <v-row no-gutters>
-        <!-- Left: Video area -->
-        <v-col
-          cols="12"
-          md="7"
-          lg="8"
-          class="d-flex justify-center"
-          :class="isMobile ? '' : 'border-e-thin'"
-        >
-          <v-card
-            flat
-            class="py-3"
+      <v-card-title v-if="isMobile">
+        <div class="d-flex justify-end">
+          <v-btn
+            icon
+            size="small"
+            color="primary"
+            @click="
+              () => {
+                noteDialog.closeNoteDialog();
+              }
+            "
           >
-            <v-card-title
-              class="text-break text-wrap overflow-visible whitespace-normal"
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </div>
+      </v-card-title>
+      <v-card-text class="pa-0 pb-4">
+        <v-row no-gutters>
+          <!-- Left: Video area -->
+          <v-col
+            cols="12"
+            md="7"
+            lg="8"
+            class="d-flex justify-center"
+            :class="isMobile ? '' : 'border-e-thin'"
+          >
+            <v-card
+              flat
+              class="py-3"
             >
-              {{ state.data?.title }}
-            </v-card-title>
-            <v-card-text :style="getStyle">
-              <ContentArticle
-                :content="state.data?.content"
-                ref="contentArticleRef"
-              />
-            </v-card-text>
-          </v-card>
-        </v-col>
-
-        <!-- Right: Info & Comments -->
-        <v-col
-          cols="12"
-          md="5"
-          lg="4"
-          class="d-flex flex-column"
-        >
-          <div
-            class="d-flex justify-end mt-2 py-0 pr-4"
-            v-if="!isMobile"
-          >
-            <v-btn
-              icon
-              size="small"
-              @click="noteDialog.closeNoteDialog"
-            >
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-          </div>
-
-          <!-- Scrollable Content Area -->
-          <div
-            class="flex-grow-1 overflow-y-auto px-4 pb-10 pb-md-0"
-            ref="note-dialog"
-          >
-            <div class="text-body-2 text-grey-darken-1 mb-4">
-              发布日期: {{ state.data?.created_at?.split("T")[0] }}
-            </div>
-            <v-row dense>
-              <v-col
-                v-for="(app, index) in store?.detailAppAds"
-                :key="index"
-                :cols="3"
+              <v-card-title
+                class="text-break text-wrap overflow-visible whitespace-normal"
               >
-                <NuxtLink
-                  :to="app.url || '#'"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="text-decoration-none text-grey-darken-1 d-flex flex-column ga-1 align-center"
-                  @click="$emit('click-ads', app.id)"
-                >
-                  <AdvertSlot
-                    :advert="{
-                      title: app.name,
-                      image: app.image,
-                      url: app?.url,
-                    }"
-                    fit="cover"
-                    style="width: 28px; height: 28px"
-                  />
-                  {{ app.name }}
-                </NuxtLink>
-              </v-col>
-            </v-row>
-            <v-divider
-              :thickness="1"
-              class="my-3 border-opacity-75"
-            />
-
-            <div>
-              <div class="text-subtitle-2 mb-2">
-                共 {{ state.comments.length }} 条评论
-              </div>
-              <v-card
-                v-for="(app, index) in store.detailAds"
-                :key="index"
-                class="pa-0 my-2"
-              >
-                <a
-                  :href="app.url"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class=""
-                  @click="adsClick(app.id)"
-                >
-                  <AdvertSlot
-                    :advert="{
-                      title: app.name,
-                      image: app.image,
-                      url: app?.url,
-                    }"
-                    height="100%"
-                    fit="contain"
-                  />
-                </a>
-              </v-card>
-
-              <template
-                v-for="block in state.comments"
-                :key="block.id"
-              >
-                <CommentBlock
-                  :comment="block"
-                  @click-avatar="handle.clickAuthor"
-                  @click-like="handle.clickLike"
-                  @click-reply="handle.clickReply"
+                {{ state.data?.title }}
+              </v-card-title>
+              <v-card-text :style="getStyle">
+                <ContentArticle
+                  :content="state.data?.content"
+                  ref="contentArticleRef"
                 />
-              </template>
+              </v-card-text>
+            </v-card>
+          </v-col>
+
+          <!-- Right: Info & Comments -->
+          <v-col
+            cols="12"
+            md="5"
+            lg="4"
+            class="d-flex flex-column"
+          >
+            <div
+              class="d-flex justify-end mt-2 py-0 pr-4"
+              v-if="!isMobile"
+            >
+              <v-btn
+                icon
+                size="small"
+                @click="noteDialog.closeNoteDialog"
+              >
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
             </div>
-          </div>
-          <BottomAction
-            ref="bottomActions"
-            :action="state.data"
-            :total="state.data?.comment_count"
-            @click-like="handle.clickLike"
-            @click-star="handle.clickStar"
-            @click-reply="handle.clickReply"
-            @click-share="handle.clickShare"
-            @click-reply-to="handle.clickReplyTo"
-            class="px-4"
-          />
-        </v-col>
-      </v-row>
+
+            <!-- Scrollable Content Area -->
+            <div
+              class="flex-grow-1 px-4 pb-10 pb-md-0"
+              ref="note-dialog"
+            >
+              <div class="text-body-2 text-grey-darken-1 mb-4">
+                发布日期: {{ state.data?.created_at?.split("T")[0] }}
+              </div>
+              <v-row dense>
+                <v-col
+                  v-for="(app, index) in store?.detailAppAds"
+                  :key="index"
+                  :cols="3"
+                >
+                  <NuxtLink
+                    :to="app.url || '#'"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-decoration-none text-grey-darken-1 d-flex flex-column ga-1 align-center"
+                    @click="$emit('click-ads', app.id)"
+                  >
+                    <AdvertSlot
+                      :advert="{
+                        title: app.name,
+                        image: app.image,
+                        url: app?.url,
+                      }"
+                      fit="cover"
+                      style="width: 28px; height: 28px"
+                    />
+                    {{ app.name }}
+                  </NuxtLink>
+                </v-col>
+              </v-row>
+              <v-divider
+                :thickness="1"
+                class="my-3 border-opacity-75"
+              />
+
+              <div>
+                <div class="text-subtitle-2 mb-2">
+                  共 {{ state.comments.length }} 条评论
+                </div>
+                <v-card
+                  v-for="(app, index) in store.detailAds"
+                  :key="index"
+                  class="pa-0 my-2"
+                >
+                  <a
+                    :href="app.url"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class=""
+                    @click="adsClick(app.id)"
+                  >
+                    <AdvertSlot
+                      :advert="{
+                        title: app.name,
+                        image: app.image,
+                        url: app?.url,
+                      }"
+                      height="100%"
+                      fit="contain"
+                    />
+                  </a>
+                </v-card>
+
+                <template
+                  v-for="block in state.comments"
+                  :key="block.id"
+                >
+                  <CommentBlock
+                    :comment="block"
+                    @click-avatar="handle.clickAuthor"
+                    @click-like="handle.clickLike"
+                    @click-reply="handle.clickReply"
+                  />
+                </template>
+              </div>
+            </div>
+          </v-col>
+        </v-row>
+      </v-card-text>
+      <v-card-action class="d-flex justify-end border-t">
+        <BottomAction
+          ref="bottomActions"
+          :action="state.data"
+          :total="state.data?.comment_count"
+          @click-like="handle.clickLike"
+          @click-star="handle.clickStar"
+          @click-reply="handle.clickReply"
+          @click-share="handle.clickShare"
+          @click-reply-to="handle.clickReplyTo"
+          class="px-4"
+        />
+      </v-card-action>
     </v-card>
   </v-dialog>
 </template>

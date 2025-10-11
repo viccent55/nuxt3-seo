@@ -150,10 +150,10 @@
     position: sticky;
     background-color: rgb(var(--v-theme-surface));
     border-top: 1px solid rgba(0, 0, 0, 0.1);
-    height: 88px;
+    height: 60px;
     display: flex;
     align-items: center;
-    bottom: 5px;
+    bottom: 0px;
   }
 
   .actions-container .v-btn {

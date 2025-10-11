@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted, watch } from "vue";
+import { onUnmounted, watch } from "vue";
 
 export function useDialogUXLock(dialogVisible: Ref<boolean>) {
   let lastScroll = 0;
@@ -45,7 +45,9 @@ export function useDialogUXLock(dialogVisible: Ref<boolean>) {
     if (visible) {
       lockBodyScroll();
       window.addEventListener("touchstart", touchStart, { passive: false });
-      window.addEventListener("touchmove", preventHorizontalSwipe, { passive: false });
+      window.addEventListener("touchmove", preventHorizontalSwipe, {
+        passive: false,
+      });
       window.addEventListener("popstate", handleBackButton);
       history.pushState(null, "", location.href); // Add dummy history state
     } else {

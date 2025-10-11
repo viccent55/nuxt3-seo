@@ -20,6 +20,7 @@
     class="footer bg-surface"
     density="comfortable"
   >
+  
     <template
       v-for="item in items"
       :key="item.name"

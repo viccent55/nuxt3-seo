@@ -33,7 +33,7 @@
 <template>
   <v-card
     elevation="0"
-    class="bottom-action rounded-br-2xl pa-0"
+    class="bottom-action pa-0"
   >
     <div class="d-flex justify-end align-center ga-2">
       <div class="d-flex align-center">
@@ -74,9 +74,6 @@
 
 <style scoped lang="scss">
   .bottom-action {
-    position: sticky;
-    background-color: rgb(var(--v-theme-surface));
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
     height: 50px;
     display: flex;
     align-items: center;
