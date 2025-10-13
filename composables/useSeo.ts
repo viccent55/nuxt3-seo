@@ -10,7 +10,7 @@ export const useSeo = (
   const { configuration } = storeToRefs(store);
 
   useHead({
-    title: computed(() => title?.value || "Default Website Title"),
+    title: computed(() => title?.value || configuration.value?.name),
     meta: [
       {
         name: "author",

@@ -46,7 +46,6 @@
     <template v-slot:placeholder>
       <div class="d-flex align-center justify-center fill-height">
         <v-progress-circular
-          v-if="!decryptedImage"
           color="grey-lighten-4"
           indeterminate
         />

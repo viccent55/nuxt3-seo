@@ -27,7 +27,9 @@
 <style scoped lang="scss">
   .explore-wrapper {
     width: 100%;
-    height: calc(100vh - 170px);
+    height: calc(
+      100dvh - 170px
+    ); /* Use dvh for dynamic viewport height on mobile */
     display: flex;
     flex-direction: column;
     padding: 0 12px;

@@ -55,6 +55,9 @@
         :src="item?.value"
         :cover="false"
         class="media"
+        :style="{
+          maxHeight: height,
+        }"
       />
       <VideoPlayer
         v-else-if="item.name === 'video'"

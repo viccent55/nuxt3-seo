@@ -3,7 +3,6 @@
     keepalive: true,
   });
   import { useRoute } from "vue-router";
-  import UserInfo from "./UserInfo.vue";
   import { useInfiniteScroll } from "@vueuse/core";
   import { useStore } from "@/store";
   import { useUserStore } from "@/store/user";
@@ -21,6 +20,7 @@
   } from "@/service/user";
   import { retrySendEmailCode, veryCode } from "@/service/user";
   import { follow } from "@/service/explore";
+import UserInfo from "~/components/user/UserInfo.vue";
 
   const route = useRoute();
   const noteDialog = useNoteDialog();

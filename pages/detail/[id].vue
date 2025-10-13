@@ -174,8 +174,8 @@
 
   useSeo(
     computed(() => state.data?.title),
-    computed(() => state.data?.seo_description),
-    computed(() => state.data?.seo_keywords)
+    computed(() => state.data?.seo_description || state.data?.title),
+    computed(() => state.data?.seo_keywords || "")
   );
 
   const hashtagList = computed(() => {

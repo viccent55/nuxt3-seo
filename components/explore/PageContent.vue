@@ -62,19 +62,35 @@
      3. Infinite Scroll
   ---------------------------- */
   const onLoadMore = async () => {
-    if (pending.value || isNoMore.value) return;
+    if (pending.value || isNoMore.value || isLoadMore.value) return;
     isLoadMore.value = true;
+    const container = exploreContainerRef.value?.element;
+    const isWindowScroll =
+      !container || container.scrollHeight <= container.clientHeight;
+    const lastScrollTop = isWindowScroll
+      ? window.scrollY
+      : (container?.scrollTop ?? 0);
     try {
       page.value++;
       const newFeeds = await fetchFeeds(page.value);
-      if (newFeeds?.length) {
+      if (Array.isArray(newFeeds) && newFeeds.length > 0) {
+        // ✅ Reassign feeds while keeping previous scroll
         feeds.value = [...feeds.value, ...newFeeds];
-        await nextTick(); // wait for DOM update
+        await nextTick();
+        // Smooth scroll restoration
+        requestAnimationFrame(() => {
+          if (isWindowScroll) {
+            window.scrollTo({ top: lastScrollTop, behavior: "auto" });
+          } else if (container) {
+            container.scrollTop = lastScrollTop;
+          }
+        });
       } else {
         isNoMore.value = true;
       }
-    } catch (error) {
-      console.error("Failed to load more feeds:", error);
+    } catch (err) {
+      console.error("Failed to load more feeds:", err);
+      // Optional: show user feedback
     } finally {
       isLoadMore.value = false;
     }
