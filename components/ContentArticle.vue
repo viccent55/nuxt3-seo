@@ -104,9 +104,9 @@
       ref="contentRef"
     />
     <!-- Fallback if JS is disabled -->
-    <!-- <noscript>
+    <noscript>
       <div v-html="clonedContent"></div>
-    </noscript> -->
+    </noscript>
     <!-- end js disabled -->
   </div>
 </template>
