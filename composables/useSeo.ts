@@ -14,11 +14,11 @@ export const useSeo = (
     meta: [
       {
         name: "author",
-        content: computed(() => configuration.value?.name || "Default name."),
+        content: computed(() => configuration.value?.name || ""),
       },
       {
         name: "description",
-        content: computed(() => description?.value || "Default description."),
+        content: computed(() => description?.value || ""),
       },
       {
         name: "keywords",
