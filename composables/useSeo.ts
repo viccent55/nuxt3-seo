@@ -23,7 +23,7 @@ export const useSeo = (
       {
         name: "keywords",
         content: computed(
-          () => keyword?.value || "default, keywords, nuxt, vue"
+          () => keyword?.value || ""
         ),
       },
     ],
