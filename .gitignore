@@ -26,6 +26,5 @@ logs
 icons
 ios
 android
-.nuxt
 .output
 components.d.ts
