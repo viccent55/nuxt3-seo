@@ -5,6 +5,7 @@
 
   import Breadcrumbs from "~/components/desktop/Breadcrumbs.vue";
   import ArticleListItem from "~/components/desktop/ArticleList.vue";
+  import { useStore } from "~/store";
 
   const { tagDetail, tagFilters, tagPosts } = useTag();
   const breadcrumb = computed(() => {
@@ -57,6 +58,11 @@
       };
     },
   });
+  useSeo(
+    computed(() => tagDetail.value?.name),
+    computed(() => tagDetail.value?.seo_description),
+    computed(() => tagDetail.value?.seo_keywords)
+  );
 </script>
 
 <template>

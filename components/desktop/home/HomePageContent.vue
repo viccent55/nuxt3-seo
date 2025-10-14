@@ -35,7 +35,7 @@
       state.subjects = subject.value.items ?? [];
     }
   });
-  const page = computed(() => route.params?.page);
+  const page = computed(() => route.params?.page || "1");
   const { data: latest } = useFetch<ApiResponse>("/api/home/latest", {
     key: () => `latest-${page.value}`,
     method: "POST",
@@ -60,6 +60,16 @@
       }
     }
   });
+  const { configuration } = storeToRefs(store);
+  useSeo(
+    computed(() => (page.value == "1" ? configuration.value.home_title : "")),
+    computed(() =>
+      page.value == "1 " ? configuration.value?.home_description : ""
+    ),
+    computed(() =>
+      page.value == "1" ? configuration.value?.home_keywords : ""
+    )
+  );
 </script>
 
 <template>

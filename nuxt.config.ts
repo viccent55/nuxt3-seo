@@ -4,9 +4,9 @@ export default defineNuxtConfig({
     head: {
       title: "吃瓜百科",
       meta: [
-        { name: "description", content: "Default description" },
+        { name: "description", content: "" },
         { name: "author", content: "吃瓜百科" },
-        { name: "keywords", content: "nuxt, vue, web" },
+        { name: "keywords", content: "" },
         { property: "og:type", content: "website" },
         { name: "twitter:card", content: "summary_large_image" },
       ],
