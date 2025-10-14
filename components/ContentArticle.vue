@@ -78,10 +78,17 @@
       loading.value = false;
     }
   };
-  watchEffect(() => {
-    if (contentRef.value) {
-      contentRef.value.innerHTML = "";
-    }
+  onMounted(() => {
+    watch(
+      () => props.content,
+      () => {
+        if (contentRef.value) {
+          contentRef.value.innerHTML = "";
+        }
+        initImgAndVideo();
+      }
+    );
+
     initImgAndVideo();
   });
 </script>

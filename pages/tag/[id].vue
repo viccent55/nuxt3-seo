@@ -117,18 +117,22 @@
               :key="index"
               cols="4"
               class="text-center cursor-pointer"
-              @click="$router.push('/article/' + actor.id)"
             >
-              <v-avatar
-                size="40"
-                class="mb-1"
+              <NuxtLink
+                :to="'/actor/' + actor.id"
+                class="text-surface-variant text-decoration-none"
               >
-                <Image :src="actor.avatar" />
-              </v-avatar>
-              <div class="text-caption truncate-1">{{ actor.name }}</div>
-              <div class="text-grey text-caption text-xs truncate-2">
-                {{ actor.intro }}
-              </div>
+                <v-avatar
+                  size="40"
+                  class="mb-1"
+                >
+                  <Image :src="actor.avatar" />
+                </v-avatar>
+                <div class="text-caption truncate-1">{{ actor.name }}</div>
+                <div class="text-grey text-caption text-xs truncate-2">
+                  {{ actor.intro }}
+                </div>
+              </NuxtLink>
             </v-col>
           </v-row>
         </v-card>
@@ -145,7 +149,7 @@
             class="ma-1"
             color="surface-variant"
             variant="tonal"
-            @click="$router.push('/tag/detail/' + tag.id)"
+            :to="'/tag/detail/' + tag.id"
           >
             {{ tag.name }}
           </v-chip>
