@@ -13,7 +13,7 @@
   });
   const clonedContent = computed(() => structuredClone(props.content));
   // your composable
-  const { decryptImage } = useDecryption();
+  const { decryptImage, decryptedImage } = useDecryption();
 
   const contentRef = ref<HTMLDivElement | any>(null);
   const loading = ref(false);
@@ -32,12 +32,12 @@
         images.map(async (img: EmptyObjectType) => {
           const lazySrc = img.getAttribute("data-lazy-src");
           if (!lazySrc) return;
-          console.log(lazySrc);
+
           try {
-            const decrypted = await decryptImage(lazySrc); // use returned value per image
-            if (decrypted) {
+            await decryptImage(lazySrc); // use returned value per image
+            if (decryptedImage.value) {
               img.removeAttribute("data-lazy-src");
-              img.src = decrypted;
+              img.src = decryptedImage.value;
             }
           } catch (err) {
             console.error("Error decrypting image:", err);
@@ -57,6 +57,8 @@
         videos.forEach((video: HTMLVideoElement) => {
           video.style.display = "block";
           video.style.width = "100%";
+          video.style.maxHeight = "400px"; // 🔹 your desired limit
+          video.style.objectFit = "contain"; // keeps aspect ratio
 
           const src = video.getAttribute("src");
           if (!src) return;
@@ -76,20 +78,12 @@
       loading.value = false;
     }
   };
-  onMounted(() => {
-    watch(
-      () => props.content,
-      () => {
-        if (contentRef.value) {
-          contentRef.value.innerHTML = "";
-        }
-        initImgAndVideo();
-      }
-    );
-
+  watchEffect(() => {
+    if (contentRef.value) {
+      contentRef.value.innerHTML = "";
+    }
     initImgAndVideo();
   });
-
 </script>
 
 <template>
@@ -110,9 +104,9 @@
       ref="contentRef"
     />
     <!-- Fallback if JS is disabled -->
-    <noscript>
+    <!-- <noscript>
       <div v-html="clonedContent"></div>
-    </noscript>
+    </noscript> -->
     <!-- end js disabled -->
   </div>
 </template>
