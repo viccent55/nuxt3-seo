@@ -1,10 +1,12 @@
 <script lang="ts" setup>
+  import { useDisplay } from "vuetify";
+
   definePageMeta({
     keepalive: true,
   });
 
   const { store, route } = useVariable();
-
+  const { smAndDown } = useDisplay();
   const { configuration } = storeToRefs(store);
   const categorySeo = computed(() =>
     configuration.value.categories.find(
@@ -16,6 +18,10 @@
     computed(() => categorySeo.value?.seo_description),
     computed(() => categorySeo.value?.seo_keywords)
   );
+  const { isNative } = usePlatform();
+  const heightOffset = computed(() => {
+    return isNative.value || smAndDown.value ? "220px" : "170px";
+  });
 </script>
 
 <template>
@@ -27,9 +33,7 @@
 <style scoped lang="scss">
   .explore-wrapper {
     width: 100%;
-    height: calc(
-      100dvh - 170px
-    ); /* Use dvh for dynamic viewport height on mobile */
+    height: calc(100dvh - v-bind(heightOffset));
     display: flex;
     flex-direction: column;
     padding: 0 12px;

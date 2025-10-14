@@ -104,7 +104,7 @@ export const NavigationItems: NavigationItem[] = [
     name: "我的",
     icon: "account-outline",
     type: "router-link",
-    mode: "#",
+    mode: "6",
     href: "/user",
   },
 ];

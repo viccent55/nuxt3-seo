@@ -1,5 +1,12 @@
 import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
+const isCapacitor = process.env.NUXT_CAPACITOR === "true";
+
 export default defineNuxtConfig({
+  // 👇 Automatically switch
+  ssr: !isCapacitor, // true for web, false for Capacitor
+  nitro: {
+    preset: isCapacitor ? "static" : "node-server", // Generate static output for Capacitor
+  },
   app: {
     head: {
       title: "小红书成人版",
@@ -8,6 +15,10 @@ export default defineNuxtConfig({
         { name: "author", content: "小红书成人版" },
         { name: "keywords", content: "nuxt, vue, web" },
         { property: "og:type", content: "website" },
+        {
+          name: "viewport",
+          content: "width=device-width, initial-scale=1, viewport-fit=cover",
+        },
         { name: "twitter:card", content: "summary_large_image" },
       ],
       link: [

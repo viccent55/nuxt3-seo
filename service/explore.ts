@@ -60,6 +60,7 @@ export async function follow(params: object) {
     method: "POST",
     body: dataEncrypt(params),
   });
+  if (res.data) return decrypt(res.data);
   return res;
 }
 export async function reply(params: EmptyObjectType) {

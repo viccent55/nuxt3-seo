@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  import FollowButton from "@/components/global/FollowButton.vue";
   import Dialog from "./Dialog.vue";
   import type { UserDetailInfo } from "@/types/info";
   import { useUserStore } from "@/store/user";
