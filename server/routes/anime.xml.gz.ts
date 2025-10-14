@@ -4,7 +4,7 @@ import { Readable } from "stream";
 
 export default defineEventHandler(async (event) => {
   try {
-    const cleanName = "sitemap"; // This route is now static
+    const cleanName = "anime"; // This route is now static
 
     const config = useRuntimeConfig();
     // The apiBase should be correctly populated now after our nuxt.config.ts fix
