@@ -162,7 +162,7 @@
   const { isNative } = usePlatform();
   const getStyle = computed(() => {
     return isNative.value || smAndDown.value
-      ? "max-height: calc(90dvh - 320px); overflow-y: auto"
+      ? "max-height: calc(90dvh - 350px); overflow-y: auto"
       : "max-height: calc(100dvh - 110px); overflow-y: scroll";
   });
 
@@ -226,7 +226,7 @@
             ref="swiperInstanceRef"
             v-if="state.data?.fields"
             :media-info="state.data.fields"
-            :height="smAndDown ? '220px' : '100%'"
+            :height="smAndDown ? '250px' : '100%'"
           />
         </v-col>
 
