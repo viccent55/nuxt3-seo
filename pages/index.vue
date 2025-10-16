@@ -1,9 +1,10 @@
 <script setup lang="ts">
-  import { useStore } from "~/store";
+  import { useStore } from "@/store";
 
   definePageMeta({
     keepalive: true,
   });
+
   const store = useStore();
   const { configuration } = storeToRefs(store);
   useSeo(
@@ -35,15 +36,4 @@
   </v-container>
 </template>
 
-<style scoped>
-  .explore-wrapper {
-    width: 100%;
-    height: calc(
-      100dvh - 170px
-    ); /* Use dvh for dynamic viewport height on mobile */
-    display: flex;
-    flex-direction: column;
-    padding: 0 8px;
-    scrollbar-width: none;
-  }
-</style>
+<style scoped></style>

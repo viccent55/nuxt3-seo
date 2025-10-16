@@ -75,7 +75,7 @@
 <style scoped lang="scss">
   .swiper {
     width: 100%;
-    max-height: 95vh;
+    max-height: calc(100vh - 120px);
     // min-height: 300px;
   }
 

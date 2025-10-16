@@ -2,6 +2,7 @@
   import type { NavigationItem } from "@/types/item";
   import { dropDownItems3 } from "@/common";
   import useVariable from "@/composables/useVariable";
+  import { NavigationItems } from "@/common";
 
   const emit = defineEmits(["click-menu-item", "click-nav-item"]);
 
@@ -10,28 +11,35 @@
     activeItem: string;
   }>();
 
-  const { store } = useVariable();
+  const { route, store } = useVariable();
+  onMounted(() => {
+    const routeName = NavigationItems.find(
+      (item: EmptyObjectType) => item.href === route.path
+    );
+    if (routeName) {
+      store.mode = routeName.mode;
+    }
+  });
 </script>
 
 <template>
   <v-bottom-navigation
     app
-    height="64"
-    class="footer bg-surface"
+    height="90"
+    class="footer bg-surface app-footer"
     density="comfortable"
   >
-  
     <template
       v-for="item in items"
       :key="item.name"
     >
       <v-btn
         class="channel-wrapper"
-        :class="{ 'text-primary': activeItem === item.mode }"
         variant="text"
         stacked
         style="min-width: 0; padding: 0"
         @click="item.icon === 'Setting' ? null : emit('click-nav-item', item)"
+        color="primary"
       >
         <!-- Dropdown for Setting -->
         <template v-if="item.icon === 'Setting'">
@@ -71,10 +79,7 @@
           />
         </template>
 
-        <span
-          class="text-sm mt-1"
-          :class="{ 'text-primary': store.mode === item.mode }"
-        >
+        <span class="text-sm mt-1">
           {{ item.name }}
         </span>
       </v-btn>
@@ -83,6 +88,16 @@
 </template>
 
 <style scoped lang="scss">
+  /* In your main CSS file or footer component <style> */
+
+  .app-footer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    /* Add padding equal to the bottom safe area inset */
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
   .footer {
     z-index: 16;
     position: fixed;
@@ -104,13 +119,5 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-
-    .v-icon {
-      color: var(--v-theme-on-surface);
-    }
-
-    &.text-primary .v-icon {
-      color: var(--v-theme-primary);
-    }
   }
 </style>

@@ -5,8 +5,10 @@
   const handleClick = () => {
     window.open("https://t.me/HFDHG9985", "_blank");
   };
-
-  onMounted(() => {});
+  const { isNative } = usePlatform();
+  const heightOffset = computed(() => {
+    return isNative.value ? "200px" : "90px";
+  });
 </script>
 
 <template>
@@ -18,8 +20,7 @@
     <v-row
       justify="center"
       align="center"
-      class="h-100"
-      dense
+      class="creator-content-row"
     >
       <v-col
         cols="12"
@@ -51,7 +52,6 @@
 <style scoped>
   .creator-page-wrapper {
     position: relative;
-    height: calc(100vh - 60px);
   }
 
   .creator-background {
@@ -66,6 +66,10 @@
     background-position: center center;
     filter: blur(2px) brightness(0.7);
     z-index: 0;
+  }
+
+  .creator-content-row {
+    height: calc(100dvh - v-bind(heightOffset));
   }
 
   .creator-card {

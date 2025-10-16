@@ -5,12 +5,13 @@
   import { adsClick } from "@/service/advert";
   import { checkPermissions } from "@/hooks/usePermisions";
   import { PERMISSION } from "@/common/permision";
+  import { useDisplay } from "vuetify";
 
   const store = useStore();
   const theme = useTheme();
-  const { isIOS, promptInstall, showInstallPrompt } = usePwaInstall();
   const { route } = useVariable();
   const dialogIosGuide = ref();
+  const { smAndDown } = useDisplay();
 
   const toggleDark = () => {
     store.setTheme(store.darkMode === "dark" ? "light" : "dark");
@@ -36,6 +37,7 @@
     const chan = urlParams.get("chan"); // "cgtt"
     openPage(`${store.configuration?.download_app_url}?chan=${chan || param}`);
   };
+
   const dialogVisible = ref(false);
   const openAds = () => {
     dialogVisible.value = true;
@@ -66,8 +68,8 @@
   <header>
     <v-app-bar
       flat
-      color="surface"
-      class="border-b"
+      :color="smAndDown ? 'primary' : 'surface'"
+      class="border-b app-header"
       height="64"
     >
       <!-- Left: Logo -->
@@ -96,7 +98,6 @@
                 append-inner-icon="mdi-magnify"
                 rounded="xl"
                 color="surface-variant"
-                class="rounded-xl"
                 max-width="400px"
                 @focus="onFocusSearch"
                 @keydown.enter="onFocusSearch"
@@ -244,6 +245,21 @@
 </template>
 
 <style lang="scss" scoped>
+  /* In your main CSS file or header component <style> */
+
+  .app-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    /* Add padding equal to the top safe area inset */
+    padding-top: env(safe-area-inset-top, 0px);
+    /* If you want the height to be dynamic: */
+    height: calc(60px + env(safe-area-inset-top, 0px));
+    /* '56px' is an example of your header's base height */
+  }
+
   .custom-dropdown {
     width: 160px;
   }

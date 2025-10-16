@@ -1,12 +1,10 @@
 <script lang="ts" setup>
-  import { useTheme } from "vuetify";
+  import { useDisplay, useTheme } from "vuetify";
   import type { VSnackbar } from "vuetify/components/VSnackbar";
   import { openLoginDialog } from "@/hooks/useLoginDialog";
   import NotificationDialog from "@/components/NotificationDialog.vue";
-  import { screenMode } from "@/hooks/useScreenMode";
   import NoteDialog from "@/components/explore/NoteDialog.vue";
   import {
-    checkPermissions,
     initPermissions,
     setDefaultPermission,
     setDefaultRejectCallback,
@@ -16,8 +14,7 @@
   import { useNoteDialog } from "./hooks/useNoteDialog";
   import { useNoteArticleDialog } from "./hooks/useNoteArticleDialog";
   import { useNoteAnimeDialog } from "./hooks/useNoteAnimeDialog";
-
-  const { storeUser, store } = useVariable();
+  const { storeUser, store, isMobile } = useVariable();
   const { initAds } = useHome();
   const theme = useTheme();
   const showButton = ref(false);
@@ -128,6 +125,32 @@
     initAds();
     initializeApp();
   });
+
+  // 1. Get client-side display info
+  const { smAndDown } = useDisplay();
+  const { isNative } = usePlatform();
+
+  // 2. Make a server-side guess based on user-agent
+  const headers = useRequestHeaders(["user-agent"]);
+  const isMobileUserAgent = /Mobi|Android|iPhone/i.test(
+    headers["user-agent"] || ""
+  );
+
+  // 3. Use Nuxt's state for a value that persists from server to client
+  const layout = useState<"mobile" | "desktop">("layout", () =>
+    (isMobileUserAgent ?? smAndDown.value) ? "mobile" : "desktop"
+  );
+
+  watch(
+    () => smAndDown.value,
+    () => {
+      layout.value = smAndDown.value ? "mobile" : "desktop";
+    }
+  );
+  // 4. On the client, correct the layout if the initial guess was wrong
+  onMounted(() => {
+    layout.value = smAndDown.value || isNative.value ? "mobile" : "desktop";
+  });
 </script>
 <template>
   <v-snackbar
@@ -135,6 +158,7 @@
     :color="state.color"
     :timeout="state.timeout"
     :location="state.location"
+    style="padding-top: env(safe-area-inset-top, 0px)"
   >
     {{ state.message }}
     <template v-slot:actions>
@@ -149,8 +173,8 @@
       </v-btn>
     </template>
   </v-snackbar>
-  <v-app class="bg-white">
-    <NuxtLayout :name="screenMode == 'phone' ? 'mobile' : 'desktop'">
+  <v-app>
+    <NuxtLayout :name="layout">
       <NuxtLoadingIndicator />
       <NuxtPwaManifest />
       <NuxtPage />

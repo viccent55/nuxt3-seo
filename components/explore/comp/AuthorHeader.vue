@@ -1,6 +1,5 @@
 <script setup lang="ts">
   import Avatar from "@/components/Avatar.vue";
-  import FollowButton from "@/components/global/FollowButton.vue";
   import { type UserInfo } from "@/types/info";
 
   const props = defineProps<{ author: UserInfo }>();

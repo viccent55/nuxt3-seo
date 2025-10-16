@@ -7,6 +7,7 @@
   import useVariable from "@/composables/useVariable";
   import ExploreLoading from "@/components/ExploreLoading.vue";
   import { useNoteArticleDialog } from "~/hooks/useNoteArticleDialog";
+  import { useDisplay } from "vuetify";
 
   const state = reactive({
     data: [] as EmptyArrayType,
@@ -94,6 +95,11 @@
     clearQuery();
     noteDialog.openNoteDialog(id);
   };
+  const { smAndDown } = useDisplay();
+  const { isNative } = usePlatform();
+  const heightOffset = computed(() => {
+    return isNative.value || smAndDown.value ? "220px" : "100px";
+  });
 </script>
 
 <template>
@@ -167,7 +173,7 @@
 <style scoped>
   .article-wrapper {
     width: 100%;
-    max-height: calc(100vh - 100px);
+    max-height: calc(100dvh - v-bind(heightOffset));
     overflow-y: auto;
     padding: 0 12px;
     scrollbar-width: none;

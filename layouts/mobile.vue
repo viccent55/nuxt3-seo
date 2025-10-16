@@ -10,12 +10,10 @@
     if (item.type === "router-link") {
       if (item.href != "/user") {
         store.mode = item.mode;
-        store.channel = "001";
         router.push(item.href);
       } else {
         checkPermissions(PERMISSION.User, () => {
           store.mode = item.mode;
-          store.mode = item.href;
           router.push({ path: `/user/${storeUser.useId}` });
         });
       }
@@ -26,7 +24,7 @@
 </script>
 <template>
   <Header />
-  <v-main class="bg-background">
+  <v-main class="bg-background main-content-wrapper">
     <slot />
   </v-main>
   <Footer
@@ -35,3 +33,12 @@
     @click-nav-item="clickNavigationItem"
   ></Footer>
 </template>
+<style scoped lang="scss">
+  .main-content-wrapper {
+    /* Ensure the content starts below the dynamic header */
+    padding-top: calc(56px + env(safe-area-inset-top, 0px));
+    /* Ensure content ends above the dynamic footer */
+    padding-bottom: calc(50px + env(safe-area-inset-bottom, 0px));
+    /* Use a min-height calculation if the content should always fill the screen */
+  }
+</style>

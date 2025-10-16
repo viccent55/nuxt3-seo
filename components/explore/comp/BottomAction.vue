@@ -64,7 +64,7 @@
     class="bottom-action rounded-br-2xl"
   >
     <v-card-text class="pa-0 mt-1">
-      <div class="d-flex justify-space-between ga-2">
+      <div class="d-flex justify-end ga-2">
         <v-text-field
           ref="inputRef"
           v-model="inputValue"
@@ -76,7 +76,7 @@
           @focus="isFocusing = true"
           class="flex-1"
           min-width="80px"
-          style="height: 32px"
+          max-width="300px"
         />
 
         <v-btn
@@ -147,13 +147,10 @@
 
 <style scoped lang="scss">
   .bottom-action {
-    position: sticky;
-    background-color: rgb(var(--v-theme-surface));
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-    height: 60px;
+    height: 80px;
     display: flex;
     align-items: center;
-    bottom: 0px;
+    padding-bottom: 20px;
   }
 
   .actions-container .v-btn {

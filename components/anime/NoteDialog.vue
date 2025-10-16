@@ -27,7 +27,7 @@
     data: {} as EmptyObjectType,
     comments: [] as EmptyObjectType[],
   });
-
+  const { setStatus } = useCapacitor();
   const snackbar = useSnackbar();
   const onOpenNoteDialog = async () => {
     if (noteDIalogRef.value) noteDIalogRef.value.scrollTop = 0;
@@ -97,9 +97,9 @@
           if (response.errcode == 0) {
             state.data.isStar = !state.data.isStar;
             if (state.data.isStar) {
-              item.collect_count++;
+              item.star_count++;
             } else {
-              item.collect_count--;
+              item.star_count--;
             }
           } else {
             snackbar.showSnackbar(response.info, "warning");
@@ -117,7 +117,13 @@
       });
     },
   };
-  useDialogUXLock(noteDialogVisible);
+  watch(
+    () => noteDialogVisible.value,
+    (val) => {
+      setStatus(val);
+      useDialogUXLock(noteDialogVisible);
+    }
+  );
 </script>
 
 <template>
@@ -131,8 +137,8 @@
     :fullscreen="isMobile"
   >
     <v-card
-      class="overflow-hidden"
       :loading="loading"
+      class="main-container"
     >
       <v-card-title v-if="isMobile">
         <div class="d-flex justify-end">
@@ -159,14 +165,8 @@
             cols="12"
             md="7"
             lg="8"
-            :style="{
-              height: isMobile ? '200px' : '100%',
-            }"
           >
-            <v-card
-              flat
-              class=""
-            >
+            <v-card flat>
               <v-card-title
                 class="text-break text-wrap overflow-visible whitespace-normal"
               >
@@ -188,7 +188,6 @@
             md="5"
             lg="4"
             class="d-flex flex-column"
-            style="max-height: calc(100vh - 40px)"
           >
             <div
               class="d-flex justify-end mt-2 py-0 pr-4"
@@ -305,12 +304,10 @@
   </v-dialog>
 </template>
 
-<style scoped>
-  .v-dialog > .v-overlay__content {
-    overflow: hidden;
-  }
-  .media-container {
-    width: 100%;
-    height: 100%;
+<style scoped lang="scss">
+  .main-container {
+    /* Add padding equal to the top safe area inset */
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: 10px;
   }
 </style>

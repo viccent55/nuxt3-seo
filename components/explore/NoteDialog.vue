@@ -10,19 +10,21 @@
   import { adsClick } from "@/service/advert";
   import { getCurrentDomain } from "@/service";
   import { useDialogUXLock } from "@/hooks/useDialogUXLock";
+  import { useDisplay } from "vuetify";
 
   const Swiper = defineAsyncComponent(() => import("../Swiper.vue"));
   const noteDIalogRef = useTemplateRef("note-dialog");
   const bottomRef = useTemplateRef("bottomActions");
-  const { storeUser, store, onCopy, route, isMobile } = useVariable();
+  const { storeUser, store, onCopy, route } = useVariable();
   const loading = ref(false);
   const noteDialog = useNoteDialog();
   const state = reactive({
     data: {} as EmptyObjectType,
     comments: [] as EmptyObjectType[],
   });
-
   const snackbar = useSnackbar();
+  const { setStatus } = useCapacitor();
+
   const onOpenNoteDialog = async () => {
     if (noteDIalogRef.value) noteDIalogRef.value.scrollTop = 0;
     loading.value = true;
@@ -52,7 +54,7 @@
 
   const getComments = async () => {
     if (!noteDialog.id.value) return;
-    const response = await $fetch<EmptyObjectType>(`/api/explore/comments`, {
+    const response: EmptyObjectType = await $fetch(`/api/explore/comments`, {
       method: "POST",
       body: dataEncrypt({
         id: noteDialog.id.value,
@@ -156,12 +158,21 @@
       });
     },
   };
+  const { smAndDown } = useDisplay();
+  const { isNative } = usePlatform();
   const getStyle = computed(() => {
-    return isMobile.value
-      ? "max-height: calc(80vh - 280px)"
-      : "max-height: calc(100vh - 40px";
+    return isNative.value || smAndDown.value
+      ? "max-height: calc(90dvh - 320px); overflow-y: auto"
+      : "max-height: calc(100dvh - 110px); overflow-y: scroll";
   });
-  useDialogUXLock(noteDialogVisible);
+
+  watch(
+    () => noteDialogVisible.value,
+    (val) => {
+      setStatus(val);
+      useDialogUXLock(noteDialogVisible);
+    }
+  );
 </script>
 
 <template>
@@ -171,13 +182,13 @@
     persistent
     height="100%"
     @after-enter="onOpenNoteDialog"
-    :fullscreen="isMobile"
+    :fullscreen="smAndDown"
   >
     <v-card
-      class="overflow-hidden"
+      class="overflow-hidden main-contain"
       :loading="loading"
     >
-      <v-card-title v-if="isMobile">
+      <v-card-title v-if="smAndDown">
         <v-toolbar
           class="d-flex justify-space-between align-center mb-2 py-0 rounded"
           density="compact"
@@ -209,13 +220,13 @@
           md="7"
           lg="8"
           class="d-flex align-center justify-center"
-          :class="isMobile ? '' : 'border-e-thin'"
+          :class="smAndDown ? '' : 'border-e-thin'"
         >
           <Swiper
             ref="swiperInstanceRef"
             v-if="state.data?.fields"
             :media-info="state.data.fields"
-            :height="isMobile ? '250px' : '100%'"
+            :height="smAndDown ? '220px' : '100%'"
           />
         </v-col>
 
@@ -224,12 +235,11 @@
           cols="12"
           md="5"
           lg="4"
-          class="d-flex flex-column"
           :style="getStyle"
         >
           <div
             class="d-flex justify-space-between align-center mb-2 py-0 pr-4"
-            v-if="!isMobile"
+            v-if="!smAndDown"
           >
             <AuthorHeader
               :author="{
@@ -334,29 +344,27 @@
               </template>
             </div>
           </div>
-          <BottomAction
-            ref="bottomActions"
-            :action="state.data"
-            :total="state.data?.comment_count"
-            @click-like="handle.clickLike"
-            @click-star="handle.clickStar"
-            @click-reply="handle.clickReply"
-            @click-share="handle.clickShare"
-            @click-reply-to="handle.clickReplyTo"
-            class="px-4 py-6"
-          />
         </v-col>
       </v-row>
+      <v-card-action class="border-t px-md-4 px-2">
+        <BottomAction
+          ref="bottomActions"
+          :action="state.data"
+          :total="state.data?.comment_count"
+          @click-like="handle.clickLike"
+          @click-star="handle.clickStar"
+          @click-reply="handle.clickReply"
+          @click-share="handle.clickShare"
+          @click-reply-to="handle.clickReplyTo"
+        />
+      </v-card-action>
     </v-card>
   </v-dialog>
 </template>
 
-<style scoped>
-  .v-dialog > .v-overlay__content {
-    overflow: hidden;
-  }
-  .media-container {
-    width: 100%;
-    height: auto;
+<style scoped lang="scss">
+  .main-contain {
+    /* Add padding equal to the top safe area inset */
+    padding-top: env(safe-area-inset-top, 0px);
   }
 </style>

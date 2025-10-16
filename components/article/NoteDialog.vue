@@ -13,17 +13,18 @@ _
   import { adsClick } from "@/service/advert";
   import { getCurrentDomain } from "@/service";
   import { useDialogUXLock } from "@/hooks/useDialogUXLock";
+  import { useDisplay } from "vuetify";
 
   const noteDIalogRef = useTemplateRef("note-dialog");
   const bottomRef = useTemplateRef("bottomActions");
-  const { store, onCopy, route, isMobile } = useVariable();
+  const { store, onCopy, route } = useVariable();
   const loading = ref(false);
   const noteDialog = useNoteArticleDialog();
   const state = reactive({
     data: {} as EmptyObjectType,
     comments: [] as EmptyObjectType[],
   });
-
+  const { setStatus } = useCapacitor();
   const snackbar = useSnackbar();
   const onOpenNoteDialog = async () => {
     if (noteDIalogRef.value) noteDIalogRef.value.scrollTop = 0;
@@ -101,9 +102,9 @@ _
           if (response.errcode == 0) {
             state.data.isStar = !state.data.isStar;
             if (state.data.isStar) {
-              item.collect_count++;
+              item.star_count++;
             } else {
-              item.collect_count--;
+              item.star_count--;
             }
           } else {
             snackbar.showSnackbar(response.info, "warning");
@@ -136,12 +137,19 @@ _
       });
     },
   };
+  const { smAndDown } = useDisplay();
   const getStyle = computed(() =>
-    isMobile.value
-      ? "scrollbar-width: none;"
-      : "max-height: calc(100vh - 200px); overflow-y: scroll"
+    smAndDown.value
+      ? "scrollbar-width: none; margin-bottom: 10px"
+      : "max-height: calc(100vh - 260px); overflow-y: scroll"
   );
-  useDialogUXLock(noteDialogVisible);
+  watch(
+    () => noteDialogVisible.value,
+    (val) => {
+      setStatus(val);
+      useDialogUXLock(noteDialogVisible);
+    }
+  );
 </script>
 
 <template>
@@ -152,10 +160,13 @@ _
     height="100%"
     @after-enter="onOpenNoteDialog"
     scrollable
-    :fullscreen="isMobile"
+    :fullscreen="smAndDown"
   >
-    <v-card :loading="loading">
-      <v-card-title v-if="isMobile">
+    <v-card
+      :loading="loading"
+      class="main-contain"
+    >
+      <v-card-title v-if="smAndDown">
         <div class="d-flex justify-end">
           <v-btn
             icon
@@ -179,7 +190,7 @@ _
             md="7"
             lg="8"
             class="d-flex justify-center"
-            :class="isMobile ? '' : 'border-e-thin'"
+            :class="smAndDown ? '' : 'border-e-thin'"
           >
             <v-card
               flat
@@ -208,7 +219,7 @@ _
           >
             <div
               class="d-flex justify-end mt-2 py-0 pr-4"
-              v-if="!isMobile"
+              v-if="!smAndDown"
             >
               <v-btn
                 icon
@@ -221,7 +232,7 @@ _
 
             <!-- Scrollable Content Area -->
             <div
-              class="flex-grow-1 px-4 pb-10 pb-md-0"
+              class="flex-grow-1 px-4 pb-4 pb-md-0"
               ref="note-dialog"
             >
               <div class="text-body-2 text-grey-darken-1 mb-4">
@@ -302,7 +313,7 @@ _
           </v-col>
         </v-row>
       </v-card-text>
-      <v-card-action class="d-flex justify-end border-t">
+      <v-card-action class="border-t px-md-4 px-2">
         <BottomAction
           ref="bottomActions"
           :action="state.data"
@@ -319,12 +330,9 @@ _
   </v-dialog>
 </template>
 
-<style scoped>
-  .v-dialog > .v-overlay__content {
-    overflow: hidden;
-  }
-  .media-container {
-    width: 100%;
-    height: auto;
+<style scoped lang="scss">
+  .main-contain {
+    /* Add padding equal to the top safe area inset */
+    padding-top: env(safe-area-inset-top, 0px);
   }
 </style>

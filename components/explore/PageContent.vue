@@ -9,6 +9,7 @@
   import { openPage } from "~/service";
   import { itemAdClick } from "@/service/advert";
   import useVariable from "@/composables/useVariable";
+  import { useDisplay } from "vuetify";
 
   const noteDialog = useNoteDialog();
   const feeds = ref<ExploreFeedInfo[]>([]);
@@ -159,6 +160,11 @@
       }
     }
   );
+  const { smAndDown } = useDisplay();
+  const { isNative } = usePlatform();
+  const heightOffset = computed(() => {
+    return isNative.value || smAndDown.value ? "250px" : "170px";
+  });
 </script>
 
 <template>
@@ -179,4 +185,13 @@
   </div>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+  .explore-wrapper {
+    width: 100%; /* Default height for desktop */
+    height: calc(100dvh - v-bind(heightOffset));
+    display: flex;
+    flex-direction: column;
+    padding: 0 8px;
+    scrollbar-width: none;
+  }
+</style>
