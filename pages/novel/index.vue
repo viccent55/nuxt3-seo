@@ -28,9 +28,15 @@
 <template>
   <v-container
     fluid
-    class="pa-2"
+    style="min-height: 70vh"
+    class="pa-2 d-flex justify-center align-center fill-height"
   >
-    main page
+    <v-empty-state
+      headline="喔唷"
+      title="暂无数据"
+      text="该分类下没有内容"
+      icon="mdi-folder-open-outline"
+    ></v-empty-state>
   </v-container>
 </template>
 
