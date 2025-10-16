@@ -35,7 +35,7 @@
         page: state.page,
         limit: 30,
       };
-      const response = await $fetch<EmptyObjectType>("/api/article/select", {
+      const response: EmptyObjectType = await $fetch("/api/article/select", {
         method: "POST",
         body: dataEncrypt(request),
       });

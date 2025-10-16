@@ -19,8 +19,6 @@
     adsClick(item.id);
   };
 
-  onMounted(() => {});
-
   watch(
     () => route.params.id,
     (newCid) => {

@@ -1,5 +1,5 @@
 export async function login(params: object) {
-  const res = await $fetch<EmptyObjectType>("/api/auth/login", {
+  const res = await $fetch("/api/auth/login", {
     method: "POST",
     body: dataEncrypt(params),
   });
@@ -9,7 +9,7 @@ export async function login(params: object) {
   return res;
 }
 export async function prepareRegister(params: object) {
-  const res = await $fetch<EmptyObjectType>("/api/auth/prepare-register", {
+  const res = await $fetch("/api/auth/prepare-register", {
     method: "POST",
     body: dataEncrypt(params),
   });
@@ -19,7 +19,7 @@ export async function prepareRegister(params: object) {
   return res;
 }
 export async function register(params: object) {
-  const res = await $fetch<EmptyObjectType>("/api/auth/register", {
+  const res = await $fetch("/api/auth/register", {
     method: "POST",
     body: dataEncrypt(params),
   });
@@ -39,7 +39,7 @@ export async function forgotPassword(params: object) {
   return res;
 }
 export async function resetPassword(params: object) {
-  const res = await $fetch<EmptyObjectType>("/api/auth/set-password", {
+  const res = await $fetch("/api/auth/set-password", {
     method: "POST",
     body: dataEncrypt(params),
   });
@@ -50,7 +50,7 @@ export async function resetPassword(params: object) {
 }
 
 export async function changePassword(params: object) {
-  const res = await $fetch<EmptyObjectType>("/api/auth/change-password", {
+  const res = await $fetch("/api/auth/change-password", {
     method: "POST",
     body: dataEncrypt(params),
   });
