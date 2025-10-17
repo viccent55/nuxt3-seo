@@ -42,10 +42,9 @@
         @click="
           () => {
             emit('click-nav-item', item);
-            store.mode = item.mode;
           }
         "
-        :active-color="store.mode == item.mode ? 'primary' : undefined"
+        :class="store.mode == item.mode ? 'text-primary' : undefined"
       >
         <v-icon
           :icon="`mdi-${item.icon.toLowerCase()}`"
