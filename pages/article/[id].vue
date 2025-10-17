@@ -168,6 +168,33 @@
             :content="articleDetail?.content"
             :skeleton="16"
           />
+          <v-sheet
+            class="pa-4"
+            color="transparent"
+          >
+            <div class="text-body-2">
+              该文章由
+              <NuxtLink
+                to="/"
+                class="text-primary"
+              >
+                {{ store.configuration?.website_name }}
+              </NuxtLink>
+              发布， 转载请注明来源并附上原文链接：
+              <NuxtLink
+                :to="`/article/${articleDetail?.id}`"
+                class="text-primary"
+              >
+                {{ articleDetail?.title }}
+              </NuxtLink>
+            </div>
+
+            <div class="mt-4 text-body-1">
+              版权声明：本文著作权归 吃瓜百科所有，
+              任何媒体、网站或个人未经授权不得复制、转载、摘编或以其他方式使用，
+              否则将依法追究其法律责任。
+            </div>
+          </v-sheet>
           <div class="my-4 d-flex ga-2 justify-end">
             <div
               v-if="articleDetail?.tags?.length"
