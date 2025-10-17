@@ -12,14 +12,21 @@
   }>();
 
   const { route, store } = useVariable();
-  onMounted(() => {
-    const routeName = NavigationItems.find(
-      (item: EmptyObjectType) => item.routeName == route.name
-    );
-    if (routeName) {
-      store.mode = routeName.mode;
+
+  // Watch for route changes to keep the footer in sync.
+  watch(
+    () => route.name,
+    (name) => {
+      // Find a matching navigation item.
+      // First, try for an exact match (e.g., 'index').
+      // If not found, try matching the base of the route name (e.g., 'category' for 'category-id').
+      const navItem = NavigationItems.find((item) => {
+        const routeBaseName = String(name).split("-")[0];
+        return item.routeName === name || item.routeName === routeBaseName;
+      });
+      if (navItem) store.mode = navItem.mode;
     }
-  });
+  );
 </script>
 
 <template>
@@ -28,7 +35,7 @@
     height="90"
     class="footer bg-surface app-footer"
     density="comfortable"
-    mandatory="force"
+    :model-value="store.mode"
   >
     <template
       v-for="item in items"
@@ -37,14 +44,13 @@
       <v-btn
         class="channel-wrapper"
         variant="text"
-        stacked
         style="min-width: 0; padding: 0"
         @click="
           () => {
             emit('click-nav-item', item);
           }
         "
-        :class="store.mode == item.mode ? 'text-primary' : undefined"
+        :class="store.mode === item.mode ? 'text-primary' : undefined"
       >
         <v-icon
           :icon="`mdi-${item.icon.toLowerCase()}`"

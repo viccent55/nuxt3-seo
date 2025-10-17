@@ -24,14 +24,15 @@ export const useApiFetch = async (
         headers: {
           Authorization: `Bearer ${refreshToken}`,
         },
-        body: dataEncrypt({ refresh_token: refreshToken }),
+        body: dataEncrypt({}),
       }
     );
     const decrypted = decrypt(data.value?.data);
+    console.log(decrypted.data);
     // res.data = decrypted;
     if (decrypted.data) {
-      accessToken = decrypted.data.data.access_token;
-      refreshToken = decrypted.data.data.refresh_token;
+      accessToken = decrypted.data.access_token;
+      refreshToken = decrypted.data.refresh_token;
       return true;
     } else {
       // Refresh failed, logout
@@ -43,7 +44,7 @@ export const useApiFetch = async (
 
   // The core request logic
   const makeRequest = async (attemptedRefresh = false) => {
-    const res: EmptyObjectType = await $fetch<EmptyObjectType>(url, {
+    const res: EmptyObjectType = await $fetch(url, {
       ...options,
       headers: {
         ...options.headers,
@@ -53,8 +54,11 @@ export const useApiFetch = async (
     if (res.data) {
       return res;
     }
+    console.log(res);
     if (
-      (res.errcode === 401013 || res.errcode === 401015) &&
+      (res.errcode === 401013 ||
+        res.errcode === 401015 ||
+        res.errcode == 401011) &&
       !attemptedRefresh
     ) {
       const refreshed = await refreshAccessToken();
