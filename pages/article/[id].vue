@@ -348,7 +348,7 @@
         <v-card
           class="mt-5 elevation-0 d-none d-sm-block"
           color="transparent"
-          v-if="articleDetail?.subject_posts.length"
+          v-if="articleDetail?.subject_posts?.length"
         >
           <h3 class="text-subtitle-1 font-weight-medium mb-2">涉及专题</h3>
           <v-sheet class="pa-3">
