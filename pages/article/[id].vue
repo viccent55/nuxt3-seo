@@ -169,10 +169,10 @@
             :skeleton="16"
           />
           <v-sheet
-            class="pa-4"
+            class="py-4"
             color="transparent"
           >
-            <div class="text-body-2">
+            <div class="text-subtitle-2">
               该文章由
               <NuxtLink
                 to="/"
@@ -189,7 +189,7 @@
               </a>
             </div>
 
-            <div class="mt-4 text-body-1">
+            <div class="mt-4 text-subtitle-1">
               版权声明：本文著作权归 吃瓜百科所有，
               任何媒体、网站或个人未经授权不得复制、转载、摘编或以其他方式使用，
               否则将依法追究其法律责任。
