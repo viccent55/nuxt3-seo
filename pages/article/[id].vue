@@ -181,12 +181,12 @@
                 {{ store.configuration?.website_name }}
               </NuxtLink>
               发布， 转载请注明来源并附上原文链接：
-              <NuxtLink
-                :to="`/article/${articleDetail?.id}`"
+              <a
+                :href="`/article/${articleDetail?.id}`"
                 class="text-primary"
               >
                 {{ articleDetail?.title }}
-              </NuxtLink>
+              </a>
             </div>
 
             <div class="mt-4 text-body-1">
@@ -195,21 +195,21 @@
               否则将依法追究其法律责任。
             </div>
           </v-sheet>
-          <div class="my-4 d-flex ga-2 justify-end">
-            <div
+          <v-chip-group
+            column
+            class="mb-4"
+          >
+            <v-chip
+              class="px-2 bg-none text-grey"
+              size="small"
               v-if="articleDetail?.tags?.length"
               v-for="(tag, index) in articleDetail?.tags"
               :key="index"
+              :to="`/article/${tag.id}`"
             >
-              <v-chip
-                class="px-2 bg-none text-grey"
-                size="small"
-                :to="`/article/${tag.id}`"
-              >
-                {{ tag.name }}
-              </v-chip>
-            </div>
-          </div>
+              {{ tag.name }}
+            </v-chip>
+          </v-chip-group>
           <!-- Ads after content -->
           <v-row>
             <v-col

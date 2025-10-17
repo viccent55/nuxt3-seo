@@ -5,7 +5,7 @@
     color="transparent"
   >
     <!-- Comment Header -->
-    <h2 class="text-h6 mb-4">评论</h2>
+    <h2 class="text-h6 mb-4">添加新评论</h2>
 
     <!-- Comment Input -->
     <v-textarea
@@ -21,10 +21,10 @@
         color="primary"
         elevation="0"
         @click="submitComment"
-        width="100"
-        size="small"
+        block
+        size="default"
       >
-        发布
+        提交评论
       </v-btn>
     </div>
 
