@@ -7,8 +7,8 @@
   const store = useStore();
   const { configuration } = storeToRefs(store);
   useSeo(
-    computed(() => configuration.value.home_title),
-    computed(() => configuration.value?.home_description),
+    computed(() => configuration.value?.home_title),
+    computed(() => configuration.value?.home_keywords),
     computed(() => configuration.value?.home_keywords)
   );
 </script>

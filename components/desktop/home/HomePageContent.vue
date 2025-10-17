@@ -64,7 +64,7 @@
   useSeo(
     computed(() => (page.value == "1" ? configuration.value.home_title : "")),
     computed(() =>
-      page.value == "1 " ? configuration.value?.home_description : ""
+      page.value == "1" ? configuration.value?.home_description : ""
     ),
     computed(() =>
       page.value == "1" ? configuration.value?.home_keywords : ""
