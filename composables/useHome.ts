@@ -3,7 +3,7 @@ import { useStore } from "@/store";
 import { firstVisitInApp } from "@/service/app";
 import { generateCode } from "@/utils/toolsValidate";
 import { newVisitor, activeVisitor } from "@/service/explore";
-// import { getMemberActive } from "@/api/member";
+import { getMemberActive } from "@/service/user";
 import useVariable from "./useVariable";
 import { useLocalStorage } from "@vueuse/core";
 
@@ -73,6 +73,7 @@ export default function useHome() {
 
   const getActiveUser = async () => {
     if (!process.client) return;
+
     try {
       const lastCalledKey = "activeTimeUser";
       const lastCalled = useLocalStorage<string>(lastCalledKey, null);
@@ -87,7 +88,7 @@ export default function useHome() {
           mid: storeUser.useId,
           platform: getTypeDevice(),
         };
-        // await getMemberActive(request);
+        await getMemberActive(request);
         lastCalled.value = now.toString();
       }
     } catch (e) {

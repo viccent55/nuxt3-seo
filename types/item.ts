@@ -15,6 +15,7 @@ export interface NavigationItem {
   icon: string;
   mode: string;
   href: string;
+  routeName: string;
 }
 
 //浏览频道选项

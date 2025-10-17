@@ -1,10 +1,15 @@
 <script setup lang="ts">
   import { ref, watchEffect } from "vue";
 
-  const props = defineProps<{
-    action: Record<string, any>;
-    total: number;
-  }>();
+  const props = withDefaults(
+    defineProps<{
+      action: Record<string, any>;
+      total?: number;
+    }>(),
+    {
+      total: 0,
+    }
+  );
 
   const emits = defineEmits(["click-like", "click-star", "click-share"]);
 

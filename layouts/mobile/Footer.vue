@@ -14,7 +14,7 @@
   const { route, store } = useVariable();
   onMounted(() => {
     const routeName = NavigationItems.find(
-      (item: EmptyObjectType) => item.href === route.path
+      (item: EmptyObjectType) => item.routeName == route.name
     );
     if (routeName) {
       store.mode = routeName.mode;
@@ -28,6 +28,7 @@
     height="90"
     class="footer bg-surface app-footer"
     density="comfortable"
+    mandatory="force"
   >
     <template
       v-for="item in items"
@@ -38,47 +39,18 @@
         variant="text"
         stacked
         style="min-width: 0; padding: 0"
-        @click="item.icon === 'Setting' ? null : emit('click-nav-item', item)"
-        color="primary"
+        @click="
+          () => {
+            emit('click-nav-item', item);
+            store.mode = item.mode;
+          }
+        "
+        :active-color="store.mode == item.mode ? 'primary' : undefined"
       >
-        <!-- Dropdown for Setting -->
-        <template v-if="item.icon === 'Setting'">
-          <v-menu
-            location="top"
-            transition="fade-transition"
-          >
-            <template #activator="{ props }">
-              <v-btn
-                v-bind="props"
-                icon
-              >
-                <v-icon
-                  :icon="`mdi-${item.icon.toLowerCase()}`"
-                  size="24"
-                />
-              </v-btn>
-            </template>
-
-            <v-list density="compact">
-              <v-list-item
-                v-for="(sub, index) in dropDownItems3"
-                :key="index"
-                @click="emit('click-menu-item', sub)"
-              >
-                <v-list-item-title>{{ sub.name }}</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </template>
-
-        <!-- Normal button -->
-        <template v-else>
-          <v-icon
-            :icon="`mdi-${item.icon.toLowerCase()}`"
-            size="24"
-          />
-        </template>
-
+        <v-icon
+          :icon="`mdi-${item.icon.toLowerCase()}`"
+          size="24"
+        />
         <span class="text-sm mt-1">
           {{ item.name }}
         </span>

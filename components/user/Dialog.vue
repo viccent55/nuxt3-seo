@@ -68,10 +68,20 @@
         snackbar.showSnackbar("昵称不能为空", "warning", "top");
         return;
       }
-      const response = await setUserInfo(userInfo);
-      console.log(response);
+
+      // Only include the avatar if it's a new Base64 encoded image.
+      const avatarPayload = userInfo.avatar.startsWith("data:image/")
+        ? userInfo.avatar
+        : "";
+      const request = {
+        nickname: userInfo.nickname,
+        avatar: avatarPayload,
+        slogan: userInfo.slogan,
+      };
+      const response = await setUserInfo(request);
+
       if (response.errcode === 0) {
-        snackbar.showSnackbar("✅ 用户信息已更新！", "success");
+        snackbar.showSnackbar("✅ 用户信息已更新！", "success", 'top');
       } else {
         snackbar.showSnackbar(response.info, "error", "top");
       }

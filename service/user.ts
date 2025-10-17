@@ -64,3 +64,14 @@ export async function changePassword(params: EmptyObjectType) {
   }
   return res;
 }
+
+export async function getMemberActive(params: EmptyObjectType) {
+  const res: EmptyObjectType = await useApiFetch("/api/user/user-active", {
+    method: "POST",
+    body: dataEncrypt(params),
+  });
+  if (res.data) {
+    return decrypt(res.data);
+  }
+  return res;
+}

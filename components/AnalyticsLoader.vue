@@ -25,7 +25,7 @@
     const doc = parser.parseFromString(scriptContent, "text/html");
     const scripts = Array.from(doc.querySelectorAll("script"));
 
-    if (scripts.length > 0) {
+    if (scripts?.length > 0) {
       scripts.forEach((script) => {
         const newScript = document.createElement("script");
         if (script.src) {

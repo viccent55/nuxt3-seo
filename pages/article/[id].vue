@@ -252,7 +252,7 @@
 
             <div>
               <div class="text-subtitle-2 mb-2">
-                共 {{ state.comments.length }} 条评论
+                共 {{ state.comments?.length }} 条评论
               </div>
               <v-card
                 v-for="(app, index) in store.detailAds"

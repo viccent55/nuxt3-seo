@@ -71,6 +71,7 @@ export const NavigationItems: NavigationItem[] = [
     type: "router-link",
     mode: "0",
     href: "/",
+    routeName: "index",
   },
   {
     name: "吃瓜",
@@ -78,6 +79,7 @@ export const NavigationItems: NavigationItem[] = [
     type: "router-link",
     mode: "1",
     href: "/article",
+    routeName: "article",
   },
   {
     name: "动漫",
@@ -85,6 +87,7 @@ export const NavigationItems: NavigationItem[] = [
     type: "router-link",
     mode: "2",
     href: "/anime",
+    routeName: "anime",
   },
   {
     name: "创作者",
@@ -92,6 +95,7 @@ export const NavigationItems: NavigationItem[] = [
     type: "router-link",
     mode: "3",
     href: "/creator",
+    routeName: "creator",
   },
   {
     name: "小說",
@@ -99,13 +103,15 @@ export const NavigationItems: NavigationItem[] = [
     type: "router-link",
     mode: "4",
     href: "/novel",
+    routeName: "novel",
   },
   {
     name: "我的",
     icon: "account-outline",
     type: "router-link",
-    mode: "6",
+    mode: "5",
     href: "/user",
+    routeName: "user-id",
   },
 ];
 

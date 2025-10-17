@@ -17,24 +17,22 @@
   const isNoMore = ref(false);
   const { clearQuery, route, store, storeUser, debounce } = useVariable();
   const exploreContainerRef = ref<{ element: HTMLElement } | null>(null);
-  const { generateVisitCode } = useHome();
   const page = ref(Number(route.params.page) || 1);
+  const { setScrollableElement, scrollTop } = useScrollManager();
 
   /* ---------------------------
      1. Centralized fetch function
   ---------------------------- */
   async function fetchFeeds(pageNum: number) {
     try {
-      if (storeUser.visitCode === "") {
-        generateVisitCode();
-      }
       const request = {
         visitor: storeUser.visitCode,
         page: pageNum,
         limit: 30,
       };
-
+      console.log("fetchFeeds request:", request);
       const response = await getExploreFeeds(request);
+      console.log("fetchFeeds response:", response);
       return response.data || [];
     } catch (err) {
       console.error("fetchFeeds failed:", err);
@@ -50,12 +48,14 @@
   const { data: initialFeeds, pending } = await useAsyncData(
     `explore-feed-${page.value}`,
     () => fetchFeeds(page.value),
-
-    { transform: (data) => data || [] } // SSR-safe
+    {
+      transform: (data) => data || [],
+    } // SSR-safe
   );
 
   // Assign only once
   if (initialFeeds.value?.length) {
+    feeds.value = [];
     feeds.value = initialFeeds.value;
   }
 
@@ -63,40 +63,31 @@
      3. Infinite Scroll
   ---------------------------- */
   const onLoadMore = async () => {
-    if (pending.value || isNoMore.value || isLoadMore.value) return;
+    if (pending.value || isNoMore.value) return;
     isLoadMore.value = true;
-    const container = exploreContainerRef.value?.element;
-    const isWindowScroll =
-      !container || container.scrollHeight <= container.clientHeight;
-    const lastScrollTop = isWindowScroll
-      ? window.scrollY
-      : (container?.scrollTop ?? 0);
+    page.value++;
     try {
-      page.value++;
       const newFeeds = await fetchFeeds(page.value);
-      if (Array.isArray(newFeeds) && newFeeds.length > 0) {
-        // ✅ Reassign feeds while keeping previous scroll
+      if (newFeeds?.length) {
         feeds.value = [...feeds.value, ...newFeeds];
-        await nextTick();
-        // Smooth scroll restoration
-        requestAnimationFrame(() => {
-          if (isWindowScroll) {
-            window.scrollTo({ top: lastScrollTop, behavior: "auto" });
-          } else if (container) {
-            container.scrollTop = lastScrollTop;
-          }
-        });
+        await nextTick(); // wait for DOM to update
       } else {
         isNoMore.value = true;
       }
-    } catch (err) {
-      console.error("Failed to load more feeds:", err);
-      // Optional: show user feedback
+    } catch (error) {
+      console.error("Error loading more feeds:", error);
     } finally {
       isLoadMore.value = false;
     }
   };
 
+  onMounted(() => {
+    const el = exploreContainerRef.value?.element;
+    if (el) {
+      setScrollableElement(el);
+      el.addEventListener("scroll", () => (scrollTop.value = el.scrollTop));
+    }
+  });
   /* ---------------------------
      4. Click handlers
   ---------------------------- */
@@ -123,11 +114,15 @@
       openPage(`${getCurrentDomain()}/#/user/${item.id}`);
     },
   };
-
+  let isInitualized = false;
   const { reset } = useInfiniteScroll(
     () => exploreContainerRef.value?.element,
     () => {
       // load more
+      if (!isInitualized) {
+        isInitualized = true;
+        return;
+      }
       onLoadMore();
     },
     {

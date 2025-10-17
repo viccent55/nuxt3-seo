@@ -305,11 +305,14 @@
             />
 
             <div>
-              <div class="text-subtitle-2 mb-2">
-                共 {{ state.comments.length }} 条评论
+              <div
+                class="text-subtitle-2 mb-2"
+                v-if="state.comments?.length"
+              >
+                共 {{ state.comments?.length }} 条评论
               </div>
               <v-card
-                v-for="(app, index) in store.detailAds"
+                v-for="(app, index) in store?.detailAds"
                 :key="index"
                 class="pa-0 my-2"
               >

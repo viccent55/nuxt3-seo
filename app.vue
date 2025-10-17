@@ -14,16 +14,18 @@
   import { useNoteDialog } from "./hooks/useNoteDialog";
   import { useNoteArticleDialog } from "./hooks/useNoteArticleDialog";
   import { useNoteAnimeDialog } from "./hooks/useNoteAnimeDialog";
+  import { createId } from "@paralleldrive/cuid2";
   const { storeUser, store, isMobile } = useVariable();
   const { initAds } = useHome();
   const theme = useTheme();
   const showButton = ref(false);
   const notificationDialogRef = ref<InstanceType<typeof NotificationDialog>>();
-  const { generateVisitCode, initVisitor } = useHome();
+  const { initVisitor } = useHome();
   const noteDialog = useNoteDialog();
   const noteArticleDetail = useNoteArticleDialog();
   const noteAnimeDetail = useNoteAnimeDialog();
   const permissions = [PERMISSION.Visitor, PERMISSION.User];
+  const { scrollableElement, scrollTop } = useScrollManager();
 
   initPermissions(permissions);
 
@@ -102,13 +104,17 @@
     window.location.reload();
   };
 
-  onBeforeMount(async () => {
-    if (!storeUser.visitCode) {
-      generateVisitCode();
-    } else {
-      initVisitor();
-    }
+  // --- Server & Client Safe Initialization ---
+  // Use a cookie to persist the visitor code across server and client.
+  const visitCodeCookie = useCookie("visit-code", {
+    maxAge: 60 * 60 * 24 * 365, // 1 year
   });
+  // If the cookie is not set, generate a new code. This runs on the server or client.
+  if (!visitCodeCookie.value) {
+    visitCodeCookie.value = createId();
+  }
+  // Sync the cookie value to the Pinia store so it's available everywhere.
+  storeUser.visitCode = visitCodeCookie.value;
 
   try {
     await store.getConfiguration();
@@ -124,6 +130,7 @@
     }, 500);
     initAds();
     initializeApp();
+    initVisitor()
   });
 
   // 1. Get client-side display info
@@ -141,15 +148,19 @@
     (isMobileUserAgent ?? smAndDown.value) ? "mobile" : "desktop"
   );
 
-  watch(
-    () => smAndDown.value,
-    () => {
-      layout.value = smAndDown.value ? "mobile" : "desktop";
-    }
-  );
   // 4. On the client, correct the layout if the initial guess was wrong
   onMounted(() => {
     layout.value = smAndDown.value || isNative.value ? "mobile" : "desktop";
+  });
+
+  const scrollToTop = () => {
+    scrollableElement.value?.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // The button's visibility is now driven by the scrollTop value
+  // from our composable, which is updated by the active scrolling component.
+  watch(scrollTop, (value) => {
+    showButton.value = value > 200;
   });
 </script>
 <template>
@@ -182,10 +193,17 @@
     <!-- Floating FAB -->
     <div>
       <v-fab
-        v-if="showButton"
+        class="fab"
+        icon="mdi-refresh"
+        size="small"
+        @click="reloadNuxtApp()"
+      />
+      <v-fab
         class="scroll-to-top"
         size="small"
         icon="mdi-arrow-up"
+        v-show="showButton"
+        @click="scrollToTop"
       />
     </div>
     <LoginDialog></LoginDialog>
@@ -214,10 +232,10 @@
   }
 
   .fab {
-    bottom: 70px;
+    bottom: 100px;
   }
   .scroll-to-top {
-    bottom: 120px;
+    bottom: 150px;
   }
 
   /* Desktop overrides */

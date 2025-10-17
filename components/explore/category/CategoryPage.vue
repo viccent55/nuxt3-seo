@@ -15,8 +15,8 @@
   const isNoMore = ref(false);
   const { clearQuery, route, store, storeUser } = useVariable();
   const exploreContainerRef = ref<{ element: HTMLElement } | null>(null);
-  const { generateVisitCode } = useHome();
   const page = ref(Number(route.params.page) || 1);
+  const { setScrollableElement, scrollTop } = useScrollManager();
 
   /* ---------------------------
    1. Centralized fetch function
@@ -24,16 +24,14 @@
   const cat_id = computed(() => route.params.id);
   async function fetchFeeds(pageNum: number) {
     try {
-      if (storeUser.visitCode === "") {
-        generateVisitCode();
-      }
-
+      
       const request = {
         visitor: storeUser.visitCode,
         page: pageNum,
         limit: 30,
         category: cat_id.value,
       };
+      console.log(storeUser.visitCode)
       const response = await getExploreFeeds(request);
       return response.data || [];
     } catch (err) {
@@ -114,6 +112,13 @@
       canLoadMore: () => !isLoadMore.value && !isNoMore.value,
     }
   );
+  onMounted(() => {
+    const el = exploreContainerRef.value?.element;
+    if (el) {
+      setScrollableElement(el);
+      el.addEventListener("scroll", () => (scrollTop.value = el.scrollTop));
+    }
+  });
 </script>
 
 <template>
