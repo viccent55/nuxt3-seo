@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-  import { NuxtLink } from "#components";
   import { useStore } from "~/store";
 
   const store = useStore();
@@ -86,7 +85,7 @@
           align="center"
         >
           <v-sheet>
-            {{ store.configuration?.copyright || "--" }}
+            <div v-html="store.configuration?.copyright"></div>
           </v-sheet>
         </v-col>
       </v-row>
