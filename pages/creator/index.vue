@@ -69,7 +69,7 @@
   }
 
   .creator-content-row {
-    height: calc(100dvh - v-bind(heightOffset));
+    height: calc(100vh - v-bind(heightOffset));
   }
 
   .creator-card {

@@ -162,8 +162,8 @@
   const { isNative } = usePlatform();
   const getStyle = computed(() => {
     return isNative.value || smAndDown.value
-      ? "max-height: calc(90dvh - 350px); overflow-y: auto"
-      : "max-height: calc(100dvh - 110px); overflow-y: scroll";
+      ? "max-height: calc(90vh - 350px); overflow-y: auto"
+      : "max-height: calc(100vh - 110px); overflow-y: scroll";
   });
 
   watch(
