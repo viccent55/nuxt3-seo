@@ -53,10 +53,14 @@
     computed(() => articleDetail.value?.seo_description),
     computed(() => articleDetail.value?.seo_keywords)
   );
+
   onMounted(() => {
     updateFloatingBarPosition();
-
     onViewCount();
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   });
   useEventListener(window, "resize", updateFloatingBarPosition);
 </script>
@@ -148,7 +152,7 @@
           </v-sheet>
 
           <!-- Ads before content -->
-          <v-row>
+          <v-row dense>
             <v-col
               cols="12"
               v-for="(item, index) in store.advertisement
@@ -168,6 +172,18 @@
             :content="articleDetail?.content"
             :skeleton="16"
           />
+          <v-chip-group column>
+            <v-chip
+              class="px-2 bg-none text-grey"
+              size="small"
+              v-if="articleDetail?.tags?.length"
+              v-for="(tag, index) in articleDetail?.tags"
+              :key="index"
+              :to="`/article/${tag.id}`"
+            >
+              {{ tag.name }}
+            </v-chip>
+          </v-chip-group>
           <v-sheet
             class="py-4"
             color="transparent"
@@ -195,23 +211,9 @@
               否则将依法追究其法律责任。
             </div>
           </v-sheet>
-          <v-chip-group
-            column
-            class="mb-4"
-          >
-            <v-chip
-              class="px-2 bg-none text-grey"
-              size="small"
-              v-if="articleDetail?.tags?.length"
-              v-for="(tag, index) in articleDetail?.tags"
-              :key="index"
-              :to="`/article/${tag.id}`"
-            >
-              {{ tag.name }}
-            </v-chip>
-          </v-chip-group>
+
           <!-- Ads after content -->
-          <v-row>
+          <v-row dense>
             <v-col
               cols="12"
               v-for="(item, index) in store.advertisement

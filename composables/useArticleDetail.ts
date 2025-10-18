@@ -28,8 +28,6 @@ export default function useArticleDetail() {
     }
   );
 
- 
-
   const isLiked = ref(false);
   const onLikeArticle = async () => {
     if (!accessToken.value) {
