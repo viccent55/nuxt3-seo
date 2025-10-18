@@ -138,7 +138,7 @@
   >
     <v-card
       :loading="loading"
-      class="main-container"
+      class="main-contain"
     >
       <v-card-title v-if="isMobile">
         <div class="d-flex justify-end">
@@ -305,9 +305,8 @@
 </template>
 
 <style scoped lang="scss">
-  .main-container {
-    /* Add padding equal to the top safe area inset */
-    padding-top: var(safe-area-inset-top, 0px);
-    padding-bottom: 10px;
+  .main-contain {
+    // padding-top: env(safe-area-inset-top, 0px);
+    padding-top: var(--safe-area-inset-top, 0px);
   }
 </style>

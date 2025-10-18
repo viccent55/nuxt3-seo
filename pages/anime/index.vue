@@ -99,7 +99,14 @@
   const { smAndDown } = useDisplay();
   const { isNative } = usePlatform();
   const heightOffset = computed(() => {
-    return isNative.value || smAndDown.value ? "220px" : "100px";
+    if (!isNative.value) {
+      if (smAndDown.value) {
+        return "140px";
+      } else {
+        return "100px";
+      }
+    }
+    return "220px";
   });
 </script>
 

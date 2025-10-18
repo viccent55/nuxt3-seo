@@ -59,9 +59,7 @@
       </v-slide-group-item>
     </v-slide-group>
     <!-- Ads Grid -->
-    <div
-      class="grid grid-cols-5 md:grid-cols-10 gap-1 justify-items-center mb-5"
-    >
+    <div class="gap-1 mb-3">
       <a
         v-for="(app, index) in store?.homeAds"
         :key="index"

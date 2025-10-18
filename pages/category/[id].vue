@@ -20,7 +20,14 @@
   );
   const { isNative } = usePlatform();
   const heightOffset = computed(() => {
-    return isNative.value || smAndDown.value ? "250px" : "170px";
+    if (!isNative.value) {
+      if (smAndDown.value) {
+        return "220px";
+      } else {
+        return "170px";
+      }
+    }
+    return "250px";
   });
 </script>
 
