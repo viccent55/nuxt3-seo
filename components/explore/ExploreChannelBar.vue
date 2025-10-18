@@ -4,7 +4,6 @@
   import useVariable from "@/composables/useVariable";
   import { adsClick } from "@/service/advert";
 
-
   defineProps<{
     items: ExploreChannelItem[];
     activeValue: string | number;

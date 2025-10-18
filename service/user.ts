@@ -36,8 +36,8 @@ export async function setUserInfo(params: object) {
     method: "POST",
     body: dataEncrypt(params),
   });
-
-  return decrypt(res.data);
+  if (res.data) return decrypt(res.data);
+  return res;
 }
 export async function retrySendEmailCode(params: EmptyObjectType) {
   const res: EmptyObjectType = await useApiFetch("/api/user/send-email-code", {

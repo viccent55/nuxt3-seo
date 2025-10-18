@@ -30,7 +30,7 @@
         page: pageNum,
         limit: 30,
       };
-      console.log("fetchFeeds request:", request);
+   
       const response = await getExploreFeeds(request);
       console.log("fetchFeeds response:", response);
       return response.data || [];

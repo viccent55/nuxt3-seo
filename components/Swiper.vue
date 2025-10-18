@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, defineAsyncComponent, defineExpose } from "vue";
+  import { ref, defineAsyncComponent } from "vue";
   import Image from "@/components/Image.vue";
 
   const VideoPlayer = defineAsyncComponent(

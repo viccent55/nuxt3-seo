@@ -36,9 +36,9 @@
 <style scoped lang="scss">
   .main-content-wrapper {
     /* Ensure the content starts below the dynamic header */
-    padding-top: calc(56px + env(safe-area-inset-top, 0px));
+    padding-top: calc(64px + var(--safe-area-inset-top, 0px));
     /* Ensure content ends above the dynamic footer */
-    padding-bottom: calc(50px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(90px + var(--safe-area-inset-bottom, 0px));
     /* Use a min-height calculation if the content should always fill the screen */
   }
 </style>

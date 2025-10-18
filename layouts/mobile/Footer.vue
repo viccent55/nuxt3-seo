@@ -72,8 +72,7 @@
     left: 0;
     right: 0;
     z-index: 10;
-    /* Add padding equal to the bottom safe area inset */
-    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-bottom: var(--safe-area-inset-bottom, 0px);
   }
   .footer {
     z-index: 16;

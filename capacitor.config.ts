@@ -8,17 +8,11 @@ const config: CapacitorConfig = {
   appId: "redbook.xhltbes.app",
   appName: "小红书成人版",
   webDir: ".output/public", // ✅ Nuxt build folder (for production build)
-  server: isDev
-    ? {
-        // 👇 Use local Vite dev server for live reload
-        url: LOCAL_URL,
-        cleartext: true,
-      }
-    : {
-        // 👇 Use production site when in production
-        url: "https://redbook.xhltbes.com",
-        cleartext: true,
-      },
+  server: {
+    // 👇 Use production site when in production
+    url: "https://redbook.xhltbes.com",
+    cleartext: true,
+  },
   plugins: {
     SplashScreen: {
       launchShowDuration: 3000, // ms

@@ -368,6 +368,7 @@
 <style scoped lang="scss">
   .main-contain {
     /* Add padding equal to the top safe area inset */
-    padding-top: env(safe-area-inset-top, 0px);
+    // padding-top: env(safe-area-inset-top, 0px);
+    padding-top: var(--safe-area-inset-top, 0px);
   }
 </style>

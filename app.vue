@@ -15,6 +15,7 @@
   import { useNoteArticleDialog } from "./hooks/useNoteArticleDialog";
   import { useNoteAnimeDialog } from "./hooks/useNoteAnimeDialog";
   import { createId } from "@paralleldrive/cuid2";
+
   const { storeUser, store, isMobile } = useVariable();
   const { initAds } = useHome();
   const theme = useTheme();
@@ -130,7 +131,7 @@
     }, 500);
     initAds();
     initializeApp();
-    initVisitor()
+    initVisitor();
   });
 
   // 1. Get client-side display info
@@ -169,7 +170,7 @@
     :color="state.color"
     :timeout="state.timeout"
     :location="state.location"
-    style="padding-top: env(safe-area-inset-top, 0px)"
+    style="padding-top: var(safe-area-inset-top, 0px)"
   >
     {{ state.message }}
     <template v-slot:actions>
@@ -223,7 +224,9 @@
     <AnalyticsLoader :analytics="store.configuration?.analytics" />
   </v-app>
 </template>
-<style scoped>
+
+<style scoped lang="scss">
+ 
   .fab,
   .scroll-to-top {
     position: fixed;

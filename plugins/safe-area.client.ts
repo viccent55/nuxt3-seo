@@ -17,8 +17,8 @@ export default defineNuxtPlugin(() => {
   };
 
   const initStatusBar = async () => {
-    await StatusBar.setBackgroundColor({ color: "#00000000" }); // transparent
-    await StatusBar.setStyle({ style: Style.Dark }); // dark text/icons
+    await StatusBar.setBackgroundColor({ color: "#00000000" });
+    await StatusBar.setStyle({ style: Style.Dark });
   };
 
   if (Capacitor.isPluginAvailable("SafeArea")) {
@@ -26,6 +26,6 @@ export default defineNuxtPlugin(() => {
     SafeArea.addListener("safeAreaChanged", (data: any) =>
       setSafeArea(data.insets)
     );
-    initStatusBar();
+    // initStatusBar();
   }
 });
