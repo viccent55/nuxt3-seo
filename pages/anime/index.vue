@@ -6,6 +6,7 @@
   import useVariable from "@/composables/useVariable";
   import { useNoteAnimeDialog } from "~/hooks/useNoteAnimeDialog";
   import { useDisplay } from "vuetify";
+  const { setScrollableElement, scrollTop } = useScrollManager();
 
   const state = reactive({
     data: [] as EmptyArrayType,
@@ -107,6 +108,13 @@
       }
     }
     return "220px";
+  });
+  onMounted(() => {
+    const el = containerRef.value;
+    if (el) {
+      setScrollableElement(el);
+      el.addEventListener("scroll", () => (scrollTop.value = el.scrollTop));
+    }
   });
 </script>
 
