@@ -22,6 +22,14 @@ export default defineNuxtConfig({
         { name: "twitter:card", content: "summary_large_image" },
       ],
       link: [
+        {
+          rel: "preconnect",
+          href: "https://redbook.xhltbes.com",
+        },
+        {
+          rel: "https://redbook.xhltbes.com/",
+          href: "https://redbook.xhltbes.com",
+        },
         { rel: "icon", type: "image/x-icon", href: "/icons/icon-72.webp" },
         {
           rel: "icon",
