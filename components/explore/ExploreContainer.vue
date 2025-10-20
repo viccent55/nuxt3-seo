@@ -30,11 +30,11 @@
 
   const feedsContainer = ref<HTMLElement | null>(null);
   const masonryRef = ref<any>(null);
-  const { lg, md } = useDisplay();
+  const { lg, md, smAndDown } = useDisplay();
 
   // Masonry layout properties
   const minColumns = computed(() => {
-    if (screenMode.value == "phone") return 2;
+    if (smAndDown.value) return 2;
     if (screenMode.value == "pad") return 3;
     if (lg.value || md.value) return 4;
     return 5;

@@ -22,7 +22,7 @@
   const heightOffset = computed(() => {
     if (!isNative.value) {
       if (smAndDown.value) {
-        return "220px";
+        return "210px";
       } else {
         return "170px";
       }

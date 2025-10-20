@@ -30,7 +30,6 @@
         page: pageNum,
         limit: 30,
       };
-   
       const response = await getExploreFeeds(request);
       console.log("fetchFeeds response:", response);
       return response.data || [];
@@ -160,7 +159,7 @@
   const heightOffset = computed(() => {
     if (!isNative.value) {
       if (smAndDown.value) {
-        return "220px";
+        return "210px";
       } else {
         return "170px";
       }
@@ -190,7 +189,8 @@
 <style scoped lang="scss">
   .explore-wrapper {
     width: 100%; /* Default height for desktop */
-    height: calc(100vh - v-bind(heightOffset));
+    max-width: calc(100vh - v-bind(heightOffset));
+    height: calc(100dvh - v-bind(heightOffset));
     display: flex;
     flex-direction: column;
     padding: 0 8px;

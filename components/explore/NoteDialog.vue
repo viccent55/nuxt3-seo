@@ -226,7 +226,7 @@
             ref="swiperInstanceRef"
             v-if="state.data?.fields"
             :media-info="state.data.fields"
-            :height="smAndDown ? '250px' : '100%'"
+            :height="smAndDown ? 'calc(30vh - 50px)' : '100%'"
           />
         </v-col>
 

@@ -189,6 +189,7 @@
   .article-wrapper {
     width: 100%;
     max-height: calc(100vh - v-bind(heightOffset));
+    height: calc(100dvh - v-bind(heightOffset));
     overflow-y: auto;
     padding: 0 12px;
     scrollbar-width: none;
