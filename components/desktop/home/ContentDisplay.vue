@@ -260,7 +260,7 @@
       <SidebarSection
         v-if="actorFilters.length > 0"
         title="热门人物"
-        :goto="actorFilters?.length > 0 ? `/actor/${actorFilters[0].id}` : ''"
+        :goto="actorFilters?.length > 0 ? `/actor` : ''"
         class="d-none d-sm-block"
       >
         <v-card
@@ -310,7 +310,7 @@
       </SidebarSection>
       <SidebarSection
         title="热门专题"
-        :goto="subjectsCard?.length > 0 ? `/subject/${subjectsCard[0].id}` : ''"
+        :goto="subjectsCard?.length > 0 ? `/subject` : ''"
         class="d-none d-sm-block"
       >
         <DesktopActorCard :items="subjectsCard" />
@@ -396,7 +396,7 @@
 
       <SidebarSection
         title="热门标签"
-        :goto="tagTops?.length > 0 ? `/tag/${tagTops[0].id}` : ''"
+        :goto="tagTops?.length > 0 ? `/tag` : ''"
         class="d-none d-sm-block"
       >
         <v-row

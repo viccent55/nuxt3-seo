@@ -35,7 +35,7 @@
         class="text-caption"
         :to="goto"
       >
-        MORE
+        查看更多
         <v-icon>mdi-chevron-right</v-icon>
       </v-btn>
     </div>
