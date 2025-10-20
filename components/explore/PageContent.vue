@@ -189,7 +189,7 @@
 <style scoped lang="scss">
   .explore-wrapper {
     width: 100%; /* Default height for desktop */
-    max-width: calc(100vh - v-bind(heightOffset));
+    max-height: calc(100vh - v-bind(heightOffset));
     height: calc(100dvh - v-bind(heightOffset));
     display: flex;
     flex-direction: column;
