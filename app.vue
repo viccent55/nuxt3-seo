@@ -4,6 +4,8 @@
   import { openLoginDialog } from "@/hooks/useLoginDialog";
   import NotificationDialog from "@/components/NotificationDialog.vue";
   import NoteDialog from "@/components/explore/NoteDialog.vue";
+  import UpdateVersion from "@/components/UpdateVersion.vue";
+
   import {
     initPermissions,
     setDefaultPermission,
@@ -122,17 +124,6 @@
   } catch (error) {
     handleFetchError(error);
   }
-  onMounted(() => {
-    theme.change(store.darkMode);
-    setTimeout(() => {
-      noteDialog.queryNoteDialogId();
-      noteArticleDetail.queryNoteDialogId();
-      noteAnimeDetail.queryNoteDialogId();
-    }, 500);
-    initAds();
-    initializeApp();
-    initVisitor();
-  });
 
   // 1. Get client-side display info
   const { smAndDown } = useDisplay();
@@ -149,19 +140,28 @@
     (isMobileUserAgent ?? smAndDown.value) ? "mobile" : "desktop"
   );
 
-  // 4. On the client, correct the layout if the initial guess was wrong
-  onMounted(() => {
-    layout.value = smAndDown.value || isNative.value ? "mobile" : "desktop";
-  });
-
-  const scrollToTop = () => {
-    scrollableElement.value?.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  // The button's visibility is now driven by the scrollTop value
   // from our composable, which is updated by the active scrolling component.
   watch(scrollTop, (value) => {
     showButton.value = value > 200;
+  });
+  const scrollToTop = () => {
+    scrollableElement.value?.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  const updateVersionRef = ref();
+
+  onMounted(() => {
+    layout.value = smAndDown.value || isNative.value ? "mobile" : "desktop";
+    theme.change(store.darkMode);
+    setTimeout(() => {
+      noteDialog.queryNoteDialogId();
+      noteArticleDetail.queryNoteDialogId();
+      noteAnimeDetail.queryNoteDialogId();
+    }, 500);
+    initAds();
+    initializeApp();
+    if (store.localVersion != store.configuration?.version) {
+      updateVersionRef.value?.openNoteDialog();
+    }
   });
 </script>
 <template>
@@ -212,6 +212,8 @@
       ref="notificationDialogRef"
       @retry="reloadPage"
     />
+    <UpdateVersion ref="updateVersionRef" />
+
     <NoteDialog />
     <ArticleNoteDialog />
     <AnimeNoteDialog />
@@ -226,7 +228,6 @@
 </template>
 
 <style scoped lang="scss">
- 
   .fab,
   .scroll-to-top {
     position: fixed;
