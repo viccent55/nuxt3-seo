@@ -1,9 +1,8 @@
 import { dataEncrypt } from "~/utils/crypto";
 
 export async function getPositionAds(position: number) {
-  const res: EmptyObjectType = await $fetch("/api/ads/position", {
+  const res: EmptyObjectType = await $fetch(`/api/ads/${position}`, {
     method: "GET",
-    query: { position },
   });
   const item = decrypt(res?.data);
   return item;
