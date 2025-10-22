@@ -26,7 +26,6 @@
         id: _id.value,
       };
       const response = await detail(request);
-      console.log(response.data);
       if (response.data) {
         state.data = response.data;
       }

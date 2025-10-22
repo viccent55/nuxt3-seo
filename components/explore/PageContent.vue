@@ -31,7 +31,6 @@
         limit: 30,
       };
       const response = await getExploreFeeds(request);
-      console.log("fetchFeeds response:", response);
       return response.data || [];
     } catch (err) {
       console.error("fetchFeeds failed:", err);

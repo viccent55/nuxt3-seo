@@ -24,14 +24,12 @@
   const cat_id = computed(() => route.params.id);
   async function fetchFeeds(pageNum: number) {
     try {
-      
       const request = {
         visitor: storeUser.visitCode,
         page: pageNum,
         limit: 30,
         category: cat_id.value,
       };
-      console.log(storeUser.visitCode)
       const response = await getExploreFeeds(request);
       return response.data || [];
     } catch (err) {
