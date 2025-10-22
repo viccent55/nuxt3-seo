@@ -26,9 +26,8 @@
     props.user.isFollow = !props.user.isFollow;
   }
 
-  const onCopyUsername = async () => {
-    const url = `${getCurrentDomain()}/user/${props.user.id}`;
-    await onCopy(url);
+  const onCopyCode = async (code: string) => {
+    await onCopy(code);
     snackbar.showSnackbar("用户名已复制！", "success");
   };
 </script>
@@ -79,7 +78,7 @@
                 size="small"
                 class="ml-1 cursor-pointer"
                 color="primary"
-                @click="onCopyUsername"
+                @click="onCopyCode(user.invite_code)"
               >
                 mdi-content-copy
               </v-icon>

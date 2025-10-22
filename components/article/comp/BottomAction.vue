@@ -152,10 +152,9 @@
 
 <style scoped lang="scss">
   .bottom-action {
-    height: 80px;
     display: flex;
     align-items: center;
-    padding-bottom: 20px;
+    width: 100%;
   }
 
   .actions-container .v-btn {

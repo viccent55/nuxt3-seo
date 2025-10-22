@@ -288,7 +288,7 @@
         </v-row>
       </v-card-text>
 
-      <v-card-action class="d-flex justify-end border-t">
+      <v-card-actions class="d-flex justify-end border-t">
         <BottomAction
           ref="bottomActions"
           :action="state.data"
@@ -299,7 +299,7 @@
           @click-share="handle.clickShare"
           class="px-4"
         />
-      </v-card-action>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>

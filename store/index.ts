@@ -9,7 +9,7 @@ export const useStore = defineStore("store", {
       categories: [],
       darkMode: "light",
       configuration: <EmptyObjectType>{},
-      localVersion: 0,
+      localVersion: 1,
       homePopupAds: [] as EmptyArrayType,
       recommendAds: [] as EmptyArrayType,
       detailAppAds: [] as EmptyArrayType,

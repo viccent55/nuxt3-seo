@@ -141,7 +141,7 @@ _
   const getStyle = computed(() =>
     smAndDown.value
       ? "scrollbar-width: none; margin-bottom: 10px"
-      : "max-height: calc(100vh - 260px); overflow-y: scroll"
+      : "max-height: calc(100vh - 200px); overflow-y: scroll"
   );
   watch(
     () => noteDialogVisible.value,
@@ -313,7 +313,7 @@ _
           </v-col>
         </v-row>
       </v-card-text>
-      <v-card-action class="border-t px-md-4 px-2">
+      <v-card-actions class="border-t">
         <BottomAction
           ref="bottomActions"
           :action="state.data"
@@ -325,7 +325,7 @@ _
           @click-reply-to="handle.clickReplyTo"
           class="px-4"
         />
-      </v-card-action>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>

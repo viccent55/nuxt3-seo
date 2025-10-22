@@ -349,7 +349,7 @@
           </div>
         </v-col>
       </v-row>
-      <v-card-action class="border-t px-md-4 px-2">
+      <v-card-actions class="border-t">
         <BottomAction
           ref="bottomActions"
           :action="state.data"
@@ -360,7 +360,7 @@
           @click-share="handle.clickShare"
           @click-reply-to="handle.clickReplyTo"
         />
-      </v-card-action>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
