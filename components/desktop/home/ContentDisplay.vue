@@ -94,14 +94,17 @@
     const combined: any[] = [];
     let adIndex = 0;
 
-    props.latests.forEach((item, index) => {
+    const latests = props.latests || [];
+    const ads = props.adverts?.POSITION_HOME_LIST || [];
+
+    latests.forEach((item, index) => {
       combined.push({ type: "latest", data: item });
 
       // every 3 latests, insert 1 ad (if available)
-      if ((index + 1) % 3 === 0 && props.adverts.POSITION_HOME_LIST[adIndex]) {
+      if ((index + 1) % 3 === 0 && ads[adIndex]) {
         combined.push({
           type: "ad",
-          data: props.adverts.POSITION_HOME_LIST[adIndex],
+          data: ads[adIndex],
         });
         adIndex++;
       }
@@ -204,7 +207,7 @@
         id="latest-articles"
       />
       <v-sheet color="transparent">
-        <div v-if="mixedList.length">
+        <div v-if="mixedList?.length">
           <template
             v-for="(item, index) in mixedList"
             :key="item.type + '-' + index"
@@ -217,7 +220,7 @@
                 class="text-decoration-none"
               >
                 <ArticleList
-                  :item="item.data"
+                  :item="item?.data"
                   class="cursor-pointer"
                 />
               </NuxtLink>
