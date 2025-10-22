@@ -88,6 +88,27 @@
     // `/` or `/page_1`, `/page_2`, etc.
     return route.path === "/" || /^\/page_\d+$/.test(route.path);
   });
+
+  // 🧠 computed mix list: insert ad after every 3 latest
+  const mixedList = computed(() => {
+    const combined: any[] = [];
+    let adIndex = 0;
+
+    props.latests.forEach((item, index) => {
+      combined.push({ type: "latest", data: item });
+
+      // every 3 latests, insert 1 ad (if available)
+      if ((index + 1) % 3 === 0 && props.adverts.POSITION_HOME_LIST[adIndex]) {
+        combined.push({
+          type: "ad",
+          data: props.adverts.POSITION_HOME_LIST[adIndex],
+        });
+        adIndex++;
+      }
+    });
+
+    return combined;
+  });
 </script>
 <template>
   <v-row>
@@ -183,36 +204,40 @@
         id="latest-articles"
       />
       <v-sheet color="transparent">
-        <div v-if="latests.length">
+        <div v-if="mixedList.length">
           <template
-            v-for="(item, index) in latests"
-            :key="'latest-' + index"
+            v-for="(item, index) in mixedList"
+            :key="item.type + '-' + index"
           >
-            <!-- Article -->
-            <NuxtLink
-              :to="`/article/${item.id}`"
-              @click.stop
-              class="text-decoration-none"
-            >
-              <ArticleList
-                :item="item"
-                class="cursor-pointer"
-              />
-            </NuxtLink>
+            <!-- 📰 Latest Article -->
+            <template v-if="item.type === 'latest'">
+              <NuxtLink
+                :to="`/article/${item.data.id}`"
+                @click.stop
+                class="text-decoration-none"
+              >
+                <ArticleList
+                  :item="item.data"
+                  class="cursor-pointer"
+                />
+              </NuxtLink>
 
-            <v-divider class="my-3 mx-2"></v-divider>
+              <v-divider class="my-3 mx-2" />
+            </template>
 
-            <!-- Inject advert if 'sort' matches current index -->
-            <template v-if="getAdvertAtIndex(index)">
+            <!-- 📢 Advert -->
+            <template v-else-if="item.type === 'ad'">
               <div class="my-4 text-center">
                 <AdvertSlot
-                  :advert="getAdvertAtIndex(index)"
+                  :advert="item.data"
                   class="latest-ads"
                 />
               </div>
+              <v-divider class="my-3 mx-2" />
             </template>
           </template>
         </div>
+
         <template v-else>
           <div class="text-center pa-10">加载中或暂无内容...</div>
         </template>
@@ -237,8 +262,8 @@
         dense
       >
         <v-col
-          cols="6"
-          md="6"
+          cols="12"
+          md="12"
           v-for="(item, index) in store.advertisement?.POSITION_HOME_BOTTOM"
           :key="index"
         >
@@ -448,8 +473,8 @@
   }
   .home-button-ads {
     width: 100%;
-    max-width: 373px;
-    aspect-ratio: 373 / 78; // auto-calc height from width
+    // max-width: 373px;
+    // aspect-ratio: 373 / 78;
     object-fit: contain;
   }
   .right-ads-ratio {

@@ -146,13 +146,13 @@
           <!-- Summary -->
           <v-sheet
             color="#EEF0F8"
-            class="pa-4 my-5"
+            class="pa-4 my-3"
           >
             {{ articleDetail?.intro }}
           </v-sheet>
 
           <!-- Ads before content -->
-          <v-row dense>
+          <v-row no-gutters>
             <v-col
               cols="12"
               v-for="(item, index) in store.advertisement
@@ -213,7 +213,7 @@
           </v-sheet>
 
           <!-- Ads after content -->
-          <v-row dense>
+          <v-row no-gutters>
             <v-col
               cols="12"
               v-for="(item, index) in store.advertisement

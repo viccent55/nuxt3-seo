@@ -85,7 +85,10 @@
           align="center"
         >
           <v-sheet>
-            <div v-html="store.configuration?.copyright"></div>
+            <div
+              class="f13"
+              v-html="store.configuration?.copyright"
+            ></div>
           </v-sheet>
         </v-col>
       </v-row>

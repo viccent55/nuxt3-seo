@@ -3,7 +3,7 @@
   definePageMeta({
     keepalive: true,
   });
- 
+
   const { postFilter, actorFilter, tagTop, comments, subjectFilter, store } =
     useHome();
 
@@ -68,7 +68,7 @@
     :actor-filters="actorFilter?.items"
     :post-filters="postFilter?.items"
     :tag-tops="tagTop?.items"
-    :comments="comments"
+    :comments="comments?.items"
     :adverts="store.advertisement"
     :base-path="`/category_${catpage}_`"
   />

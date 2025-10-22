@@ -47,7 +47,12 @@
               v-if="comment.member?.avatar"
               :src="comment.member.avatar"
             />
-            <v-icon v-else>mdi-account-circle</v-icon>
+            <v-img
+              v-else
+              cover
+              src="/logo.png"
+            />
+            <!-- <v-icon v-else>mdi-account-circle</v-icon> -->
           </v-avatar>
 
           <!-- Comment Content -->

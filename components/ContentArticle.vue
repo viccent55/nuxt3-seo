@@ -95,7 +95,7 @@
 
 <template>
   <div
-    class="mt-5 text-body-1 article-content"
+    class="mt-2 text-body-1 article-content"
     style="max-width: 100%"
   >
     <!-- Raw/original content while decrypting -->
