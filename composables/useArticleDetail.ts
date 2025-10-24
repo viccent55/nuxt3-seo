@@ -34,7 +34,7 @@ export default function useArticleDetail() {
       return storeDialog.onLogin();
     }
     try {
-      const { data: response, error } = await useApiFetch("/api/article/like", {
+      await useApiFetch("/api/article/like", {
         method: "POST",
         body: {
           id: route.params.id,
@@ -81,6 +81,7 @@ export default function useArticleDetail() {
       },
     });
   };
+
   return {
     articleDetail,
     pending,

@@ -83,8 +83,10 @@
             variant="tonal"
           >
             <v-img
-              width="130"
               src="/logo.png"
+              lazy-src="/logo.png"
+              width="130"
+              alt="Logo"
             />
           </v-btn>
 

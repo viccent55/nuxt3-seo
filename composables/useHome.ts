@@ -101,7 +101,7 @@ export default function useHome() {
       [POSITION_DETAIL_RECOMMEND_APP]: "POSITION_DETAIL_RECOMMEND_APP",
     };
 
-    const adsItems = advertData.value.data;
+    const adsItems = advertData.value?.data;
 
     // Ensure store.advertisement exists
     if (!store.advertisement) {

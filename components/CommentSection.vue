@@ -1,3 +1,51 @@
+<script setup lang="ts">
+  import { useGlobalDialog } from "~/store/globalDialog";
+
+  const route = useRoute();
+  const storeDialog = useGlobalDialog();
+  const commentText = ref("");
+  const snackbar = useSnackbar();
+  const { data, refresh } = await useFetch("/api/comment", {
+    method: "POST",
+    body: {
+      id: route.params.id,
+    },
+    watch: [() => route.params.id],
+    transform: (res: EmptyObjectType) => {
+      return {
+        items: res.data,
+      };
+    },
+  });
+
+  const submitComment = async () => {
+    if (!commentText.value.trim()) return;
+    const access_token = useCookie("access_token");
+    const refresh_token = useCookie("refresh_token");
+    if (!access_token.value && !refresh_token.value) {
+      return storeDialog.onLogin();
+    }
+    try {
+      const { data: commentRes } = await useApiFetch("/api/comment/post", {
+        method: "POST",
+        body: {
+          pid: 0,
+          post_id: route.params.id,
+          text: commentText.value,
+        },
+      });
+      if (commentRes?.value.errcode === 0) {
+        snackbar.showSnackbar("成功!", "success", "center center");
+        refresh();
+      }
+      commentText.value = "";
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  onMounted(() => {});
+</script>
+
 <template>
   <v-card
     class="pa-4"
@@ -31,7 +79,7 @@
     <v-divider />
     <!-- Comment List -->
     <div v-if="data?.items?.length">
-      <div
+      <template
         v-for="(comment, index) in data?.items"
         :key="index"
         class="d-flex flex-column mt-4"
@@ -110,62 +158,33 @@
         <div class="mt-5">
           <v-divider v-if="index < data?.items?.length - 1" />
         </div>
-      </div>
+      </template>
     </div>
 
-    <div
-      v-else
-      class="text-grey text-body-2 mt-5"
-    >
-      暂无评论 ...
+    <div v-else>
+      <template
+        v-for="i in 3"
+        :key="i"
+      >
+        <div class="d-flex mt-4">
+          <!-- Avatar -->
+          <v-avatar
+            size="40"
+            class="mr-4"
+            border
+          >
+            <v-skeleton-loader type="avatar" />
+          </v-avatar>
+
+          <!-- Comment Content -->
+          <div class="flex-grow-1">
+            <v-skeleton-loader type="text@2" />
+          </div>
+        </div>
+        <div class="mt-5">
+          <v-divider v-if="i < 3" />
+        </div>
+      </template>
     </div>
   </v-card>
 </template>
-
-<script setup lang="ts">
-  import { useGlobalDialog } from "~/store/globalDialog";
-
-  const route = useRoute();
-  const storeDialog = useGlobalDialog();
-  const commentText = ref("");
-  const snackbar = useSnackbar();
-  const { data, refresh } = await useFetch("/api/comment", {
-    method: "POST",
-    body: {
-      id: route.params.id,
-    },
-    watch: [() => route.params.id],
-    transform: (res: EmptyObjectType) => {
-      return {
-        items: res.data,
-      };
-    },
-  });
-
-  const submitComment = async () => {
-    if (!commentText.value.trim()) return;
-    const access_token = useCookie("access_token");
-    const refresh_token = useCookie("refresh_token");
-    if (!access_token.value && !refresh_token.value) {
-      return storeDialog.onLogin();
-    }
-    try {
-      const { data: commentRes } = await useApiFetch("/api/comment/post", {
-        method: "POST",
-        body: {
-          pid: 0,
-          post_id: route.params.id,
-          text: commentText.value,
-        },
-      });
-      if (commentRes?.value.errcode === 0) {
-        snackbar.showSnackbar("成功!", "success", "center center");
-        refresh();
-      }
-      commentText.value = "";
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  onMounted(() => {});
-</script>

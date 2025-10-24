@@ -6,7 +6,6 @@
   import Breadcrumbs from "~/components/desktop/Breadcrumbs.vue";
   import ArticleListItem from "~/components/desktop/ArticleListItem.vue";
   import { useEventListener } from "@vueuse/core";
-  import CommentComponent from "./comment.vue";
 
   const mainContentCol = ref();
   const { formatTime, store } = useVariable();
@@ -28,7 +27,6 @@
     onLikeArticle,
     onCommentClick,
     onCollect,
-    commentSection,
     onViewCount,
     isLiked,
     isCollected,
@@ -147,6 +145,7 @@
           <v-sheet
             color="#EEF0F8"
             class="pa-4 my-3"
+            rounded="lg"
           >
             {{ articleDetail?.intro }}
           </v-sheet>
@@ -155,7 +154,7 @@
           <v-row no-gutters>
             <v-col
               cols="12"
-              v-for="(item, index) in store.advertisement
+              v-for="(item, index) in store?.advertisement
                 ?.POSITION_DETAIL_AFTER_TITLE"
               :key="index"
             >
@@ -172,11 +171,13 @@
             :content="articleDetail?.content"
             :skeleton="16"
           />
-          <v-chip-group column>
+          <v-chip-group
+            column
+            v-if="articleDetail?.tags?.length"
+          >
             <v-chip
               class="px-2 bg-none text-grey"
               size="small"
-              v-if="articleDetail?.tags?.length"
               v-for="(tag, index) in articleDetail?.tags"
               :key="index"
               :to="`/article/${tag.id}`"
@@ -226,27 +227,10 @@
                 class="detail-ads-ratio"
               />
             </v-col>
+            <v-col cols="12">
+              <CommentSection />
+            </v-col>
           </v-row>
-
-          <!-- <div class="d-flex justify-center ga-5">
-            <v-btn
-              v-if="articleDetail?.prev"
-              elevation="0"
-              color="info"
-              :to="`/article/${articleDetail?.prev.id}`"
-            >
-              上一篇：文章标题文章
-            </v-btn>
-            <v-btn
-              v-if="articleDetail?.next"
-              elevation="0"
-              color="info"
-              :to="`/article/${articleDetail?.next.id}`"
-            >
-              上一篇：文章标题文章
-            </v-btn>
-          </div> -->
-          <CommentComponent ref="commentSection" />
         </v-card>
         <div
           class="position-fixed"
