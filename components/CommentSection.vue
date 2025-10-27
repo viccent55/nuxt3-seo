@@ -5,7 +5,7 @@
   const storeDialog = useGlobalDialog();
   const commentText = ref("");
   const snackbar = useSnackbar();
-  const { data, refresh } = await useFetch("/api/comment", {
+  const { data, refresh, pending } = await useFetch("/api/comment", {
     method: "POST",
     body: {
       id: route.params.id,
@@ -161,7 +161,7 @@
       </template>
     </div>
 
-    <div v-else>
+    <div v-if="pending">
       <template
         v-for="i in 3"
         :key="i"
@@ -173,12 +173,18 @@
             class="mr-4"
             border
           >
-            <v-skeleton-loader type="avatar" />
+            <v-skeleton-loader
+              type="avatar"
+              color="surface"
+            />
           </v-avatar>
 
           <!-- Comment Content -->
           <div class="flex-grow-1">
-            <v-skeleton-loader type="text@2" />
+            <v-skeleton-loader
+              color="surface"
+              type="text@2"
+            />
           </div>
         </div>
         <div class="mt-5">
