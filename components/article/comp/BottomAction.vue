@@ -66,7 +66,7 @@
 <template>
   <v-card
     elevation="0"
-    class="bottom-action rounded-br-2xl"
+    class="w-100 rounded-br-2xl"
   >
     <v-card-text class="pa-0 mt-1">
       <div class="d-flex justify-end ga-2">
@@ -151,12 +151,6 @@
 </template>
 
 <style scoped lang="scss">
-  .bottom-action {
-    display: flex;
-    align-items: center;
-    width: 100%;
-  }
-
   .actions-container .v-btn {
     display: flex;
     align-items: center;

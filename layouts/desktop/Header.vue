@@ -4,9 +4,11 @@
   import { useStore } from "~/store";
   import { checkPermissions } from "@/hooks/usePermisions";
   import { PERMISSION } from "@/common/permision";
+  import useVariable from "@/composables/useVariable";
 
   const store = useStore();
   const theme = useTheme();
+  const { router, storeUser } = useVariable();
 
   const toggleDark = () => {
     store.setTheme(store.darkMode === "dark" ? "light" : "dark");
@@ -30,6 +32,30 @@
   const onFocusSearch = () => {
     if (searchDisabled.value) return;
     checkPermissions(PERMISSION.User, () => {});
+  };
+
+  const isVisible = ref(false);
+  const onInvite = () => {
+    checkPermissions(PERMISSION.User, () => {
+      router.push(`/user/${storeUser.useId}`);
+      isVisible.value = false;
+    });
+  };
+
+  const clickNavigationItem = (item: any) => {
+    if (item.href === "/anime") {
+      if (storeUser.userInfo?.invite_count < 5 || !storeUser.isLogin) {
+        isVisible.value = true;
+        return;
+      }
+    }
+    if (item.href === "/user") {
+      checkPermissions(PERMISSION.User, () => {
+        router.push({ path: `/user/${storeUser.useId}` });
+      });
+      return;
+    }
+    router.push(item.href);
   };
 </script>
 <template>
@@ -65,15 +91,18 @@
               aria-label=" navigation"
               class="d-flex ga-lg-8 ga-sm-3"
             >
-              <NuxtLink
+              <a
                 v-for="(item, index) in NavigationItems"
-                :to="item.href"
-                class="text-button"
+                @click.prevent="clickNavigationItem(item)"
+                :href="item.href"
+                :class="[
+                  'text-button',
+                  { 'router-link-exact-active': $route.path === item.href },
+                ]"
                 :key="index"
-                v-show="item.href != '/user'"
               >
                 {{ item.name }}
-              </NuxtLink>
+              </a>
             </nav>
             <v-text-field
               v-model="store.search"
@@ -114,6 +143,7 @@
     </v-container>
   </v-app-bar>
   <DialogInfo ref="dialgInfo" />
+  <AnimeRuleDialog v-model:model-value="isVisible" />
 </template>
 
 <style lang="scss" scoped>

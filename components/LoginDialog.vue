@@ -28,7 +28,7 @@
     isLogin: true,
   });
 
-  const { onCopy } = useVariable();
+  const { onCopy, route } = useVariable();
 
   watch(
     () => screenMode.value,
@@ -114,6 +114,17 @@
     loginDialogVisible.value = false;
     forgotPasswordRef.value.openDialog();
   };
+  watch(
+    () => route.query.invite_code,
+    (v) => {
+      if (v) {
+        state.register.invite_code = (v as string) || "";
+      }
+    },
+    {
+      immediate: true,
+    }
+  );
 </script>
 
 <template>

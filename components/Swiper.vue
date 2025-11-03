@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { ref, defineAsyncComponent } from "vue";
   import Image from "@/components/Image.vue";
+  import { useDisplay } from "vuetify";
 
   const VideoPlayer = defineAsyncComponent(
     () => import("@/components/Video.vue")
@@ -28,7 +29,18 @@
 
   const next = () => carousel.value?.next?.();
   const prev = () => carousel.value?.prev?.();
-
+  const { smAndDown } = useDisplay();
+  const { isNative } = usePlatform();
+  const heightOffset = computed(() => {
+    if (!isNative.value) {
+      if (smAndDown.value) {
+        return "calc(35vh - 30px)";
+      } else {
+        return `calc(100vh - 120px)`;
+      }
+    }
+    return "250px";
+  });
   defineExpose({
     closeVideo,
     next,
@@ -44,7 +56,26 @@
     :hide-delimiters="mediaInfo?.length <= 1"
     :show-arrows="mediaInfo?.length > 1"
     height="100%"
+    color="primary"
   >
+    <template #prev="{ props }">
+      <v-btn
+        variant="tonal"
+        color="primary"
+        density="compact"
+        icon="mdi-chevron-left"
+        @click="props.onClick"
+      ></v-btn>
+    </template>
+    <template #next="{ props }">
+      <v-btn
+        variant="tonal"
+        color="primary"
+        density="compact"
+        icon="mdi-chevron-right"
+        @click="props.onClick"
+      ></v-btn>
+    </template>
     <v-carousel-item
       v-for="(item, index) in mediaInfo"
       :key="index"
@@ -75,7 +106,7 @@
 <style scoped lang="scss">
   .swiper {
     width: 100%;
-    max-height: calc(100vh - 120px);
+    max-height: calc(v-bind(heightOffset));
     // min-height: 300px;
   }
 
@@ -91,6 +122,7 @@
     width: 100%;
     // height: 100%;
     object-fit: contain;
+    min-height: 200px;
   }
   .video {
     width: 100%;

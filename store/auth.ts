@@ -14,7 +14,6 @@ export const useAuthStore = defineStore("auth", () => {
     access_token.value = null;
     useCookie("access_token").value = null;
     useCookie("refresh_token").value = null;
-    store.clearUserInfo();
     navigateTo("/");
   };
 

@@ -1,8 +1,6 @@
 <script setup lang="ts">
   import { ref, reactive, watch, onMounted } from "vue";
-  import Qrcode from "qrcode";
   import { useRoute } from "vue-router";
-  import { useUserStore } from "@/store/user";
   import AvatarUpload from "@/components/AvatarUpload.vue";
   import { setUserInfo, changePassword } from "@/service/user";
   import { screenMode } from "@/hooks/useScreenMode";
@@ -13,15 +11,9 @@
   });
 
   const emit = defineEmits(["refresh"]);
-
   const dialogVisible = ref(false);
   const activeTab = ref("userinfo");
-  const qrcodeDialogVisible = ref(false);
-  const qrcodeUrl = ref("");
-  const storeUser = useUserStore();
-  const route = useRoute();
   const snackbar = useSnackbar();
-  const isConfirm = ref(false);
 
   // --- user info form ---
   const userInfo = reactive({
@@ -45,22 +37,6 @@
     password_repeat: "",
   });
 
-  // --- QR Code logic ---
-  const generateQrcode = async () => {
-    const id = props.user.id || route.params?.id;
-    if (id) {
-      const url = `${window.location.origin}/#/user/${id}`;
-      try {
-        qrcodeUrl.value = await Qrcode.toDataURL(url, { width: 300 });
-      } catch (err) {
-        console.error("Failed to generate QR code:", err);
-      }
-    }
-  };
-  const openQrcode = () => {
-    if (qrcodeUrl.value) qrcodeDialogVisible.value = true;
-  };
-
   // --- actions ---
   const updateUserInfo = async () => {
     try {
@@ -81,7 +57,7 @@
       const response = await setUserInfo(request);
 
       if (response.errcode === 0) {
-        snackbar.showSnackbar("✅ 用户信息已更新！", "success", 'top');
+        snackbar.showSnackbar("✅ 用户信息已更新！", "success", "top");
       } else {
         snackbar.showSnackbar(response.info, "error", "top");
       }
@@ -106,26 +82,10 @@
       console.error(e);
     }
   };
-
-  const openLogout = async () => {
-    isConfirm.value = !isConfirm.value;
-  };
-  const handleConfirm = () => {
-    console.log("User confirmed ✅");
-    snackbar.showSnackbar("✅ 登出成功", "success");
-    storeUser.logout();
-  };
-
-  const handleCancel = () => {
-    console.log("User cancelled ❌");
-  };
-  onMounted(() => {
-    generateQrcode();
-  });
 </script>
 
 <template>
-  <div class="flex flex-col items-center gap-3">
+  <div class="flex items-center gap-3">
     <v-btn
       v-if="self"
       color="primary"
@@ -136,24 +96,14 @@
       编辑资料
     </v-btn>
 
-    <v-avatar
+    <!-- <v-avatar
       size="80"
       rounded="0"
       class="cursor-pointer"
       @click="openQrcode"
     >
       <v-img :src="qrcodeUrl" />
-    </v-avatar>
-
-    <v-btn
-      v-if="self"
-      color="error"
-      variant="text"
-      @click="openLogout"
-    >
-      登出
-      <v-icon end>mdi-power</v-icon>
-    </v-btn>
+    </v-avatar> -->
 
     <!-- Dialog -->
     <v-dialog
@@ -259,28 +209,6 @@
         </v-card-text>
       </v-card>
     </v-dialog>
-
-    <!-- QR Code Dialog -->
-    <v-dialog
-      v-model="qrcodeDialogVisible"
-      width="auto"
-    >
-      <v-card>
-        <v-img
-          :src="qrcodeUrl"
-          width="300"
-          height="300"
-          class="mx-auto"
-        />
-      </v-card>
-    </v-dialog>
-    <ConfirmDialog
-      v-model="isConfirm"
-      title="警告!"
-      description="你确定要退出吗？"
-      @confirm="handleConfirm"
-      @cancel="handleCancel"
-    />
   </div>
 </template>
 
@@ -288,9 +216,7 @@
   .flex {
     display: flex;
   }
-  .flex-col {
-    flex-direction: column;
-  }
+
   .items-center {
     align-items: center;
   }

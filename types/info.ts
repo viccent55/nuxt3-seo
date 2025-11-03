@@ -29,7 +29,7 @@ export interface UserDetailInfo extends UserInfo {
   slogan: number;
   inviter: number;
   invite_code: string;
-  status: boolean;
+  status: boolean | number;
   last_login: number;
   created_at: string;
   updated_at: string;

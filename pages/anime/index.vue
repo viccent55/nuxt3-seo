@@ -16,7 +16,7 @@
     total: 0,
   });
 
-  const { clearQuery, store } = useVariable();
+  const { clearQuery, store, storeUser } = useVariable();
   const containerRef = ref<HTMLElement | null>(null);
 
   const { configuration } = storeToRefs(store);
@@ -109,6 +109,11 @@
     }
     return "220px";
   });
+  const isVisible = ref(false);
+  onBeforeMount(() => {
+    if (storeUser.userInfo?.invite_count < 5 || !storeUser.isLogin)
+      return navigateTo("/");
+  });
   onMounted(() => {
     const el = containerRef.value;
     if (el) {
@@ -120,14 +125,14 @@
 
 <template>
   <v-container
-    class="px-0"
+    class="px-0 pt-5"
     fluid
   >
     <div
       class="anime-wrapper pb-6 md:pb-0"
       ref="containerRef"
     >
-      <v-row dense>
+      <v-row :dense="smAndDown">
         <v-col
           v-for="(item, index) in state.data"
           :key="index"
@@ -177,6 +182,7 @@
         />
       </div>
     </div>
+    <AnimeRuleDialog v-model:model-value="isVisible" />
   </v-container>
 </template>
 

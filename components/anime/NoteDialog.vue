@@ -288,7 +288,7 @@
         </v-row>
       </v-card-text>
 
-      <v-card-actions class="d-flex justify-end border-t">
+      <v-card-actions class="d-flex border-t">
         <BottomAction
           ref="bottomActions"
           :action="state.data"

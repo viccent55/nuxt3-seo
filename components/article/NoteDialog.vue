@@ -167,20 +167,19 @@ _
       class="main-contain"
     >
       <v-card-title v-if="smAndDown">
-        <div class="d-flex justify-end">
-          <v-btn
-            icon
-            size="small"
-            color="primary"
-            @click="
-              () => {
-                noteDialog.closeNoteDialog();
-              }
-            "
+        <v-btn
+          icon
+          density="compact"
+          @click="noteDialog.closeNoteDialog()"
+          color="grey-darken-1"
+        >
+          <v-icon
+            size="24px"
+            color="grey-darken-4"
           >
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </div>
+            mdi-chevron-left
+          </v-icon>
+        </v-btn>
       </v-card-title>
       <v-card-text class="pa-0 pb-4">
         <v-row no-gutters>
@@ -232,7 +231,7 @@ _
 
             <!-- Scrollable Content Area -->
             <div
-              class="flex-grow-1 px-4 pb-4 pb-md-0"
+              class="flex-grow-1 px-4 pb-4 pb-md-0 right-side"
               ref="note-dialog"
             >
               <div class="text-body-2 text-grey-darken-1 mb-4">
@@ -334,5 +333,9 @@ _
   .main-contain {
     // padding-top: env(safe-area-inset-top, 0px);
     padding-top: var(--safe-area-inset-top, 0px);
+  }
+  .right-side {
+    max-height: calc(100vh - 180px);
+    overflow-y: scroll;
   }
 </style>

@@ -162,7 +162,7 @@
   const { isNative } = usePlatform();
   const getStyle = computed(() => {
     return isNative.value || smAndDown.value
-      ? "max-height: calc(90vh - 350px); overflow-y: auto"
+      ? "max-height: calc(100vh - 350px); overflow-y: auto"
       : "max-height: calc(100vh - 110px); overflow-y: scroll";
   });
 
@@ -188,31 +188,6 @@
       class="overflow-hidden main-contain"
       :loading="loading"
     >
-      <v-card-title v-if="smAndDown">
-        <v-toolbar
-          class="d-flex justify-space-between align-center mb-2 py-0 rounded"
-          density="compact"
-        >
-          <AuthorHeader
-            :author="{
-              ...state.data?.author,
-              isFollow: state.data?.isFollow,
-            }"
-            @click-close="noteDialog.closeNoteDialog"
-            @click-author="handle.clickAuthor"
-            @click-follow="handle.clickFollow"
-          />
-          <v-btn
-            icon
-            size="small"
-            @click="noteDialog.closeNoteDialog"
-            color="primary"
-            flat
-          >
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-toolbar>
-      </v-card-title>
       <v-row no-gutters>
         <!-- Left: Video area -->
         <v-col
@@ -226,8 +201,21 @@
             ref="swiperInstanceRef"
             v-if="state.data?.fields"
             :media-info="state.data.fields"
-            :height="smAndDown ? 'calc(30vh - 50px)' : '100%'"
           />
+          <v-btn
+            icon
+            density="compact"
+            @click="noteDialog.closeNoteDialog"
+            color="grey-darken-1"
+            style="position: absolute; top: 10px; left: 10px"
+          >
+            <v-icon
+              size="24px"
+              color="grey-darken-4"
+            >
+              mdi-chevron-left
+            </v-icon>
+          </v-btn>
         </v-col>
 
         <!-- Right: Info & Comments -->
@@ -274,6 +262,22 @@
             </div>
 
             <v-row dense>
+              <v-col cols="12">
+                <v-toolbar
+                  class="d-flex justify-space-between align-center mb-2 py-0 rounded"
+                  density="compact"
+                >
+                  <AuthorHeader
+                    :author="{
+                      ...state.data?.author,
+                      isFollow: state.data?.isFollow,
+                    }"
+                    @click-close="noteDialog.closeNoteDialog"
+                    @click-author="handle.clickAuthor"
+                    @click-follow="handle.clickFollow"
+                  />
+                </v-toolbar>
+              </v-col>
               <v-col
                 v-for="(app, index) in store?.detailAppAds"
                 :key="index"

@@ -11,6 +11,7 @@
     :color="isFollow ? '' : 'primary'"
     @click="$emit('click')"
     class="bg-primary text-white"
+    density="comfortable"
   >
     {{ isFollow ? "已关注" : "关注" }}
   </v-btn>

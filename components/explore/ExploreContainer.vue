@@ -40,6 +40,11 @@
     return 5;
   });
   const gap = computed(() => (screenMode.value === "phone" ? 12 : 28));
+  const internalGap = ref(gap.value);
+  watch(gap, (newGap) => {
+    internalGap.value = newGap;
+  });
+
   const updateColumnWidth = () => {
     // This function can be defined here or imported if it's complex
   };
@@ -56,6 +61,16 @@
     window.removeEventListener("resize", updateColumnWidth);
   });
 
+  // When component is re-activated from keep-alive, redraw the masonry
+  onActivated(() => {
+    // Force a redraw by temporarily changing a reactive prop (gap)
+    // and then changing it back. This triggers the internal watcher.
+    internalGap.value = gap.value + 1;
+    nextTick(() => {
+      internalGap.value = gap.value;
+    });
+  });
+
   defineExpose({ element: feedsContainer });
 </script>
 
@@ -68,7 +83,7 @@
       ref="masonryRef"
       :items="items ?? []"
       :min-columns="minColumns"
-      :gap="gap"
+      :gap="internalGap"
       :scroll-container="scrollContainer ?? feedsContainer"
       item-key="id"
     >

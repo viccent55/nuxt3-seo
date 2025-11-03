@@ -2,152 +2,28 @@
   definePageMeta({
     keepalive: true,
   });
-  import { useRoute } from "vue-router";
-  import { useInfiniteScroll } from "@vueuse/core";
+
   import { useStore } from "@/store";
   import { useUserStore } from "@/store/user";
-  import { useNoteDialog } from "@/hooks/useNoteDialog";
+  import { retrySendEmailCode, veryCode } from "@/service/user";
+  import UserInfo from "~/components/user/UserInfo.vue";
+  import { getUserInfo } from "@/service/user";
   import { checkPermissions } from "@/hooks/usePermisions";
   import { PERMISSION } from "@/common/permision";
-
-  import { UserChannelItems } from "@/common";
-  const exploreContainerRef = ref<{ element: HTMLElement } | null>(null);
-  import {
-    getNoteFeeds,
-    getStarFeeds,
-    getLikeFeeds,
-    getUserInfo,
-  } from "@/service/user";
-  import { retrySendEmailCode, veryCode } from "@/service/user";
   import { follow } from "@/service/explore";
-import UserInfo from "~/components/user/UserInfo.vue";
 
-  const route = useRoute();
-  const noteDialog = useNoteDialog();
-
-  const channel = ref<string>("note");
   const userInfo = ref<any>({});
-  const id = computed(() => Number(route.params.id));
-  const page = ref(1);
-  const isLoadMore = ref(false);
   const code = ref("");
-  const pending = ref(true); // Add a pending state for initial load
 
-  const noteFeeds = ref<any[]>([]);
-  const starFeeds = ref<any[]>([]);
-  const likesFeeds = ref<any[]>([]);
-  const isNoMore = ref(false);
-
-  const showFeeds = computed(() => {
-    if (channel.value === "note") return noteFeeds.value;
-    if (channel.value === "star") return starFeeds.value;
-    if (channel.value === "like") return likesFeeds.value;
-    return [];
-  });
-
-  const getRes = {
-    noteFeeds: async () => {
-      const request = {
-        id: id.value,
-        page: page.value,
-        limit: 30,
-      };
-      const res = await getNoteFeeds(request);
-      if (res.errcode === 0 && res.data) {
-        noteFeeds.value = [...noteFeeds.value, ...res.data];
-        if (!res.data.length) isNoMore.value = true;
-      }
-    },
-    starFeeds: async () => {
-      const res = await getStarFeeds({ id: id.value, page: page.value });
-      if (res.errcode === 0 && res.data) {
-        starFeeds.value = [...starFeeds.value, ...res.data];
-        if (!res.data.length) isNoMore.value = true;
-      }
-    },
-    likeFeeds: async () => {
-      const res = await getLikeFeeds({ id: id.value, page: page.value });
-      if (res.errcode === 0 && res.data) {
-        likesFeeds.value = [...likesFeeds.value, ...res.data];
-        if (!res.data.length) isNoMore.value = true;
-      }
-    },
-  };
-
-  const handle = {
-    clickChannel(item: any) {
-      channel.value = item.value;
-    },
-    clickFollow(user: any) {
-      checkPermissions(PERMISSION.User, async () => {
-        const res = await follow({
-          id: id.value,
-        });
-        if (res.errcode === 0) user.isFollow = !user.isFollow;
-      });
-    },
-
-    clickFeed(feed: any) {
-      noteDialog.openNoteDialog(feed.id);
-    },
-  };
-
-  const onLoadMore = async (done?: () => void) => {
-    if (pending.value || isLoadMore.value || isNoMore.value) return;
-    isLoadMore.value = true;
-    page.value++;
-
-    try {
-      const fetcher =
-        channel.value === "note"
-          ? getRes.noteFeeds
-          : channel.value === "star"
-            ? getRes.starFeeds
-            : getRes.likeFeeds;
-      await fetcher();
-    } finally {
-      isLoadMore.value = false;
-      if (done) done();
-    }
-  };
-
-  const resetItems = () => {
-    noteFeeds.value = [];
-    starFeeds.value = [];
-    likesFeeds.value = [];
-  };
-
-  const onInit = async () => {
-    pending.value = true;
-    const res = await getUserInfo(id.value);
-
-    userInfo.value = res.data;
-    try {
-      await getRes.noteFeeds();
-    } finally {
-      // Use nextTick to allow the DOM to update before `pending` is set to false
-      nextTick(() => (pending.value = false));
-    }
-  };
-
-  watch(channel, async () => {
-    page.value = 1;
-    isNoMore.value = false;
-    pending.value = true;
-    try {
-      if (channel.value === "note")
-        ((noteFeeds.value = []), await getRes.noteFeeds());
-      else if (channel.value === "star")
-        ((starFeeds.value = []), await getRes.starFeeds());
-      else ((likesFeeds.value = []), await getRes.likeFeeds());
-    } finally {
-      nextTick(() => (pending.value = false));
-    }
-  });
-
+  const pending = ref(true);
   const store = useStore();
   const userStore = useUserStore();
-  const self = computed(() => userStore.useId === userInfo.value.id);
+  const id = computed(() => Number(route.params.id));
+  const self = computed(() => userStore.useId === id.value);
+  const route = useRoute();
+  import { useChatWidget } from "~/composables/useChatWidget";
+  import { getCurrentDomain } from "~/service";
+  const { decryptImage, decryptedImage } = useDecryption();
 
   const isShowPupup = ref(false);
   const loading = ref(false);
@@ -200,47 +76,110 @@ import UserInfo from "~/components/user/UserInfo.vue";
       console.error("Error during login:", error);
     }
   };
-  const pageWrapperRef = ref<HTMLElement | null>(null);
-  useInfiniteScroll(
-    pageWrapperRef,
-    () => {
-      onLoadMore();
+
+  const menu = [
+    {
+      name: "联系客服",
+      value: "call",
+      icon: "mdi-phone-outline",
     },
     {
-      distance: 300,
-      canLoadMore: () => !pending.value && !isLoadMore.value && !isNoMore.value,
+      name: "邀请记录",
+      value: "invite",
+      icon: "mdi-account-multiple-plus",
+    },
+
+    {
+      name: "我的关注",
+      value: "note",
+      icon: "mdi-folder-account",
+    },
+    {
+      name: "收藏",
+      value: "like",
+      icon: "mdi-thumb-up-outline",
+    },
+    {
+      name: "点赞",
+      value: "star",
+      icon: "mdi-star-outline",
+    },
+  ];
+
+  const displayMenu = computed(() => {
+    if (self.value) {
+      return menu;
     }
-  );
-  onBeforeMount(() => {
-    onInit();
+    return menu.filter((item) => !["like", "star"].includes(item.value));
   });
 
-  const filterTabs = computed(() => {
-    if (self.value) {
-      return UserChannelItems;
-    } else {
-      return UserChannelItems.filter((item) => item.value == "note");
+  const pageWrapperRef = ref<HTMLElement | null>(null);
+  const dialogAiRef = useTemplateRef("dialog-ai");
+  const onOpenAiDialog = (type: string) => {
+    if (type == "left") {
+      dialogAiRef.value?.open({
+        title: store.configuration?.ai_clothes_title || "AI脱衣",
+        content: store.configuration?.ai_clothes_intro || "",
+        color: "success",
+      });
     }
+    if (type == "right") {
+      dialogAiRef.value?.open({
+        title: store.configuration?.girl_join_title || "楼凤入驻",
+        content: store.configuration?.girl_join_intro || "",
+        color: "",
+      });
+    }
+  };
+  const qrcodeShare = useTemplateRef("qrcodeShare");
+  const onOpenQrcode = () => {
+    qrcodeShare.value?.open();
+  };
+
+  const pupupData = useTemplateRef("pupupData");
+  const onClickMenu = (item: EmptyObjectType) => {
+    pupupData.value?.open(item);
+  };
+  const onInit = async () => {
+    pending.value = true;
+    const res = await getUserInfo(id.value);
+    userInfo.value = res.data;
+    await decryptImage(res.data?.avatar);
+    chat.init({
+      AGENT_ID: "agent",
+      USER_ID: res.data?.id,
+      USER_NAME: res.data?.nickname || "--",
+      USER_AVATAR:
+        decryptedImage.value || `${getCurrentDomain()}/icons/icon-128.webp`,
+    });
+  };
+  const clickFollow = async (user: any) => {
+    checkPermissions(PERMISSION.User, async () => {
+      const res = await follow({
+        id: id.value,
+      });
+      if (res.errcode === 0) user.isFollow = !user.isFollow;
+    });
+  };
+  const chat = useChatWidget();
+  onMounted(async () => {
+    onInit();
   });
 </script>
 
 <template>
-  <div
-    class="user-page-wrapper"
-    ref="pageWrapperRef"
-  >
+  <div ref="pageWrapperRef">
     <div
       class="user-background"
       :style="{
         backgroundImage: `url(${store?.configuration?.member_center_background})`,
       }"
     ></div>
-
     <div class="user-content-container">
       <div class="user-content mx-md-4">
         <UserInfo
           :user="userInfo"
-          @click-follow="handle.clickFollow"
+          @click-follow="clickFollow"
           @refresh="onInit"
         />
         <v-alert
@@ -260,32 +199,155 @@ import UserInfo from "~/components/user/UserInfo.vue";
             验证邮箱
           </v-btn>
         </v-alert>
-
-        <div class="channel-wrapper my-5">
-          <v-btn-toggle
-            v-model="channel"
-            density="comfortable"
-            mandatory
+        <div class="w-100 px-4">
+          <v-card
+            class="mt-4 invite-gradient"
+            height="120"
+            rounded="lg"
+            elevation="4"
           >
-            <v-btn
-              active-color="primary"
-              v-for="(item, index) in filterTabs"
-              :value="item.value"
-              :key="index"
+            <div
+              class="d-flex align-center justify-space-between h-100 px-4 px-md-12"
             >
-              {{ item.name }}
-            </v-btn>
-          </v-btn-toggle>
+              <v-avatar
+                size="70"
+                class="elevation-2"
+              >
+                <v-img
+                  src="/icons/icon-128.webp"
+                  cover
+                />
+              </v-avatar>
+              <div>
+                <div class="text-h6 font-weight-bold white--text">
+                  成功邀请 {{ userInfo.invite_count || 0 }}人
+                </div>
+                <div class="text-caption white--text opacity-80">
+                  永久解锁禁区观影权限
+                </div>
+              </div>
+
+              <v-btn
+                rounded="pill"
+                variant="elevated"
+                elevation="0"
+                color="white "
+                class="px-5"
+                density="comfortable"
+                @click="onOpenQrcode"
+              >
+                <span class="text-primary">立即邀请</span>
+              </v-btn>
+            </div>
+          </v-card>
+        </div>
+        <!-- Browse History -->
+        <div class="d-flex align-center justify-space-between mt-6 px-5 w-100">
+          <div class="text-subtitle-2 d-flex align-center">
+            <v-icon
+              size="20"
+              class="mr-2"
+            >
+              mdi-list-box
+            </v-icon>
+            浏览记录
+          </div>
+          <v-icon size="28">mdi-chevron-right</v-icon>
         </div>
 
-        <ExploreContainer
-          ref="exploreContainerRef"
-          :items="showFeeds"
-          :is-load-more="isLoadMore"
-          :is-no-more="isNoMore"
-          :scroll-container="pageWrapperRef"
-          @click-item="handle.clickFeed"
-        />
+        <!-- <v-slide-group
+          show-arrows
+          class="mt-2"
+        >
+          <v-slide-group-item
+            v-for="(item, i) in [
+              {
+                title: 'hello world',
+                img: '/ai-girl.png',
+              },
+              {
+                title: 'hello world',
+                img: '/ai-girl.png',
+              },
+            ]"
+            :key="i"
+          >
+            <div class="mx-2">
+              <v-img
+                :src="item.img"
+                width="120"
+                height="70"
+                class="rounded-lg"
+              />
+              <div
+                class="text-white text-caption text-truncate mt-1"
+                style="width: 120px"
+              >
+                {{ item.title }}
+              </div>
+            </div>
+          </v-slide-group-item>
+        </v-slide-group> -->
+
+        <!-- Feature cards (AI remove / Business join) -->
+        <v-row class="mt-2 px-3 px-md-0 w-100">
+          <v-col cols="6">
+            <v-card
+              class="text-center pa-4"
+              height="140"
+              rounded="xl"
+              :color="store.configuration?.ai_clothes_background || '#965757'"
+              @click="onOpenAiDialog('left')"
+            >
+              {{ store.configuration?.ai_clothes_background }}
+              <div class="text-center text-white mb-2 text-subtitle-1">
+                {{ store.configuration?.ai_clothes_title || "AI脱衣" }}
+              </div>
+              <v-avatar
+                size="60"
+                color="white"
+              >
+                <v-img src="/ai-girl.png"></v-img>
+              </v-avatar>
+            </v-card>
+          </v-col>
+
+          <v-col cols="6">
+            <v-card
+              class="text-center pa-4"
+              height="140"
+              rounded="xl"
+              :color="store.configuration?.girl_join_background || '#965757'"
+              @click="onOpenAiDialog('right')"
+            >
+              <div class="text-center text-white mb-2 text-subtitle-1">
+                {{ store.configuration?.girl_join_title || "楼凤入驻" }}
+              </div>
+              <v-avatar
+                size="60"
+                color="white"
+              >
+                <v-img src="/ai-girl.png"></v-img>
+              </v-avatar>
+            </v-card>
+          </v-col>
+        </v-row>
+        <!-- Bottom Menu -->
+        <div
+          class="mt-4 d-flex align-center text-center justify-space-around px-4 px-md-0 mt-8 w-100"
+        >
+          <div
+            v-for="(item, i) in displayMenu"
+            :key="i"
+            @click="onClickMenu(item)"
+            style="min-width: 40px"
+          >
+            <div class="menu-icon mb-2">
+              <v-icon>{{ item.icon }}</v-icon>
+            </div>
+            <span class="text-caption white--text">{{ item.name }}</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -323,18 +385,13 @@ import UserInfo from "~/components/user/UserInfo.vue";
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <UserDialogAI ref="dialog-ai"></UserDialogAI>
+    <UserQrcodeShare ref="qrcodeShare"></UserQrcodeShare>
+    <UserPersonalNote ref="pupupData"></UserPersonalNote>
   </div>
 </template>
 
 <style scoped lang="scss">
-  .user-page-wrapper {
-    position: relative;
-    width: 100%;
-    margin-top: 20px;
-    height: calc(100vh - 80px); /* Adjust based on your header height */
-    overflow-y: auto;
-    scrollbar-width: none;
-  }
   .user-background {
     position: absolute;
     top: 0;
@@ -351,6 +408,8 @@ import UserInfo from "~/components/user/UserInfo.vue";
     display: flex;
     justify-content: center;
     width: 100%;
+    max-width: 900px;
+    margin: auto;
   }
   .user-content {
     width: 100%;
@@ -365,5 +424,8 @@ import UserInfo from "~/components/user/UserInfo.vue";
     width: 100%;
     padding: 0 16px;
     flex-grow: 1;
+  }
+  .invite-gradient {
+    background: linear-gradient(45deg, #fec1c1, #852309);
   }
 </style>

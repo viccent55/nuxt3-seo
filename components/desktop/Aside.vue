@@ -82,30 +82,11 @@
       variant="outlined"
       prepend-icon="mdi-account-circle"
       :to="`/user/${userStore.useId}`"
-      class="btn-glow transition-all border"
+      class="text-primary transition-all border"
     >
       个人中心
     </v-btn>
   </div>
 </template>
 
-<style scoped lang="scss">
-  .btn-glow {
-    border-width: 2px !important;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    transition: all 0.3s ease;
-  }
-
-  .btn-glow:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 10px rgba(var(--v-theme-primary), 0.6);
-    background-color: rgb(var(--v-theme-primary));
-    color: white !important;
-  }
-
-  .btn-glow:active {
-    transform: scale(0.98);
-    box-shadow: 0 0 5px rgba(var(--v-theme-primary), 0.4);
-  }
-</style>
+<style scoped lang="scss"></style>

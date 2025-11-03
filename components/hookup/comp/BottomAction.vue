@@ -11,7 +11,7 @@
     }
   );
 
-  const emits = defineEmits(["click-like", "click-star", "click-share"]);
+  const emits = defineEmits(["click-star", "click-deposit"]);
 
   const replayTo = ref<{ id: string; name?: string }>({
     id: "",
@@ -38,39 +38,43 @@
 <template>
   <v-card
     elevation="0"
-    class="bottom-action pa-0"
+    class="w-100"
   >
-    <div class="d-flex align-center">
-      <v-btn
+    <div class="d-flex align-center ga-2 justify-end">
+      <!-- <v-btn
         variant="text"
         density="comfortable"
-        @click="$emit('click-like', action)"
+        @click="$emit('click-comment', action)"
         class="px-0"
       >
-        <v-icon :color="action?.isLike ? 'primary' : ''">
-          mdi-thumb-up-outline
-        </v-icon>
-        <span class="ml-1">{{ action?.like_count }}</span>
-      </v-btn>
+        <v-icon>mdi-comment-outline</v-icon>
+        联系客服
+      </v-btn> -->
       <v-btn
         variant="text"
         density="comfortable"
         @click="$emit('click-star', action)"
         class="px-0"
       >
-        <v-icon :color="action?.isStar ? 'primary' : ''">
-          mdi-star-outline
+        <v-icon
+          class="mr-1"
+          :color="action?.is_star ? 'primary' : ''"
+        >
+          mdi-heart-outline
         </v-icon>
-        <span class="ml-1">{{ action?.star_count }}</span>
+        收藏
       </v-btn>
 
       <v-btn
-        variant="text"
         density="comfortable"
-        @click="$emit('click-share')"
-        class="px-0"
-        icon="mdi-share-outline"
-      ></v-btn>
+        @click="$emit('click-deposit')"
+        color="primary"
+        variant="elevated"
+        rounded="xl"
+        width="100px"
+      >
+        免定金
+      </v-btn>
     </div>
   </v-card>
 </template>
