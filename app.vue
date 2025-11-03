@@ -188,7 +188,6 @@
     </template>
   </v-snackbar>
   <v-app>
-    {{ smAndDown }}
     <NuxtLayout :name="layout">
       <NuxtLoadingIndicator />
       <NuxtPwaManifest />
