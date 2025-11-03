@@ -340,7 +340,7 @@
       </v-row>
     </v-card>
     <v-footer
-      class="d-flex justify-center ga-3 mt-4"
+      class="d-flex justify-center ga-3 mt-4 flex-wrap"
       v-if="hashtagList.length"
     >
       <div

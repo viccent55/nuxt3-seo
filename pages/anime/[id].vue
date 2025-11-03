@@ -4,8 +4,8 @@
   import { checkPermissions } from "@/hooks/usePermisions";
   import { PERMISSION } from "@/common/permision";
   import { openPage } from "@/service";
-  import CommentBlock from "@/components/explore/comp/CommentBlock.vue";
-  import BottomAction from "@/components/explore/comp/BottomAction.vue";
+  import CommentBlock from "@/components/anime/comp/CommentBlock.vue";
+  import BottomAction from "@/components/anime/comp/BottomAction.vue";
   import { like, collect, detail } from "@/service/anime";
   import Video from "~/components/Video.vue";
   const bottomRef = useTemplateRef("bottomActions");
@@ -271,7 +271,7 @@
       </v-row>
     </v-card>
     <v-footer
-      class="d-flex justify-center ga-3 mt-4"
+      class="d-flex justify-center ga-3 mt-4 flex-wrap"
       v-if="hashtagList.length"
     >
       <div

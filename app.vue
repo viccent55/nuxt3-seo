@@ -16,6 +16,7 @@
   import { useNoteDialog } from "./hooks/useNoteDialog";
   import { useNoteArticleDialog } from "./hooks/useNoteArticleDialog";
   import { useNoteAnimeDialog } from "./hooks/useNoteAnimeDialog";
+  import { useNoteHookupDialog } from "./hooks/useNoteHookupDialog";
   import { createId } from "@paralleldrive/cuid2";
 
   const { storeUser, store, isMobile } = useVariable();
@@ -23,10 +24,10 @@
   const theme = useTheme();
   const showButton = ref(false);
   const notificationDialogRef = ref<InstanceType<typeof NotificationDialog>>();
-  const { initVisitor } = useHome();
   const noteDialog = useNoteDialog();
   const noteArticleDetail = useNoteArticleDialog();
   const noteAnimeDetail = useNoteAnimeDialog();
+  const noteHookupDialog = useNoteHookupDialog();
   const permissions = [PERMISSION.Visitor, PERMISSION.User];
   const { scrollableElement, scrollTop } = useScrollManager();
 
@@ -156,6 +157,7 @@
       noteDialog.queryNoteDialogId();
       noteArticleDetail.queryNoteDialogId();
       noteAnimeDetail.queryNoteDialogId();
+      noteHookupDialog.queryNoteDialogId();
     }, 500);
     initAds();
     initializeApp();
@@ -186,6 +188,7 @@
     </template>
   </v-snackbar>
   <v-app>
+    {{ smAndDown }}
     <NuxtLayout :name="layout">
       <NuxtLoadingIndicator />
       <NuxtPwaManifest />
@@ -217,6 +220,8 @@
     <NoteDialog />
     <ArticleNoteDialog />
     <AnimeNoteDialog />
+    <HookupNoteDialog />
+
     <DesktopDialogPopupAds
       v-if="!storeUser.loginDialogVisible && store.homePopupAds?.length"
       :adverts="store.homePopupAds"

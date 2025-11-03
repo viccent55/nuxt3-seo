@@ -3,28 +3,18 @@
   import { getCurrentDomain } from "@/service";
   import { checkPermissions } from "@/hooks/usePermisions";
   import { PERMISSION } from "@/common/permision";
-  import CommentBlock from "@/components/hookup/comp/CommentBlock.vue";
   import BottomAction from "@/components/hookup/comp/BottomAction.vue";
-  import { detail, like, collect, comment, comments } from "@/service/article";
+  import { detail, like, collect } from "@/service/hookup";
   import { openPage } from "@/service";
 
   const bottomRef = useTemplateRef("bottomActions");
   const state = reactive({
     data: {} as EmptyObjectType,
-    comments: [] as EmptyObjectType[],
     loading: false,
   });
   const { store, onCopy, route, isMobile } = useVariable();
   const snackbar = useSnackbar();
   const _id = computed(() => route.params.id);
-
-  const getComments = async () => {
-    if (!_id.value) return;
-    const response = await comments({ id: _id.value });
-    if (response.data.length) {
-      state.comments = response.data;
-    }
-  };
 
   const fetchDetail = async () => {
     state.loading = true;
@@ -33,10 +23,7 @@
         id: _id.value,
       };
       const response = await detail(request);
-      if (response.data) {
-        state.data = response.data;
-        getComments();
-      }
+      state.data = response.data ?? {};
       return response.data;
     } catch (err) {
       console.error("fetchFeeds failed:", err);
@@ -92,43 +79,16 @@
         const id_ = item.id;
         try {
           const response: EmptyObjectType = await collect({
-            id: id_,
+            gid: id_,
           });
           if (response.errcode == 0) {
-            state.data.isStar = !state.data.isStar;
-            if (state.data.isStar) {
-              item.collect_count++;
-            } else {
-              item.collect_count--;
-            }
+            item.is_star = !item.is_star;
           } else {
             snackbar.showSnackbar(response.info, "warning");
           }
         } catch (error) {
           console.error("Login failed:", error);
         }
-      });
-    },
-
-    // 评论
-    clickReply(id: string, to: string | null) {
-      checkPermissions(PERMISSION.User, () => {
-        bottomRef.value?.inputFocus(id, to);
-      });
-    },
-    // 提交评论
-    clickReplyTo(id: string, content: string, to = {}) {
-      checkPermissions(PERMISSION.User, async () => {
-        const request = {
-          id: id,
-          content: content,
-          to: to,
-        };
-        const res: EmptyObjectType = await comment(request);
-        if (res.errcode != 0) return;
-        state.data.comment_count++;
-        getComments();
-        state.data.totalCommentCount += 1;
       });
     },
   };
@@ -145,7 +105,7 @@
     },
     {
       title: "吃瓜",
-      to: "/article",
+      to: "/hookup",
       disabled: false,
     },
   ]);
@@ -193,11 +153,11 @@
             <v-card-title
               class="text-break text-wrap overflow-visible whitespace-normal"
             >
-              {{ state.data?.title }}
+              {{ state.data?.name }}
             </v-card-title>
             <v-card-text>
               <ContentArticle
-                :content="state.data?.content"
+                :content="state.data?.address + state.data?.service"
                 ref="contentArticleRef"
               />
             </v-card-text>
@@ -213,7 +173,7 @@
         >
           <!-- Scrollable Content Area -->
           <div
-            class="flex-grow-1 overflow-y-auto px-4 pb-10 pb-md-0"
+            class="flex-grow-1 overflow-y-auto pa-4"
             ref="note-dialog"
           >
             <div class="text-body-2 text-grey-darken-1 mb-4">
@@ -251,9 +211,6 @@
             />
 
             <div>
-              <div class="text-subtitle-2 mb-2">
-                共 {{ state.comments?.length }} 条评论
-              </div>
               <v-card
                 v-for="(app, index) in store.detailAds"
                 :key="index"
@@ -277,30 +234,15 @@
                   />
                 </a>
               </v-card>
-
-              <template
-                v-for="block in state.comments"
-                :key="block.id"
-              >
-                <CommentBlock
-                  :comment="block"
-                  @click-avatar="handle.clickAuthor"
-                  @click-like="handle.clickLike"
-                  @click-reply="handle.clickReply"
-                />
-              </template>
             </div>
           </div>
           <BottomAction
             ref="bottomActions"
             :action="state.data"
-            :total="state.data?.comment_count"
             @click-like="handle.clickLike"
             @click-star="handle.clickStar"
-            @click-reply="handle.clickReply"
             @click-share="handle.clickShare"
-            @click-reply-to="handle.clickReplyTo"
-            class="px-4"
+            class="pa-4"
           />
         </v-col>
       </v-row>
@@ -413,10 +355,6 @@
   </v-container>
 </template>
 <style scoped lang="scss">
-  .main-contain {
-    // max-height: calc(100vh - 30rem);
-    // overflow-y: scroll;
-  }
   p {
     margin: 2px;
   }
