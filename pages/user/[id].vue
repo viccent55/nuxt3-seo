@@ -21,9 +21,6 @@
   const id = computed(() => Number(route.params.id));
   const self = computed(() => userStore.useId === id.value);
   const route = useRoute();
-  import { useChatWidget } from "~/composables/useChatWidget";
-  import { getCurrentDomain } from "~/service";
-  const { decryptImage, decryptedImage } = useDecryption();
 
   const isShowPupup = ref(false);
   const loading = ref(false);
@@ -144,14 +141,6 @@
     pending.value = true;
     const res = await getUserInfo(id.value);
     userInfo.value = res.data;
-    await decryptImage(res.data?.avatar);
-    chat.init({
-      AGENT_ID: "agent",
-      USER_ID: res.data?.id,
-      USER_NAME: res.data?.nickname || "--",
-      USER_AVATAR:
-        decryptedImage.value || `${getCurrentDomain()}/icons/icon-128.webp`,
-    });
   };
   const clickFollow = async (user: any) => {
     checkPermissions(PERMISSION.User, async () => {
@@ -161,7 +150,6 @@
       if (res.errcode === 0) user.isFollow = !user.isFollow;
     });
   };
-  const chat = useChatWidget();
   onMounted(async () => {
     onInit();
   });
@@ -327,7 +315,7 @@
                 size="60"
                 color="white"
               >
-                <v-img src="/ai-girl.png"></v-img>
+                <v-img src="/ai-girl2.png"></v-img>
               </v-avatar>
             </v-card>
           </v-col>
@@ -388,6 +376,7 @@
     <UserDialogAI ref="dialog-ai"></UserDialogAI>
     <UserQrcodeShare ref="qrcodeShare"></UserQrcodeShare>
     <UserPersonalNote ref="pupupData"></UserPersonalNote>
+    <ChatWidgetLoader />
   </div>
 </template>
 
