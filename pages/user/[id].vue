@@ -3,25 +3,26 @@
     keepalive: true,
   });
 
-  import { useStore } from "@/store";
-  import { useUserStore } from "@/store/user";
-  import { retrySendEmailCode, veryCode } from "@/service/user";
+  import {
+    retrySendEmailCode,
+    veryCode,
+    getInvitedLogs,
+    getHistories,
+  } from "@/service/user";
   import UserInfo from "~/components/user/UserInfo.vue";
   import { getUserInfo } from "@/service/user";
   import { checkPermissions } from "@/hooks/usePermisions";
   import { PERMISSION } from "@/common/permision";
   import { follow } from "@/service/explore";
+  import { useDisplay } from "vuetify";
 
   const userInfo = ref<any>({});
   const code = ref("");
-
   const pending = ref(true);
-  const store = useStore();
-  const userStore = useUserStore();
+  const { route, store, storeUser } = useVariable();
+  const { smAndDown } = useDisplay();
   const id = computed(() => Number(route.params.id));
-  const self = computed(() => userStore.useId === id.value);
-  const route = useRoute();
-
+  const self = computed(() => storeUser.useId === id.value);
   const isShowPupup = ref(false);
   const loading = ref(false);
   const snackbar = useSnackbar();
@@ -101,6 +102,11 @@
       value: "star",
       icon: "mdi-star-outline",
     },
+    {
+      name: "商务广告",
+      value: "star",
+      icon: "mdi-handshake-outline",
+    },
   ];
 
   const displayMenu = computed(() => {
@@ -134,9 +140,16 @@
   };
 
   const pupupData = useTemplateRef("pupupData");
-  const onClickMenu = (item: EmptyObjectType) => {
+  const inviteRef = useTemplateRef("inviteRef");
+  const onClickMenu = async (item: EmptyObjectType) => {
+    if (item.value == "call") {
+      return chatRef.value?.open();
+    } else if (item.value == "invite") {
+      return inviteRef.value.open();
+    }
     pupupData.value?.open(item);
   };
+
   const onInit = async () => {
     pending.value = true;
     const res = await getUserInfo(id.value);
@@ -150,6 +163,8 @@
       if (res.errcode === 0) user.isFollow = !user.isFollow;
     });
   };
+  const chatRef = useTemplateRef("chatRef");
+
   onMounted(async () => {
     onInit();
   });
@@ -230,22 +245,19 @@
           </v-card>
         </div>
         <!-- Browse History -->
-        <div class="d-flex align-center justify-space-between mt-6 px-5 w-100">
-          <div class="text-subtitle-2 d-flex align-center">
-            <v-icon
-              size="20"
-              class="mr-2"
-            >
-              mdi-list-box
-            </v-icon>
+        <div
+          class="d-flex align-center justify-space-between mt-6 px-5 w-100 text-subtitle-2 text-md-h6"
+        >
+          <div class="d-flex align-center">
+            <v-icon class="mr-2">mdi-list-box</v-icon>
             浏览记录
           </div>
-          <v-icon size="28">mdi-chevron-right</v-icon>
+          <v-icon class="cursor-pointer">mdi-chevron-right</v-icon>
         </div>
 
         <!-- <v-slide-group
-          show-arrows
-          class="mt-2"
+          class="mt-2 w-100"
+          scrollable
         >
           <v-slide-group-item
             v-for="(item, i) in [
@@ -257,19 +269,63 @@
                 title: 'hello world',
                 img: '/ai-girl.png',
               },
+              {
+                title: 'hello world',
+                img: '/ai-girl.png',
+              },
+              {
+                title: 'hello world',
+                img: '/ai-girl.png',
+              },
+              {
+                title: 'hello world',
+                img: '/ai-girl.png',
+              },
+              {
+                title: 'hello world',
+                img: '/ai-girl.png',
+              },
+              {
+                title: 'hello world',
+                img: '/ai-girl.png',
+              },
+              {
+                title: 'hello world',
+                img: '/ai-girl.png',
+              },
+              {
+                title: 'hello world',
+                img: '/ai-girl.png',
+              },
+              {
+                title: 'hello world',
+                img: '/ai-girl.png',
+              },
+              {
+                title: 'hello world',
+                img: '/ai-girl.png',
+              },
+              {
+                title: 'hello world',
+                img: '/ai-girl.png',
+              },
             ]"
             :key="i"
           >
-            <div class="mx-2">
-              <v-img
+            <div
+              class="mx-2"
+              style="width: 120px"
+            >
+              <Image
                 :src="item.img"
                 width="120"
-                height="70"
-                class="rounded-lg"
+                height="60"
+                cover
+                class="rounded-md"
               />
               <div
                 class="text-white text-caption text-truncate mt-1"
-                style="width: 120px"
+                :title="item.title"
               >
                 {{ item.title }}
               </div>
@@ -281,18 +337,17 @@
         <v-row class="mt-2 px-3 px-md-0 w-100">
           <v-col cols="6">
             <v-card
-              class="text-center pa-4"
-              height="140"
+              class="text-center pa-3"
+              :height="smAndDown ? 140 : 200"
               rounded="xl"
               :color="store.configuration?.ai_clothes_background || '#965757'"
               @click="onOpenAiDialog('left')"
             >
-              {{ store.configuration?.ai_clothes_background }}
-              <div class="text-center text-white mb-2 text-subtitle-1">
+              <div class="text-center text-white text-subtitle-1 text-md-h6">
                 {{ store.configuration?.ai_clothes_title || "AI脱衣" }}
               </div>
               <v-avatar
-                size="60"
+                :size="smAndDown ? 80 : 140"
                 color="white"
               >
                 <v-img src="/ai-girl.png"></v-img>
@@ -302,17 +357,17 @@
 
           <v-col cols="6">
             <v-card
-              class="text-center pa-4"
-              height="140"
+              class="text-center pa-3"
+              :height="smAndDown ? 140 : 200"
               rounded="xl"
               :color="store.configuration?.girl_join_background || '#965757'"
               @click="onOpenAiDialog('right')"
             >
-              <div class="text-center text-white mb-2 text-subtitle-1">
+              <div class="text-center text-white text-subtitle-1 text-md-h6">
                 {{ store.configuration?.girl_join_title || "楼凤入驻" }}
               </div>
               <v-avatar
-                size="60"
+                :size="smAndDown ? 80 : 140"
                 color="white"
               >
                 <v-img src="/ai-girl2.png"></v-img>
@@ -321,19 +376,20 @@
           </v-col>
         </v-row>
         <!-- Bottom Menu -->
-        <div
-          class="mt-4 d-flex align-center text-center justify-space-around px-4 px-md-0 mt-8 w-100"
-        >
+        <div class="menu-grid pa-3 mt-2">
           <div
             v-for="(item, i) in displayMenu"
             :key="i"
+            class="menu-item"
             @click="onClickMenu(item)"
-            style="min-width: 40px"
           >
-            <div class="menu-icon mb-2">
-              <v-icon>{{ item.icon }}</v-icon>
-            </div>
-            <span class="text-caption white--text">{{ item.name }}</span>
+            <v-icon
+              size="28"
+              class="mb-2"
+            >
+              {{ item.icon }}
+            </v-icon>
+            <div class="text-caption text-md-h6">{{ item.name }}</div>
           </div>
         </div>
       </div>
@@ -376,7 +432,11 @@
     <UserDialogAI ref="dialog-ai"></UserDialogAI>
     <UserQrcodeShare ref="qrcodeShare"></UserQrcodeShare>
     <UserPersonalNote ref="pupupData"></UserPersonalNote>
-    <ChatWidgetLoader />
+    <ChatWidgetLoader
+      ref="chatRef"
+      v-model:loading="loading"
+    />
+    <UserDialogInvites ref="inviteRef" />
   </div>
 </template>
 
@@ -416,5 +476,22 @@
   }
   .invite-gradient {
     background: linear-gradient(45deg, #fec1c1, #852309);
+  }
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 5 columns for mobile */
+    gap: 20px;
+    text-align: center;
+    width: 100%;
+  }
+
+  @media (min-width: 960px) {
+    .menu-grid {
+      grid-template-columns: repeat(6, 1fr); /* 6 columns for desktop */
+    }
+  }
+
+  .menu-item {
+    cursor: pointer;
   }
 </style>

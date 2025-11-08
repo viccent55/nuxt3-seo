@@ -1,3 +1,4 @@
+// composables/useChatWidget.ts
 import { ref } from "vue";
 
 interface ChatWidgetOptions {
@@ -7,42 +8,45 @@ interface ChatWidgetOptions {
   USER_NAME?: string;
   USER_AVATAR?: string;
   containerId?: string;
+  AUTO_OPEN: boolean;
 }
 
 declare global {
   interface Window {
     CHAT_WIDGET?: {
       initialize: (opts: ChatWidgetOptions) => void;
-      mount?: (containerSelector: string) => void; // if widget supports mount
-      renderButton?: () => void; // if widget supports renderButton
+      mount?: (containerSelector: string) => void;
+      renderButton?: () => void;
+      open?: () => void; // some widgets have open()/show()
+      close?: () => void;
+      openChatWindow: () => void;
     };
   }
 }
 
 export function useChatWidget() {
   const isReady = ref(false);
-  const scriptUrl = '/api/chat-widget'; 
-  const loadAndInitialize = async (options: ChatWidgetOptions) => {
-    if (!process.client) return;
-    if (isReady.value) return;
+  const isVisible = ref(false); // control popup visibility
+  const scriptUrl = "/api/chat-widget";
 
-    // Only append the script if it’s not already in DOM
+  const loadAndInitialize = async (options: ChatWidgetOptions) => {
+    if (!process.client || isReady.value) return;
+    // Load script if not in DOM
     const scriptId = "chat-widget-loader";
     if (!document.getElementById(scriptId)) {
       await new Promise<void>((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = scriptUrl; // directly load the proxy
+        const script = document.createElement("script");
+        script.src = scriptUrl;
         script.id = scriptId;
         script.async = true;
-
         script.onload = () => resolve();
-        script.onerror = (e) => reject(new Error(`Failed to load script: ${e}`));
-
+        script.onerror = (e) =>
+          reject(new Error(`Failed to load script: ${e}`));
         document.head.appendChild(script);
       });
     }
 
-    // Wait for CHAT_WIDGET global to appear
+    // Wait for CHAT_WIDGET global
     let attempts = 0;
     const maxAttempts = 50;
     while (!window.CHAT_WIDGET && attempts < maxAttempts) {
@@ -55,26 +59,29 @@ export function useChatWidget() {
       return;
     }
 
-    // Initialize only once
+    // Initialize
     if (!isReady.value) {
-      window.CHAT_WIDGET.initialize({
-        ...options
-      });
-
-      // Mount / render UI if widget supports it
-      if (options.containerId && typeof window.CHAT_WIDGET.mount === "function") {
-        window.CHAT_WIDGET.mount(`#${options.containerId}`);
-      } else if (typeof window.CHAT_WIDGET.renderButton === "function") {
-        window.CHAT_WIDGET.renderButton();
-      } else {
-        console.warn(
-          "CHAT_WIDGET does not provide mount() or renderButton(). Check widget docs or backend implementation."
-        );
-      }
-
+      window.CHAT_WIDGET.initialize({ ...options });
       isReady.value = true;
+      // Hide the default floating button
+      const style = document.createElement("style");
+      style.textContent = `#chat-widget-button { display: none !important; }`;
+      document.head.appendChild(style);
     }
   };
 
-  return { loadAndInitialize, isReady };
+  /** Show / open the chat popup manually */
+  const showChat = () => {
+    if (!window.CHAT_WIDGET) return;
+    if (typeof window.CHAT_WIDGET.openChatWindow() === "function") {
+      window.CHAT_WIDGET?.openChatWindow();
+    } else if (typeof window.CHAT_WIDGET.renderButton === "function") {
+      window.CHAT_WIDGET.renderButton();
+    } else {
+      console.warn("CHAT_WIDGET has no open() or renderButton() method");
+    }
+    isVisible.value = true;
+  };
+
+  return { loadAndInitialize, showChat, isReady, isVisible };
 }

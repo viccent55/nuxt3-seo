@@ -75,3 +75,24 @@ export async function getMemberActive(params: EmptyObjectType) {
   }
   return res;
 }
+
+export async function getInvitedLogs(params: EmptyObjectType) {
+  const res: EmptyObjectType = await useApiFetch("/api/user/invited-logs", {
+    method: "POST",
+    body: dataEncrypt(params),
+  });
+  if (res.data) {
+    return decrypt(res.data);
+  }
+  return res;
+}
+export async function getHistories(params: EmptyObjectType) {
+  const res: EmptyObjectType = await useApiFetch("/api/user/history", {
+    method: "POST",
+    body: dataEncrypt(params),
+  });
+  if (res.data) {
+    return decrypt(res.data);
+  }
+  return res;
+}

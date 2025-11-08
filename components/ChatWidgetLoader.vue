@@ -1,16 +1,24 @@
 <script setup lang="ts">
   import { onMounted } from "vue";
-  import { useChatWidget } from "~/composables/useChatWidget";
+  const { loadAndInitialize, showChat } = useChatWidget();
 
-  const { loadAndInitialize } = useChatWidget();
+  const emit = defineEmits(["update:loading"]);
 
-  onMounted(() => {
-    loadAndInitialize({
+  onMounted(async () => {
+    // Only load script in background, but don’t show popup yet
+    await loadAndInitialize({
       API_URL: "http://live.xhltfes.com",
       AGENT_ID: "agent",
       USER_ID: "",
-      USER_NAME: "小红书",
+      USER_NAME: "Viccent",
+      AUTO_OPEN: false,
     });
+  });
+
+  defineExpose({
+    open: async () => {
+      showChat();
+    },
   });
 </script>
 
@@ -19,3 +27,8 @@
     <!-- <h1>Welcome to my site!</h1> -->
   </div>
 </template>
+<style>
+  #chat-widget-button {
+    display: none;
+  }
+</style>

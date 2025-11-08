@@ -18,6 +18,7 @@
   import { useNoteAnimeDialog } from "./hooks/useNoteAnimeDialog";
   import { useNoteHookupDialog } from "./hooks/useNoteHookupDialog";
   import { createId } from "@paralleldrive/cuid2";
+  import { useLayoutManager } from "./composables/useLayoutManager";
 
   const { storeUser, store, isMobile } = useVariable();
   const { initAds } = useHome();
@@ -30,6 +31,7 @@
   const noteHookupDialog = useNoteHookupDialog();
   const permissions = [PERMISSION.Visitor, PERMISSION.User];
   const { scrollableElement, scrollTop } = useScrollManager();
+  const { layoutName } = useLayoutManager();
 
   initPermissions(permissions);
 
@@ -125,22 +127,6 @@
   } catch (error) {
     handleFetchError(error);
   }
-
-  // 1. Get client-side display info
-  const { smAndDown } = useDisplay();
-  const { isNative } = usePlatform();
-
-  // 2. Make a server-side guess based on user-agent
-  const headers = useRequestHeaders(["user-agent"]);
-  const isMobileUserAgent = /Mobi|Android|iPhone/i.test(
-    headers["user-agent"] || ""
-  );
-
-  // 3. Use Nuxt's state for a value that persists from server to client
-  const layout = useState<"mobile" | "desktop">("layout", () =>
-    (isMobileUserAgent ?? smAndDown.value) ? "mobile" : "desktop"
-  );
-
   // from our composable, which is updated by the active scrolling component.
   watch(scrollTop, (value) => {
     showButton.value = value > 200;
@@ -149,10 +135,12 @@
     scrollableElement.value?.scrollTo({ top: 0, behavior: "smooth" });
   };
   const updateVersionRef = ref();
-
+  const showSplash = ref(true);
   onMounted(() => {
-    layout.value = smAndDown.value || isNative.value ? "mobile" : "desktop";
     theme.change(store.darkMode);
+    setTimeout(() => {
+      showSplash.value = false;
+    }, 1500);
     setTimeout(() => {
       noteDialog.queryNoteDialogId();
       noteArticleDetail.queryNoteDialogId();
@@ -188,7 +176,7 @@
     </template>
   </v-snackbar>
   <v-app>
-    <NuxtLayout :name="layout">
+    <NuxtLayout :name="layoutName">
       <NuxtLoadingIndicator />
       <NuxtPwaManifest />
       <NuxtPage />
@@ -256,5 +244,20 @@
       bottom: 80px;
       right: 30px;
     }
+  }
+  .splash-container {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background-color: var(--v-theme-background);
+  }
+
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: opacity 0.6s ease;
+  }
+  .fade-enter-from,
+  .fade-leave-to {
+    opacity: 0;
   }
 </style>

@@ -159,6 +159,7 @@
       class="px-4"
       density="compact"
       show-arrows
+      @update:model-value="refresh()"
     >
       <v-tab
         v-for="item in config?.categories"

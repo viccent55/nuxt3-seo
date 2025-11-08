@@ -27,7 +27,7 @@
 
   const onCopyCode = async (code: string) => {
     await onCopy(code);
-    snackbar.showSnackbar("用户名已复制！", "success");
+    snackbar.showSnackbar("用户名已复制！", "success", 'center');
   };
   const isConfirm = ref(false);
   const openLogout = async () => {
@@ -111,7 +111,7 @@
                   mdi-content-copy
                 </v-icon>
               </div>
-              <v-btn
+              <!-- <v-btn
                 v-if="self"
                 color="error"
                 variant="text"
@@ -119,7 +119,7 @@
               >
                 登出
                 <v-icon end>mdi-power</v-icon>
-              </v-btn>
+              </v-btn> -->
             </div>
           </div>
 

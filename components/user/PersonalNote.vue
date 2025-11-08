@@ -158,10 +158,10 @@
           @click="state.isOpen = false"
           style="position: absolute; top: 10px; left: 10px"
         >
-          <v-icon size="24px"></v-icon>
+          <v-icon></v-icon>
         </v-btn>
         <!-- Title -->
-        <div class="text-center text-grey-lighten-1 mb-2">我的推广码</div>
+        <div class="text-center text-md-h6 mb-2">我的推广码</div>
       </v-card-title>
 
       <v-card-text class="px-4 pt-0">
