@@ -2,15 +2,20 @@ export default defineEventHandler(async (event) => {
   const headers = getHeaders(event);
   const body = await readBody(event);
   const config = useRuntimeConfig();
-  const baseURL = config.apiMember;
+  const baseURL = import.meta.dev
+    ? config.public.apiLocal
+    : config.public.apiBase;
   try {
-    const result: EmptyObjectType = await $fetch(`${baseURL}/member/inviteLogs`, {
-      method: "POST",
-      headers: {
-        Authorization: headers.authorization!,
-      },
-      body,
-    });
+    const result: EmptyObjectType = await $fetch(
+      `${baseURL}/member/inviteLogs`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: headers.authorization!,
+        },
+        body,
+      }
+    );
     return result;
   } catch (error) {
     // Handle errors gracefully
