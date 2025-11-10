@@ -12,6 +12,10 @@
       type: String,
       default: () => "",
     },
+    aspectRatio: {
+      type: Number || String,
+      default: "",
+    },
   });
 </script>
 
@@ -31,6 +35,7 @@
         :alt="advert?.title"
         height="auto"
         contain
+        :aspectRatio="aspectRatio"
       />
     </NuxtLink>
   </v-card>

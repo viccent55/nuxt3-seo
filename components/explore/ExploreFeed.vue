@@ -60,6 +60,7 @@
         广告
       </div>
     </div>
+
     <DesktopAdvertSlot
       @click.stop
       v-if="feed.mode === 3"
@@ -67,6 +68,7 @@
         image: feed?.cover,
         url: feed?.advert?.value,
       }"
+      :aspect-ratio="feed.cover_w / feed.cover_h"
       class="height-dialog"
     />
 

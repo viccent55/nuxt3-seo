@@ -57,9 +57,10 @@ export default defineNuxtConfig({
     ],
   },
   runtimeConfig: {
+    apiMember: process.env.MEMBER_API_BASE,
     public: {
-      apiLocal: process.env.NUXT_LOCAL_API_BASE,
-      apiBase: process.env.NUXT_PROD_API_BASE,
+      apiLocal: process.env.LOCAL_API_BASE,
+      apiBase: process.env.PROD_API_BASE,
     },
   },
 

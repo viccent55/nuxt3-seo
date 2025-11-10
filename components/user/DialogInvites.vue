@@ -21,6 +21,7 @@
         limit: state.limit,
       });
       state.data = res.data;
+      console.log("console.log", res);
     } catch (e) {
       console.log(e);
     } finally {
@@ -55,7 +56,7 @@
           <v-icon></v-icon>
         </v-btn>
         <!-- Title -->
-        <div class="text-center text-md-h6 mb-2">我的推广码</div>
+        <div class="text-center text-md-h6 mb-2">邀请记录</div>
       </v-card-title>
 
       <v-card-text class="px-4 pt-0">

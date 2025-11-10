@@ -3,12 +3,7 @@
     keepalive: true,
   });
 
-  import {
-    retrySendEmailCode,
-    veryCode,
-    getInvitedLogs,
-    getHistories,
-  } from "@/service/user";
+  import { retrySendEmailCode, veryCode } from "@/service/user";
   import UserInfo from "~/components/user/UserInfo.vue";
   import { getUserInfo } from "@/service/user";
   import { checkPermissions } from "@/hooks/usePermisions";
@@ -145,7 +140,7 @@
     if (item.value == "call") {
       return chatRef.value?.open();
     } else if (item.value == "invite") {
-      return inviteRef.value.open();
+      return inviteRef.value?.open();
     }
     pupupData.value?.open(item);
   };
@@ -245,93 +240,7 @@
           </v-card>
         </div>
         <!-- Browse History -->
-        <div
-          class="d-flex align-center justify-space-between mt-6 px-5 w-100 text-subtitle-2 text-md-h6"
-        >
-          <div class="d-flex align-center">
-            <v-icon class="mr-2">mdi-list-box</v-icon>
-            浏览记录
-          </div>
-          <v-icon class="cursor-pointer">mdi-chevron-right</v-icon>
-        </div>
-
-        <!-- <v-slide-group
-          class="mt-2 w-100"
-          scrollable
-        >
-          <v-slide-group-item
-            v-for="(item, i) in [
-              {
-                title: 'hello world',
-                img: '/ai-girl.png',
-              },
-              {
-                title: 'hello world',
-                img: '/ai-girl.png',
-              },
-              {
-                title: 'hello world',
-                img: '/ai-girl.png',
-              },
-              {
-                title: 'hello world',
-                img: '/ai-girl.png',
-              },
-              {
-                title: 'hello world',
-                img: '/ai-girl.png',
-              },
-              {
-                title: 'hello world',
-                img: '/ai-girl.png',
-              },
-              {
-                title: 'hello world',
-                img: '/ai-girl.png',
-              },
-              {
-                title: 'hello world',
-                img: '/ai-girl.png',
-              },
-              {
-                title: 'hello world',
-                img: '/ai-girl.png',
-              },
-              {
-                title: 'hello world',
-                img: '/ai-girl.png',
-              },
-              {
-                title: 'hello world',
-                img: '/ai-girl.png',
-              },
-              {
-                title: 'hello world',
-                img: '/ai-girl.png',
-              },
-            ]"
-            :key="i"
-          >
-            <div
-              class="mx-2"
-              style="width: 120px"
-            >
-              <Image
-                :src="item.img"
-                width="120"
-                height="60"
-                cover
-                class="rounded-md"
-              />
-              <div
-                class="text-white text-caption text-truncate mt-1"
-                :title="item.title"
-              >
-                {{ item.title }}
-              </div>
-            </div>
-          </v-slide-group-item>
-        </v-slide-group> -->
+        <UserBrowseHistory />
 
         <!-- Feature cards (AI remove / Business join) -->
         <v-row class="mt-2 px-3 px-md-0 w-100">
