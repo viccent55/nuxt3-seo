@@ -1,45 +1,41 @@
 import { useDisplay } from "vuetify";
 
-/**
- * A composable to manage layout switching in an SSR-friendly way.
- * It uses a cookie to persist the layout choice across requests,
- * preventing layout shifts on navigation.
- */
 export function useLayoutManager() {
-  // 1. Get Vuetify's display utility.
   const { smAndDown } = useDisplay();
 
-  // 2. Create a cookie to store the layout hint.
-  // 'server-layout' will be 'mobile' or 'desktop'.
+  // Cookie persists user's layout
   const layoutCookie = useCookie<string>("server-layout", {
-    // Set a long max-age so the cookie persists.
-    maxAge: 60 * 60 * 24 * 365, // 1 year
-    // Default to 'desktop' on the very first visit.
+    maxAge: 60 * 60 * 24 * 365,
     default: () => "desktop",
   });
 
-  // 3. Use Nuxt's useState for a reactive value that is shared between server and client.
-  // This is initialized with the cookie's value.
-  const layout = useState<string>("layout", () => layoutCookie.value);
-
-  // 4. On the client-side, after the component mounts, check the actual screen size.
-  onMounted(() => {
-    // Watch for changes in screen size (e.g., resizing the browser).
-    watch(
-      smAndDown,
-      (isMobile) => {
-        const newLayout = isMobile ? "mobile" : "desktop";
-        // If the detected layout is different from the one in the cookie, update both.
-        if (layout.value !== newLayout) {
-          layoutCookie.value = newLayout;
-          layout.value = newLayout;
-        }
-      },
-      { immediate: true } // Run the watcher immediately on mount.
-    );
+  // SSR-safe initial state
+  const layout = useState<string>("layout", () => {
+    // During SSR, use cookie value (if available)
+    // Client will correct this later
+    return layoutCookie.value || "desktop";
   });
 
-  // 5. Expose the reactive layout name.
+  // Client-side correction
+  if (process.client) {
+    const newLayout = smAndDown.value ? "mobile" : "desktop";
+
+    // Update only if mismatch (prevents flicker)
+    if (layout.value !== newLayout) {
+      layout.value = newLayout;
+      layoutCookie.value = newLayout;
+    }
+
+    // Watch for future resizes
+    watch(smAndDown, (isMobile) => {
+      const newLayout = isMobile ? "mobile" : "desktop";
+      if (layout.value !== newLayout) {
+        layout.value = newLayout;
+        layoutCookie.value = newLayout;
+      }
+    });
+  }
+
   return {
     layoutName: layout,
   };

@@ -16,6 +16,7 @@
     page: 1,
     limit: 30,
     currentType: "note",
+    title: "",
   });
 
   const id = computed(() => Number(route.params.id));
@@ -125,6 +126,7 @@
       state.isLoadmore = false;
       state.currentType = item.value;
       state.isOpen = true;
+      state.title = item.name || "";
 
       infiniteActive.value = false; // 🚫 disable until data loaded
 
@@ -161,7 +163,7 @@
           <v-icon></v-icon>
         </v-btn>
         <!-- Title -->
-        <div class="text-center text-md-h6 mb-2">我的推广码</div>
+        <div class="text-center text-md-h6 mb-2">{{ state.title }}</div>
       </v-card-title>
 
       <v-card-text class="px-4 pt-0">

@@ -96,6 +96,7 @@
           :to="'/user/' + feed.author?.id"
         >
           <Avatar
+           v-if="feed.author?.avatar"
             :src="feed.author?.avatar"
             :id="feed.id"
             size="24"

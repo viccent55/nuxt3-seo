@@ -171,14 +171,9 @@ _
           icon
           density="compact"
           @click="noteDialog.closeNoteDialog()"
-          color="grey-darken-1"
+          color="surface"
         >
-          <v-icon
-            size="24px"
-            color="grey-darken-4"
-          >
-            mdi-chevron-left
-          </v-icon>
+          <v-icon size="24px">mdi-chevron-left</v-icon>
         </v-btn>
       </v-card-title>
       <v-card-text class="pa-0 pb-4">

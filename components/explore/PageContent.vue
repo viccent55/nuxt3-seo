@@ -79,13 +79,6 @@
     }
   };
 
-  onMounted(() => {
-    const el = exploreContainerRef.value?.element;
-    if (el) {
-      setScrollableElement(el);
-      el.addEventListener("scroll", () => (scrollTop.value = el.scrollTop));
-    }
-  });
   /* ---------------------------
      4. Click handlers
   ---------------------------- */
@@ -164,6 +157,15 @@
       }
     }
     return "255px";
+  });
+  import { noteDialogVisible } from "@/hooks/useNoteDialog";
+
+  onMounted(() => {
+    const el = exploreContainerRef.value?.element;
+    if (el) {
+      setScrollableElement(el);
+      el.addEventListener("scroll", () => (scrollTop.value = el.scrollTop));
+    }
   });
 </script>
 

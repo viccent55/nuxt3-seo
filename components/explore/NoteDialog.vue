@@ -15,7 +15,7 @@
   const Swiper = defineAsyncComponent(() => import("../Swiper.vue"));
   const noteDIalogRef = useTemplateRef("note-dialog");
   const bottomRef = useTemplateRef("bottomActions");
-  const { storeUser, store, onCopy, route } = useVariable();
+  const { storeUser, store, onCopy, route, isMobile } = useVariable();
   const loading = ref(false);
   const noteDialog = useNoteDialog();
   const state = reactive({
@@ -162,10 +162,20 @@
   const { isNative } = usePlatform();
   const getStyle = computed(() => {
     return isNative.value || smAndDown.value
-      ? "max-height: calc(100vh - 350px); overflow-y: auto"
+      ? "height:100%; overflow-y: scroll"
       : "max-height: calc(100vh - 110px); overflow-y: scroll";
   });
-
+  onBeforeRouteLeave((to, from, next) => {
+    alert(1);
+    if (noteDialogVisible.value) {
+      noteDialogVisible.value = false;
+      // stop navigation (stay on current page)
+      next(false);
+    } else {
+      // allow navigation
+      next();
+    }
+  });
   watch(
     () => noteDialogVisible.value,
     (val) => {
@@ -183,176 +193,175 @@
     height="100%"
     @after-enter="onOpenNoteDialog"
     :fullscreen="smAndDown"
+    scrollable
   >
     <v-card
-      class="overflow-hidden main-contain"
+      class="main-contain"
       :loading="loading"
     >
-      <v-row no-gutters>
-        <!-- Left: Video area -->
-        <v-col
-          cols="12"
-          md="7"
-          lg="8"
-          class="d-flex align-center justify-center"
-          :class="smAndDown ? '' : 'border-e-thin'"
-        >
-          <Swiper
-            ref="swiperInstanceRef"
-            v-if="state.data?.fields"
-            :media-info="state.data.fields"
-          />
-          <v-btn
-            icon
-            density="compact"
-            @click="noteDialog.closeNoteDialog"
-            color="grey-darken-1"
-            style="position: absolute; top: 10px; left: 10px"
+      <v-card-text class="pa-0">
+        <v-row no-gutters>
+          <!-- Left: Video area -->
+          <v-col
+            cols="12"
+            md="7"
+            lg="8"
+            class="d-flex align-center justify-center"
+            :class="smAndDown ? '' : 'border-e-thin'"
           >
-            <v-icon
-              size="24px"
-              color="grey-darken-4"
-            >
-              mdi-chevron-left
-            </v-icon>
-          </v-btn>
-        </v-col>
-
-        <!-- Right: Info & Comments -->
-        <v-col
-          cols="12"
-          md="5"
-          lg="4"
-          :style="getStyle"
-        >
-          <div
-            class="d-flex justify-space-between align-center mb-2 py-0 pr-4"
-            v-if="!smAndDown"
-          >
-            <AuthorHeader
-              :author="{
-                ...state.data?.author,
-                isFollow: state.data?.isFollow,
-              }"
-              @click-close="noteDialog.closeNoteDialog"
-              @click-author="handle.clickAuthor"
-              @click-follow="handle.clickFollow"
+            <Swiper
+              ref="swiperInstanceRef"
+              v-if="state.data?.fields"
+              :media-info="state.data.fields"
             />
             <v-btn
+              v-if="smAndDown"
               icon
-              size="small"
+              density="compact"
               @click="noteDialog.closeNoteDialog"
+              color="surface"
+              style="position: absolute; top: 10px; left: 10px; z-index: 20"
             >
-              <v-icon>mdi-close</v-icon>
+              <v-icon size="24px">mdi-chevron-left</v-icon>
             </v-btn>
-          </div>
-          <!-- Scrollable Content Area -->
-          <div
-            class="flex-grow-1 overflow-y-auto px-4"
-            ref="note-dialog"
+          </v-col>
+
+          <!-- Right: Info & Comments -->
+          <v-col
+            cols="12"
+            md="5"
+            lg="4"
+            :style="getStyle"
           >
-            <div class="text-body-1 font-weight-bold mb-2">
-              {{ state.data?.title }}
-            </div>
-            <div class="text-body-2 text-grey-darken-1 mb-4">
-              {{ state.data?.content }}
-            </div>
-            <div class="text-body-2 text-grey-darken-1 mb-4">
-              发布日期: {{ state.data?.created_at }}
-            </div>
-
-            <v-row dense>
-              <v-col cols="12">
-                <v-toolbar
-                  class="d-flex justify-space-between align-center mb-2 py-0 rounded"
-                  density="compact"
-                >
-                  <AuthorHeader
-                    :author="{
-                      ...state.data?.author,
-                      isFollow: state.data?.isFollow,
-                    }"
-                    @click-close="noteDialog.closeNoteDialog"
-                    @click-author="handle.clickAuthor"
-                    @click-follow="handle.clickFollow"
-                  />
-                </v-toolbar>
-              </v-col>
-              <v-col
-                v-for="(app, index) in store?.detailAppAds"
-                :key="index"
-                :cols="3"
+            <div
+              class="d-flex justify-space-between align-center mb-2 py-0 pr-4"
+              v-if="!smAndDown"
+            >
+              <AuthorHeader
+                :author="{
+                  ...state.data?.author,
+                  isFollow: state.data?.isFollow,
+                }"
+                @click-close="noteDialog.closeNoteDialog"
+                @click-author="handle.clickAuthor"
+                @click-follow="handle.clickFollow"
+              />
+              <v-btn
+                icon
+                size="small"
+                @click="noteDialog.closeNoteDialog"
               >
-                <NuxtLink
-                  :to="app.url || '#'"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="text-decoration-none text-grey-darken-1 d-flex flex-column ga-1 align-center"
-                  @click="$emit('click-ads', app.id)"
-                >
-                  <AdvertSlot
-                    :advert="{
-                      title: app.name,
-                      image: app.image,
-                      url: app?.url,
-                    }"
-                    fit="cover"
-                    style="width: 28px; height: 28px"
-                  />
-                  {{ app.name }}
-                </NuxtLink>
-              </v-col>
-            </v-row>
-            <v-divider
-              :thickness="1"
-              class="my-3 border-opacity-75"
-            />
-
-            <div>
-              <div
-                class="text-subtitle-2 mb-2"
-                v-if="state.comments?.length"
-              >
-                共 {{ state.comments?.length }} 条评论
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </div>
+            <!-- Scrollable Content Area -->
+            <div
+              class="flex-grow-1 overflow-y-auto px-4"
+              ref="note-dialog"
+            >
+              <div class="text-body-1 font-weight-bold mb-2">
+                {{ state.data?.title }}
               </div>
-              <v-card
-                v-for="(app, index) in store?.detailAds"
-                :key="index"
-                class="pa-0 my-2"
-              >
-                <a
-                  :href="app.url"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class=""
-                  @click="adsClick(app.id)"
+              <div class="text-body-2 text-grey-darken-1 mb-4">
+                {{ state.data?.content }}
+              </div>
+              <div class="text-body-2 text-grey-darken-1 mb-4">
+                发布日期: {{ state.data?.created_at }}
+              </div>
+
+              <v-row dense>
+                <v-col cols="12">
+                  <v-toolbar
+                    class="d-flex justify-space-between align-center mb-2 py-0 rounded"
+                    density="compact"
+                  >
+                    <AuthorHeader
+                      :author="{
+                        ...state.data?.author,
+                        isFollow: state.data?.isFollow,
+                      }"
+                      @click-close="noteDialog.closeNoteDialog"
+                      @click-author="handle.clickAuthor"
+                      @click-follow="handle.clickFollow"
+                    />
+                  </v-toolbar>
+                </v-col>
+                <v-col
+                  v-for="(app, index) in store?.detailAppAds"
+                  :key="index"
+                  :cols="3"
                 >
-                  <AdvertSlot
-                    :advert="{
-                      title: app.name,
-                      image: app.image,
-                      url: app?.url,
-                    }"
-                    height="100%"
-                    fit="contain"
+                  <NuxtLink
+                    :to="app.url || '#'"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-decoration-none text-grey-darken-1 d-flex flex-column ga-1 align-center"
+                    @click="$emit('click-ads', app.id)"
+                  >
+                    <AdvertSlot
+                      :advert="{
+                        title: app.name,
+                        image: app.image,
+                        url: app?.url,
+                      }"
+                      fit="cover"
+                      style="width: 28px; height: 28px"
+                    />
+                    {{ app.name }}
+                  </NuxtLink>
+                </v-col>
+              </v-row>
+              <v-divider
+                :thickness="1"
+                class="my-3 border-opacity-75"
+              />
+
+              <div>
+                <div
+                  class="text-subtitle-2 mb-2"
+                  v-if="state.comments?.length"
+                >
+                  共 {{ state.comments?.length }} 条评论
+                </div>
+                <v-card
+                  v-for="(app, index) in store?.detailAds"
+                  :key="index"
+                  class="pa-0 my-2"
+                >
+                  <a
+                    :href="app.url"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class=""
+                    @click="adsClick(app.id)"
+                  >
+                    <AdvertSlot
+                      :advert="{
+                        title: app.name,
+                        image: app.image,
+                        url: app?.url,
+                      }"
+                      height="100%"
+                      fit="contain"
+                    />
+                  </a>
+                </v-card>
+                <template
+                  v-for="block in state.comments"
+                  :key="block.id"
+                >
+                  <CommentBlock
+                    :comment="block"
+                    @click-avatar="handle.clickAuthor"
+                    @click-like="handle.clickLike"
+                    @click-reply="handle.clickReply"
                   />
-                </a>
-              </v-card>
-              <template
-                v-for="block in state.comments"
-                :key="block.id"
-              >
-                <CommentBlock
-                  :comment="block"
-                  @click-avatar="handle.clickAuthor"
-                  @click-like="handle.clickLike"
-                  @click-reply="handle.clickReply"
-                />
-              </template>
+                </template>
+              </div>
             </div>
-          </div>
-        </v-col>
-      </v-row>
+          </v-col>
+        </v-row>
+      </v-card-text>
       <v-card-actions class="border-t">
         <BottomAction
           ref="bottomActions"
