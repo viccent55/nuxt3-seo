@@ -9,9 +9,9 @@
   const clickNavigationItem = (item: NavigationItem) => {
     if (item.type === "router-link") {
       if (item.href != "/user") {
-        if (item.href == "/anime" ) {
-          if(storeUser.userInfo?.invite_count < 5 || !storeUser.isLogin)
-          return (isVisible.value = true);
+        if (item.href == "/anime") {
+          if (storeUser.userInfo?.invite_count < 5 || !storeUser.isLogin)
+            return (isVisible.value = true);
         } else {
           store.mode = item.mode;
           router.push(item.href);
@@ -27,13 +27,12 @@
     }
   };
   const isVisible = ref(false);
- 
 </script>
 <template>
   <Header />
   <v-main class="bg-background main-content-wrapper">
     <slot />
-  <AnimeRuleDialog v-model:model-value="isVisible"/>
+    <AnimeRuleDialog v-model:model-value="isVisible" />
   </v-main>
   <Footer
     :active-item="store.mode"

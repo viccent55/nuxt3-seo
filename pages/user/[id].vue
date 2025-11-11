@@ -187,153 +187,159 @@
 </script>
 
 <template>
-  <div ref="pageWrapperRef">
-    <div
-      class="user-background"
-      :style="{
-        backgroundImage: `url(${store?.configuration?.member_center_background})`,
-      }"
-    ></div>
-    <div class="user-content-container">
-      <div class="user-content mx-md-4">
-        <UserInfo
-          :user="userInfo"
-          @click-follow="clickFollow"
-          @refresh="onInit"
-        />
-        <v-alert
-          v-if="self && userInfo.status == 0"
-          type="warning"
-          class="mt-4"
-          border="start"
-        >
-          ⚠️ 未验证邮箱 {{ userInfo.email }} 验证后可订阅最新域名防止失联
-          <v-btn
-            small
-            color="primary"
-            :loading="loading"
-            class="ml-2"
-            @click="onVeryEmail"
+  <v-container
+    fluid
+    class="px-0 py-0"
+  >
+    <div ref="pageWrapperRef">
+      <div
+        class="user-background"
+        :style="{
+          backgroundImage: `url(${store?.configuration?.member_center_background})`,
+        }"
+      ></div>
+      <div class="user-content-container">
+        <div class="user-content mx-md-4">
+          <UserInfo
+            :user="userInfo"
+            @click-follow="clickFollow"
+            @refresh="onInit"
+          />
+          <v-alert
+            v-if="self && userInfo.status == 0"
+            type="warning"
+            class="mt-4"
+            border="start"
           >
-            验证邮箱
-          </v-btn>
-        </v-alert>
-        <div class="w-100 px-4">
-          <UserReferralnfo :userInfo="userInfo"></UserReferralnfo>
-        </div>
-        <!-- Browse History -->
-        <UserBrowseHistory />
+            ⚠️ 未验证邮箱 {{ userInfo.email }} 验证后可订阅最新域名防止失联
+            <v-btn
+              small
+              color="primary"
+              :loading="loading"
+              class="ml-2"
+              @click="onVeryEmail"
+            >
+              验证邮箱
+            </v-btn>
+          </v-alert>
+          <div class="w-100 px-4">
+            <UserReferralnfo :userInfo="userInfo"></UserReferralnfo>
+          </div>
+          <!-- Browse History -->
+          <UserBrowseHistory />
 
-        <!-- Feature cards (AI remove / Business join) -->
-        <v-row class="mt-2 px-3 px-md-0 w-100">
-          <v-col cols="6">
-            <v-card
-              class="text-center pa-3"
-              :height="smAndDown ? 140 : 200"
-              rounded="xl"
-              :color="config?.ai_clothes_background || '#965757'"
-              @click="onOpenAiDialog('left')"
-            >
-              <div class="text-center text-subtitle-1 text-md-h6">
-                {{ config?.ai_clothes_title || "AI脱衣" }}
-              </div>
-              <v-avatar
-                :size="smAndDown ? 80 : 140"
-                color="white"
+          <!-- Feature cards (AI remove / Business join) -->
+          <v-row class="mt-2 px-3 px-md-0 w-100">
+            <v-col cols="6">
+              <v-card
+                class="text-center pa-3"
+                :height="smAndDown ? 140 : 200"
+                rounded="xl"
+                :color="config?.ai_clothes_background || '#965757'"
+                @click="onOpenAiDialog('left')"
               >
-                <v-img src="/ai-girl.png"></v-img>
-              </v-avatar>
-            </v-card>
-          </v-col>
+                <div class="text-center text-subtitle-1 text-md-h6">
+                  {{ config?.ai_clothes_title || "AI脱衣" }}
+                </div>
+                <v-avatar
+                  :size="smAndDown ? 80 : 140"
+                  color="white"
+                >
+                  <v-img src="/ai-girl.png"></v-img>
+                </v-avatar>
+              </v-card>
+            </v-col>
 
-          <v-col cols="6">
-            <v-card
-              class="text-center pa-3"
-              :height="smAndDown ? 140 : 200"
-              rounded="xl"
-              :color="config?.girl_join_background || '#965757'"
-              @click="onOpenAiDialog('right')"
-            >
-              <div class="text-center text-subtitle-1 text-md-h6">
-                {{ config?.girl_join_title || "楼凤入驻" }}
-              </div>
-              <v-avatar
-                :size="smAndDown ? 80 : 140"
-                color="white"
+            <v-col cols="6">
+              <v-card
+                class="text-center pa-3"
+                :height="smAndDown ? 140 : 200"
+                rounded="xl"
+                :color="config?.girl_join_background || '#965757'"
+                @click="onOpenAiDialog('right')"
               >
-                <v-img src="/ai-girl2.png"></v-img>
-              </v-avatar>
-            </v-card>
-          </v-col>
-        </v-row>
-        <!-- Bottom Menu -->
-        <div class="menu-grid pa-3 mt-2">
-          <div
-            v-for="(item, i) in displayMenu"
-            :key="i"
-            class="menu-item"
-            @click="onClickMenu(item)"
-          >
-            <v-icon
-              size="28"
-              class="mb-2"
+                <div class="text-center text-subtitle-1 text-md-h6">
+                  {{ config?.girl_join_title || "楼凤入驻" }}
+                </div>
+                <v-avatar
+                  :size="smAndDown ? 80 : 140"
+                  color="white"
+                >
+                  <v-img src="/ai-girl2.png"></v-img>
+                </v-avatar>
+              </v-card>
+            </v-col>
+          </v-row>
+          <!-- Bottom Menu -->
+          <div class="menu-grid pa-3 mt-2">
+            <div
+              v-for="(item, i) in displayMenu"
+              :key="i"
+              class="menu-item"
+              @click="onClickMenu(item)"
             >
-              {{ item.icon }}
-            </v-icon>
-            <div class="text-caption text-md-h6">{{ item.name }}</div>
+              <v-icon
+                size="28"
+                class="mb-2"
+              >
+                {{ item.icon }}
+              </v-icon>
+              <div class="text-caption text-md-h6">{{ item.name }}</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <v-dialog
-      v-model="isShowPupup"
-      max-width="450"
-    >
-      <v-card>
-        <v-card-title></v-card-title>
-        <v-card-text class="pb-0">
-          <v-form>
-            <v-text-field
-              label="验证码"
-              v-model="code"
-              type="number"
-            />
-          </v-form>
-        </v-card-text>
-        <v-card-actions>
-          <div class="d-flex justify-end ga-3 ma-2">
-            <v-btn
-              variant="elevated"
-              @click="isShowPupup = false"
-            >
-              取消
-            </v-btn>
-            <v-btn
-              variant="elevated"
-              @click="verifyEmail"
-              color="primary"
-            >
-              确认
-            </v-btn>
-          </div>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <UserDialogAI
-      ref="dialog-ai"
-      @close="chatRef?.open()"
-    ></UserDialogAI>
-    <UserPersonalNote ref="pupupData"></UserPersonalNote>
-    <ChatWidgetLoader
-      ref="chatRef"
-      v-model:loading="loading"
-    />
-    <UserDialogInvites
-      ref="inviteRef"
-      :user-info="userInfo"
-    />
-  </div>
+      <v-dialog
+        v-model="isShowPupup"
+        max-width="450"
+      >
+        <v-card>
+          <v-card-title></v-card-title>
+          <v-card-text class="pb-0">
+            <v-form>
+              <v-text-field
+                label="验证码"
+                v-model="code"
+                type="number"
+              />
+            </v-form>
+          </v-card-text>
+          <v-card-actions>
+            <div class="d-flex justify-end ga-3 ma-2">
+              <v-btn
+                variant="elevated"
+                @click="isShowPupup = false"
+              >
+                取消
+              </v-btn>
+              <v-btn
+                variant="elevated"
+                @click="verifyEmail"
+                color="primary"
+              >
+                确认
+              </v-btn>
+            </div>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <UserDialogAI
+        ref="dialog-ai"
+        @close="chatRef?.open()"
+      ></UserDialogAI>
+      <UserPersonalNote ref="pupupData"></UserPersonalNote>
+      <ChatWidgetLoader
+        ref="chatRef"
+        :user="userInfo"
+        v-model:loading="loading"
+      />
+      <UserDialogInvites
+        ref="inviteRef"
+        :user-info="userInfo"
+      />
+    </div>
+  </v-container>
 </template>
 
 <style scoped lang="scss">

@@ -165,17 +165,7 @@
       ? "height:100%; overflow-y: scroll"
       : "max-height: calc(100vh - 110px); overflow-y: scroll";
   });
-  onBeforeRouteLeave((to, from, next) => {
-    alert(1);
-    if (noteDialogVisible.value) {
-      noteDialogVisible.value = false;
-      // stop navigation (stay on current page)
-      next(false);
-    } else {
-      // allow navigation
-      next();
-    }
-  });
+
   watch(
     () => noteDialogVisible.value,
     (val) => {

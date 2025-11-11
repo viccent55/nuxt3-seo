@@ -2,7 +2,6 @@
   import { getHistories } from "@/service/user";
   import { useInfiniteScroll } from "@vueuse/core";
   import { useNoteDialog } from "@/hooks/useNoteDialog";
-  import { title } from "process";
 
   const state = reactive({
     isDialogOpen: false,
@@ -32,7 +31,6 @@
         visitor: storeUser.visitCode,
       };
       const res = await getHistories(request);
-      console.log(res.data);
       if (res.errcode === 0 && res.data) {
         const items = res.data?.items.map((item: EmptyObjectType) => ({
           ...item,
@@ -141,7 +139,10 @@
         v-for="(item, i) in state.data.slice(0, 10)"
         :key="i"
       >
-        <div
+        <v-card
+          rounded="lg"
+          flat
+          color="surface"
           class="mx-2"
           style="width: 120px"
           @click="clickFeed(item)"
@@ -151,15 +152,14 @@
             width="120"
             height="60"
             cover
-            class="rounded-lg"
           />
           <div
-            class="text-caption text-truncate mt-1"
+            class="text-caption text-truncate pa-1"
             :title="item.content?.title"
           >
             {{ item.content?.title }}
           </div>
-        </div>
+        </v-card>
       </v-slide-group-item>
     </v-slide-group>
     <v-dialog

@@ -3,7 +3,9 @@ export default defineEventHandler(async (event) => {
     const headers = getHeaders(event);
     const params = getQuery(event);
     const config = useRuntimeConfig();
-    const baseURL = config.public.apiMember;
+    const baseURL = import.meta.dev
+      ? config.public.apiLocal
+      : config.public.apiBase;
 
     // $fetch expects query params as an object
     const result: EmptyObjectType = await $fetch(`${baseURL}/config/settings`, {

@@ -2,6 +2,12 @@
   import { onMounted } from "vue";
   const { loadAndInitialize, showChat } = useChatWidget();
 
+  const props = defineProps({
+    user: {
+      type: Object,
+      default: () => ({}),
+    },
+  });
   const emit = defineEmits(["update:loading"]);
 
   onMounted(async () => {
@@ -9,8 +15,8 @@
     await loadAndInitialize({
       API_URL: "http://live.xhltfes.com",
       AGENT_ID: "agent",
-      USER_ID: "",
-      USER_NAME: "Viccent",
+      USER_ID: props.user.id,
+      USER_NAME: props.user.nickname || 'No-name',
       AUTO_OPEN: false,
     });
   });

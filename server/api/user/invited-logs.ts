@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
     : config.public.apiBase;
   try {
     const result: EmptyObjectType = await $fetch(
-      `${config.public.apiMember}/member/inviteLogs`,
+      `${baseURL}/member/inviteLogs`,
       {
         method: "POST",
         headers: {
