@@ -108,7 +108,7 @@
           <v-icon size="24px"></v-icon>
         </v-btn>
         <!-- Title -->
-        <div class="text-center text-grey-lighten-1 mb-2">我的推广码</div>
+        <div class="text-center mb-2">我的推广码</div>
 
         <!-- Invite Code -->
         <div class="text-center text-green text-h5 font-weight-bold">
@@ -130,7 +130,7 @@
         </div>
 
         <!-- Invite Count -->
-        <div class="text-center text-grey-lighten-1 my-4">
+        <div class="text-center my-4">
           累计邀请
           <span class="text-green font-weight-bold">5</span>
           人
@@ -161,7 +161,7 @@
         </v-row>
 
         <!-- Rules -->
-        <div class="text-body-2 text-grey-lighten-1 my-4">
+        <div class="text-body-2 my-4">
           <p>规则说明：</p>
           <p>1. 邀请5名真实好友成功注册，即可解锁禁区视频免费观看。</p>
           <p>2. 点击【保存二维码】或【复制推广链接】获得专属推广链接。</p>
@@ -169,7 +169,7 @@
         </div>
 
         <!-- Steps -->
-        <div class="text-body-2 text-grey-lighten-1 mb-3">
+        <div class="text-body-2 mb-3">
           <p>邀请步骤</p>
 
           <p><b class="text-green">① 步骤1</b></p>
@@ -191,7 +191,7 @@
               :src="app.icon"
               width="40"
             ></v-img>
-            <div class="text-caption mt-1 text-grey-lighten-1">
+            <div class="text-caption mt-1">
               {{ app.name }}
             </div>
           </div>
