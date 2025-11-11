@@ -190,7 +190,10 @@
       :loading="loading"
     >
       <v-card-text class="pa-0">
-        <v-row no-gutters>
+        <v-row
+          no-gutters
+          class="h-100"
+        >
           <!-- Left: Video area -->
           <v-col
             cols="12"
