@@ -4,6 +4,10 @@
   import { useNoteHookupDialog } from "~/hooks/useNoteHookupDialog";
   import { useDisplay } from "vuetify";
 
+  definePageMeta({
+    keepalive: true,
+  });
+
   const state = reactive({
     isDrawerOpen: false,
     isFilterOpen: false,

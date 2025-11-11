@@ -16,7 +16,7 @@
     isLoadmore: false,
     isNomore: true,
   });
-  const { storeUser, isMobile } = useVariable();
+  const { storeUser, isMobile, route } = useVariable();
   const pageWrapperRef = ref<HTMLElement | null>(null);
   const { setScrollableElement, scrollTop } = useScrollManager();
   const infiniteActive = ref(false);
@@ -102,7 +102,16 @@
       canLoadMore: () => !state.isLoadmore && !state.isNomore,
     }
   );
-
+  watch(
+    () => route,
+    async (v) => {
+      state.data = [];
+      await getHistoriesList();
+    },
+    {
+      deep: true,
+    }
+  );
   onMounted(() => {
     getHistoriesList();
     const el = exploreContainerRef.value?.element;
