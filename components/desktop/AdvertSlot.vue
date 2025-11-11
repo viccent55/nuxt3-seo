@@ -1,12 +1,8 @@
 <script setup lang="ts">
-  const props = defineProps({
+  defineProps({
     advert: {
       type: Object,
       required: true,
-    },
-    heightImage: {
-      type: String || Number,
-      default: "120px",
     },
     class: {
       type: String,
@@ -15,6 +11,10 @@
     aspectRatio: {
       type: Number || String,
       default: "",
+    },
+    height: {
+      type: String,
+      default: () => "100%",
     },
   });
 </script>
@@ -34,7 +34,7 @@
         :src="advert?.image"
         :alt="advert?.title"
         contain
-        :height="props.heightImage"
+        :height="height"
         :aspectRatio="aspectRatio"
       />
     </NuxtLink>

@@ -125,7 +125,6 @@
         <DesktopAdvertSlot
           v-if="currentAdvert"
           :advert="currentAdvert"
-          height-image="100%"
           class="height-dialog"
         />
       </v-card>
