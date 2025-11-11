@@ -7,22 +7,50 @@
   });
 
   const { router, storeUser } = useVariable();
-  const emit = defineEmits(["update:modelValue", "select"]);
+  const emit = defineEmits(["update:modelValue", "select", "leave"]);
   const isVisible = computed({
     get: () => props.modelValue,
     set: (v) => emit("update:modelValue", v),
   });
+  let inviteClicked = false;
   const onInvite = () => {
     checkPermissions(PERMISSION.User, () => {
       router.push(`/user/${storeUser.useId}`);
+      inviteClicked = true;
       isVisible.value = false;
     });
+  };
+  watch(
+    () => router.currentRoute,
+    (val) => {
+      if (val.value?.fullPath == "/anime") {
+        if (storeUser.userInfo?.invite_count < 5 || !storeUser.isLogin)
+          isVisible.value = true;
+      }
+    },
+    {
+      deep: true,
+    }
+  );
+  const onLeave = () => {
+    if (inviteClicked) {
+      inviteClicked = false; // Reset flag for next time
+      return; // Stop execution if invite was clicked
+    }
+
+    isVisible.value = false;
+    if (window.history.length > 1) {
+      router.back();
+    } else {
+      router.push("/");
+    }
   };
 </script>
 <template>
   <v-dialog
     v-model="isVisible"
     max-width="500px"
+    @after-leave="onLeave"
   >
     <v-card>
       <v-card-text>

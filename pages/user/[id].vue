@@ -180,6 +180,17 @@
       });
     }
   };
+  const { isNative } = usePlatform();
+  const heightOffset = computed(() => {
+    if (!isNative.value) {
+      if (smAndDown.value) {
+        return "140px";
+      } else {
+        return "80px";
+      }
+    }
+    return "120px";
+  });
   onMounted(async () => {
     onInit();
     getConfig();
@@ -191,7 +202,10 @@
     fluid
     class="px-0 py-0"
   >
-    <div ref="pageWrapperRef">
+    <div
+      ref="pageWrapperRef"
+      class="wrap-page"
+    >
       <div
         class="user-background"
         :style="{
@@ -343,6 +357,13 @@
 </template>
 
 <style scoped lang="scss">
+  .wrap-page {
+    width: 100%; /* Default height for desktop */
+    max-height: calc(100vh - v-bind(heightOffset));
+    overflow-y: scroll;
+    scrollbar-width: none;
+    padding-bottom: 100px;
+  }
   .user-background {
     position: absolute;
     top: 0;

@@ -112,7 +112,7 @@
   const isVisible = ref(false);
   onBeforeMount(() => {
     if (storeUser.userInfo?.invite_count < 5 || !storeUser.isLogin)
-      return navigateTo("/");
+      isVisible.value = true;
   });
   onMounted(() => {
     const el = containerRef.value;

@@ -34,21 +34,14 @@
     checkPermissions(PERMISSION.User, () => {});
   };
 
-  const isVisible = ref(false);
-  const onInvite = () => {
-    checkPermissions(PERMISSION.User, () => {
-      router.push(`/user/${storeUser.useId}`);
-      isVisible.value = false;
-    });
-  };
-
   const clickNavigationItem = (item: any) => {
-    if (item.href === "/anime") {
-      if (storeUser.userInfo?.invite_count < 5 || !storeUser.isLogin) {
-        isVisible.value = true;
-        return;
-      }
-    }
+    // if (item.href === "/anime") {
+    //   if (storeUser.userInfo?.invite_count < 5 || !storeUser.isLogin) {
+    //     router.push(item.href);
+
+    //     return;
+    //   }
+    // }
     if (item.href === "/user") {
       checkPermissions(PERMISSION.User, () => {
         router.push({ path: `/user/${storeUser.useId}` });
@@ -143,7 +136,7 @@
     </v-container>
   </v-app-bar>
   <DialogInfo ref="dialgInfo" />
-  <AnimeRuleDialog v-model:model-value="isVisible" />
+  <!-- <AnimeRuleDialog v-model:model-value="isVisible" /> -->
 </template>
 
 <style lang="scss" scoped>
