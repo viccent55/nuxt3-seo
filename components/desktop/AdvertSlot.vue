@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  defineProps({
+  const props = defineProps({
     advert: {
       type: Object,
       required: true,
@@ -33,8 +33,8 @@
       <Image
         :src="advert?.image"
         :alt="advert?.title"
-        height="auto"
         contain
+        :height="props.heightImage"
         :aspectRatio="aspectRatio"
       />
     </NuxtLink>

@@ -13,7 +13,7 @@
     adverts: {
       type: Array as PropType<Advert[]>,
       default: () => [],
-  },
+    },
   });
 
   const dialog = ref(false);
