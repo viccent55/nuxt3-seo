@@ -29,7 +29,6 @@
       });
       state.data = res.data?.items ?? [];
       state.total = res.data?.count || 0;
-      console.log("console.log", res.data);
     } catch (e) {
       console.log(e);
     } finally {
