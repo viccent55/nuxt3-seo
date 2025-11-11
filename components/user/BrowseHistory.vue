@@ -73,12 +73,8 @@
   const openDialog = () => {
     state.isDialogOpen = true;
     infiniteActive.value = false;
-    // Reset and fetch full data for dialog if needed
-    if (state.data.length <= 10) {
-      state.page = 1;
-      state.isNomore = true;
-      getHistoriesList();
-    }
+    state.data = [];
+    getHistoriesList();
   };
 
   const noteDialog = useNoteDialog();
@@ -113,7 +109,6 @@
     }
   );
   onMounted(() => {
-    getHistoriesList();
     const el = exploreContainerRef.value?.element;
     if (el) {
       setScrollableElement(el);
@@ -140,37 +135,44 @@
         icon="mdi-chevron-right"
       ></v-btn>
     </div>
-    <v-slide-group
-      class="mt-2 w-100"
-      scrollable
+    <v-card
+      flat
+      color="transparent"
+      :loading="state.loading"
+      class="pa-0"
     >
-      <v-slide-group-item
-        v-for="(item, i) in state.data.slice(0, 10)"
-        :key="i"
+      <v-slide-group
+        class="mt-2 w-100"
+        scrollable
       >
-        <v-card
-          rounded="lg"
-          flat
-          color="surface"
-          class="mx-2"
-          style="width: 120px"
-          @click="clickFeed(item)"
+        <v-slide-group-item
+          v-for="(item, i) in state.data.slice(0, 10)"
+          :key="i"
         >
-          <Image
-            :src="item.content?.thumbnail"
-            width="120"
-            height="60"
-            cover
-          />
-          <div
-            class="text-caption text-truncate pa-1"
-            :title="item.content?.title"
+          <v-card
+            rounded="lg"
+            flat
+            color="surface"
+            class="mx-2"
+            style="width: 120px"
+            @click="clickFeed(item)"
           >
-            {{ item.content?.title }}
-          </div>
-        </v-card>
-      </v-slide-group-item>
-    </v-slide-group>
+            <Image
+              :src="item.content?.thumbnail"
+              width="120"
+              height="60"
+              cover
+            />
+            <div
+              class="text-caption text-truncate pa-1"
+              :title="item.content?.title"
+            >
+              {{ item.content?.title }}
+            </div>
+          </v-card>
+        </v-slide-group-item>
+      </v-slide-group>
+    </v-card>
     <v-dialog
       v-model="state.isDialogOpen"
       scrollable

@@ -42,9 +42,6 @@
       default: () => [],
     }
   );
-  if (config.value?.categories?.length) {
-    state.filter.cid = config.value.categories[0]?.id ?? 0;
-  }
 
   const { data, pending, refresh } = await useAsyncData(
     "hookup-list",
@@ -61,25 +58,33 @@
   );
   // Assign only once
   if (data.value?.items) {
-    state.total = data.value.items.length;
+    state.total = data.value.count;
     state.data = data.value.items;
   }
-  let initialized = false;
-  const onLoadMore = async () => {
-    if (pending.value || state.data.length >= state.total) return;
-    if (!initialized) {
-      initialized = true;
-      return; // skip the first trigger
+
+  // Watch for changes from `refresh()` and update the local state
+  watch(data, (newData) => {
+    if (newData?.items) {
+      state.data = newData.items;
+      state.total = newData.count;
     }
+  });
+
+  const onLoadMore = async () => {
+    if (pending.value || state.loadmore || state.isNoMore) return;
     try {
       state.loadmore = true;
       state.page++;
       const data = await findList({
         page: state.page,
         limit: 30,
+        ...state.filter,
       });
-      if (data.items.length) {
-        state.data.push(...data.items);
+      const newItems = data.data?.items || [];
+      if (newItems.length) {
+        state.data.push(...newItems);
+      } else {
+        state.isNoMore = true;
       }
     } finally {
       state.loadmore = false;
@@ -102,6 +107,17 @@
   };
   const onTagSelect = (tagId: string | null) => {
     state.filter.tag_id = tagId;
+    refresh();
+  };
+  const displayMenu = computed(() => {
+    return [...[{ id: 0, name: "全部" }], ...(config.value?.categories || [])];
+  });
+  if (displayMenu.value?.length) {
+    state.filter.cid = displayMenu.value[0]?.id ?? 0;
+  }
+  const onChange = () => {
+    state.page = 1;
+    state.data = []; // Clear current data to show loading state
     refresh();
   };
   useSeo(
@@ -157,16 +173,17 @@
         </v-col>
       </v-row>
     </v-toolbar>
+
     <v-tabs
       v-model="state.filter.cid"
       color="primary"
-      class="px-4"
+      class="px-md-4"
       density="compact"
       show-arrows
-      @update:model-value="refresh()"
+      @update:model-value="onChange"
     >
       <v-tab
-        v-for="item in config?.categories"
+        v-for="item in displayMenu"
         :key="item"
         :value="item?.id"
         class="px-0"
