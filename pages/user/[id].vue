@@ -209,7 +209,7 @@
               :color="store.configuration?.ai_clothes_background || '#965757'"
               @click="onOpenAiDialog('left')"
             >
-              <div class="text-center text-white text-subtitle-1 text-md-h6">
+              <div class="text-center text-subtitle-1 text-md-h6">
                 {{ store.configuration?.ai_clothes_title || "AI脱衣" }}
               </div>
               <v-avatar
@@ -229,7 +229,7 @@
               :color="store.configuration?.girl_join_background || '#965757'"
               @click="onOpenAiDialog('right')"
             >
-              <div class="text-center text-white text-subtitle-1 text-md-h6">
+              <div class="text-center text-subtitle-1 text-md-h6">
                 {{ store.configuration?.girl_join_title || "楼凤入驻" }}
               </div>
               <v-avatar

@@ -17,7 +17,9 @@
     rounded="lg"
     elevation="4"
   >
-    <div class="d-flex align-center justify-space-between h-100 px-4 px-md-12">
+    <div
+      class="d-flex ga-2 align-center justify-space-between h-100 px-4 px-md-12"
+    >
       <v-avatar
         size="70"
         class="elevation-2"
@@ -28,12 +30,10 @@
         />
       </v-avatar>
       <div>
-        <div class="text-h6 font-weight-bold white--text">
+        <div class="text-h6 font-weight-bold text-white">
           成功邀请 {{ userInfo.invite_count || 0 }}人
         </div>
-        <div class="text-caption white--text opacity-80">
-          永久解锁禁区观影权限
-        </div>
+        <div class="text-body-2 text-white">永久解锁禁区观影权限</div>
       </div>
 
       <v-btn
@@ -41,7 +41,7 @@
         variant="elevated"
         elevation="0"
         color="white "
-        class="px-5"
+        class="px-2 px-md-5 font-weight-bold"
         density="comfortable"
         @click="onOpenQrcode"
       >
