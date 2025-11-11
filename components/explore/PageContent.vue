@@ -158,7 +158,6 @@
     }
     return "255px";
   });
-  import { noteDialogVisible } from "@/hooks/useNoteDialog";
 
   onMounted(() => {
     const el = exploreContainerRef.value?.element;
@@ -171,11 +170,6 @@
 
 <template>
   <div class="explore-wrapper">
-    <!-- <ExploreChannelBar
-      :items="categories"
-      :active-value="indexChannel"
-    /> -->
-
     <ExploreContainer
       ref="exploreContainerRef"
       :items="feeds"

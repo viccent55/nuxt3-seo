@@ -81,9 +81,9 @@ export async function getInvitedLogs(params: EmptyObjectType) {
     method: "POST",
     body: dataEncrypt(params),
   });
-  if (res.data) {
-    return decrypt(res.data);
-  }
+  // if (res.data) {
+  //   return decrypt(res.data);
+  // }
   return res;
 }
 export async function getHistories(params: EmptyObjectType) {
@@ -94,5 +94,15 @@ export async function getHistories(params: EmptyObjectType) {
   if (res.data) {
     return decrypt(res.data);
   }
+  return res;
+}
+
+export async function getConfigs(param: string) {
+  const res: EmptyObjectType = await useApiFetch("/api/user/user-config", {
+    method: "GET",
+    params: {
+      names: param,
+    }, // send query parameters here
+  });
   return res;
 }

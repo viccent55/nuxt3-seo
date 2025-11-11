@@ -8,6 +8,12 @@
     },
   });
 
+  const emit = defineEmits(["close"])
+  const onCallSupport = () => {
+    state.isOpen = false
+    emit('close');
+  }
+
   defineExpose({
     open: (item: { title: string; content: string; color: string }) => {
       state.item = item;
@@ -34,7 +40,7 @@
           block
           color="primary"
           rounded="xl"
-          @click="state.isOpen = false"
+          @click="onCallSupport()"
         >
           联系在线客服
         </v-btn>

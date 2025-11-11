@@ -3,6 +3,7 @@ import { useGoTo } from "vuetify";
 import { useStore } from "@/store";
 import { useUserStore } from "~/store/user";
 import { Capacitor } from "@capacitor/core";
+import dayjs from "dayjs";
 
 const useVaraible = () => {
   const { width } = useWindowSize();
@@ -17,25 +18,24 @@ const useVaraible = () => {
   const platform = computed(() => Capacitor.getPlatform());
   const isNativePlatform = computed(() => Capacitor.isNativePlatform());
   const onCopy = async (text: string) => {
-    if (navigator.clipboard && window.isSecureContext) {
-      try {
+    try {
+      if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(text);
-        console.log("✅ Copied via Clipboard API!");
-        return true;
-      } catch (err) {
-        console.warn("Clipboard API failed, falling back:", err);
+      } else {
+        const textarea = Object.assign(document.createElement("textarea"), {
+          value: text,
+        });
+        document.body.append(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        textarea.remove();
       }
+      console.log("✅ Copied!");
+    } catch (err) {
+      console.error("❌ Copy failed:", err);
     }
-    // Fallback for insecure contexts
-    const textarea = document.createElement("textarea");
-    textarea.value = text;
-    document.body.appendChild(textarea);
-    textarea.focus();
-    textarea.select();
-    document.execCommand("copy");
-    document.body.removeChild(textarea);
-    return true;
   };
+
   const formatTime = (timestamp: string | number | Date) => {
     const createdAt =
       typeof timestamp === "number"
@@ -59,6 +59,12 @@ const useVaraible = () => {
     } else {
       return createdAt.toLocaleDateString();
     }
+  };
+  const formatDate = (
+    date: string | number | Date,
+    format = "MM/DD/YYYY HH:mm"
+  ) => {
+    return dayjs(date).format(format);
   };
 
   const getDeviceInfo = () => {
@@ -158,6 +164,7 @@ const useVaraible = () => {
     platform,
     isNativePlatform,
     debounce,
+    formatDate,
   };
 };
 export default useVaraible;

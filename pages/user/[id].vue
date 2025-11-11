@@ -5,7 +5,7 @@
 
   import { retrySendEmailCode, veryCode } from "@/service/user";
   import UserInfo from "~/components/user/UserInfo.vue";
-  import { getUserInfo } from "@/service/user";
+  import { getUserInfo, getConfigs } from "@/service/user";
   import { checkPermissions } from "@/hooks/usePermisions";
   import { PERMISSION } from "@/common/permision";
   import { follow } from "@/service/explore";
@@ -99,7 +99,7 @@
     },
     {
       name: "商务广告",
-      value: "star",
+      value: "telegram",
       icon: "mdi-handshake-outline",
     },
   ];
@@ -112,23 +112,6 @@
   });
 
   const pageWrapperRef = ref<HTMLElement | null>(null);
-  const dialogAiRef = useTemplateRef("dialog-ai");
-  const onOpenAiDialog = (type: string) => {
-    if (type == "left") {
-      dialogAiRef.value?.open({
-        title: store.configuration?.ai_clothes_title || "AI脱衣",
-        content: store.configuration?.ai_clothes_intro || "",
-        color: "success",
-      });
-    }
-    if (type == "right") {
-      dialogAiRef.value?.open({
-        title: store.configuration?.girl_join_title || "楼凤入驻",
-        content: store.configuration?.girl_join_intro || "",
-        color: "",
-      });
-    }
-  };
 
   const pupupData = useTemplateRef("pupupData");
   const inviteRef = useTemplateRef("inviteRef");
@@ -137,6 +120,20 @@
       return chatRef.value?.open();
     } else if (item.value == "invite") {
       return inviteRef.value?.open();
+    } else if (item.value == "telegram") {
+      if (config.value?.tg_business) {
+        navigateTo(config.value.tg_business, {
+          external: true,
+          open: { target: "_blank" },
+        });
+      } else {
+        navigateTo("https://t.me/HFDHG9985", {
+          external: true,
+          open: { target: "_blank" },
+        });
+      }
+
+      return;
     }
     pupupData.value?.open(item);
   };
@@ -155,9 +152,37 @@
     });
   };
   const chatRef = useTemplateRef("chatRef");
-
+  const config = ref<any>({});
+  const getConfig = async () => {
+    try {
+      const params =
+        "ai_clothes_background, ai_clothes_intro, ai_clothes_tg_link, ai_clothes_title, girl_join_background, girl_join_intro, girl_join_title, girl_join_tg_link, tg_business";
+      const res = await getConfigs(params);
+      config.value = res.data || {};
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const dialogAiRef = useTemplateRef("dialog-ai");
+  const onOpenAiDialog = (type: string) => {
+    if (type == "left") {
+      dialogAiRef.value?.open({
+        title: config.value?.ai_clothes_title || "AI脱衣",
+        content: config.value?.ai_clothes_intro || "",
+        color: "success",
+      });
+    }
+    if (type == "right") {
+      dialogAiRef.value?.open({
+        title: config.value?.girl_join_title || "楼凤入驻",
+        content: config.value?.girl_join_intro || "",
+        color: "",
+      });
+    }
+  };
   onMounted(async () => {
     onInit();
+    getConfig();
   });
 </script>
 
@@ -206,11 +231,11 @@
               class="text-center pa-3"
               :height="smAndDown ? 140 : 200"
               rounded="xl"
-              :color="store.configuration?.ai_clothes_background || '#965757'"
+              :color="config?.ai_clothes_background || '#965757'"
               @click="onOpenAiDialog('left')"
             >
               <div class="text-center text-subtitle-1 text-md-h6">
-                {{ store.configuration?.ai_clothes_title || "AI脱衣" }}
+                {{ config?.ai_clothes_title || "AI脱衣" }}
               </div>
               <v-avatar
                 :size="smAndDown ? 80 : 140"
@@ -226,11 +251,11 @@
               class="text-center pa-3"
               :height="smAndDown ? 140 : 200"
               rounded="xl"
-              :color="store.configuration?.girl_join_background || '#965757'"
+              :color="config?.girl_join_background || '#965757'"
               @click="onOpenAiDialog('right')"
             >
               <div class="text-center text-subtitle-1 text-md-h6">
-                {{ store.configuration?.girl_join_title || "楼凤入驻" }}
+                {{ config?.girl_join_title || "楼凤入驻" }}
               </div>
               <v-avatar
                 :size="smAndDown ? 80 : 140"
@@ -295,7 +320,10 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <UserDialogAI ref="dialog-ai"></UserDialogAI>
+    <UserDialogAI
+      ref="dialog-ai"
+      @close="chatRef?.open()"
+    ></UserDialogAI>
     <UserPersonalNote ref="pupupData"></UserPersonalNote>
     <ChatWidgetLoader
       ref="chatRef"

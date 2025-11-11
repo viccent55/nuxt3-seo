@@ -9,16 +9,17 @@
   });
   const state = reactive({
     isOpen: false,
-    data: {} as EmptyObjectType,
+    data: [] as EmptyObjectType[],
     loading: false,
     isNomore: false,
     isLoadmore: false,
     page: 1,
     limit: 30,
     currentType: "note",
+    total: 0,
   });
 
-  const { isMobile } = useVariable();
+  const { isMobile, formatDate } = useVariable();
 
   const getInvites = async () => {
     try {
@@ -26,8 +27,9 @@
         page: state.page,
         limit: state.limit,
       });
-      state.data = res.data;
-      console.log("console.log", res);
+      state.data = res.data?.items ?? [];
+      state.total = res.data?.count || 0;
+      console.log("console.log", res.data);
     } catch (e) {
       console.log(e);
     } finally {
@@ -35,21 +37,6 @@
     }
   };
 
-  const invitedCount = 2;
-  const remainingCount = 3;
-
-  const inviteList = [
-    {
-      avatar: "/avatars/a1.jpg",
-      name: "不吃鱼的小猫",
-      date: "2025-10-24 10:55:30",
-    },
-    {
-      avatar: "/avatars/a2.jpg",
-      name: "不吃鱼的小猫",
-      date: "2025-10-24 10:55:30",
-    },
-  ];
   defineExpose({
     open: () => {
       state.isOpen = true;
@@ -86,7 +73,7 @@
         <v-row class="text-center my-5">
           <v-col cols="6">
             <div class="text-subtitle-2 mb-1">已邀请人数</div>
-            <div class="text-h5 font-weight-bold">{{ invitedCount }}</div>
+            <div class="text-h5 font-weight-bold">{{ state.total }}</div>
           </v-col>
 
           <v-divider
@@ -96,7 +83,7 @@
 
           <v-col cols="5">
             <div class="text-subtitle-2 mb-1">还需邀请人数</div>
-            <div class="text-h5 font-weight-bold">{{ remainingCount }}</div>
+            <div class="text-h5 font-weight-bold">{{ state.total }} / 5</div>
           </v-col>
         </v-row>
 
@@ -106,7 +93,7 @@
         <!-- Invite List -->
         <v-row dense>
           <v-col
-            v-for="(item, i) in inviteList"
+            v-for="(item, i) in state.data"
             :key="i"
             cols="12"
             class="mb-2"
@@ -118,15 +105,21 @@
             >
               <div class="d-flex align-center">
                 <v-avatar
-                  size="44"
                   class="me-3"
+                  density="comfortable"
+                  :size="isMobile ? 40 : 60"
                 >
-                  <v-img :src="item.avatar" />
+                  <Image
+                    :src="item.invited_avatar"
+                    cover
+                  />
                 </v-avatar>
-                <span class="text-body-2">{{ item.name }}</span>
+                <span class="text-body-1">
+                  {{ item.invited_nickname || "--" }}
+                </span>
               </div>
-              <span class="text-caption text-grey-lighten-1">
-                {{ item.date }}
+              <span class="text-body-2">
+                {{ formatDate(item.created_at, "DD/MM/YYYY hh:mm A") }}
               </span>
             </v-card>
           </v-col>
