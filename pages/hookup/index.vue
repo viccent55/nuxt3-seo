@@ -14,6 +14,7 @@
     tab: 0,
     data: [] as EmptyArrayType,
     page: 1,
+    limit: 30,
     isNoMore: false,
     loadmore: false,
     total: 0,
@@ -23,13 +24,13 @@
       city: null as null | string,
       tag_id: null as null | string,
     },
+    loading: false,
   });
-
+  const { setScrollableElement, scrollTop } = useScrollManager();
   const { store, clearQuery } = useVariable();
   const { configuration } = storeToRefs(store);
   const noteDialog = useNoteHookupDialog();
   const containerRef = ref<HTMLElement | null>(null);
-  const { smAndDown } = useDisplay();
 
   /* ---------------------------
      1. Centralized fetch function
@@ -43,46 +44,52 @@
     }
   );
 
-  const { data, pending, refresh } = await useAsyncData(
-    "hookup-list",
-    () =>
-      findList({
+  const fetchData = async () => {
+    try {
+      state.loading = true;
+      const request = {
         page: state.page,
-        limit: 30,
+        limit: state.limit,
         ...state.filter,
-      }),
-    {
-      transform: (data: EmptyObjectType) => data?.data || [],
-      default: () => [],
+      };
+      const res = await findList(request);
+      if (res?.errcode === 0 && Array.isArray(res.data.items)) {
+        state.total = res.data.count;
+        return res.data;
+      }
+      state.isNoMore = true;
+      return [];
+    } catch (err) {
+      console.error("fetchData failed:", err);
+      state.isNoMore = true;
+      return [];
+    } finally {
+      state.loading = false;
     }
+  };
+
+  const { data, pending } = await useAsyncData(
+    `hookup-list`,
+    () => fetchData(),
+    { transform: (data) => data || [] } // SSR-safe
   );
+
   // Assign only once
   if (data.value?.items) {
     state.total = data.value.count;
     state.data = data.value.items;
   }
 
-  // Watch for changes from `refresh()` and update the local state
-  watch(data, (newData) => {
-    if (newData?.items) {
-      state.data = newData.items;
-      state.total = newData.count;
-    }
-  });
-
   const onLoadMore = async () => {
-    if (pending.value || state.loadmore || state.isNoMore) return;
+    if (pending.value || state.loadmore || state.data.length >= state.total)
+      return;
+
     try {
       state.loadmore = true;
       state.page++;
-      const data = await findList({
-        page: state.page,
-        limit: 30,
-        ...state.filter,
-      });
-      const newItems = data.data?.items || [];
-      if (newItems.length) {
-        state.data.push(...newItems);
+      const data = await fetchData();
+      if (data.items.length) {
+        state.data.push(...data.items);
       } else {
         state.isNoMore = true;
       }
@@ -90,24 +97,39 @@
       state.loadmore = false;
     }
   };
-  const openDialog = (id: number) => {
-    clearQuery();
-    noteDialog.openNoteDialog(id);
-  };
 
   useInfiniteScroll(containerRef, onLoadMore, {
     distance: 300,
     canLoadMore: () => !state.loadmore && !state.isNoMore,
   });
 
+  const openDialog = (id: number) => {
+    clearQuery();
+    noteDialog.openNoteDialog(id);
+  };
+
+  const resetAndFetch = async () => {
+    state.page = 1;
+    state.data = [];
+    state.isNoMore = false;
+    if (containerRef.value) {
+      containerRef.value.scrollTop = 0;
+    }
+    scrollTop.value = 0;
+    const data = await fetchData();
+    if (data.items) {
+      state.data = data.items;
+    }
+  };
+
   const onDrawerSelect = (item: { province: string | null; city: string }) => {
     state.filter.province = item.province;
     state.filter.city = item.city;
-    refresh();
+    resetAndFetch();
   };
   const onTagSelect = (tagId: string | null) => {
     state.filter.tag_id = tagId;
-    refresh();
+    resetAndFetch();
   };
   const displayMenu = computed(() => {
     return [...[{ id: 0, name: "全部" }], ...(config.value?.categories || [])];
@@ -116,21 +138,38 @@
     state.filter.cid = displayMenu.value[0]?.id ?? 0;
   }
   const onChange = () => {
-    state.page = 1;
-    state.data = []; // Clear current data to show loading state
-    refresh();
+    resetAndFetch();
   };
+  const { smAndDown } = useDisplay();
+  const { isNative } = usePlatform();
+  const heightOffset = computed(() => {
+    if (!isNative.value) {
+      if (smAndDown.value) {
+        return "300px";
+      } else {
+        return "200px";
+      }
+    }
+    return "220px";
+  });
   useSeo(
     computed(() => configuration.value?.novel_title),
     computed(() => configuration.value?.novel_description),
     computed(() => configuration.value?.novel_keywords)
   );
+  onMounted(() => {
+    const el = containerRef.value;
+    if (el) {
+      setScrollableElement(el);
+      el.addEventListener("scroll", () => (scrollTop.value = el.scrollTop));
+    }
+  });
 </script>
 
 <template>
-  <v-card
-    flat
-    class="px-0 px-md-2 py-md-5"
+  <v-container
+    fluid
+    class="pa-0"
     color="none"
   >
     <v-toolbar
@@ -177,7 +216,7 @@
     <v-tabs
       v-model="state.filter.cid"
       color="primary"
-      class="px-md-4"
+      class="px-md-4 px-0 category-tabs"
       density="compact"
       show-arrows
       @update:model-value="onChange"
@@ -186,19 +225,22 @@
         v-for="item in displayMenu"
         :key="item"
         :value="item?.id"
-        class="px-0"
+        class="px-0 custom-tab"
       >
         {{ item?.name }}
       </v-tab>
     </v-tabs>
 
-    <v-card-text>
+    <v-card-text class="px-3">
       <!-- Tabs -->
       <div
         class="hookup-wrapper"
         ref="containerRef"
       >
-        <v-row :dense="smAndDown">
+        <v-row
+          :dense="smAndDown"
+          class="w-100"
+        >
           <v-col
             v-for="(item, index) in state.data"
             :key="index"
@@ -275,21 +317,22 @@
       v-model="state.isFilterOpen"
       @select="onTagSelect"
     ></hookup-drawer-filter>
-  </v-card>
+  </v-container>
 </template>
 
 <style scoped lang="scss">
-  ._hook-wrapper {
+  .hookup-wrapper {
     width: 100%;
-    // max-height: calc(100vh - v-bind(heightOffset));
-    // height: calc(100dvh - v-bind(heightOffset));
+    max-height: calc(100vh - v-bind(heightOffset));
     overflow-y: auto;
-    padding: 0 12px;
     scrollbar-width: none;
   }
-  .hookup-card {
-    width: 100%;
-    overflow: hidden;
-    min-height: 200px;
+  .custom-tab {
+    min-width: 45px !important;
+    margin-right: 10px;
+  }
+  .category-tabs :deep(.v-slide-group__next),
+  .category-tabs :deep(.v-slide-group__prev) {
+    min-width: 32px;
   }
 </style>

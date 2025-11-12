@@ -15,8 +15,8 @@
     await loadAndInitialize({
       API_URL: "https://live.xhltfes.com/",
       AGENT_ID: "agent",
-      USER_ID: props.user.id,
-      USER_NAME: props.user.nickname || "No-name",
+      USER_ID: props.user?.id || "",
+      USER_NAME: props.user?.nickname || "no-name",
       AUTO_OPEN: false,
     });
   });
