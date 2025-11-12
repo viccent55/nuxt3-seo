@@ -1,23 +1,12 @@
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig();
-  const headers = getHeaders(event); // ✅ Read Header
-  const body = await readBody(event); // ✅ Read POST body
+  const apiBase = config.public.apiBase;
   try {
-    const result = await $fetch(
-      `${config.public?.apiBase}/member/resetPassword`,
-      {
-        method: "POST",
-        body,
-        headers: {
-          Authorization: headers.authorization!,
-        },
-      }
-    );
-
-    return result;
+    // Use proxyRequest for better performance and streaming
+    return proxyRequest(event, `${apiBase}/member/resetPassword`);
   } catch (error) {
     // Handle errors gracefully
-    console.error("Error fetching group data:", error);
-    return { error: "Failed to fetch group data" };
+    console.error("Error proxying request:", error);
+    return { error: "Failed to proxy request" };
   }
 });

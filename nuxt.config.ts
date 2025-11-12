@@ -41,6 +41,18 @@ export default defineNuxtConfig({
     },
   },
 
+  nitro: {
+    // You can add your proxy rules here if you have other API endpoints to proxy.
+    // This avoids creating a separate file in `server/api` for each one.
+    // routeRules: {
+    //   '/api/proxy/**': {
+    //     proxy: {
+    //       to: `${process.env.NUXT_PUBLIC_API_BASE || 'http://api.szy7.com/apiv1'}/$1`,
+    //     },
+    //   },
+    // },
+  },
+
   modules: [
     (_options, nuxt) => {
       nuxt.hooks.hook("vite:extendConfig", (config) => {
@@ -95,6 +107,7 @@ export default defineNuxtConfig({
     port: 3000,
     host: "0.0.0.0",
   },
+
   vite: {
     optimizeDeps: {
       include: ["hls.js"],

@@ -1,16 +1,12 @@
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event); // ✅ Read POST body
   const config = useRuntimeConfig();
+  const apiBase = config.public.apiBase;
   try {
-    const result = await $fetch(`${config.public?.apiBase}/post/subject`, {
-      method: "POST",
-      body, 
-    });
-
-    return result; // Return the fetched result
+    // Use proxyRequest for better performance and streaming
+    return proxyRequest(event, `${apiBase}/post/subject`);
   } catch (error) {
     // Handle errors gracefully
-    console.error("Error fetching group data:", error);
-    return { error: "Failed to fetch group data" };
+    console.error("Error proxying request:", error);
+    return { error: "Failed to proxy request" };
   }
 });

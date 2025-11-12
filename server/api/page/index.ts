@@ -1,12 +1,12 @@
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig();
+  const apiBase = config.public.apiBase;
   try {
-    const result = await $fetch(`${config.public?.apiBase}/home/page/contact`);
-
-    return result; // Return the fetched result
+    // Use proxyRequest for better performance and streaming
+    return proxyRequest(event, `${apiBase}/home/page/contact`);
   } catch (error) {
     // Handle errors gracefully
-    console.error("Error fetching page data:", error);
-    return { error: "Failed to fetch page data" };
+    console.error("Error proxying request:", error);
+    return { error: "Failed to proxy request" };
   }
 });

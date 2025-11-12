@@ -1,20 +1,12 @@
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
   const config = useRuntimeConfig();
-
-  const authorization = getHeader(event, "authorization");
+  const apiBase = config.public.apiBase;
   try {
-    const result = await $fetch(`${config.public?.apiBase}/behavior/comment`, {
-      method: "POST",
-      body,
-      headers: {
-        ...(authorization ? { Authorization: authorization } : {}),
-      },
-    });
-
-    return result;
+    // Use proxyRequest for better performance and streaming
+    return proxyRequest(event, `${apiBase}/behavior/comment`);
   } catch (error) {
-    console.error("Error forwarding comment post:", error);
-    return { error: "Failed to post comment" };
+    // Handle errors gracefully
+    console.error("Error proxying request:", error);
+    return { error: "Failed to proxy request" };
   }
 });

@@ -1,12 +1,12 @@
 export default defineEventHandler(async (event) => {
-  const body = await readBody<{ refreshToken: string }>(event);
   const config = useRuntimeConfig();
-
-  return await $fetch(`${config.public.apiBase}/member/refreshToken`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + body.refreshToken,
-    },
-  });
+  const apiBase = config.public.apiBase;
+  try {
+    // Use proxyRequest for better performance and streaming
+    return proxyRequest(event, `${apiBase}/member/refreshToken`);
+  } catch (error) {
+    // Handle errors gracefully
+    console.error("Error proxying request:", error);
+    return { error: "Failed to proxy request" };
+  }
 });

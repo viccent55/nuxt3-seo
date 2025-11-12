@@ -477,7 +477,7 @@
   .home-button-ads {
     width: 100%;
     // max-width: 373px;
-    // aspect-ratio: 373 / 78;
+    //  aspect-ratio: 750 / 95;
     object-fit: contain;
   }
   .right-ads-ratio {

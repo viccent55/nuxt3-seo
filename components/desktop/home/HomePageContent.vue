@@ -19,7 +19,7 @@
     useHome();
   const { route } = useVariable();
 
-  const { data: subject } = await useApiFetch("/api/home/subject", {
+  const { data: subject } = await useFetch("/api/home/subject", {
     method: "POST",
     body: state.filter,
     transform: (res: EmptyObjectType) => {
@@ -31,7 +31,7 @@
   });
 
   watchEffect(() => {
-    if (subject?.value.items) {
+    if (subject?.value?.items) {
       state.subjects = subject.value.items ?? [];
     }
   });
