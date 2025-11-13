@@ -209,11 +209,11 @@
             />
             <v-btn
               v-if="smAndDown"
+              class="back-button"
               icon
               density="compact"
               @click="noteDialog.closeNoteDialog"
               color="surface"
-              style="position: absolute; top: 10px; left: 10px; z-index: 20"
             >
               <v-icon size="24px">mdi-chevron-left</v-icon>
             </v-btn>
@@ -374,7 +374,12 @@
 <style scoped lang="scss">
   .main-contain {
     /* Add padding equal to the top safe area inset */
-    // padding-top: env(safe-area-inset-top, 0px);
     padding-top: var(--safe-area-inset-top, 0px);
+  }
+  .back-button {
+    position: absolute;
+    top: calc(var(--safe-area-inset-top, 0px) + 10px);
+    left: 10px;
+    z-index: 20;
   }
 </style>

@@ -19,7 +19,7 @@ declare global {
       renderButton?: () => void;
       open?: () => void; // some widgets have open()/show()
       close?: () => void;
-      openChatWindow: () => void;
+      openChatWindow?: () => void;
     };
   }
 }
@@ -73,7 +73,7 @@ export function useChatWidget() {
   /** Show / open the chat popup manually */
   const showChat = () => {
     if (!window.CHAT_WIDGET) return;
-    if (typeof window.CHAT_WIDGET.openChatWindow() === "function") {
+    if (typeof window.CHAT_WIDGET.openChatWindow === "function") {
       window.CHAT_WIDGET?.openChatWindow();
     } else if (typeof window.CHAT_WIDGET.renderButton === "function") {
       window.CHAT_WIDGET.renderButton();

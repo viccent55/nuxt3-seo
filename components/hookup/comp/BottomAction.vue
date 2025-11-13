@@ -11,7 +11,7 @@
     }
   );
 
-  const emits = defineEmits(["click-star", "click-deposit"]);
+  const emits = defineEmits(["click-star", "click-deposit", "live-chat"]);
 
   const replayTo = ref<{ id: string; name?: string }>({
     id: "",
@@ -40,16 +40,16 @@
     elevation="0"
     class="w-100"
   >
-    <div class="d-flex align-center ga-2 justify-end">
-      <!-- <v-btn
+    <div class="d-flex align-center ga-2 justify-space-around">
+      <v-btn
         variant="text"
         density="comfortable"
-        @click="$emit('click-comment', action)"
+        @click="$emit('live-chat')"
         class="px-0"
       >
         <v-icon>mdi-comment-outline</v-icon>
         联系客服
-      </v-btn> -->
+      </v-btn>
       <v-btn
         variant="text"
         density="comfortable"

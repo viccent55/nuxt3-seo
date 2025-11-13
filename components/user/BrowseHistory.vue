@@ -98,22 +98,15 @@
       canLoadMore: () => !state.isLoadmore && !state.isNomore,
     }
   );
-  watch(
-    () => route,
-    async (v) => {
-      state.data = [];
-      await getHistoriesList();
-    },
-    {
-      deep: true,
-    }
-  );
+
   onMounted(() => {
     const el = exploreContainerRef.value?.element;
     if (el) {
       setScrollableElement(el);
       el.addEventListener("scroll", () => (scrollTop.value = el.scrollTop));
     }
+    state.data = [];
+    getHistoriesList();
   });
 </script>
 <template>

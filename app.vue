@@ -20,7 +20,7 @@
   import { createId } from "@paralleldrive/cuid2";
   import { useLayoutManager } from "./composables/useLayoutManager";
 
-  const { storeUser, store, isMobile } = useVariable();
+  const { storeUser, store } = useVariable();
   const { initAds } = useHome();
   const theme = useTheme();
   const showButton = ref(false);
@@ -50,19 +50,28 @@
     show: false,
     location: "bottom center" as SnackbarLocation,
   });
-  const triggerSnackbar = (
-    msg: string,
-    color: string = "success",
-    location: SnackbarLocation = "bottom center",
-    time: number = 3000
-  ) => {
-    state.message = msg;
-    state.color = color;
-    state.timeout = time;
-    state.show = true;
-    state.location = location;
+
+  const chatWidgetRef = useTemplateRef("chatWidgetRef");
+  const handle = {
+    triggerSnackbar(
+      msg: string,
+      color: string = "success",
+      location: SnackbarLocation = "bottom center",
+      time: number = 3000
+    ) {
+      state.message = msg;
+      state.color = color;
+      state.timeout = time;
+      state.show = true;
+      state.location = location;
+    },
+    showChatWidget() {
+      chatWidgetRef?.value?.open();
+    },
   };
-  provide("showSnackbar", triggerSnackbar);
+
+  // ✅ Provide as a single object
+  provide("uiActions", handle);
 
   const initializeApp = () => {
     const LOGIN_DIALOG_COOLDOWN = 24 * 60 * 60 * 1000; // 24 hours
@@ -136,6 +145,7 @@
   };
   const updateVersionRef = ref();
   const showSplash = ref(true);
+  const userInfo = ref(storeUser.userInfo);
   onMounted(() => {
     theme.change(store.darkMode);
     setTimeout(() => {
@@ -216,6 +226,8 @@
     <!-- <InstallPWA v-if="!storeUser.loginDialogVisible" /> -->
 
     <AnalyticsLoader :analytics="store.configuration?.analytics" />
+    <!-- chat widget -->
+    <ChatWidgetLoader ref="chatWidgetRef" />
   </v-app>
 </template>
 

@@ -1,5 +1,10 @@
 <script setup lang="ts">
   import { onMounted } from "vue";
+  import { getUserInfo } from "@/service/user";
+  import { checkPermissions } from "@/hooks/usePermisions";
+  import { PERMISSION } from "@/common/permision";
+  import OverlayLoading from "./OverlayLoading.vue";
+
   const { loadAndInitialize, showChat } = useChatWidget();
 
   const props = defineProps({
@@ -8,21 +13,43 @@
       default: () => ({}),
     },
   });
-  const emit = defineEmits(["update:loading"]);
+  const state = reactive({
+    userInfo: {} as EmptyObjectType,
+    loading: false,
+  });
+  const { storeUser } = useVariable();
+  const id = computed(() => Number(storeUser.useId));
 
-  onMounted(async () => {
-    // Only load script in background, but don’t show popup yet
+  const getUser = async () => {
+    checkPermissions(PERMISSION.User, async () => {
+      state.loading = true;
+      try {
+        const res = await getUserInfo(id.value);
+        state.userInfo = res.data;
+      } catch (e) {
+        console.log(e);
+      } finally {
+        state.loading = false;
+      }
+    });
+  };
+  const onInitChat = async () => {
     await loadAndInitialize({
       API_URL: "https://live.xhltfes.com/",
       AGENT_ID: "agent",
-      USER_ID: props.user?.id || "",
-      USER_NAME: props.user?.nickname || "no-name",
+      USER_ID: state.userInfo.id || "",
+      USER_NAME: state.userInfo.nickname || "no-name",
       AUTO_OPEN: false,
     });
+  };
+  onMounted(async () => {
+    // Only load script in background, but don’t show popup yet
   });
 
   defineExpose({
     open: async () => {
+      await getUser();
+      await onInitChat();
       showChat();
     },
   });
@@ -31,6 +58,7 @@
 <template>
   <div>
     <!-- <h1>Welcome to my site!</h1> -->
+    <OverlayLoading v-model:model-value="state.loading" />
   </div>
 </template>
 <style>

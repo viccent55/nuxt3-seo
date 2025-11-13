@@ -237,6 +237,13 @@
         class="hookup-wrapper"
         ref="containerRef"
       >
+        <!-- <ExploreContainer
+          ref="exploreContainerRef"
+          :items="state.data"
+          :is-load-more="state.loadmore"
+          :is-no-more="state.isNoMore"
+          @click-item="openDialog"
+        /> -->
         <v-row
           :dense="smAndDown"
           class="w-100"
@@ -255,14 +262,14 @@
               :to="'/hookup/' + item.id"
               flat
               class="hookup-card"
+              rounded="lg"
             >
               <Image
                 :src="item?.cover"
-                class="rounded-lg"
-                :aspect-ratio="400 / 250"
+                max-height="200px"
                 cover
               />
-              <div class="px-2">
+              <div class="pa-2">
                 <div class="text-surface-variant my-1">
                   {{ item?.name }}
                 </div>
@@ -274,7 +281,7 @@
                   class="mr-1 mt-1 rounded-lg"
                   v-for="(tag, index) in item?.tags"
                   :key="index"
-                  density="compact"
+                  size="small"
                   variant="tonal"
                   color="primary"
                 >

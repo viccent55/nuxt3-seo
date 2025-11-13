@@ -156,7 +156,7 @@
         return "170px";
       }
     }
-    return "255px";
+    return "260px";
   });
 
   onMounted(() => {

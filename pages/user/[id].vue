@@ -20,10 +20,10 @@
   const self = computed(() => storeUser.useId === id.value);
   const isShowPupup = ref(false);
   const loading = ref(false);
-  const snackbar = useSnackbar();
+  const { showSnackbar, showChatWidget } = useSnackbar();
   const onVeryEmail = async () => {
     if (!userInfo.value.email) {
-      snackbar.showSnackbar("请输入您的代码", "warning");
+      showSnackbar("请输入您的代码", "warning");
       return;
     }
     try {
@@ -33,10 +33,10 @@
       });
 
       if (response.errcode === 0) {
-        snackbar.showSnackbar(response.info, "success", "top");
+        showSnackbar(response.info, "success", "top");
         isShowPupup.value = true;
       } else {
-        snackbar.showSnackbar(response.info, "error");
+        showSnackbar(response.info, "error");
       }
       isShowPupup.value = true;
     } catch (error) {
@@ -48,11 +48,11 @@
 
   const verifyEmail = async () => {
     if (!userInfo.value.email) {
-      snackbar.showSnackbar("请输入您的代码", "warning");
+      showSnackbar("请输入您的代码", "warning");
       return;
     }
     if (!code.value) {
-      snackbar.showSnackbar("需要代码！", "error");
+      showSnackbar("需要代码！", "error");
       return;
     }
     try {
@@ -61,9 +61,9 @@
         code: code.value,
       });
       if (response.errcode === 0) {
-        snackbar.showSnackbar(response.info, "success");
+        showSnackbar(response.info, "success");
       } else {
-        snackbar.showSnackbar(response.info, "error");
+        showSnackbar(response.info, "error");
       }
     } catch (error) {
       console.error("Error during login:", error);
@@ -117,7 +117,7 @@
   const inviteRef = useTemplateRef("inviteRef");
   const onClickMenu = async (item: EmptyObjectType) => {
     if (item.value == "call") {
-      return chatRef.value?.open();
+      return showChatWidget();
     } else if (item.value == "invite") {
       return inviteRef.value?.open();
     } else if (item.value == "telegram") {
@@ -151,7 +151,6 @@
       if (res.errcode === 0) user.isFollow = !user.isFollow;
     });
   };
-  const chatRef = useTemplateRef("chatRef");
   const config = ref<any>({});
   const getConfig = async () => {
     try {
@@ -340,14 +339,9 @@
       </v-dialog>
       <UserDialogAI
         ref="dialog-ai"
-        @close="chatRef?.open()"
+        @close="showChatWidget()"
       ></UserDialogAI>
       <UserPersonalNote ref="pupupData"></UserPersonalNote>
-      <ChatWidgetLoader
-        ref="chatRef"
-        :user="userInfo"
-        v-model:loading="loading"
-      />
       <UserDialogInvites
         ref="inviteRef"
         :user-info="userInfo"

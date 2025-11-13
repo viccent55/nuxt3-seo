@@ -2,14 +2,20 @@
   import { useDisplay } from "vuetify";
 
   const dialogIosGuide = ref();
-  const { smAndDown } = useDisplay();
+  const { isNative } = usePlatform();
   const dialgInfo = ref();
+  const displayColor = computed(() => {
+    if (isNative.value) {
+      return "primary";
+    }
+    return "surface";
+  });
 </script>
 <template>
   <header>
     <v-app-bar
       flat
-      :color="smAndDown ? 'surface' : 'surface'"
+      :color="displayColor"
       class="border-b app-header"
       height="64"
     >
