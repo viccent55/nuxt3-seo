@@ -24,7 +24,6 @@ export const useApiFetch = async (
     );
 
     if (data.value) {
-      console.log("data", data.value);
       accessToken.value = data.value.data.access_token;
       refreshToken.value = data.value.data.refresh_token;
       return true;

@@ -7,7 +7,7 @@
   import ArticleListItem from "~/components/desktop/ArticleList.vue";
   import { useStore } from "~/store";
 
-  const { actorData, actorFilters } = useActor();
+  const { actorData, actorFilters, contentArticleRef } = useActor();
   const breadcrumb = computed(() => {
     return [
       {
@@ -68,6 +68,7 @@
                   class="px-5"
                   :content="actorData?.content"
                   :skeleton="6"
+                  ref="contentArticleRef"
                 />
               </v-card-text>
             </v-card>

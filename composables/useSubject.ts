@@ -1,5 +1,6 @@
 export default function useSubject() {
   const route = useRoute();
+  const contentArticleRef = ref();
 
   const {
     data: subjectData,
@@ -17,6 +18,7 @@ export default function useSubject() {
     {
       watch: [() => route.params.id],
       transform: (res: EmptyObjectType) => {
+        contentArticleRef.value?.init(res.data.content);
         return {
           ...res?.data,
         };
@@ -52,5 +54,6 @@ export default function useSubject() {
     subjectFilters,
     pending,
     error,
+    contentArticleRef,
   };
 }

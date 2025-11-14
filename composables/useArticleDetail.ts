@@ -5,6 +5,7 @@ export default function useArticleDetail() {
   const storeDialog = useGlobalDialog();
   const accessToken = useCookie("access_token");
 
+  const contentArticleRef = ref();
   const {
     data: articleDetail,
     pending,
@@ -21,6 +22,7 @@ export default function useArticleDetail() {
     {
       watch: [() => route.params.id],
       transform: (res: EmptyObjectType) => {
+        contentArticleRef.value?.init(res.data.content)
         return {
           ...res?.data,
         };
@@ -93,5 +95,6 @@ export default function useArticleDetail() {
     onViewCount,
     isLiked,
     isCollected,
+    contentArticleRef,
   };
 }

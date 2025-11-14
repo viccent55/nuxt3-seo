@@ -30,6 +30,7 @@
     onViewCount,
     isLiked,
     isCollected,
+    contentArticleRef,
   } = useArticleDetail();
   const floatingBarStyles = ref({});
 
@@ -170,6 +171,7 @@
           <ContentArticle
             :content="articleDetail?.content"
             :skeleton="16"
+            ref="contentArticleRef"
           />
           <v-chip-group
             column

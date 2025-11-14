@@ -1,6 +1,6 @@
 export default function useActor() {
   const route = useRoute();
-
+  const contentArticleRef = ref();
   const {
     data: actorData,
     pending,
@@ -17,6 +17,7 @@ export default function useActor() {
     {
       watch: [() => route.params.id],
       transform: (res: EmptyObjectType) => {
+        contentArticleRef.value?.init(res.data.content);
         return {
           ...res?.data,
         };
@@ -52,5 +53,6 @@ export default function useActor() {
     actorFilters,
     pending,
     error,
+    contentArticleRef,
   };
 }

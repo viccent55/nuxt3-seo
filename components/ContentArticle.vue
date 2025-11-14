@@ -18,13 +18,13 @@
   const contentRef = ref<HTMLDivElement | any>(null);
   const loading = ref(false);
 
-  const initImgAndVideo = async () => {
+  const initImgAndVideo = async (content: string) => {
     loading.value = true;
     try {
-      if (!props.content) return;
+      if (!content) return;
       // Parse content using DOMParser for images
       const parser = new DOMParser();
-      const doc = parser.parseFromString(props.content, "text/html");
+      const doc = parser.parseFromString(content, "text/html");
 
       // 🔹 decrypt images in parallel
       const images = Array.from(doc.querySelectorAll("img[data-lazy-src]"));
@@ -78,18 +78,10 @@
       loading.value = false;
     }
   };
-  onMounted(() => {
-    watch(
-      () => props.content,
-      () => {
-        if (contentRef.value) {
-          contentRef.value.innerHTML = "";
-        }
-        initImgAndVideo();
-      }
-    );
-
-    initImgAndVideo();
+  defineExpose({
+    init: (content: string) => {
+      initImgAndVideo(content);
+    },
   });
 </script>
 
