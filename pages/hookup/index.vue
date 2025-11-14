@@ -27,7 +27,7 @@
     loading: false,
   });
   const { setScrollableElement, scrollTop } = useScrollManager();
-  const { store, clearQuery } = useVariable();
+  const { store, clearQuery, isMobile } = useVariable();
   const { configuration } = storeToRefs(store);
   const noteDialog = useNoteHookupDialog();
   const containerRef = ref<HTMLElement | null>(null);
@@ -145,12 +145,12 @@
   const heightOffset = computed(() => {
     if (!isNative.value) {
       if (smAndDown.value) {
-        return "300px";
+        return "250px";
       } else {
         return "200px";
       }
     }
-    return "220px";
+    return "300px";
   });
   useSeo(
     computed(() => configuration.value?.novel_title),
@@ -252,9 +252,9 @@
             v-for="(item, index) in state.data"
             :key="index"
             cols="6"
-            sm="6"
+            sm="4"
             md="3"
-            lg="3"
+            class="col-lg-1-5"
           >
             <v-card
               @click.prevent="openDialog(item.id)"
@@ -266,7 +266,7 @@
             >
               <Image
                 :src="item?.cover"
-                max-height="200px"
+                :max-height="isMobile ? '200px' : '280px'"
                 cover
               />
               <div class="pa-2">

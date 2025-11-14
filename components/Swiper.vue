@@ -1,13 +1,10 @@
 <script setup lang="ts">
-  import { ref, defineAsyncComponent } from "vue";
+  import { ref } from "vue";
   import Image from "@/components/Image.vue";
   import { useDisplay } from "vuetify";
+  import VideoPlayer from "@/components/Video.vue";
 
-  const VideoPlayer = defineAsyncComponent(
-    () => import("@/components/Video.vue")
-  );
-
-  defineProps({
+  const props = defineProps({
     mediaInfo: {
       type: Array as PropType<{ name: string; value: string }[]>,
       default: () => [],
@@ -46,6 +43,12 @@
     next,
     prev,
   });
+  const paths = computed(() =>
+    props.mediaInfo.map((item) => ({
+      ...item,
+      video: item.value.split("?")[0],
+    }))
+  );
 </script>
 
 <template>
@@ -53,7 +56,8 @@
     ref="carousel"
     class="swiper"
     hide-delimiter-background
-    :hide-delimiters="mediaInfo?.length <= 1"
+    :hide-delimiters="true"
+    delimiter-icon="mdi-square"
     :show-arrows="mediaInfo?.length > 1"
     height="100%"
     color="primary"
@@ -77,7 +81,7 @@
       ></v-btn>
     </template>
     <v-carousel-item
-      v-for="(item, index) in mediaInfo"
+      v-for="(item, index) in paths"
       :key="index"
       class="fill-height"
     >
@@ -91,9 +95,9 @@
         }"
       />
       <VideoPlayer
-        v-else-if="item.name === 'video'"
+        v-if="item.name === 'video'"
         ref="videoPlayerRef"
-        :src="item.value"
+        :src="item?.value"
         class="video"
         :style="{
           maxHeight: height,

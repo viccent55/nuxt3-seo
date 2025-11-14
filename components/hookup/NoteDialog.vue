@@ -16,7 +16,6 @@
 
   const Swiper = defineAsyncComponent(() => import("../Swiper.vue"));
   const noteDIalogRef = useTemplateRef("note-dialog");
-  const bottomRef = useTemplateRef("bottomActions");
   const { store, onCopy, route, isMobile, storeUser } = useVariable();
   const loading = ref(false);
   const noteDialog = useNoteHookupDialog();
@@ -36,7 +35,6 @@
         id: noteDialog.id.value,
       };
       const response = await detail(request);
-      console.log(response);
       if (response.data) {
         state.data = response.data;
       }
@@ -141,7 +139,6 @@
         </v-card-title>
         <v-card-text class="pa-0 pb-4">
           <v-row no-gutters>
-            <!-- Left: Video area -->
             <v-col
               cols="12"
               md="7"
@@ -160,6 +157,20 @@
                     :media-info="images"
                     :height="smAndDown ? 'calc(30vh - 50px)' : '100%'"
                   />
+                  <div
+                    v-else
+                    style="
+                      height: 180px;
+                      display: flex;
+                      justify-content: center;
+                      align-items: center;
+                    "
+                  >
+                    <v-empty-state
+                      icon="mdi-image-off"
+                      title="无图像显示"
+                    />
+                  </div>
                   <v-row
                     dense
                     class="px-2 mt-2"
@@ -468,8 +479,8 @@
 
 <style scoped lang="scss">
   .main-contain {
-    // padding-top: env(safe-area-inset-top, 0px);
     padding-top: var(--safe-area-inset-top, 0px);
+    padding-bottom: var(--safe-area-inset-bottom, 0px);
   }
   .image-cover {
     min-height: 150px;

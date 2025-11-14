@@ -51,14 +51,22 @@
     :fullscreen="isMobile"
     max-width="750"
   >
-    <v-card>
+    <v-card
+      flat
+      class="main-contain"
+    >
       <v-card-title class="pb-0">
         <v-btn
           icon="mdi-chevron-left"
           flat
           density="comfortable"
           @click="state.isOpen = false"
-          style="position: absolute; top: 10px; left: 10px"
+          style="
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding-top: var(--safe-area-inset-top, 0px);
+          "
         >
           <v-icon></v-icon>
         </v-btn>
@@ -127,3 +135,9 @@
     </v-card>
   </v-dialog>
 </template>
+<style scoped lang="scss">
+  .main-contain {
+    // padding-top: env(safe-area-inset-top, 0px);
+    padding-top: var(--safe-area-inset-top, 0px);
+  }
+</style>

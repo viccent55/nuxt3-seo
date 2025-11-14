@@ -32,7 +32,7 @@
 <template>
   <v-bottom-navigation
     app
-    height="90"
+    height="auto"
     class="footer bg-surface app-footer"
     density="comfortable"
     :model-value="store.mode"
@@ -42,7 +42,7 @@
       :key="item.name"
     >
       <v-btn
-        class="channel-wrapper"
+        class="channel-wrapper py-2"
         variant="text"
         style="min-width: 0; padding: 0"
         @click="
@@ -72,6 +72,7 @@
     left: 0;
     right: 0;
     z-index: 10;
+
     padding-bottom: var(--safe-area-inset-bottom, 0px);
   }
   .footer {

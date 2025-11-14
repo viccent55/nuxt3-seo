@@ -22,6 +22,7 @@
     data: {} as EmptyObjectType,
     comments: [] as EmptyObjectType[],
   });
+
   const snackbar = useSnackbar();
   const { setStatus } = useCapacitor();
 
@@ -375,6 +376,7 @@
   .main-contain {
     /* Add padding equal to the top safe area inset */
     padding-top: var(--safe-area-inset-top, 0px);
+    padding-bottom: var(--safe-area-inset-bottom, 0px);
   }
   .back-button {
     position: absolute;

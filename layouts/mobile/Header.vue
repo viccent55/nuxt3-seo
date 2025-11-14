@@ -1,6 +1,4 @@
 <script setup lang="ts">
-  import { useDisplay } from "vuetify";
-
   const dialogIosGuide = ref();
   const { isNative } = usePlatform();
   const dialgInfo = ref();

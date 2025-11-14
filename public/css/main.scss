@@ -88,6 +88,14 @@ html {
     display: none;
   }
 }
+@media (min-width: 1280px) {
+  /* Vuetify 'lg' breakpoint starts at 1280px (default) */
+  .col-lg-1-5 {
+    /* 100% / 5 items = 20% width */
+    flex: 0 0 20% !important;
+    max-width: 20% !important;
+  }
+}
 .w-10 {
   width: 10%;
 }
