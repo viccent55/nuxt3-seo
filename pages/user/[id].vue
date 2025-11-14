@@ -79,19 +79,24 @@
     {
       name: "邀请记录",
       value: "invite",
-      icon: "mdi-account-multiple-plus",
+      icon: "mdi-account-group-outline",
     },
 
     {
       name: "我的关注",
       value: "note",
-      icon: "mdi-folder-account",
+      icon: "mdi-folder-account-outline",
     },
     {
       name: "收藏",
       value: "like",
       icon: "mdi-thumb-up-outline",
     },
+    // {
+    //   name: "下列的",
+    //   value: "follow",
+    //   icon: "mdi-account-multiple-plus-outline",
+    // },
     {
       name: "点赞",
       value: "star",
@@ -113,7 +118,7 @@
 
   const pageWrapperRef = ref<HTMLElement | null>(null);
 
-  const pupupData = useTemplateRef("pupupData");
+  const pupupData = useTemplateRef("popup-data");
   const inviteRef = useTemplateRef("inviteRef");
   const onClickMenu = async (item: EmptyObjectType) => {
     if (item.value == "call") {
@@ -341,7 +346,7 @@
         ref="dialog-ai"
         @close="showChatWidget()"
       ></UserDialogAI>
-      <UserPersonalNote ref="pupupData"></UserPersonalNote>
+      <UserPersonalNote ref="popup-data" />
       <UserDialogInvites
         ref="inviteRef"
         :user-info="userInfo"

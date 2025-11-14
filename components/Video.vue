@@ -26,9 +26,10 @@
       hls.destroy();
       hls = null;
     }
+    const proxyUrl = `/api/video-proxy?url=${encodeURIComponent(props.src)}`;
     if (Hls.isSupported() && videoPlayer.value) {
       hls = new Hls();
-      hls.loadSource(props.src);
+      hls.loadSource(proxyUrl);
       hls.attachMedia(videoPlayer.value);
 
       // Autoplay logic

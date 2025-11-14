@@ -1,5 +1,6 @@
 <script lang="ts" setup>
   import Hls from "hls.js";
+  import { onBeforeUnmount } from "vue";
 
   const props = defineProps({
     content: {
@@ -17,14 +18,15 @@
 
   const contentRef = ref<HTMLDivElement | any>(null);
   const loading = ref(false);
+  const hlsInstances = ref<Hls[]>([]);
 
-  const initImgAndVideo = async () => {
+  const initImgAndVideo = async (content: string) => {
     loading.value = true;
     try {
-      if (!props.content) return;
+      if (!content) return;
       // Parse content using DOMParser for images
       const parser = new DOMParser();
-      const doc = parser.parseFromString(props.content, "text/html");
+      const doc = parser.parseFromString(content, "text/html");
 
       // 🔹 decrypt images in parallel
       const images = Array.from(doc.querySelectorAll("img[data-lazy-src]"));
@@ -59,16 +61,36 @@
           video.style.width = "100%";
           video.style.maxHeight = "400px"; // 🔹 your desired limit
           video.style.objectFit = "contain"; // keeps aspect ratio
-
+          video.setAttribute("controls", "true");
+          video.setAttribute("playsinline", "true");
           const src = video.getAttribute("src");
           if (!src) return;
-
+          const proxyUrl = `/api/video-proxy?url=${encodeURIComponent(src)}`;
           if (video.canPlayType("application/vnd.apple.mpegurl")) {
-            video.src = src; // Safari native
-          } else if (Hls.isSupported()) {
+            video.src = proxyUrl; // Safari native
+          } else if (Hls.isSupported() && video) {
             const hls = new Hls();
-            hls.loadSource(src);
+            hlsInstances.value.push(hls);
+            hls.loadSource(proxyUrl);
             hls.attachMedia(video);
+            hls.on(Hls.Events.ERROR, (event, data) => {
+              if (data.fatal) {
+                switch (data.type) {
+                  case Hls.ErrorTypes.NETWORK_ERROR:
+                    console.error("Fatal network error. Retrying...");
+                    hls?.startLoad();
+                    break;
+                  case Hls.ErrorTypes.MEDIA_ERROR:
+                    console.error("Fatal media error. Recovering...");
+                    hls?.recoverMediaError();
+                    break;
+                  default:
+                    console.error("Unrecoverable HLS error", data);
+                    hls?.destroy();
+                    break;
+                }
+              }
+            });
           }
         });
       }
@@ -78,18 +100,16 @@
       loading.value = false;
     }
   };
-  onMounted(() => {
-    watch(
-      () => props.content,
-      () => {
-        if (contentRef.value) {
-          contentRef.value.innerHTML = "";
-        }
-        initImgAndVideo();
-      }
-    );
-
-    initImgAndVideo();
+  onBeforeUnmount(() => {
+    contentRef.value = null;
+    hlsInstances.value.forEach((hls) => {
+      hls.destroy();
+    });
+  });
+  defineExpose({
+    init: (content: string) => {
+      initImgAndVideo(content);
+    },
   });
 </script>
 

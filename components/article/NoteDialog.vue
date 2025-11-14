@@ -26,6 +26,7 @@ _
   });
   const { setStatus } = useCapacitor();
   const snackbar = useSnackbar();
+  const contentArticleRef = useTemplateRef("content-article");
   const onOpenNoteDialog = async () => {
     if (noteDIalogRef.value) noteDIalogRef.value.scrollTop = 0;
     loading.value = true;
@@ -34,8 +35,10 @@ _
         id: noteDialog.id.value,
       };
       const response = await detail(request);
+
       if (response.data) {
         state.data = response.data;
+        contentArticleRef.value?.init(state.data.content);
         getComments();
       }
       if (response.data?.errcode === 0 && Array.isArray(response.data.data)) {
@@ -198,7 +201,7 @@ _
               <v-card-text :style="getStyle">
                 <ContentArticle
                   :content="state.data?.content"
-                  ref="contentArticleRef"
+                  ref="content-article"
                 />
               </v-card-text>
             </v-card>

@@ -7,7 +7,6 @@
   import { detail, like, collect } from "@/service/hookup";
   import { openPage } from "@/service";
 
-  const bottomRef = useTemplateRef("bottomActions");
   const state = reactive({
     data: {} as EmptyObjectType,
     loading: false,
@@ -16,6 +15,7 @@
   const snackbar = useSnackbar();
   const _id = computed(() => route.params.id);
 
+  // const contentArticleRef = useTemplateRef("content-article");
   const fetchDetail = async () => {
     state.loading = true;
     try {
@@ -158,7 +158,7 @@
             <v-card-text>
               <ContentArticle
                 :content="state.data?.address + state.data?.service"
-                ref="contentArticleRef"
+                ref="content-article"
               />
             </v-card-text>
           </v-card>

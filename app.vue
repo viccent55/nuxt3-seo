@@ -170,7 +170,7 @@
     :color="state.color"
     :timeout="state.timeout"
     :location="state.location"
-    style="padding-top: var(safe-area-inset-top, 0px)"
+    style="padding-top: var(--safe-area-inset-top, 0px)"
   >
     {{ state.message }}
     <template v-slot:actions>
@@ -240,10 +240,10 @@
   }
 
   .fab {
-    bottom: 100px;
+    bottom: 120px;
   }
   .scroll-to-top {
-    bottom: 150px;
+    bottom: 170px;
   }
 
   /* Desktop overrides */
