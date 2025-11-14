@@ -166,11 +166,12 @@
       ? "height:100%; overflow-y: scroll"
       : "max-height: calc(100vh - 110px); overflow-y: scroll";
   });
-
   watch(
     () => noteDialogVisible.value,
     (val) => {
-      setStatus(val);
+      if (isNative.value) {
+        return setStatus(val);
+      }
       useDialogUXLock(noteDialogVisible);
     }
   );
@@ -180,7 +181,7 @@
   <v-dialog
     v-model="noteDialogVisible"
     max-width="1200"
-    persistent
+    :persistent="!isNative"
     height="100%"
     @after-enter="onOpenNoteDialog"
     :fullscreen="smAndDown"

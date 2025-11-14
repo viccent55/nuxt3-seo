@@ -23,7 +23,7 @@
   watch(
     () => router.currentRoute,
     (val) => {
-      if (val.value?.fullPath == "/anime") {
+      if (val.value?.fullPath == "/forbidden") {
         if (storeUser.userInfo?.invite_count < 5 || !storeUser.isLogin)
           isVisible.value = true;
       }

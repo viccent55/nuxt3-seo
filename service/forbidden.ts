@@ -1,5 +1,5 @@
 export async function select(param: object) {
-  const res: EmptyObjectType = await $fetch("/api/anime/select", {
+  const res: EmptyObjectType = await $fetch("/api/forbidden/select", {
     method: "POST",
     body: dataEncrypt(param),
   });
@@ -7,7 +7,7 @@ export async function select(param: object) {
   return res;
 }
 export async function detail(params: object) {
-  const res: EmptyObjectType = await $fetch("/api/anime/detail", {
+  const res: EmptyObjectType = await $fetch("/api/forbidden/detail", {
     method: "POST",
     body: dataEncrypt(params),
   });

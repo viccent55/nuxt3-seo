@@ -35,7 +35,7 @@
   };
 
   const clickNavigationItem = (item: any) => {
-    // if (item.href === "/anime") {
+    // if (item.href === "/forbidden") {
     //   if (storeUser.userInfo?.invite_count < 5 || !storeUser.isLogin) {
     //     router.push(item.href);
 

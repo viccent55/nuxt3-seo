@@ -86,8 +86,8 @@ export const NavigationItems: NavigationItem[] = [
     icon: "movie-outline",
     type: "router-link",
     mode: "2",
-    href: "/anime",
-    routeName: "anime",
+    href: "/forbidden",
+    routeName: "forbidden",
   },
 
   {

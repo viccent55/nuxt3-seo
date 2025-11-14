@@ -267,6 +267,7 @@
               <Image
                 :src="item?.cover"
                 :max-height="isMobile ? '200px' : '280px'"
+                min-height="200px"
                 cover
               />
               <div class="pa-2">

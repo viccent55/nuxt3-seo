@@ -30,6 +30,14 @@ export async function getLikeFeeds(param: object) {
   });
   return decrypt(res.data);
 }
+export async function getFollowFeed(param: object) {
+  const res: EmptyObjectType = await $fetch("/api/user/follow-feed", {
+    method: "POST",
+    body: param,
+  });
+  return res;
+  return decrypt(res.data);
+}
 
 export async function setUserInfo(params: object) {
   const res: EmptyObjectType = await useApiFetch(`/api/user/set-user-info`, {

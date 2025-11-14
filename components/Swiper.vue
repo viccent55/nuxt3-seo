@@ -13,6 +13,10 @@
       type: String,
       default: () => "100%",
     },
+    contain: {
+      type: Boolean,
+      default: false,
+    },
   });
 
   const videoPlayerRef = ref<InstanceType<typeof VideoPlayer>[]>([]);
@@ -31,24 +35,22 @@
   const heightOffset = computed(() => {
     if (!isNative.value) {
       if (smAndDown.value) {
-        return "calc(35vh - 30px)";
+        return props.height;
       } else {
         return `calc(100vh - 120px)`;
       }
     }
-    return "250px";
+    return props.height;
   });
+  const fullScreenImageRef = useTemplateRef("full-screen-image");
+  const onOpenFullScreen = (src: string) => {
+    fullScreenImageRef.value?.open(src);
+  };
   defineExpose({
     closeVideo,
     next,
     prev,
   });
-  const paths = computed(() =>
-    props.mediaInfo.map((item) => ({
-      ...item,
-      video: item.value.split("?")[0],
-    }))
-  );
 </script>
 
 <template>
@@ -66,7 +68,7 @@
       <v-btn
         variant="tonal"
         color="primary"
-        density="compact"
+        density="comfortable"
         icon="mdi-chevron-left"
         @click="props.onClick"
       ></v-btn>
@@ -75,13 +77,13 @@
       <v-btn
         variant="tonal"
         color="primary"
-        density="compact"
+        density="comfortable"
         icon="mdi-chevron-right"
         @click="props.onClick"
       ></v-btn>
     </template>
     <v-carousel-item
-      v-for="(item, index) in paths"
+      v-for="(item, index) in mediaInfo"
       :key="index"
       class="fill-height"
     >
@@ -92,7 +94,9 @@
         class="media"
         :style="{
           maxHeight: height,
+          minHeight: height,
         }"
+        @click="onOpenFullScreen(item?.value)"
       />
       <VideoPlayer
         v-if="item.name === 'video'"
@@ -105,6 +109,7 @@
       />
     </v-carousel-item>
   </v-carousel>
+  <PopupImage ref="full-screen-image" />
 </template>
 
 <style scoped lang="scss">
@@ -123,10 +128,8 @@
   }
 
   .media {
-    width: 100%;
     // height: 100%;
     object-fit: contain;
-    min-height: 200px;
   }
   .video {
     width: 100%;

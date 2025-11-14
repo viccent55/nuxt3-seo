@@ -7,6 +7,7 @@
   import { useNoteAnimeDialog } from "~/hooks/useNoteAnimeDialog";
   import { useDisplay } from "vuetify";
   const { setScrollableElement, scrollTop } = useScrollManager();
+  import { select } from "@/service/forbidden";
 
   const state = reactive({
     data: [] as EmptyArrayType,
@@ -35,10 +36,7 @@
         page: state.page,
         limit: 30,
       };
-      const response: EmptyObjectType = await $fetch("/api/anime/select", {
-        method: "POST",
-        body: dataEncrypt(request),
-      });
+      const response: EmptyObjectType = await select(request);
       const result = decrypt(response.data);
       state.total = result.data.count;
       if (result?.errcode === 0 && Array.isArray(result.data.items)) {
@@ -146,7 +144,7 @@
             class="news-card"
             @click.prevent="openDialog(item.id)"
             tag="a"
-            :to="'/anime/' + item.id"
+            :to="'/forbidden/' + item.id"
             flat
           >
             <Image

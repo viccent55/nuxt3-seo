@@ -92,11 +92,11 @@
       value: "like",
       icon: "mdi-thumb-up-outline",
     },
-    // {
-    //   name: "下列的",
-    //   value: "follow",
-    //   icon: "mdi-account-multiple-plus-outline",
-    // },
+    {
+      name: "下列的",
+      value: "follow",
+      icon: "mdi-account-multiple-plus-outline",
+    },
     {
       name: "点赞",
       value: "star",

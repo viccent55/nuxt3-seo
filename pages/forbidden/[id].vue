@@ -4,9 +4,9 @@
   import { checkPermissions } from "@/hooks/usePermisions";
   import { PERMISSION } from "@/common/permision";
   import { openPage } from "@/service";
-  import CommentBlock from "@/components/anime/comp/CommentBlock.vue";
-  import BottomAction from "@/components/anime/comp/BottomAction.vue";
-  import { like, collect, detail } from "@/service/anime";
+  import CommentBlock from "@/components/forbidden/comp/CommentBlock.vue";
+  import BottomAction from "@/components/forbidden/comp/BottomAction.vue";
+  import { like, collect, detail } from "@/service/forbidden";
   import Video from "~/components/Video.vue";
   const bottomRef = useTemplateRef("bottomActions");
 
@@ -119,7 +119,7 @@
     },
     {
       title: "动漫",
-      to: "/anime",
+      to: "/forbidden",
       disabled: false,
     },
   ]);

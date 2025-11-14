@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
     ? config.public.apiLocal // when running `npm run dev`
     : config.public.apiBase;
   try {
-    const result: EmptyObjectType = await $fetch(`${baseURL}/cartoonVideo/select`, {
+    const result: EmptyObjectType = await $fetch(`${baseURL}/forbiddenVideo/detail`, {
       method: "POST",
       body,
     });
@@ -13,6 +13,6 @@ export default defineEventHandler(async (event) => {
   } catch (error) {
     // Handle errors gracefully
     console.error("Error fetching data:", error);
-    return { error: "Failed to fetch data data" };
+    return { error: "Failed to fetch data" };
   }
 });

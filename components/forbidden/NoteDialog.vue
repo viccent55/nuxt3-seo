@@ -6,7 +6,7 @@
   } from "@/hooks/useNoteAnimeDialog";
   import { checkPermissions } from "@/hooks/usePermisions";
   import { PERMISSION } from "@/common/permision";
-  import { detail, like, collect } from "@/service/anime";
+  import { detail, like, collect } from "@/service/forbidden";
   import CommentBlock from "./comp/CommentBlock.vue";
   import BottomAction from "./comp/BottomAction.vue";
   import { adsClick } from "@/service/advert";

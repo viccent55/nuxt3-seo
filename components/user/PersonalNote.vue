@@ -1,5 +1,10 @@
 <script setup lang="ts">
-  import { getNoteFeeds, getStarFeeds, getLikeFeeds } from "@/service/user";
+  import {
+    getNoteFeeds,
+    getStarFeeds,
+    getLikeFeeds,
+    getFollowFeed,
+  } from "@/service/user";
   import { useNoteDialog } from "@/hooks/useNoteDialog";
   import { useInfiniteScroll } from "@vueuse/core";
 
@@ -51,7 +56,13 @@
     likeFeeds: async () => {
       const res = await getLikeFeeds({ id: id.value, page: state.page });
       if (res.errcode === 0 && res.data) {
-        console.log(res);
+        state.data = [...state.data, ...res.data];
+        if (!res.data.length) state.isNomore = true;
+      }
+    },
+    followFeeds: async () => {
+      const res = await getFollowFeed({ id: id.value, page: state.page });
+      if (res.errcode === 0 && res.data) {
         state.data = [...state.data, ...res.data];
         if (!res.data.length) state.isNomore = true;
       }
@@ -88,6 +99,9 @@
         case "like":
           await getRes.likeFeeds();
           break;
+        case "follow":
+          await getRes.followFeeds();
+          break;
       }
     } finally {
       state.isLoadmore = false;
@@ -117,6 +131,15 @@
       el.addEventListener("scroll", () => (scrollTop.value = el.scrollTop));
     }
   });
+  onBeforeRouteLeave((to, from, next) => {
+    if (state.isOpen) {
+      state.isOpen = false;
+      next(false);
+    } else {
+      // allow navigation
+      next();
+    }
+  });
   // -------------------- Public Method --------------------
   defineExpose({
     open: async (item: EmptyObjectType) => {
@@ -134,6 +157,7 @@
       if (item.value === "note") await getRes.noteFeeds();
       if (item.value === "star") await getRes.starFeeds();
       if (item.value === "like") await getRes.likeFeeds();
+      if (item.value === "follow") await getRes.followFeeds();
 
       // ✅ enable infinite scroll only after first load
       nextTick(() => {

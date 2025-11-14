@@ -18,11 +18,13 @@
   const noteDIalogRef = useTemplateRef("note-dialog");
   const { store, onCopy, route, isMobile, storeUser } = useVariable();
   const loading = ref(false);
+  const { isNative } = usePlatform();
   const noteDialog = useNoteHookupDialog();
   const { smAndDown } = useDisplay();
   const swiperInstanceRef = ref<InstanceType<typeof Swiper> | null>(null);
   const state = reactive({
     data: {} as EmptyObjectType,
+    initialLoad: false, // Track if the initial data load has occurred
     comments: [] as EmptyObjectType[],
   });
   const { setStatus } = useCapacitor();
@@ -30,6 +32,7 @@
   const onOpenNoteDialog = async () => {
     if (noteDIalogRef.value) noteDIalogRef.value.scrollTop = 0;
     loading.value = true;
+    state.initialLoad = false;
     try {
       const request = {
         id: noteDialog.id.value,
@@ -37,6 +40,12 @@
       const response = await detail(request);
       if (response.data) {
         state.data = response.data;
+        state.data.images = response.data.images.map((item: string) => {
+          return {
+            name: "image",
+            value: item,
+          };
+        });
       }
       if (response.data?.errcode === 0 && Array.isArray(response.data.data)) {
         return response.data;
@@ -45,6 +54,7 @@
       console.error("fetchFeeds failed:", err);
     } finally {
       loading.value = false;
+      state.initialLoad = true;
     }
 
     // disableHorizontalSwipe();
@@ -80,401 +90,408 @@
       });
     },
   };
-  watch(
-    () => noteDialogVisible.value,
-    (val) => {
-      setStatus(val);
-      useDialogUXLock(noteDialogVisible);
-    }
-  );
-  const images = computed(() =>
-    state.data?.images?.map((item: string) => {
-      return {
-        name: "image",
-        value: item,
-      };
-    })
-  );
   const { showChatWidget } = useSnackbar();
   const onLiveChat = () => {
     checkPermissions(PERMISSION.User, async () => {
       showChatWidget();
     });
   };
+
+  watch(
+    () => noteDialogVisible.value,
+    (val) => {
+      if (isNative.value) {
+        return setStatus(val);
+      }
+      useDialogUXLock(noteDialogVisible);
+    }
+  );
 </script>
 
 <template>
-  <div>
-    <v-dialog
-      v-model="noteDialogVisible"
-      max-width="1200"
-      min-height="520px"
-      persistent
-      @after-enter="onOpenNoteDialog"
-      scrollable
-      :fullscreen="isMobile"
+  <v-dialog
+    v-model="noteDialogVisible"
+    max-width="1200"
+    min-height="520px"
+    :persistent="!isNative"
+    @after-enter="onOpenNoteDialog"
+    scrollable
+    :fullscreen="isMobile"
+  >
+    <v-card
+      :loading="loading"
+      class="main-contain"
     >
-      <v-card
-        :loading="loading"
-        class="main-contain"
-      >
-        <v-card-title v-if="isMobile">
-          <div class="d-flex justify-space-between align-center">
-            <v-btn
-              icon
-              density="compact"
-              flat
-              @click="
-                () => {
-                  noteDialog.closeNoteDialog();
-                  state.data = {};
-                }
-              "
-            >
-              <v-icon>mdi-chevron-left</v-icon>
-            </v-btn>
-            <div>茶女郎详情</div>
-            <div></div>
-          </div>
-        </v-card-title>
-        <v-card-text class="pa-0 pb-4">
-          <v-row no-gutters>
-            <v-col
-              cols="12"
-              md="7"
-              lg="8"
-            >
-              <v-card flat>
-                <v-card-title
-                  class="text-break text-wrap overflow-visible whitespace-normal"
-                >
-                  {{ state.data?.title }}
-                </v-card-title>
-                <v-card-text>
-                  <Swiper
-                    ref="swiperInstanceRef"
-                    v-if="images?.length > 0"
-                    :media-info="images"
-                    :height="smAndDown ? 'calc(30vh - 50px)' : '100%'"
-                  />
-                  <div
-                    v-else
-                    style="
-                      height: 180px;
-                      display: flex;
-                      justify-content: center;
-                      align-items: center;
-                    "
-                  >
-                    <v-empty-state
-                      icon="mdi-image-off"
-                      title="无图像显示"
-                    />
-                  </div>
-                  <v-row
-                    dense
-                    class="px-2 mt-2"
-                  >
-                    <v-col cols="12">
-                      {{ state.data?.name }}
-                    </v-col>
-                  </v-row>
-                  <v-toolbar
-                    density="compact"
-                    color="surface"
-                  >
-                    <div
-                      class="d-flex justify-space-between align-center rounded w-100"
-                    >
-                      <div class="d-flex ga-2">
-                        <v-chip
-                          v-for="(item, index) in state.data?.tags"
-                          :key="index"
-                          variant="tonal"
-                          color="primary"
-                          class="rounded-lg"
-                        >
-                          {{ item?.name }}
-                        </v-chip>
-                      </div>
-                      <v-chip
-                        v-if="state.data?.is_official"
-                        size="small"
-                        color="success"
-                        flat
-                      >
-                        <v-icon>mdi-check-decagram</v-icon>
-                        官方认证
-                      </v-chip>
-                    </div>
-                  </v-toolbar>
-
-                  <v-row
-                    no-gutters
-                    class="my-2 bg-red-lighten-2 rounded-lg"
-                  >
-                    <v-col cols="5">
-                      <div
-                        class="pa-2 d-flex flex-column align-center justify-center bg-primary h-100"
-                        style="border-radius: 8px"
-                      >
-                        <div class="text-caption font-weight-bold">
-                          小编打分
-                        </div>
-                        <div class="text-h4 font-weight-black text-warning">
-                          {{ state.data?.service_score }}
-                        </div>
-                        <div class="text-caption">女郎颜值</div>
-                      </div>
-                    </v-col>
-
-                    <v-col cols="7">
-                      <div
-                        class="px-4 py-2 d-flex flex-column justify-center elevation-2 h-100"
-                      >
-                        <div class="text-caption font-weight-regular">
-                          {{ state.data?.address || "未知地址 ..." }}
-                        </div>
-                      </div>
-                    </v-col>
-                  </v-row>
-                  <v-card
-                    class="pa-2 mb-4"
-                    flat
-                    color="surface-varient"
-                  >
-                    <v-row
-                      dense
-                      class="align-start"
-                    >
-                      <v-col
-                        cols="4"
-                        md="2"
-                        class="d-flex align-center"
-                      >
-                        <v-icon
-                          size="small"
-                          class="mr-2"
-                          color="warning"
-                        >
-                          mdi-list-box
-                        </v-icon>
-                        <span class="text-body-2 font-weight-medium">
-                          基本信息：
-                        </span>
-                      </v-col>
-                      <v-col
-                        cols="8"
-                        md="10"
-                      >
-                        <span class="text-body-2 font-weight-regular">
-                          {{ state.data?.age }}岁 {{ state.data?.height }}cm
-                          E罩杯
-                        </span>
-                      </v-col>
-
-                      <v-col
-                        cols="4"
-                        md="2"
-                        class="d-flex align-center"
-                      >
-                        <v-icon
-                          size="small"
-                          class="mr-2"
-                          color="warning"
-                        >
-                          mdi-map-marker
-                        </v-icon>
-                        <span class="text-body-2 font-weight-medium">
-                          所在地区：
-                        </span>
-                      </v-col>
-
-                      <v-col
-                        cols="8"
-                        md="10"
-                      >
-                        <span class="text-body-2 font-weight-regular">
-                          {{ state.data?.address || "未知地址" }}
-                        </span>
-                      </v-col>
-
-                      <v-col
-                        cols="4"
-                        md="2"
-                        class="d-flex align-center"
-                      >
-                        <v-icon
-                          size="small"
-                          class="mr-2"
-                          color="warning"
-                        >
-                          mdi-currency-cny
-                        </v-icon>
-                        <span class="text-body-2 font-weight-medium">
-                          消费情况：
-                        </span>
-                      </v-col>
-
-                      <v-col
-                        cols="8"
-                        md="10"
-                      >
-                        <span class="text-body-2 font-weight-regular">
-                          {{ state.data?.price || "未知" }}
-                        </span>
-                      </v-col>
-                      <v-col
-                        cols="4"
-                        md="2"
-                        class="d-flex align-center"
-                      >
-                        <v-icon
-                          size="small"
-                          class="mr-2"
-                          color="warning"
-                        >
-                          mdi-clock
-                        </v-icon>
-                        <span class="text-body-2 font-weight-medium">
-                          服务项目：
-                        </span>
-                      </v-col>
-
-                      <v-col
-                        cols="8"
-                        md="10"
-                      >
-                        <span class="text-body-2 font-weight-regular">
-                          {{ state.data?.service || "未知" }}
-                        </span>
-                      </v-col>
-                    </v-row>
-
-                    <v-divider class="my-3"></v-divider>
-                    <v-sheet class="mt-0 pt-0">
-                      {{ state.data?.intro || "No intro---" }}
-                    </v-sheet>
-                  </v-card>
-                </v-card-text>
-              </v-card>
-            </v-col>
-
-            <!-- Right: Info & Comments -->
-            <v-col
-              cols="12"
-              md="5"
-              lg="4"
-              class="d-flex flex-column"
-            >
-              <div
-                class="d-flex justify-end mt-2 py-0 pr-4"
-                v-if="!isMobile"
+      <v-card-title v-if="isMobile">
+        <div class="d-flex justify-space-between align-center">
+          <v-btn
+            icon
+            density="compact"
+            flat
+            @click="
+              () => {
+                noteDialog.closeNoteDialog();
+                state.data = {};
+              }
+            "
+          >
+            <v-icon>mdi-chevron-left</v-icon>
+          </v-btn>
+          <div>茶女郎详情</div>
+          <div></div>
+        </div>
+      </v-card-title>
+      <v-card-text class="pa-0 pb-4">
+        <v-row no-gutters>
+          <v-col
+            cols="12"
+            md="7"
+            lg="8"
+          >
+            <v-card flat>
+              <v-card-title
+                class="text-break text-wrap overflow-visible whitespace-normal"
               >
-                <v-btn
-                  icon
-                  size="small"
-                  @click="
-                    () => {
-                      noteDialog.closeNoteDialog();
-
-                      state.data = {};
-                    }
-                  "
-                >
-                  <v-icon>mdi-close</v-icon>
-                </v-btn>
-              </div>
-
-              <!-- Scrollable Content Area -->
-              <div
-                class="flex-grow-1 overflow-y-auto px-4"
-                ref="note-dialog"
-              >
-                <div class="text-body-2 text-grey-darken-1 mb-4">
-                  发布日期: {{ state.data?.created_at?.split("T")[0] }}
-                </div>
-                <v-row dense>
-                  <v-col
-                    v-for="(app, index) in store?.detailAppAds"
-                    :key="index"
-                    :cols="3"
-                  >
-                    <NuxtLink
-                      :to="app.url || '#'"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="text-decoration-none text-grey-darken-1 d-flex flex-column ga-1 align-center"
-                      @click="$emit('click-ads', app.id)"
-                    >
-                      <AdvertSlot
-                        :advert="{
-                          title: app.name,
-                          image: app.image,
-                          url: app?.url,
-                        }"
-                        fit="cover"
-                        style="width: 28px; height: 28px"
-                      />
-                      {{ app.name }}
-                    </NuxtLink>
-                  </v-col>
-                </v-row>
-                <v-divider
-                  :thickness="1"
-                  class="my-3 border-opacity-75"
+                {{ state.data?.title }}
+              </v-card-title>
+              <v-card-text>
+                <Swiper
+                  ref="swiperInstanceRef"
+                  v-if="state.data.images?.length > 0"
+                  :media-info="state.data.images"
+                  :height="smAndDown ? '300px' : '60vh'"
                 />
 
-                <div>
-                  <v-card
-                    v-for="(app, index) in store.detailAds"
-                    :key="index"
-                    class="pa-0 my-2"
-                  >
-                    <a
-                      :href="app.url"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class=""
-                      @click="adsClick(app.id)"
-                    >
-                      <AdvertSlot
-                        :advert="{
-                          title: app.name,
-                          image: app.image,
-                          url: app?.url,
-                        }"
-                        height="100%"
-                        fit="contain"
-                      />
-                    </a>
-                  </v-card>
-                  <template
-                    v-for="block in state.comments"
-                    :key="block.id"
-                  >
-                    <CommentBlock :comment="block" />
-                  </template>
+                <div
+                  v-if="loading"
+                  style="
+                    height: 180px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  "
+                >
+                  <v-progress-circular
+                    :size="80"
+                    color="primary"
+                    indeterminate
+                  ></v-progress-circular>
                 </div>
-              </div>
-            </v-col>
-          </v-row>
-        </v-card-text>
+                <div
+                  v-if="
+                    !state.data.images?.length && !loading && state.initialLoad
+                  "
+                  style="
+                    height: 180px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  "
+                >
+                  <v-empty-state
+                    icon="mdi-image-off"
+                    title="无图像显示"
+                  />
+                </div>
+                <v-row
+                  dense
+                  class="px-2 mt-2"
+                >
+                  <v-col cols="12">
+                    {{ state.data?.name }}
+                  </v-col>
+                </v-row>
+                <v-toolbar
+                  density="compact"
+                  color="surface"
+                >
+                  <div
+                    class="d-flex justify-space-between align-center rounded w-100"
+                  >
+                    <div class="d-flex ga-2">
+                      <v-chip
+                        v-for="(item, index) in state.data?.tags"
+                        :key="index"
+                        variant="tonal"
+                        color="primary"
+                        class="rounded-lg"
+                      >
+                        {{ item?.name }}
+                      </v-chip>
+                    </div>
+                    <v-chip
+                      v-if="state.data?.is_official"
+                      size="small"
+                      color="success"
+                      flat
+                    >
+                      <v-icon>mdi-check-decagram</v-icon>
+                      官方认证
+                    </v-chip>
+                  </div>
+                </v-toolbar>
 
-        <v-card-actions class="border-t">
-          <BottomAction
-            ref="bottomActions"
-            :action="state.data"
-            :total="state.data?.comment_count"
-            @click-star="handle.clickStar"
-            @click-share="handle.clickShare"
-            @live-chat="onLiveChat"
-            class="px-4"
-          />
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </div>
+                <v-row
+                  no-gutters
+                  class="my-2 bg-red-lighten-2 rounded-lg"
+                >
+                  <v-col cols="5">
+                    <div
+                      class="pa-2 d-flex flex-column align-center justify-center bg-primary h-100"
+                      style="border-radius: 8px"
+                    >
+                      <div class="text-caption font-weight-bold">小编打分</div>
+                      <div class="text-h4 font-weight-black text-warning">
+                        {{ state.data?.service_score }}
+                      </div>
+                      <div class="text-caption">女郎颜值</div>
+                    </div>
+                  </v-col>
+
+                  <v-col cols="7">
+                    <div
+                      class="px-4 py-2 d-flex flex-column justify-center elevation-2 h-100"
+                    >
+                      <div class="text-caption font-weight-regular">
+                        {{ state.data?.address || "未知地址 ..." }}
+                      </div>
+                    </div>
+                  </v-col>
+                </v-row>
+                <v-card
+                  class="pa-2 mb-4"
+                  flat
+                  color="surface-varient"
+                >
+                  <v-row
+                    dense
+                    class="align-start"
+                  >
+                    <v-col
+                      cols="4"
+                      md="2"
+                      class="d-flex align-center"
+                    >
+                      <v-icon
+                        size="small"
+                        class="mr-2"
+                        color="warning"
+                      >
+                        mdi-list-box
+                      </v-icon>
+                      <span class="text-body-2 font-weight-medium">
+                        基本信息：
+                      </span>
+                    </v-col>
+                    <v-col
+                      cols="8"
+                      md="10"
+                    >
+                      <span class="text-body-2 font-weight-regular">
+                        {{ state.data?.age }}岁 {{ state.data?.height }}cm E罩杯
+                      </span>
+                    </v-col>
+
+                    <v-col
+                      cols="4"
+                      md="2"
+                      class="d-flex align-center"
+                    >
+                      <v-icon
+                        size="small"
+                        class="mr-2"
+                        color="warning"
+                      >
+                        mdi-map-marker
+                      </v-icon>
+                      <span class="text-body-2 font-weight-medium">
+                        所在地区：
+                      </span>
+                    </v-col>
+
+                    <v-col
+                      cols="8"
+                      md="10"
+                    >
+                      <span class="text-body-2 font-weight-regular">
+                        {{ state.data?.address || "未知地址" }}
+                      </span>
+                    </v-col>
+
+                    <v-col
+                      cols="4"
+                      md="2"
+                      class="d-flex align-center"
+                    >
+                      <v-icon
+                        size="small"
+                        class="mr-2"
+                        color="warning"
+                      >
+                        mdi-currency-cny
+                      </v-icon>
+                      <span class="text-body-2 font-weight-medium">
+                        消费情况：
+                      </span>
+                    </v-col>
+
+                    <v-col
+                      cols="8"
+                      md="10"
+                    >
+                      <span class="text-body-2 font-weight-regular">
+                        {{ state.data?.price || "未知" }}
+                      </span>
+                    </v-col>
+                    <v-col
+                      cols="4"
+                      md="2"
+                      class="d-flex align-center"
+                    >
+                      <v-icon
+                        size="small"
+                        class="mr-2"
+                        color="warning"
+                      >
+                        mdi-clock
+                      </v-icon>
+                      <span class="text-body-2 font-weight-medium">
+                        服务项目：
+                      </span>
+                    </v-col>
+
+                    <v-col
+                      cols="8"
+                      md="10"
+                    >
+                      <span class="text-body-2 font-weight-regular">
+                        {{ state.data?.service || "未知" }}
+                      </span>
+                    </v-col>
+                  </v-row>
+
+                  <v-divider class="my-3"></v-divider>
+                  <v-sheet class="mt-0 pt-0">
+                    {{ state.data?.intro || "No intro---" }}
+                  </v-sheet>
+                </v-card>
+              </v-card-text>
+            </v-card>
+          </v-col>
+
+          <!-- Right: Info & Comments -->
+          <v-col
+            cols="12"
+            md="5"
+            lg="4"
+            class="d-flex flex-column"
+          >
+            <div
+              class="d-flex justify-end mt-2 py-0 pr-4"
+              v-if="!isMobile"
+            >
+              <v-btn
+                icon
+                size="small"
+                @click="
+                  () => {
+                    noteDialog.closeNoteDialog();
+                    state.data = {};
+                  }
+                "
+              >
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </div>
+
+            <!-- Scrollable Content Area -->
+            <div
+              class="flex-grow-1 overflow-y-auto px-4"
+              ref="note-dialog"
+            >
+              <div class="text-body-2 text-grey-darken-1 mb-4">
+                发布日期: {{ state.data?.created_at?.split("T")[0] }}
+              </div>
+              <v-row dense>
+                <v-col
+                  v-for="(app, index) in store?.detailAppAds"
+                  :key="index"
+                  :cols="3"
+                >
+                  <NuxtLink
+                    :to="app.url || '#'"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-decoration-none text-grey-darken-1 d-flex flex-column ga-1 align-center"
+                    @click="$emit('click-ads', app.id)"
+                  >
+                    <AdvertSlot
+                      :advert="{
+                        title: app.name,
+                        image: app.image,
+                        url: app?.url,
+                      }"
+                      fit="cover"
+                      style="width: 28px; height: 28px"
+                    />
+                    {{ app.name }}
+                  </NuxtLink>
+                </v-col>
+              </v-row>
+              <v-divider
+                :thickness="1"
+                class="my-3 border-opacity-75"
+              />
+
+              <div>
+                <v-card
+                  v-for="(app, index) in store.detailAds"
+                  :key="index"
+                  class="pa-0 my-2"
+                >
+                  <a
+                    :href="app.url"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class=""
+                    @click="adsClick(app.id)"
+                  >
+                    <AdvertSlot
+                      :advert="{
+                        title: app.name,
+                        image: app.image,
+                        url: app?.url,
+                      }"
+                      height="100%"
+                      fit="contain"
+                    />
+                  </a>
+                </v-card>
+                <template
+                  v-for="block in state.comments"
+                  :key="block.id"
+                >
+                  <CommentBlock :comment="block" />
+                </template>
+              </div>
+            </div>
+          </v-col>
+        </v-row>
+      </v-card-text>
+
+      <v-card-actions class="border-t">
+        <BottomAction
+          ref="bottomActions"
+          :action="state.data"
+          :total="state.data?.comment_count"
+          @click-star="handle.clickStar"
+          @click-share="handle.clickShare"
+          @live-chat="onLiveChat"
+          class="px-4"
+        />
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <style scoped lang="scss">
