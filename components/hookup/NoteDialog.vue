@@ -15,24 +15,20 @@
   import { useDisplay } from "vuetify";
 
   const Swiper = defineAsyncComponent(() => import("../Swiper.vue"));
-  const noteDIalogRef = useTemplateRef("note-dialog");
   const { store, onCopy, route, isMobile, storeUser } = useVariable();
-  const loading = ref(false);
   const { isNative } = usePlatform();
   const noteDialog = useNoteHookupDialog();
   const { smAndDown } = useDisplay();
   const swiperInstanceRef = ref<InstanceType<typeof Swiper> | null>(null);
   const state = reactive({
     data: {} as EmptyObjectType,
-    initialLoad: false, // Track if the initial data load has occurred
     comments: [] as EmptyObjectType[],
+    loading: false,
   });
   const { setStatus } = useCapacitor();
   const snackbar = useSnackbar();
   const onOpenNoteDialog = async () => {
-    if (noteDIalogRef.value) noteDIalogRef.value.scrollTop = 0;
-    loading.value = true;
-    state.initialLoad = false;
+    state.loading = true;
     try {
       const request = {
         id: noteDialog.id.value,
@@ -53,10 +49,8 @@
     } catch (err) {
       console.error("fetchFeeds failed:", err);
     } finally {
-      loading.value = false;
-      state.initialLoad = true;
+      state.loading = false;
     }
-
     // disableHorizontalSwipe();
   };
 
@@ -100,6 +94,7 @@
   watch(
     () => noteDialogVisible.value,
     (val) => {
+      state.loading = true;
       if (isNative.value) {
         return setStatus(val);
       }
@@ -119,7 +114,7 @@
     :fullscreen="isMobile"
   >
     <v-card
-      :loading="loading"
+      :loading="state.loading"
       class="main-contain"
     >
       <v-card-title v-if="isMobile">
@@ -163,7 +158,7 @@
                 />
 
                 <div
-                  v-if="loading"
+                  v-if="state.loading"
                   style="
                     height: 180px;
                     display: flex;
@@ -178,9 +173,7 @@
                   ></v-progress-circular>
                 </div>
                 <div
-                  v-if="
-                    !state.data.images?.length && !loading && state.initialLoad
-                  "
+                  v-if="!state.loading && !state.data.images?.length"
                   style="
                     height: 180px;
                     display: flex;
