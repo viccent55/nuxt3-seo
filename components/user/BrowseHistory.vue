@@ -122,6 +122,7 @@
         浏览记录
       </div>
       <v-btn
+        style="padding-top: var(--safe-area-inset-top, 0px)"
         variant="text"
         density="comfortable"
         @click="openDialog"
