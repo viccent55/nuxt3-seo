@@ -78,6 +78,9 @@
       loading.value = false;
     }
   };
+  onMounted(() => {
+    initImgAndVideo(props.content);
+  });
   defineExpose({
     init: (content: string) => {
       initImgAndVideo(content);
