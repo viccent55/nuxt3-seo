@@ -142,7 +142,7 @@
               ref="swiperInstanceRef"
               v-if="state.data?.m3u8"
               :src="state.data?.m3u8"
-              :height="smAndDown ? '350px' : '85vh'"
+              :height="smAndDown ? '300px' : 'calc(100vh - 120px)'"
             />
             <v-btn
               v-if="smAndDown"

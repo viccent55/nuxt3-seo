@@ -192,10 +192,7 @@
       :loading="loading"
     >
       <v-card-text class="pa-0">
-        <v-row
-          no-gutters
-          class="h-100"
-        >
+        <v-row no-gutters>
           <!-- Left: Video area -->
           <v-col
             cols="12"
@@ -208,7 +205,7 @@
               ref="swiperInstanceRef"
               v-if="state.data?.fields"
               :media-info="state.data.fields"
-              :height="smAndDown ? '300px' : '60vh'"
+              :height="smAndDown ? '300px' : 'calc(100vh - 120px)'"
             />
             <v-btn
               v-if="smAndDown"

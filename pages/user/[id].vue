@@ -361,7 +361,6 @@
     max-height: calc(100vh - v-bind(heightOffset));
     overflow-y: scroll;
     scrollbar-width: none;
-    padding-bottom: 100px;
   }
   .user-background {
     position: absolute;
