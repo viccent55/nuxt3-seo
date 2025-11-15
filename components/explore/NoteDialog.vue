@@ -243,6 +243,7 @@
                 @click-follow="handle.clickFollow"
               />
               <v-btn
+                color="primary"
                 icon
                 size="small"
                 @click="noteDialog.closeNoteDialog"
@@ -265,7 +266,10 @@
                 发布日期: {{ state.data?.created_at }}
               </div>
 
-              <v-row dense>
+              <v-row
+                dense
+                v-if="isMobile"
+              >
                 <v-col cols="12">
                   <v-toolbar
                     class="d-flex justify-space-between align-center mb-2 py-0 rounded"

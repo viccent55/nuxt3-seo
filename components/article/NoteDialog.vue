@@ -219,6 +219,7 @@ _
               v-if="!smAndDown"
             >
               <v-btn
+                color="primary"
                 icon
                 size="small"
                 @click="noteDialog.closeNoteDialog"

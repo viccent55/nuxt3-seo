@@ -387,6 +387,7 @@
               <v-btn
                 icon
                 size="small"
+                color="primary"
                 @click="
                   () => {
                     noteDialog.closeNoteDialog();
