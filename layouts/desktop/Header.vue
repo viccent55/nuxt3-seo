@@ -136,7 +136,6 @@
     </v-container>
   </v-app-bar>
   <DialogInfo ref="dialgInfo" />
-  <!-- <AnimeRuleDialog v-model:model-value="isVisible" /> -->
 </template>
 
 <style lang="scss" scoped>

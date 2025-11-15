@@ -8,7 +8,7 @@ import { useRoute, useRouter } from "vue-router";
 export const noteDialogVisible = ref(false);
 const noteDialogId = ref<number | string>("-1");
 
-export function useNoteAnimeDialog() {
+export function useNoteForbidden() {
   const route = useRoute();
   const router = useRouter();
 
@@ -20,7 +20,7 @@ export function useNoteAnimeDialog() {
       ...route,
       query: {
         ...route.query,
-        noteAnimeId: id,
+        noteForbiddenId: id,
       },
     });
   }
@@ -35,17 +35,17 @@ export function useNoteAnimeDialog() {
       ...route,
       query: {
         ...route.query,
-        noteAnimeId: undefined,
+        noteForbiddenId: undefined,
       },
     });
   }
 
   // 传入route，从路由中获取id
   function queryNoteDialogId() {
-    const noteAnimeId = route.query.noteAnimeId;
+    const noteForbiddenId = route.query.noteForbiddenId;
 
-    if (noteAnimeId) {
-      openNoteDialog(Number(noteAnimeId));
+    if (noteForbiddenId) {
+      openNoteDialog(Number(noteForbiddenId));
     }
   }
 

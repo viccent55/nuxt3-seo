@@ -208,6 +208,7 @@
               ref="swiperInstanceRef"
               v-if="state.data?.fields"
               :media-info="state.data.fields"
+              :height="smAndDown ? '300px' : '60vh'"
             />
             <v-btn
               v-if="smAndDown"

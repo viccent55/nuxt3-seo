@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
     : config.public.apiBase;
   try {
     const result: EmptyObjectType = await $fetch(
-      `${baseURL}/behavior/likeCartoonVideo`,
+      `${baseURL}/like/toggle`,
       {
         method: method ?? "POST",
         headers: {

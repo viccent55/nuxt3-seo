@@ -15,7 +15,7 @@
   import { useLocalStorage } from "@vueuse/core";
   import { useNoteDialog } from "./hooks/useNoteDialog";
   import { useNoteArticleDialog } from "./hooks/useNoteArticleDialog";
-  import { useNoteAnimeDialog } from "./hooks/useNoteAnimeDialog";
+  import { useNoteForbidden } from "./hooks/useNoteForbiddenDialog";
   import { useNoteHookupDialog } from "./hooks/useNoteHookupDialog";
   import { createId } from "@paralleldrive/cuid2";
   import { useLayoutManager } from "./composables/useLayoutManager";
@@ -27,7 +27,7 @@
   const notificationDialogRef = ref<InstanceType<typeof NotificationDialog>>();
   const noteDialog = useNoteDialog();
   const noteArticleDetail = useNoteArticleDialog();
-  const noteAnimeDetail = useNoteAnimeDialog();
+  const noteForbiddenDialog = useNoteForbidden();
   const noteHookupDialog = useNoteHookupDialog();
   const permissions = [PERMISSION.Visitor, PERMISSION.User];
   const { scrollableElement, scrollTop } = useScrollManager();
@@ -154,7 +154,7 @@
     setTimeout(() => {
       noteDialog.queryNoteDialogId();
       noteArticleDetail.queryNoteDialogId();
-      noteAnimeDetail.queryNoteDialogId();
+      noteForbiddenDialog.queryNoteDialogId();
       noteHookupDialog.queryNoteDialogId();
     }, 500);
     initAds();
@@ -216,7 +216,7 @@
 
     <NoteDialog />
     <ArticleNoteDialog />
-    <AnimeNoteDialog />
+    <ForbiddenNoteDialog />
     <HookupNoteDialog />
 
     <DesktopDialogPopupAds

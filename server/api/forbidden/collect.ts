@@ -1,3 +1,5 @@
+
+
 export default defineEventHandler(async (event) => {
   const method = event.method;
   const headers = getHeaders(event);
@@ -7,7 +9,7 @@ export default defineEventHandler(async (event) => {
     ? config.public.apiLocal
     : config.public.apiBase;
   try {
-    const result: EmptyObjectType = await $fetch(`${baseURL}/behavior/starCartoonVideo`, {
+    const result: EmptyObjectType = await $fetch(`${baseURL}/favorite/toggle`, {
       method: method ?? "POST",
       headers: {
         Authorization: headers.authorization!,

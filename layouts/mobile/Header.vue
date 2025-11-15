@@ -14,7 +14,6 @@
     flat
     :color="displayColor"
     class="border-b app-header"
-    height="64"
   >
     <!-- Left: Logo -->
     <v-container fluid>

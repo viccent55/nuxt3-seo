@@ -15,6 +15,10 @@
       type: Boolean,
       default: false,
     },
+    height: {
+      type: String,
+      default: "auto",
+    },
   });
 
   const videoPlayer = ref<HTMLVideoElement | null>(null);
@@ -122,7 +126,10 @@
 </script>
 
 <template>
-  <div class="video-container">
+  <div
+    class="video-container"
+    :style="{ height: props.height }"
+  >
     <video
       ref="videoPlayer"
       class="video-js"

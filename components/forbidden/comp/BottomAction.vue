@@ -1,6 +1,4 @@
 <script setup lang="ts">
-  import { ref, watchEffect } from "vue";
-
   const props = withDefaults(
     defineProps<{
       action: Record<string, any>;
@@ -41,6 +39,14 @@
     class="bottom-action pa-0"
   >
     <div class="d-flex align-center">
+      <v-btn
+        variant="text"
+        density="comfortable"
+        class="px-0"
+      >
+        <v-icon>mdi-eye-outline</v-icon>
+        <span class="ml-1">{{ action?.view_count }}</span>
+      </v-btn>
       <v-btn
         variant="text"
         density="comfortable"

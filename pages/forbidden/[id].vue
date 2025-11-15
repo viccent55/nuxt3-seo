@@ -15,7 +15,7 @@
     comments: [] as EmptyObjectType[],
     loading: false,
   });
-  const { store, onCopy, route, isMobile, storeUser } = useVariable();
+  const { store, onCopy, route } = useVariable();
   const snackbar = useSnackbar();
 
   const _id = computed(() => route.params.id);

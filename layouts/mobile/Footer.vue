@@ -25,7 +25,8 @@
         return item.routeName === name || item.routeName === routeBaseName;
       });
       if (navItem) store.mode = navItem.mode;
-    }
+    },
+    { immediate: true }
   );
 </script>
 
@@ -50,7 +51,7 @@
             emit('click-nav-item', item);
           }
         "
-        :class="store.mode === item.mode ? 'text-primary' : undefined"
+        :class="item.mode == store.mode ? 'text-primary' : undefined"
       >
         <v-icon
           :icon="`mdi-${item.icon.toLowerCase()}`"

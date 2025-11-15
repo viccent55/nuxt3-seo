@@ -4,110 +4,122 @@
   });
   import { useInfiniteScroll } from "@vueuse/core";
   import useVariable from "@/composables/useVariable";
-  import { useNoteAnimeDialog } from "~/hooks/useNoteAnimeDialog";
+  import { useNoteForbidden } from "~/hooks/useNoteForbiddenDialog";
   import { useDisplay } from "vuetify";
   const { setScrollableElement, scrollTop } = useScrollManager();
-  import { select } from "@/service/forbidden";
+  import { select, getCategories } from "@/service/forbidden";
 
   const state = reactive({
     data: [] as EmptyArrayType,
     page: 1,
+    limit: 30,
     isNoMore: false,
     loadmore: false,
     total: 0,
+    cid: 0,
+    categories: [] as EmptyArrayType,
+    loading: false,
   });
 
-  const { clearQuery, store, storeUser } = useVariable();
+  const { clearQuery, store, storeUser, formatDate } = useVariable();
   const containerRef = ref<HTMLElement | null>(null);
 
+  const getAllCategories = async () => {
+    state.loading = true;
+    try {
+      const response: EmptyObjectType = await getCategories();
+      state.categories = response.data ?? [];
+    } catch (e) {
+      console.log(e);
+    } finally {
+      state.loading = false;
+    }
+  };
+  await getAllCategories();
+  /* ---------------------------
+     1. Centralized fetch function
+  ---------------------------- */
+  const fetchData = async (isNewCategory = false) => {
+    if (isNewCategory) {
+      state.page = 1;
+      state.data = [];
+      state.isNoMore = false;
+    }
+
+    try {
+      state.loading = true;
+      const request = {
+        cid: state.cid,
+        page: state.page,
+        limit: state.limit,
+      };
+      const response: EmptyObjectType = await select(request);
+      state.total = response?.data?.count || 0;
+      const newItems = response?.data.map((item: EmptyObjectType) => {
+        return {
+          ...item,
+          author: { name: formatDate(item.created_at) },
+        };
+      });
+
+      if (newItems.length > 0) {
+        state.data = newItems;
+      } else {
+        state.isNoMore = true;
+      }
+    } catch (err) {
+      console.error("fetchData failed:", err);
+      state.isNoMore = true;
+    } finally {
+      state.loading = false;
+    }
+  };
+
+  // Initial data fetch
+  await fetchData(true);
+
+  const onLoadMore = async () => {
+    if (state.loading || state.isNoMore || state.data.length >= state.total)
+      return;
+    state.loadmore = true;
+    state.page++;
+    await fetchData();
+  };
+  useInfiniteScroll(containerRef, onLoadMore, {
+    distance: 300,
+    canLoadMore: () => !state.loadmore && !state.isNoMore,
+  });
+  const noteDialog = useNoteForbidden();
+  const clickFeed = (item: EmptyObjectType) => {
+    clearQuery();
+    noteDialog.openNoteDialog(item.id);
+  };
+
+  const { smAndDown } = useDisplay();
+  const { isNative } = usePlatform();
+  const heightOffset = computed(() => {
+    if (!isNative.value) {
+      if (smAndDown.value) {
+        return "190px";
+      } else {
+        return "150px";
+      }
+    }
+    return "240px";
+  });
+  const isVisible = ref(false);
+  const displayMenu = computed(() => {
+    return [...[{ id: 0, name: "全部" }], ...(state.categories || [])];
+  });
+  if (displayMenu.value?.length) {
+    state.cid = displayMenu.value[0]?.id ?? 0;
+  }
   const { configuration } = storeToRefs(store);
   useSeo(
     computed(() => configuration.value?.cartoon_title),
     computed(() => configuration.value?.cartoon_description),
     computed(() => configuration.value?.cartoon_keywords)
   );
-
-  /* ---------------------------
-     1. Centralized fetch function
-  ---------------------------- */
-  const fetchData = async () => {
-    try {
-      const request = {
-        page: state.page,
-        limit: 30,
-      };
-      const response: EmptyObjectType = await select(request);
-      const result = decrypt(response.data);
-      state.total = result.data.count;
-      if (result?.errcode === 0 && Array.isArray(result.data.items)) {
-        return result.data;
-      }
-      state.isNoMore = true;
-
-      return [];
-    } catch (err) {
-      console.error("fetchData failed:", err);
-      state.isNoMore = true;
-      return [];
-    }
-  };
-
-  /* ---------------------------
-     2. Initial SSR fetch
-  ---------------------------- */
-
-  const { data, pending } = await useAsyncData(
-    `anime-select`,
-    () => fetchData(),
-
-    { transform: (data) => data || [] } // SSR-safe
-  );
-
-  // Assign only once
-  if (data.value?.items) {
-    state.total = data.value.counts;
-    state.data = data.value.items;
-  }
-  let initialized = false;
-  const onLoadMore = async () => {
-    if (pending.value || state.data.length >= state.total) return;
-    if (!initialized) {
-      initialized = true;
-      return; // skip the first trigger
-    }
-    try {
-      state.loadmore = true;
-      state.page++;
-      const data = await fetchData();
-      if (data.items.length) {
-        state.data.push(...data.items);
-      }
-    } finally {
-      state.loadmore = false;
-    }
-  };
-  useInfiniteScroll(containerRef, onLoadMore, {
-    distance: 300,
-    canLoadMore: () => !state.loadmore && !state.isNoMore,
-  });
-  const noteDialog = useNoteAnimeDialog();
-  const openDialog = (id: number) => {
-    clearQuery();
-    noteDialog.openNoteDialog(id);
-  };
-  const { smAndDown } = useDisplay();
-  const { isNative } = usePlatform();
-  const heightOffset = computed(() => {
-    if (!isNative.value) {
-      if (smAndDown.value) {
-        return "140px";
-      } else {
-        return "100px";
-      }
-    }
-    return "220px";
-  });
-  const isVisible = ref(false);
   onBeforeMount(() => {
     if (storeUser.userInfo?.invite_count < 5 || !storeUser.isLogin)
       isVisible.value = true;
@@ -123,72 +135,50 @@
 
 <template>
   <v-container
-    class="px-0 pt-5"
+    class="pa-0 d-flex flex-column"
     fluid
+    style="height: 100%"
   >
+    <!-- Tabs fixed / sticky -->
+    <v-tabs
+      v-model="state.cid"
+      color="primary"
+      class="px-md-4 px-2 category-tabs flex-shrink-0"
+      density="compact"
+      show-arrows
+      @update:model-value="fetchData(true)"
+    >
+      <v-tab
+        v-for="item in displayMenu"
+        :key="item"
+        :value="item?.id"
+        class="px-0 custom-tab"
+      >
+        {{ item?.name }}
+      </v-tab>
+    </v-tabs>
+
     <div
-      class="anime-wrapper pb-6 md:pb-0"
+      class="forbidden-wrapper pb-6 mt-2 md:pb-0"
       ref="containerRef"
     >
-      <v-row :dense="smAndDown">
-        <v-col
-          v-for="(item, index) in state.data"
-          :key="index"
-          cols="4"
-          sm="4"
-          md="3"
-          lg="3"
-          class="d-flex flex-column align-center mb-0 mb-md-2"
-        >
-          <v-card
-            class="news-card"
-            @click.prevent="openDialog(item.id)"
-            tag="a"
-            :to="'/forbidden/' + item.id"
-            flat
-          >
-            <Image
-              :src="item.cover"
-              class="rounded-lg"
-              :aspect-ratio="400 / 250"
-              cover
-            />
-            <div class="text-surface-variant my-1 text-center">
-              {{ item.title }}
-            </div>
-          </v-card>
-        </v-col>
-
-        <!-- Loading Indicator -->
-        <v-col
-          cols="12"
-          class="text-center"
-        >
-          <ExploreLoading :loading="state.loadmore" />
-        </v-col>
-      </v-row>
-
-      <!-- Empty State -->
-      <div
-        v-if="state.data.length >= state.total"
-        class="d-flex justify-center align-center text-center py-4"
-      >
-        <v-empty-state
-          icon="mdi-image-off"
-          title="没有更多了"
-          text="暂无内容"
-        />
-      </div>
+      <ExploreContainer
+        ref="exploreContainerRef"
+        :items="state.data"
+        :is-load-more="state.loading"
+        :is-no-more="state.isNoMore"
+        @click-item="clickFeed"
+      />
     </div>
-    <AnimeRuleDialog v-model:model-value="isVisible" />
+    <ForbiddenRuleDialog v-model:model-value="isVisible" />
   </v-container>
 </template>
 
 <style scoped lang="scss">
-  .anime-wrapper {
+  .forbidden-wrapper {
     width: 100%;
     max-height: calc(100vh - v-bind(heightOffset));
-    height: calc(100dvh - v-bind(heightOffset));
+    flex-grow: 1;
     overflow-y: auto;
     padding: 0 12px;
     scrollbar-width: none;
@@ -213,5 +203,19 @@
     line-height: 1.5;
     text-align: center;
     word-break: break-word;
+  }
+
+  .custom-tab {
+    min-width: 45px !important;
+    margin-right: 10px;
+  }
+  .category-tabs {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .category-tabs :deep(.v-slide-group__next),
+  .category-tabs :deep(.v-slide-group__prev) {
+    min-width: 32px;
   }
 </style>

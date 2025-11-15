@@ -17,11 +17,14 @@
       type: Boolean,
       default: false,
     },
+    lightBox: {
+      type: Boolean,
+      default: false,
+    },
   });
 
   const videoPlayerRef = ref<InstanceType<typeof VideoPlayer>[]>([]);
   const carousel = ref();
-
   const closeVideo = () => {
     videoPlayerRef.value.forEach((player) => {
       player?.closeVideo?.();
@@ -42,10 +45,11 @@
     }
     return props.height;
   });
-  const fullScreenImageRef = useTemplateRef("full-screen-image");
-  const onOpenFullScreen = (src: string) => {
-    fullScreenImageRef.value?.open(src);
+  const lightBoxRef = useTemplateRef("light-box");
+  const onOpenLightBox = (index: number) => {
+    lightBoxRef.value?.open(index);
   };
+
   defineExpose({
     closeVideo,
     next,
@@ -54,62 +58,67 @@
 </script>
 
 <template>
-  <v-carousel
-    ref="carousel"
-    class="swiper"
-    hide-delimiter-background
-    :hide-delimiters="true"
-    delimiter-icon="mdi-square"
-    :show-arrows="mediaInfo?.length > 1"
-    height="100%"
-    color="primary"
-  >
-    <template #prev="{ props }">
-      <v-btn
-        variant="tonal"
-        color="primary"
-        density="comfortable"
-        icon="mdi-chevron-left"
-        @click="props.onClick"
-      ></v-btn>
-    </template>
-    <template #next="{ props }">
-      <v-btn
-        variant="tonal"
-        color="primary"
-        density="comfortable"
-        icon="mdi-chevron-right"
-        @click="props.onClick"
-      ></v-btn>
-    </template>
-    <v-carousel-item
-      v-for="(item, index) in mediaInfo"
-      :key="index"
-      class="fill-height"
+  <div class="h-100 w-100">
+    <v-carousel
+      ref="carousel"
+      class="swiper"
+      hide-delimiter-background
+      :hide-delimiters="true"
+      delimiter-icon="mdi-square"
+      :show-arrows="mediaInfo?.length > 1"
+      height="100%"
+      color="primary"
     >
-      <Image
-        v-if="item.name === 'image'"
-        :src="item?.value"
-        :cover="false"
-        class="media"
-        :style="{
-          maxHeight: height,
-          minHeight: height,
-        }"
-        @click="onOpenFullScreen(item?.value)"
-      />
-      <VideoPlayer
-        v-if="item.name === 'video'"
-        ref="videoPlayerRef"
-        :src="item?.value"
-        class="video"
-        :style="{
-          maxHeight: height,
-        }"
-      />
-    </v-carousel-item>
-  </v-carousel>
-  <PopupImage ref="full-screen-image" />
+      <template #prev="{ props }">
+        <v-btn
+          variant="tonal"
+          color="primary"
+          density="comfortable"
+          icon="mdi-chevron-left"
+          @click="props.onClick"
+        ></v-btn>
+      </template>
+      <template #next="{ props }">
+        <v-btn
+          variant="tonal"
+          color="primary"
+          density="comfortable"
+          icon="mdi-chevron-right"
+          @click="props.onClick"
+        ></v-btn>
+      </template>
+      <v-carousel-item
+        v-for="(item, index) in mediaInfo"
+        :key="index"
+        class="fill-height"
+      >
+        <Image
+          v-if="item.name === 'image'"
+          :src="item?.value"
+          :cover="false"
+          class="media"
+          :style="{
+            maxHeight: height,
+            minHeight: height,
+          }"
+          @click="props.lightBox ? onOpenLightBox(index) : null"
+        />
+        <VideoPlayer
+          v-if="item.name === 'video'"
+          ref="videoPlayerRef"
+          :src="item?.value"
+          class="video"
+          :style="{
+            maxHeight: height,
+          }"
+        />
+      </v-carousel-item>
+    </v-carousel>
+    <Lightbox
+      ref="light-box"
+      :sources="mediaInfo.map((item) => item.value)"
+    ></Lightbox>
+  </div>
 </template>
 
 <style scoped lang="scss">
@@ -117,14 +126,6 @@
     width: 100%;
     max-height: calc(v-bind(heightOffset));
     // min-height: 300px;
-  }
-
-  .wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    width: 100%;
   }
 
   .media {

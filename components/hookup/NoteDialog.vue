@@ -155,6 +155,7 @@
                   v-if="state.data.images?.length > 0"
                   :media-info="state.data.images"
                   :height="smAndDown ? '300px' : '60vh'"
+                  light-box
                 />
 
                 <div
