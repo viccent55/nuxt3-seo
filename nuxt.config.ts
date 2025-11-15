@@ -38,6 +38,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE || "http://api.szy7.com/apiv1",
+      imageHost: process.env.IMAGE_HOST, // Expose IMAGE_HOST
     },
   },
 

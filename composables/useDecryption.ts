@@ -90,8 +90,9 @@ export const useDecryption = () => {
     isLoading.value = true;
 
     try {
+      const config = useRuntimeConfig();
       // Assuming a base URL for your images.
-      const fullUrl = `https://pic.rfstl.cn${imageUrl}`;
+      const fullUrl = `${config.public.imageHost}${imageUrl}`;
       decryptedImage.value = await decryptAndCreateUrl(fullUrl);
     } catch (e: any) {
       error.value = e.message;
