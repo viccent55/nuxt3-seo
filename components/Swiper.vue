@@ -108,9 +108,7 @@
           ref="videoPlayerRef"
           :src="item?.value"
           class="video"
-          :style="{
-            maxHeight: height,
-          }"
+          :height="height"
         />
       </v-carousel-item>
     </v-carousel>

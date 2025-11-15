@@ -75,3 +75,4 @@
     </v-card>
   </v-dialog>
 </template>
+<style scoped lang="scss"></style>

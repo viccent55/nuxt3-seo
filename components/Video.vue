@@ -114,7 +114,7 @@
       hls = null;
     }
   };
-
+  const displayHeight = computed(() => props.height);
   defineExpose({
     closeVideo,
   });
@@ -126,10 +126,7 @@
 </script>
 
 <template>
-  <div
-    class="video-container"
-    :style="{ height: props.height }"
-  >
+  <div class="video-container">
     <video
       ref="videoPlayer"
       class="video-js"
@@ -141,7 +138,7 @@
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
   .video-container {
     width: 100%;
     /* height: 100%; */
@@ -149,7 +146,7 @@
   }
   .video-js {
     width: 100%;
-    height: 100%;
+    height: v-bind(displayHeight);
     object-fit: contain;
   }
 </style>

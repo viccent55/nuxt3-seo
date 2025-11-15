@@ -158,16 +158,24 @@
       </v-tab>
     </v-tabs>
 
-    <div
-      class="forbidden-wrapper pb-6 mt-2 md:pb-0"
-      ref="containerRef"
-    >
-      <ExploreContainer
-        ref="exploreContainerRef"
-        :items="state.data"
-        :is-load-more="state.loading"
-        :is-no-more="state.isNoMore"
-        @click-item="clickFeed"
+    <!-- Wrapper for content and overlay -->
+    <div class="content-wrapper">
+      <div
+        class="forbidden-wrapper pb-6 mt-2 md:pb-0"
+        ref="containerRef"
+      >
+        <ExploreContainer
+          ref="exploreContainerRef"
+          :items="state.data"
+          :is-load-more="state.loading"
+          :is-no-more="state.isNoMore"
+          @click-item="clickFeed"
+        />
+      </div>
+      <v-overlay
+        v-model="isVisible"
+        contained
+        :opacity="0.9"
       />
     </div>
     <ForbiddenRuleDialog v-model:model-value="isVisible" />
@@ -175,6 +183,12 @@
 </template>
 
 <style scoped lang="scss">
+  .content-wrapper {
+    position: relative;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
   .forbidden-wrapper {
     width: 100%;
     max-height: calc(100vh - v-bind(heightOffset));
