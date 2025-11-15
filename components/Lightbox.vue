@@ -32,7 +32,6 @@
 
 <script setup lang="ts">
   import { ref } from "vue";
-  import FsLightbox from "fslightbox-vue";
 
   const props = defineProps({
     title: {
