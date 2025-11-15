@@ -85,15 +85,20 @@ export const useDecryption = () => {
   };
 
   const decryptImage = async (imageUrl: string) => {
-    // Reset state
     decryptedImage.value = "";
     error.value = null;
     isLoading.value = true;
 
     try {
-      const config = useRuntimeConfig();
-      // Assuming a base URL for your images.
-      const fullUrl = `${config.public.imageHost}${imageUrl}`;
+      // Build correct URL
+      let fullUrl = imageUrl;
+
+      // If NOT absolute URL → add imageHost
+      if (!/^https?:\/\//i.test(imageUrl)) {
+        const config = useRuntimeConfig();
+        fullUrl = `${config.public.imageHost}${imageUrl}`;
+      }
+
       decryptedImage.value = await decryptAndCreateUrl(fullUrl);
     } catch (e: any) {
       error.value = e.message;
