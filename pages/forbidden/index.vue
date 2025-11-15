@@ -175,7 +175,7 @@
       <v-overlay
         v-model="isVisible"
         contained
-        :opacity="0.9"
+        :opacity="0.95"
       />
     </div>
     <ForbiddenRuleDialog v-model:model-value="isVisible" />
