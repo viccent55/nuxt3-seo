@@ -16,7 +16,7 @@
     isLoadmore: false,
     isNomore: true,
   });
-  const { storeUser, isMobile, route } = useVariable();
+  const { storeUser, isMobile } = useVariable();
   const pageWrapperRef = ref<HTMLElement | null>(null);
   const { setScrollableElement, scrollTop } = useScrollManager();
   const infiniteActive = ref(false);
@@ -122,7 +122,6 @@
         浏览记录
       </div>
       <v-btn
-        style="padding-top: var(--safe-area-inset-top, 0px)"
         variant="text"
         density="comfortable"
         @click="openDialog"
@@ -173,7 +172,10 @@
       :fullscreen="isMobile"
       max-width="1200"
     >
-      <v-card>
+      <v-card
+        class="main-contain"
+        flat
+      >
         <v-card-title class="d-flex align-center">
           <v-btn
             icon="mdi-chevron-left"
@@ -211,5 +213,8 @@
     max-height: calc(100vh - 100px);
     overflow-y: auto;
     scrollbar-width: none;
+  }
+  .main-contain {
+    padding-top: var(--safe-area-inset-top, 0px);
   }
 </style>

@@ -28,15 +28,16 @@ export async function getLikeFeeds(param: object) {
     method: "POST",
     body: dataEncrypt(param),
   });
-  return decrypt(res.data);
+  if (res.data) return decrypt(res.data);
+  return res;
 }
 export async function getFollowFeed(param: object) {
   const res: EmptyObjectType = await $fetch("/api/user/follow-feed", {
     method: "POST",
     body: param,
   });
+  if (res.data) return decrypt(res.data);
   return res;
-  return decrypt(res.data);
 }
 
 export async function setUserInfo(params: object) {
