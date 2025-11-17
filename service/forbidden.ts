@@ -1,7 +1,7 @@
 export async function select(param: object) {
-  const res: EmptyObjectType = await $fetch("/api/forbidden/select", {
+  const res: EmptyObjectType = await useApiFetch("/api/forbidden/select", {
     method: "POST",
-    body: param,
+    body: dataEncrypt(param),
   });
   if (res.data) return decrypt(res.data);
   return res;
@@ -35,7 +35,7 @@ export async function collect(params: object) {
 }
 
 export async function getCategories() {
-  const res: EmptyObjectType = await useApiFetch("/api/forbidden/category", {
+  const res: EmptyObjectType = await $fetch("/api/forbidden/category", {
     method: "GET",
   });
 
