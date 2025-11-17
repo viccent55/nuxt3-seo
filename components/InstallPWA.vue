@@ -19,7 +19,7 @@
   };
 
   const refresh = async () => {
-    await updateServiceWorker();
+    // await updateServiceWorker();
   };
 
   watch(needRefresh, (val) => {

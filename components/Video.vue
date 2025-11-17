@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, onMounted, onBeforeUnmount, watch } from "vue";
+  import { ref, onMounted, onBeforeUnmount } from "vue";
   const { $hls } = useNuxtApp();
 
   const props = defineProps({
@@ -24,16 +24,17 @@
   const videoPlayer = ref<HTMLVideoElement | null>(null);
   let hls: any | null = null;
   const { isNative } = usePlatform();
-  const initializePlayer = () => {
+
+  const initializePlayer = (url: string) => {
     // Clean up existing HLS instance if it exists
     if (hls) {
       hls.destroy();
       hls = null;
     }
-    const proxyUrl = `/api/video-proxy?url=${encodeURIComponent(props.src)}`;
+
     if ($hls.isSupported() && videoPlayer.value) {
       hls = new $hls();
-      hls.loadSource(isNative.value ? proxyUrl : props.src);
+      hls.loadSource(url);
       hls.attachMedia(videoPlayer.value);
 
       // Autoplay logic
@@ -69,7 +70,7 @@
       videoPlayer.value.canPlayType("application/vnd.apple.mpegurl")
     ) {
       // Native HLS (Safari)
-      videoPlayer.value.src = props.src;
+      videoPlayer.value.src = url;
       videoPlayer.value.addEventListener(
         "loadedmetadata",
         () => {
@@ -86,21 +87,6 @@
     }
   };
 
-  onMounted(() => {
-    if (props.src) {
-      initializePlayer();
-    }
-  });
-
-  // Re-initialize if src changes
-  watch(
-    () => props.src,
-    (newSrc) => {
-      if (newSrc) {
-        initializePlayer();
-      }
-    }
-  );
   const closeVideo = () => {
     // Stop video playback
     if (videoPlayer.value) {
@@ -115,6 +101,19 @@
     }
   };
   const displayHeight = computed(() => props.height);
+
+  onMounted(() => {
+    if (props.src) {
+      const proxyUrl = `/api/video-proxy?url=${encodeURIComponent(props.src)}`;
+      if (isNative.value) {
+        // In native environment, use the original src
+        initializePlayer(proxyUrl);
+      } else {
+        // In web environment, use the proxied URL
+        initializePlayer(props.src);
+      }
+    }
+  });
   defineExpose({
     closeVideo,
   });

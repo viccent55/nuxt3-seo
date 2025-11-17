@@ -113,6 +113,7 @@
       </v-carousel-item>
     </v-carousel>
     <Lightbox
+     v-if="mediaInfo.length > 0 && props.lightBox"
       ref="light-box"
       :sources="mediaInfo.map((item) => item.value)"
     ></Lightbox>
