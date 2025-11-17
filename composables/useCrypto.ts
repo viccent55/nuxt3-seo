@@ -1,5 +1,4 @@
 import CryptoJS from "crypto-js";
-import md5 from "crypto-js/md5";
 import dayjs from "dayjs";
 
 const SIGN_KEY = "super-secret-sign";
@@ -19,37 +18,32 @@ export function encrypt(data: any): string {
     mode: CryptoJS.mode.CBC,
     padding: CryptoJS.pad.Pkcs7,
   });
-  // if (import.meta.env.MODE === "development") {
-  //   console.log(`Encrypt => `, encrypted);
-  // }
   return encrypted.toString(); // base64 string
 }
 
 // 🔹 AES Decrypt
 export function decrypt(ciphertext: string): any {
-  const bytes = CryptoJS.AES.decrypt(ciphertext, KEY, {
-    iv: IV_WORD,
-    mode: CryptoJS.mode.CBC,
-    padding: CryptoJS.pad.Pkcs7,
-  });
-
-  const decrypted = bytes.toString(CryptoJS.enc.Utf8);
-  // if (import.meta.env.MODE === "development") {
-  //   console.log(`Decrypt => `, decrypted);
-  // }
+  if (!ciphertext) return "";
   try {
+    const bytes = CryptoJS.AES.decrypt(ciphertext, KEY, {
+      iv: IV_WORD,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7,
+    });
+
+    const decrypted = bytes.toString(CryptoJS.enc.Utf8);
     return JSON.parse(decrypted);
   } catch {
-    return decrypted;
+    return ciphertext;
   }
 }
 
 // 🔹 Make Sign (MD5)
 export function makeSign(timestamp: number, encryptedData: string): string {
-  return md5(`${timestamp}${encryptedData}${SIGN_KEY}`).toString();
+  return CryptoJS.MD5(`${timestamp}${encryptedData}${SIGN_KEY}`).toString();
 }
 
-export function dataEncrypt(data: EmptyObjectType) {
+export function dataEncrypt(data: Record<string, any>) {
   const encryptedData = encrypt(data);
   const timestamp = dayjs().unix();
   const sign = makeSign(timestamp, encryptedData);

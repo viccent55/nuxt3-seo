@@ -1,4 +1,4 @@
-import { decrypt } from "~/utils/crypto";
+import { decrypt } from "~/composables/useCrypto";
 
 export default defineEventHandler(async (event) => {
   if (import.meta.dev) {

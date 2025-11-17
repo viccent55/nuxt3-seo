@@ -1,5 +1,3 @@
-import { dataEncrypt } from "~/utils/crypto";
-
 export async function getPositionAds(position: number) {
   const res: EmptyObjectType = await $fetch(`/api/ads/${position}`, {
     method: "GET",

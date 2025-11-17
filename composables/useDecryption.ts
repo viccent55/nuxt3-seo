@@ -1,6 +1,4 @@
 import { ref } from "vue";
-import { decrypt } from "@/utils/crypto";
-
 // A cache to store the decrypted image URLs to avoid re-decrypting the same image
 const urlCache = new Map<string, string>();
 

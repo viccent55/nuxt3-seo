@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { dataEncrypt } from "~/utils/crypto";
+import { dataEncrypt } from "~/composables/useCrypto";
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig();

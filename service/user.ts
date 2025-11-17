@@ -1,9 +1,10 @@
 export async function getUserInfo(id: number) {
-  const res: EmptyObjectType = await $fetch("/api/user", {
+  const res: EmptyObjectType = await useApiFetch("/api/user", {
     method: "POST",
     body: { id },
   });
-  return decrypt(res.data);
+  if (res.data.value) return decrypt(res.data.value.data);
+  return res;
 }
 
 export async function getNoteFeeds(param: object) {
@@ -11,32 +12,29 @@ export async function getNoteFeeds(param: object) {
     method: "POST",
     body: param,
   });
-
-  return decrypt(res.data);
+  if (res.data.value) return decrypt(res.data.value.data);
+  return res;
 }
 
 export async function getStarFeeds(param: object) {
   const res: EmptyObjectType = await $fetch("/api/user/star-feed", {
     method: "POST",
-    body: dataEncrypt(param),
+    body: param,
   });
-  return decrypt(res.data);
 }
 
 export async function getLikeFeeds(param: object) {
   const res: EmptyObjectType = await $fetch("/api/user/like-feed", {
     method: "POST",
-    body: dataEncrypt(param),
+    body: param,
   });
-  if (res.data) return decrypt(res.data);
-  return res;
 }
 export async function getFollowFeed(param: object) {
-  const res: EmptyObjectType = await $fetch("/api/user/follow-feed", {
+  const res: EmptyObjectType = await useApiFetch("/api/user/follow-feed", {
     method: "POST",
     body: param,
   });
-  if (res.data) return decrypt(res.data);
+  if (res.data.value) return decrypt(res.data.value.data);
   return res;
 }
 
@@ -109,12 +107,6 @@ export async function getHistories(params: EmptyObjectType) {
 export async function getConfigs(param: string) {
   const res: EmptyObjectType = await useApiFetch("/api/user/user-config", {
     method: "GET",
-    params: {
-      names: param,
-    }, // send query parameters here
+    params: { names: param },
   });
-  if (res.data) {
-    return decrypt(res.data);
-  }
-  return res;
 }

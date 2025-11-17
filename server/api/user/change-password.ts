@@ -1,4 +1,3 @@
-import { decrypt } from "~/utils/crypto";
 
 export default defineEventHandler(async (event) => {
   const headers = getHeaders(event);

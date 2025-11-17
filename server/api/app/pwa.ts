@@ -1,8 +1,8 @@
-import { dataEncrypt } from "~/utils/crypto";
+import { dataEncrypt } from "~/composables/useCrypto";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  const method = getMethod(event);
+  const method = event.method;
   const config = useRuntimeConfig();
   const baseURL = import.meta.dev
     ? config.public.apiLocal

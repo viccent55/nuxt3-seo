@@ -1,5 +1,3 @@
-import { decrypt, dataEncrypt } from "~/utils/crypto";
-
 export async function newVisitor(params: object): Promise<EmptyObjectType> {
   const res: EmptyObjectType = $fetch("/api/explore/newVisitor", {
     method: "POST",
