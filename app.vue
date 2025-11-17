@@ -10,16 +10,15 @@
     initPermissions,
     setDefaultPermission,
     setDefaultRejectCallback,
-  } from "./hooks/usePermisions";
+  } from "@/hooks/usePermisions";
   import { PERMISSION } from "@/common/permision";
   import { useLocalStorage } from "@vueuse/core";
-  import { useNoteDialog } from "./hooks/useNoteDialog";
-  import { useNoteArticleDialog } from "./hooks/useNoteArticleDialog";
-  import { useNoteForbidden } from "./hooks/useNoteForbiddenDialog";
-  import { useNoteHookupDialog } from "./hooks/useNoteHookupDialog";
+  import { useNoteDialog } from "@/hooks/useNoteDialog";
+  import { useNoteArticleDialog } from "@/hooks/useNoteArticleDialog";
+  import { useNoteForbidden } from "@/hooks/useNoteForbiddenDialog";
+  import { useNoteHookupDialog } from "@/hooks/useNoteHookupDialog";
   import { createId } from "@paralleldrive/cuid2";
-  import { useLayoutManager } from "./composables/useLayoutManager";
-
+  // import { useLayoutManager } from "@/composables/useLayoutManager";
   const { storeUser, store } = useVariable();
   const { initAds } = useHome();
   const theme = useTheme();
@@ -32,7 +31,6 @@
   const permissions = [PERMISSION.Visitor, PERMISSION.User];
   const { scrollableElement, scrollTop } = useScrollManager();
   const { layoutName } = useLayoutManager();
-
   initPermissions(permissions);
 
   setDefaultPermission(

@@ -1,7 +1,4 @@
 <script lang="ts" setup>
-  import Hls from "hls.js";
-  import { onBeforeUnmount } from "vue";
-
   const props = defineProps({
     content: {
       type: String,
@@ -14,11 +11,12 @@
   });
   const clonedContent = computed(() => structuredClone(props.content));
   // your composable
+  const { $hls } = useNuxtApp();
   const { decryptImage, decryptedImage } = useDecryption();
 
   const contentRef = ref<HTMLDivElement | any>(null);
   const loading = ref(false);
-  const hlsInstances = ref<Hls[]>([]);
+  const hlsInstances = ref<any[]>([]);
 
   const initImgAndVideo = async (content: string) => {
     loading.value = true;
@@ -68,19 +66,19 @@
           const proxyUrl = `/api/video-proxy?url=${encodeURIComponent(src)}`;
           if (video.canPlayType("application/vnd.apple.mpegurl")) {
             video.src = proxyUrl; // Safari native
-          } else if (Hls.isSupported() && video) {
-            const hls = new Hls();
+          } else if ($hls.isSupported() && video) {
+            const hls = new $hls();
             hlsInstances.value.push(hls);
             hls.loadSource(proxyUrl);
             hls.attachMedia(video);
-            hls.on(Hls.Events.ERROR, (event, data) => {
+            hls.on($hls.Events.ERROR, (event, data) => {
               if (data.fatal) {
                 switch (data.type) {
-                  case Hls.ErrorTypes.NETWORK_ERROR:
+                  case $hls.ErrorTypes.NETWORK_ERROR:
                     console.error("Fatal network error. Retrying...");
                     hls?.startLoad();
                     break;
-                  case Hls.ErrorTypes.MEDIA_ERROR:
+                  case $hls.ErrorTypes.MEDIA_ERROR:
                     console.error("Fatal media error. Recovering...");
                     hls?.recoverMediaError();
                     break;

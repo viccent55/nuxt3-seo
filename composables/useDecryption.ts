@@ -1,11 +1,5 @@
 import { ref } from "vue";
-import * as CryptoJS from "crypto-js";
 import { decrypt } from "@/utils/crypto";
-// The decryption key and IV are extracted from your original code.
-const encryptionKey = CryptoJS.enc.Utf8.parse(
-  "k9:3zeFq~]-EQMF,gpGx*uRw+x,n]xw9"
-);
-const iv = CryptoJS.enc.Utf8.parse("Zd3!t#t1YN=!fs)D");
 
 // A cache to store the decrypted image URLs to avoid re-decrypting the same image
 const urlCache = new Map<string, string>();
@@ -19,6 +13,14 @@ export const useDecryption = () => {
   const decryptedImage = ref<string>("");
   const isLoading = ref<boolean>(false);
   const error = ref<string | null>(null);
+
+  const { $cryptoJS } = useNuxtApp();
+  // The decryption key and IV are extracted from your original code.
+  const encryptionKey = $cryptoJS.enc.Utf8.parse(
+    "k9:3zeFq~]-EQMF,gpGx*uRw+x,n]xw9"
+  );
+  const iv = $cryptoJS.enc.Utf8.parse("Zd3!t#t1YN=!fs)D");
+
   const decryptAndCreateUrl = async (imageUrl: string): Promise<string> => {
     // Check if the image is already in the cache
     if (urlCache.has(imageUrl)) {
@@ -36,16 +38,16 @@ export const useDecryption = () => {
 
       // Convert ArrayBuffer to CryptoJS WordArray
       const encryptedBytes = new Uint8Array(encryptedData);
-      const cipherText = CryptoJS.lib.WordArray.create(encryptedBytes as any);
+      const cipherText = $cryptoJS.lib.WordArray.create(encryptedBytes as any);
 
       // Decrypt the data using AES
-      const decrypted = CryptoJS.AES.decrypt(
+      const decrypted = $cryptoJS.AES.decrypt(
         { ciphertext: cipherText } as any,
         encryptionKey,
         {
           iv: iv,
-          mode: CryptoJS.mode.CBC,
-          padding: CryptoJS.pad.Pkcs7,
+          mode: $cryptoJS.mode.CBC,
+          padding: $cryptoJS.pad.Pkcs7,
         }
       );
 

@@ -25,7 +25,6 @@
       :toggler="toggler"
       :sources="decryptedSources"
       :slide="currentSlide + 1"
-      class="fslightbox-source"
     />
   </div>
 </template>
@@ -73,12 +72,7 @@
   });
 </script>
 
-<style scoped>
-  .fslightbox-container {
-    padding-top: var(--safe-area-inset-top, 0px);
-    padding-bottom: var(--safe-area-inset-bottom, 0px);
-  }
-
+<style scoped lang="scss">
   .gallery-image {
     width: 100%;
     height: 100%;

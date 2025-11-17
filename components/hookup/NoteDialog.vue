@@ -15,7 +15,7 @@
   import { useDisplay } from "vuetify";
 
   const Swiper = defineAsyncComponent(() => import("../Swiper.vue"));
-  const { store, onCopy, route, isMobile, storeUser } = useVariable();
+  const { store, onCopy, route, isMobile } = useVariable();
   const { isNative } = usePlatform();
   const noteDialog = useNoteHookupDialog();
   const { smAndDown } = useDisplay();

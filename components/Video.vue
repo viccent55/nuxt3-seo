@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, onMounted, onBeforeUnmount, watch } from "vue";
-  import Hls from "hls.js";
+  const { $hls } = useNuxtApp();
 
   const props = defineProps({
     src: {
@@ -22,22 +22,22 @@
   });
 
   const videoPlayer = ref<HTMLVideoElement | null>(null);
-  let hls: Hls | null = null;
-
+  let hls: any | null = null;
+  const { isNative } = usePlatform();
   const initializePlayer = () => {
     // Clean up existing HLS instance if it exists
     if (hls) {
       hls.destroy();
       hls = null;
     }
-    // const proxyUrl = `/api/video-proxy?url=${encodeURIComponent(props.src)}`;
-    if (Hls.isSupported() && videoPlayer.value) {
-      hls = new Hls();
-      hls.loadSource(props.src);
+    const proxyUrl = `/api/video-proxy?url=${encodeURIComponent(props.src)}`;
+    if ($hls.isSupported() && videoPlayer.value) {
+      hls = new $hls();
+      hls.loadSource(isNative.value ? proxyUrl : props.src);
       hls.attachMedia(videoPlayer.value);
 
       // Autoplay logic
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      hls.on($hls.Events.MANIFEST_PARSED, () => {
         if (props.autoplay) {
           videoPlayer.value?.play().catch((error) => {
             console.error("Autoplay failed:", error);
@@ -46,14 +46,14 @@
       });
 
       // Error handling
-      hls.on(Hls.Events.ERROR, (event, data) => {
+      hls.on($hls.Events.ERROR, (event: any, data: any) => {
         if (data.fatal) {
           switch (data.type) {
-            case Hls.ErrorTypes.NETWORK_ERROR:
+            case $hls.ErrorTypes.NETWORK_ERROR:
               console.error("Fatal network error. Retrying...");
               hls?.startLoad();
               break;
-            case Hls.ErrorTypes.MEDIA_ERROR:
+            case $hls.ErrorTypes.MEDIA_ERROR:
               console.error("Fatal media error. Recovering...");
               hls?.recoverMediaError();
               break;
