@@ -101,8 +101,7 @@
     }
   };
   const displayHeight = computed(() => props.height);
-
-  onMounted(() => {
+  watchEffect(() => {
     if (props.src) {
       const proxyUrl = `/api/video-proxy?url=${encodeURIComponent(props.src)}`;
       if (isNative.value) {
@@ -114,6 +113,18 @@
       }
     }
   });
+  // onMounted(() => {
+  //   if (props.src) {
+  //     const proxyUrl = `/api/video-proxy?url=${encodeURIComponent(props.src)}`;
+  //     if (isNative.value) {
+  //       // In native environment, use the original src
+  //       initializePlayer(proxyUrl);
+  //     } else {
+  //       // In web environment, use the proxied URL
+  //       initializePlayer(props.src);
+  //     }
+  //   }
+  // });
   defineExpose({
     closeVideo,
   });
