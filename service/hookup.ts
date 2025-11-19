@@ -7,7 +7,6 @@ export async function getConfig(param: object) {
   return res;
 }
 export async function findList(params: object) {
- 
   const res: EmptyObjectType = await $fetch("/api/hookup/list", {
     method: "POST",
     body: dataEncrypt(params),

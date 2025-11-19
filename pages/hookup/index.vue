@@ -98,11 +98,6 @@
     }
   };
 
-  useInfiniteScroll(containerRef, onLoadMore, {
-    distance: 300,
-    canLoadMore: () => !state.loadmore && !state.isNoMore,
-  });
-
   const openDialog = (id: number) => {
     clearQuery();
     noteDialog.openNoteDialog(id);
@@ -163,6 +158,10 @@
       setScrollableElement(el);
       el.addEventListener("scroll", () => (scrollTop.value = el.scrollTop));
     }
+    useInfiniteScroll(containerRef, onLoadMore, {
+      distance: 300,
+      canLoadMore: () => !state.loadmore && !state.isNoMore,
+    });
   });
 </script>
 
@@ -266,8 +265,8 @@
             >
               <Image
                 :src="item?.cover"
-                :max-height="isMobile ? '200px' : '280px'"
                 min-height="200px"
+                :aspect-ratio="(180 / 280) * 1.5"
                 cover
               />
               <div class="pa-2">

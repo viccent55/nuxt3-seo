@@ -87,10 +87,6 @@
     }
   };
 
-  useInfiniteScroll(containerRef, onLoadMore, {
-    distance: 300,
-    canLoadMore: () => !state.loadmore && !state.isNoMore,
-  });
   const noteDialog = useNoteArticleDialog();
   const openDialog = (id: number) => {
     clearQuery();
@@ -114,6 +110,10 @@
       setScrollableElement(el);
       el.addEventListener("scroll", () => (scrollTop.value = el.scrollTop));
     }
+    useInfiniteScroll(containerRef, onLoadMore, {
+      distance: 300,
+      canLoadMore: () => !state.loadmore && !state.isNoMore,
+    });
   });
 </script>
 

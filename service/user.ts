@@ -1,40 +1,44 @@
 export async function getUserInfo(id: number) {
-  const res: EmptyObjectType = await useApiFetch("/api/user", {
+  const res: EmptyObjectType = await $fetch("/api/user", {
     method: "POST",
     body: { id },
   });
-  if (res.data.value) return decrypt(res.data.value.data);
+  if (res.data) return decrypt(res.data);
   return res;
 }
 
 export async function getNoteFeeds(param: object) {
   const res: EmptyObjectType = await useApiFetch("/api/user/user-feed", {
     method: "POST",
-    body: param,
+    body: dataEncrypt(param),
   });
-  if (res.data.value) return decrypt(res.data.value.data);
+  if (res.data) return decrypt(res.data);
   return res;
 }
 
 export async function getStarFeeds(param: object) {
-  const res: EmptyObjectType = await $fetch("/api/user/star-feed", {
+  const res: EmptyObjectType = await useApiFetch("/api/user/star-feed", {
     method: "POST",
-    body: param,
+    body: dataEncrypt(param),
   });
+  if (res.data) return decrypt(res.data);
+  return res;
 }
 
 export async function getLikeFeeds(param: object) {
-  const res: EmptyObjectType = await $fetch("/api/user/like-feed", {
+  const res: EmptyObjectType = await useApiFetch("/api/user/like-feed", {
     method: "POST",
-    body: param,
+    body: dataEncrypt(param),
   });
+  if (res.data) return decrypt(res.data);
+  return res;
 }
 export async function getFollowFeed(param: object) {
   const res: EmptyObjectType = await useApiFetch("/api/user/follow-feed", {
     method: "POST",
-    body: param,
+    body: dataEncrypt(param),
   });
-  if (res.data.value) return decrypt(res.data.value.data);
+  if (res.data) return decrypt(res.data);
   return res;
 }
 
@@ -51,6 +55,7 @@ export async function retrySendEmailCode(params: EmptyObjectType) {
     method: "POST",
     body: dataEncrypt(params),
   });
+  if (res.data) return decrypt(res.data);
   return res;
 }
 
@@ -59,6 +64,7 @@ export async function veryCode(params: EmptyObjectType) {
     method: "POST",
     body: dataEncrypt(params),
   });
+  if (res.data) return decrypt(res.data);
   return res;
 }
 export async function changePassword(params: EmptyObjectType) {
@@ -109,4 +115,6 @@ export async function getConfigs(param: string) {
     method: "GET",
     params: { names: param },
   });
+  if (res.data) return decrypt(res.data);
+  return res;
 }

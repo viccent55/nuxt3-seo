@@ -83,21 +83,6 @@
   };
 
   let isInitualized = false;
-  const { reset } = useInfiniteScroll(
-    pageWrapperRef,
-    () => {
-      // load more
-      if (!isInitualized) {
-        isInitualized = true;
-        return;
-      }
-      onLoadMore();
-    },
-    {
-      distance: 300,
-      canLoadMore: () => !state.isLoadmore && !state.isNomore,
-    }
-  );
 
   onMounted(() => {
     const el = exploreContainerRef.value?.element;
@@ -107,6 +92,21 @@
     }
     state.data = [];
     getHistoriesList();
+    useInfiniteScroll(
+      pageWrapperRef,
+      () => {
+        // load more
+        if (!isInitualized) {
+          isInitualized = true;
+          return;
+        }
+        onLoadMore();
+      },
+      {
+        distance: 300,
+        canLoadMore: () => !state.isLoadmore && !state.isNomore,
+      }
+    );
   });
 </script>
 <template>
@@ -216,5 +216,6 @@
   }
   .main-contain {
     padding-top: var(--safe-area-inset-top, 0px);
+    min-height: 500px;
   }
 </style>

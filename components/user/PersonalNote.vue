@@ -35,36 +35,81 @@
   // -------------------- Data Loaders --------------------
   const getRes = {
     noteFeeds: async () => {
-      const request = {
-        id: id.value,
-        page: state.page,
-        limit: state.limit,
-      };
-      const res = await getNoteFeeds(request);
-      if (res.errcode === 0 && res.data) {
-        state.data = [...state.data, ...res.data];
-        if (!res.data.length) state.isNomore = true;
+      state.loading = true;
+      try {
+        const request = {
+          id: id.value,
+          page: state.page,
+          limit: state.limit,
+        };
+        const res = await getNoteFeeds(request);
+        if (res.errcode === 0 && res.data) {
+          state.data = [...state.data, ...res.data];
+          if (!res.data.length) state.isNomore = true;
+        }
+      } catch (e) {
+        console.log(e);
+      } finally {
+        state.loading = false;
       }
     },
     starFeeds: async () => {
-      const res = await getStarFeeds({ id: id.value, page: state.page });
-      if (res.errcode === 0 && res.data) {
-        state.data = [...state.data, ...res.data];
-        if (!res.data.length) state.isNomore = true;
+      state.loading = true;
+      try {
+        const request = {
+          id: id.value,
+          page: state.page,
+          limit: state.limit,
+        };
+        const res = await getStarFeeds(request);
+        if (res.errcode === 0 && res.data) {
+          state.data = [...state.data, ...res.data];
+          if (!res.data.length) state.isNomore = true;
+        }
+        if (!res.data?.length) state.isNomore = true;
+      } catch (e) {
+        console.log(e);
+      } finally {
+        state.loading;
       }
     },
     likeFeeds: async () => {
-      const res = await getLikeFeeds({ id: id.value, page: state.page });
-      if (res.errcode === 0 && res.data) {
-        state.data = [...state.data, ...res.data];
-        if (!res.data.length) state.isNomore = true;
+      state.loading = true;
+      try {
+        const request = {
+          id: id.value,
+          page: state.page,
+          limit: state.limit,
+        };
+        const res = await getLikeFeeds(request);
+        if (res.errcode === 0 && res.data.length) {
+          state.data = [...state.data, ...res.data];
+        }
+        if (!res.data?.length) state.isNomore = true;
+      } catch (e) {
+        console.log(e);
+      } finally {
+        state.loading = false;
       }
     },
     followFeeds: async () => {
-      const res = await getFollowFeed({ id: id.value, page: state.page });
-      if (res.errcode === 0 && res.data) {
-        state.data = [...state.data, ...res.data];
-        if (!res.data.length) state.isNomore = true;
+      state.loading = true;
+      try {
+        const request = {
+          id: id.value,
+          page: state.page,
+          limit: state.limit,
+        };
+        const res = await getFollowFeed(request);
+        if (res.errcode === 0 && res.data) {
+          state.data = [...state.data, ...res.data];
+          if (!res.data.length) state.isNomore = true;
+        }
+        if (!res.data?.length) state.isNomore = true;
+      } catch (e) {
+        console.log(e);
+      } finally {
+        state.loading = false;
       }
     },
   };
@@ -107,29 +152,30 @@
       state.isLoadmore = false;
     }
   };
-  let isInitualized = false;
-  // -------------------- Infinite Scroll --------------------
-  const { reset } = useInfiniteScroll(
-    pageWrapperRef,
-    () => {
-      // load more
-      if (!isInitualized) {
-        isInitualized = true;
-        return;
-      }
-      onLoadMore();
-    },
-    {
-      distance: 300,
-      canLoadMore: () => !state.isLoadmore && !state.isNomore,
-    }
-  );
+
   onMounted(() => {
     const el = exploreContainerRef.value?.element;
     if (el) {
       setScrollableElement(el);
       el.addEventListener("scroll", () => (scrollTop.value = el.scrollTop));
     }
+    let isInitualized = false;
+    // -------------------- Infinite Scroll --------------------
+    useInfiniteScroll(
+      pageWrapperRef,
+      () => {
+        // load more
+        if (!isInitualized) {
+          isInitualized = true;
+          return;
+        }
+        onLoadMore();
+      },
+      {
+        distance: 300,
+        canLoadMore: () => !state.isLoadmore && !state.isNomore,
+      }
+    );
   });
   onBeforeRouteLeave((to, from, next) => {
     if (state.isOpen) {
@@ -220,6 +266,7 @@
   .main-contain {
     // padding-top: env(safe-area-inset-top, 0px);
     padding-top: var(--safe-area-inset-top, 0px);
+    min-height: 500px;
   }
   .page-wrapper {
     position: relative;

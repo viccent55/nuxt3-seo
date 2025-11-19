@@ -85,10 +85,7 @@
     state.page++;
     await fetchData();
   };
-  useInfiniteScroll(containerRef, onLoadMore, {
-    distance: 300,
-    canLoadMore: () => !state.loadmore && !state.isNoMore,
-  });
+
   const noteDialog = useNoteForbidden();
   const clickFeed = (item: EmptyObjectType) => {
     clearQuery();
@@ -130,6 +127,10 @@
       setScrollableElement(el);
       el.addEventListener("scroll", () => (scrollTop.value = el.scrollTop));
     }
+    useInfiniteScroll(containerRef, onLoadMore, {
+      distance: 300,
+      canLoadMore: () => !state.loadmore && !state.isNoMore,
+    });
   });
 </script>
 
@@ -176,6 +177,7 @@
         v-model="isVisible"
         contained
         :opacity="0.95"
+        style="min-height: calc(100vh - 250px)"
       />
     </div>
     <ForbiddenRuleDialog v-model:model-value="isVisible" />

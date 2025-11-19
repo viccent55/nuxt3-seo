@@ -98,7 +98,7 @@
       v-if="feed.mode !== 3"
       :src="feed.cover"
       cover
-      :aspect-ratio="(feed.cover_w / feed.cover_h) * 1.5"
+      :aspect-ratio="((feed.cover_w || 1) / (feed.cover_h || 1)) * 1.5"
     />
 
     <!-- Info Section -->

@@ -129,11 +129,6 @@
   // Sync the cookie value to the Pinia store so it's available everywhere.
   storeUser.visitCode = visitCodeCookie.value;
 
-  try {
-    await store.getConfiguration();
-  } catch (error) {
-    handleFetchError(error);
-  }
   // from our composable, which is updated by the active scrolling component.
   watch(scrollTop, (value) => {
     showButton.value = value > 200;
@@ -143,7 +138,13 @@
   };
   const updateVersionRef = ref();
   const showSplash = ref(true);
-  const userInfo = ref(storeUser.userInfo);
+  onBeforeMount(async () => {
+    await store.getConfiguration();
+
+    if (store.localVersion != store.configuration?.version) {
+      updateVersionRef.value?.openNoteDialog();
+    }
+  });
   onMounted(() => {
     theme.change(store.darkMode);
     setTimeout(() => {
@@ -157,9 +158,6 @@
     }, 500);
     initAds();
     initializeApp();
-    if (store.localVersion != store.configuration?.version) {
-      updateVersionRef.value?.openNoteDialog();
-    }
   });
 </script>
 <template>

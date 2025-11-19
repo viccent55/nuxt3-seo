@@ -105,22 +105,7 @@
       openPage(`${getCurrentDomain()}/#/user/${item.id}`);
     },
   };
-  let isInitualized = false;
-  const { reset } = useInfiniteScroll(
-    () => exploreContainerRef.value?.element,
-    () => {
-      // load more
-      if (!isInitualized) {
-        isInitualized = true;
-        return;
-      }
-      onLoadMore();
-    },
-    {
-      distance: 300,
-      canLoadMore: () => !isLoadMore.value && !isNoMore.value,
-    }
-  );
+
   const searchParam = async () => {
     if (store.search === "" || !store.search) return;
     try {
@@ -165,6 +150,22 @@
       setScrollableElement(el);
       el.addEventListener("scroll", () => (scrollTop.value = el.scrollTop));
     }
+    let isInitualized = false;
+    const { reset } = useInfiniteScroll(
+      () => exploreContainerRef.value?.element,
+      () => {
+        // load more
+        if (!isInitualized) {
+          isInitualized = true;
+          return;
+        }
+        onLoadMore();
+      },
+      {
+        distance: 300,
+        canLoadMore: () => !isLoadMore.value && !isNoMore.value,
+      }
+    );
   });
 </script>
 

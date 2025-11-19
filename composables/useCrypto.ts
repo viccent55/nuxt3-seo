@@ -1,16 +1,14 @@
-import CryptoJS from "crypto-js";
 import dayjs from "dayjs";
+import CryptoJS from "crypto-js";
 
 const SIGN_KEY = "super-secret-sign";
 const SECRET_KEY = "mHZ3LVwW8ukKEVvWM1dQi5cyP8pXHFpN"; // 32 chars
 const IV = "Avbn58RBm4RzprRw"; // 16 chars
 
-// Convert key/iv into WordArray (char codes)
-const KEY = CryptoJS.enc.Utf8.parse(SECRET_KEY);
-const IV_WORD = CryptoJS.enc.Utf8.parse(IV);
-
 // 🔹 AES Encrypt
 export function encrypt(data: any): string {
+  const KEY = CryptoJS.enc.Utf8.parse(SECRET_KEY);
+  const IV_WORD = CryptoJS.enc.Utf8.parse(IV);
   const text = typeof data === "string" ? data : JSON.stringify(data);
 
   const encrypted = CryptoJS.AES.encrypt(text, KEY, {
@@ -25,6 +23,8 @@ export function encrypt(data: any): string {
 export function decrypt(ciphertext: string): any {
   if (!ciphertext) return "";
   try {
+    const KEY = CryptoJS.enc.Utf8.parse(SECRET_KEY);
+    const IV_WORD = CryptoJS.enc.Utf8.parse(IV);
     const bytes = CryptoJS.AES.decrypt(ciphertext, KEY, {
       iv: IV_WORD,
       mode: CryptoJS.mode.CBC,

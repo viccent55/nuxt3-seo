@@ -12,6 +12,7 @@
   const clonedContent = computed(() => structuredClone(props.content));
   // your composable
   const { $hls } = useNuxtApp();
+  const { isNative } = usePlatform();
   const { decryptImage, decryptedImage } = useDecryption();
 
   const contentRef = ref<HTMLDivElement | any>(null);
@@ -63,7 +64,9 @@
           video.setAttribute("playsinline", "true");
           const src = video.getAttribute("src");
           if (!src) return;
-          const proxyUrl = `/api/video-proxy?url=${encodeURIComponent(src)}`;
+          const proxyUrl = isNative.value
+            ? `/api/video-proxy?url=${encodeURIComponent(src)}`
+            : src;
           if (video.canPlayType("application/vnd.apple.mpegurl")) {
             video.src = proxyUrl; // Safari native
           } else if ($hls.isSupported() && video) {

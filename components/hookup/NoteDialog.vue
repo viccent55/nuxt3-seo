@@ -66,8 +66,10 @@
         const id_ = item.id;
         try {
           const response: EmptyObjectType = await collect({
-            gid: id_,
+            content_id: id_,
+            content_type: 6,
           });
+          console.log(response)
           if (response.errcode == 0) {
             state.data.is_star = !state.data.is_star;
             if (state.data.is_star) {
