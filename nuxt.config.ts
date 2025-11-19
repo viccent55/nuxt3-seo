@@ -57,13 +57,12 @@ export default defineNuxtConfig({
     ],
   },
   runtimeConfig: {
-    
     public: {
       apiLocal: process.env.LOCAL_API_BASE,
       apiBase: process.env.PROD_API_BASE,
       apiMember: process.env.MEMBER_API_BASE,
       imageHost: process.env.IMAGE_HOST, // Expose IMAGE_HOST
-      apiTest: true,
+      apiTest: false,
     },
   },
 
