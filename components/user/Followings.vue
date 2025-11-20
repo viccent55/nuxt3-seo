@@ -29,12 +29,15 @@
   const getFollowing = async () => {
     try {
       const res = await getFollowFeed({
-        id: id.value,
         page: state.page,
         limit: state.limit,
       });
-      state.data = res?.items ?? [];
-      state.total = res?.count || 0;
+      state.total = res.data?.count || 0;
+      if (state.page === 1) {
+        state.data = res.data?.items || [];
+      } else {
+        state.data.push(...res.data?.items);
+      }
     } catch (e) {
       console.log(e);
     } finally {
