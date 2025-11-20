@@ -9,7 +9,7 @@
   const { smAndDown } = useDisplay();
   const { configuration } = storeToRefs(store);
   const categorySeo = computed(() =>
-    configuration.value?.categories.find(
+    configuration.value?.categories?.find(
       (item: EmptyObjectType) => item.id == route.params.id
     )
   );

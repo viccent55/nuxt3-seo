@@ -6,7 +6,7 @@ export function useLayoutManager() {
   // Cookie persists user's layout
   const layoutCookie = useCookie<string>("server-layout", {
     maxAge: 60 * 60 * 24 * 365,
-    default: () => "desktop",
+    default: () => "mobile",
   });
 
   // SSR-safe initial state
