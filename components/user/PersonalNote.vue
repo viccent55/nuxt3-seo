@@ -1,10 +1,5 @@
 <script setup lang="ts">
-  import {
-    getNoteFeeds,
-    getStarFeeds,
-    getLikeFeeds,
-    getFollowFeed,
-  } from "@/service/user";
+  import { getNoteFeeds, getStarFeeds, getLikeFeeds } from "@/service/user";
   import { useNoteDialog } from "@/hooks/useNoteDialog";
   import { useInfiniteScroll } from "@vueuse/core";
 
@@ -81,29 +76,10 @@
           page: state.page,
           limit: state.limit,
         };
+        console.log(request);
         const res = await getLikeFeeds(request);
         if (res.errcode === 0 && res.data.length) {
           state.data = [...state.data, ...res.data];
-        }
-        if (!res.data?.length) state.isNomore = true;
-      } catch (e) {
-        console.log(e);
-      } finally {
-        state.loading = false;
-      }
-    },
-    followFeeds: async () => {
-      state.loading = true;
-      try {
-        const request = {
-          id: id.value,
-          page: state.page,
-          limit: state.limit,
-        };
-        const res = await getFollowFeed(request);
-        if (res.errcode === 0 && res.data) {
-          state.data = [...state.data, ...res.data];
-          if (!res.data.length) state.isNomore = true;
         }
         if (!res.data?.length) state.isNomore = true;
       } catch (e) {
@@ -159,16 +135,10 @@
       setScrollableElement(el);
       el.addEventListener("scroll", () => (scrollTop.value = el.scrollTop));
     }
-    let isInitualized = false;
     // -------------------- Infinite Scroll --------------------
     useInfiniteScroll(
       pageWrapperRef,
       () => {
-        // load more
-        if (!isInitualized) {
-          isInitualized = true;
-          return;
-        }
         onLoadMore();
       },
       {
@@ -203,7 +173,6 @@
       if (item.value === "note") await getRes.noteFeeds();
       if (item.value === "star") await getRes.starFeeds();
       if (item.value === "like") await getRes.likeFeeds();
-      if (item.value === "follow") await getRes.followFeeds();
 
       // ✅ enable infinite scroll only after first load
       nextTick(() => {

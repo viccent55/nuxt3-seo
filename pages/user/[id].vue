@@ -113,18 +113,23 @@
     if (self.value) {
       return menu;
     }
-    return menu.filter((item) => !["like", "star"].includes(item.value));
+    return menu.filter(
+      (item) => !["like", "star", "follow"].includes(item.value)
+    );
   });
 
   const pageWrapperRef = ref<HTMLElement | null>(null);
 
   const pupupData = useTemplateRef("popup-data");
   const inviteRef = useTemplateRef("inviteRef");
+  const followRef = useTemplateRef("followings");
   const onClickMenu = async (item: EmptyObjectType) => {
     if (item.value == "call") {
       return showChatWidget();
     } else if (item.value == "invite") {
       return inviteRef.value?.open();
+    } else if (item.value === "follow") {
+      return followRef.value?.open();
     } else if (item.value == "telegram") {
       if (config.value?.tg_business) {
         navigateTo(config.value.tg_business, {
@@ -159,9 +164,12 @@
   const config = ref<any>({});
   const getConfig = async () => {
     try {
-      const params =
-        "ai_clothes_background, ai_clothes_intro, ai_clothes_tg_link, ai_clothes_title, girl_join_background, girl_join_intro, girl_join_title, girl_join_tg_link, tg_business";
-      const res = await getConfigs(params);
+      const request = {
+        name: "",
+        names:
+          "ai_clothes_background, ai_clothes_intro, ai_clothes_tg_link, ai_clothes_title, girl_join_background, girl_join_intro, girl_join_title, girl_join_tg_link, tg_business",
+      };
+      const res = await getConfigs(request);
       config.value = res.data || {};
     } catch (e) {
       console.log(e);
@@ -244,7 +252,7 @@
             <UserReferralnfo :userInfo="userInfo"></UserReferralnfo>
           </div>
           <!-- Browse History -->
-          <UserBrowseHistory />
+          <UserBrowseHistory v-if="self" />
 
           <!-- Feature cards (AI remove / Business join) -->
           <v-row class="mt-2 px-3 px-md-0 w-100">
@@ -351,6 +359,7 @@
         ref="inviteRef"
         :user-info="userInfo"
       />
+      <UserFollowings ref="followings" />
     </div>
   </v-container>
 </template>

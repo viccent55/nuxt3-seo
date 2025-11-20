@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
     ? config.public.apiLocal
     : config.public.apiBase;
   try {
-    const result: EmptyObjectType = await $fetch(`${baseURL}/member/like`, {
+    const result: EmptyObjectType = await $fetch(`${baseURL}/member/follow`, {
       method: method ?? "POST",
       headers: {
         Authorization: headers.authorization!,

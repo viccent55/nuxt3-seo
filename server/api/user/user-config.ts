@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
 
     // $fetch expects query params as an object
     const result: EmptyObjectType = await $fetch(`${baseURL}/config/settings`, {
-      method: "GET",
+      method: "POST",
       headers: {
         Authorization: headers.authorization ?? "",
       },

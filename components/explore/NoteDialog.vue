@@ -76,7 +76,7 @@
     clickFollow(id: number) {
       checkPermissions(PERMISSION.User, async () => {
         const response: EmptyObjectType = await follow({
-          id: id,
+          owner: id,
         });
         if (response.errcode == 0) {
           state.data.isFollow = !state.data.isFollow;

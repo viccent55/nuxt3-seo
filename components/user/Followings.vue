@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-  import { getInvitedLogs } from "~/service/user";
+  import { useInfiniteScroll } from "@vueuse/core";
+  import { getFollowFeed } from "@/service/user";
 
   const props = defineProps({
     userInfo: {
@@ -19,16 +20,21 @@
     total: 0,
   });
 
-  const { isMobile, formatDate } = useVariable();
+  const { isMobile, formatDate, route } = useVariable();
+  const { setScrollableElement, scrollTop } = useScrollManager();
+  const id = computed(() => Number(route.params.id));
+  const exploreContainerRef = ref<{ element: HTMLElement } | null>(null);
+  const pageWrapperRef = ref<HTMLElement | null>(null);
 
-  const getInvites = async () => {
+  const getFollowing = async () => {
     try {
-      const res = await getInvitedLogs({
+      const res = await getFollowFeed({
+        id: id.value,
         page: state.page,
         limit: state.limit,
       });
-      state.data = res.data?.items ?? [];
-      state.total = res.data?.count || 0;
+      state.data = res?.items ?? [];
+      state.total = res?.count || 0;
     } catch (e) {
       console.log(e);
     } finally {
@@ -36,10 +42,44 @@
     }
   };
 
+  const onLoadMore = async () => {
+    if (state.loading || state.isLoadmore || state.isNomore) return;
+    state.isLoadmore = true;
+    state.page++;
+    await getFollowing();
+  };
+
+  onMounted(() => {
+    const el = exploreContainerRef.value?.element;
+    if (el) {
+      setScrollableElement(el);
+      el.addEventListener("scroll", () => (scrollTop.value = el.scrollTop));
+    }
+    // -------------------- Infinite Scroll --------------------
+    useInfiniteScroll(
+      pageWrapperRef,
+      () => {
+        onLoadMore();
+      },
+      {
+        distance: 300,
+        canLoadMore: () => !state.isLoadmore && !state.isNomore,
+      }
+    );
+  });
+  onBeforeRouteLeave((to, from, next) => {
+    if (state.isOpen) {
+      state.isOpen = false;
+      next(false);
+    } else {
+      // allow navigation
+      next();
+    }
+  });
   defineExpose({
     open: () => {
       state.isOpen = true;
-      getInvites();
+      getFollowing();
     },
   });
 </script>
@@ -71,32 +111,10 @@
           <v-icon></v-icon>
         </v-btn>
         <!-- Title -->
-        <div class="text-center text-md-h6 mb-2">邀请记录</div>
+        <div class="text-center text-md-h6 mb-2">关注</div>
       </v-card-title>
 
       <v-card-text class="px-4 pt-0">
-        <user-referralnfo :userInfo="props.userInfo" />
-        <!-- Top Stats -->
-        <v-row class="text-center my-5">
-          <v-col cols="6">
-            <div class="text-subtitle-2 mb-1">已邀请人数</div>
-            <div class="text-h5 font-weight-bold">{{ state.total }}</div>
-          </v-col>
-
-          <v-divider
-            vertical
-            class="mx-2"
-          />
-
-          <v-col cols="5">
-            <div class="text-subtitle-2 mb-1">还需邀请人数</div>
-            <div class="text-h5 font-weight-bold">{{ state.total }} / 5</div>
-          </v-col>
-        </v-row>
-
-        <!-- Title -->
-        <div class="text-subtitle-1 font-weight-bold mb-3">邀请记录</div>
-
         <!-- Invite List -->
         <v-row dense>
           <v-col
@@ -108,25 +126,36 @@
             <v-card
               rounded="lg"
               color="surface"
-              class="pa-3 d-flex align-center justify-space-between"
+              class="pa-3 d-flex ga-5 align-center justify-space-between"
             >
               <div class="d-flex align-center">
                 <v-avatar
-                  class="me-3"
+                  class="me-3 cursor-pointer"
                   density="comfortable"
                   :size="isMobile ? 40 : 60"
+                  @click="
+                    () => {
+                      state.isOpen = false;
+                      navigateTo(`/user/${item.member?.id}`);
+                    }
+                  "
                 >
                   <Image
-                    :src="item.invited_avatar"
+                    :src="item.member?.avatar || ''"
                     cover
                   />
                 </v-avatar>
-                <span class="text-body-1">
-                  {{ item.invited_nickname || "--" }}
-                </span>
+                <div class="d-flex flex-column">
+                  <span class="text-body-1">
+                    {{ item.member.nickname || "--" }}
+                  </span>
+                  <span class="text-body-2">
+                    {{ item.member.slogan || "--" }}
+                  </span>
+                </div>
               </div>
               <span class="text-body-2">
-                {{ formatDate(item.created_at, "DD/MM/YYYY hh:mm A") }}
+                {{ formatDate(item.created_at, "DD/MM/YYYY ") }}
               </span>
             </v-card>
           </v-col>
@@ -150,5 +179,14 @@
   .main-contain {
     // padding-top: env(safe-area-inset-top, 0px);
     padding-top: var(--safe-area-inset-top, 0px);
+    min-height: 500px;
+  }
+  .page-wrapper {
+    position: relative;
+    width: 100%;
+
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    scrollbar-width: none;
   }
 </style>

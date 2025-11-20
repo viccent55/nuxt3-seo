@@ -110,10 +110,10 @@ export async function getHistories(params: EmptyObjectType) {
   return res;
 }
 
-export async function getConfigs(param: string) {
+export async function getConfigs(params: object) {
   const res: EmptyObjectType = await useApiFetch("/api/user/user-config", {
-    method: "GET",
-    params: { names: param },
+    method: "POST",
+    body: dataEncrypt(params),
   });
   if (res.data) return decrypt(res.data);
   return res;
