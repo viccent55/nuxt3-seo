@@ -388,7 +388,7 @@
 <style scoped lang="scss">
   .wrap-page {
     width: 100%; /* Default height for desktop */
-    max-height: calc(100vh - v-bind(heightOffset));
+    // max-height: calc(100vh - v-bind(heightOffset));
     overflow-y: scroll;
     scrollbar-width: none;
   }
