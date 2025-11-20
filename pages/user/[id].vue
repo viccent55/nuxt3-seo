@@ -8,7 +8,7 @@
   import { getUserInfo, getConfigs } from "@/service/user";
   import { checkPermissions } from "@/hooks/usePermisions";
   import { PERMISSION } from "@/common/permision";
-  import { follow } from "@/service/explore";
+  import { follow, status } from "@/service/explore";
   import { useDisplay } from "vuetify";
 
   const userInfo = ref<any>({});
@@ -148,17 +148,36 @@
     pupupData.value?.open(item);
   };
 
+  const checkStatus = async () => {
+    try {
+      const request = {
+        owner: userInfo.value?.id,
+      };
+      const response = await status(request);
+      userInfo.value.isFollow = response.data;
+    } catch (err) {
+      console.error("fetchFeeds failed:", err);
+    }
+  };
   const onInit = async () => {
     pending.value = true;
-    const res = await getUserInfo(id.value);
-    userInfo.value = res.data;
+    try {
+      const res = await getUserInfo(id.value);
+      userInfo.value = res.data;
+      checkStatus();
+    } catch (e) {
+      console.log(e);
+    } finally {
+      pending.value = false;
+    }
   };
   const clickFollow = async (user: any) => {
     checkPermissions(PERMISSION.User, async () => {
       const res = await follow({
-        id: id.value,
+        owner: id.value,
       });
-      if (res.errcode === 0) user.isFollow = !user.isFollow;
+
+      user.isFollow = res.data;
     });
   };
   const config = ref<any>({});
@@ -224,10 +243,12 @@
           backgroundImage: `url(${store?.configuration?.member_center_background})`,
         }"
       ></div>
+
       <div class="user-content-container">
         <div class="user-content mx-md-4">
           <UserInfo
             :user="userInfo"
+            :loading="pending"
             @click-follow="clickFollow"
             @refresh="onInit"
           />

@@ -4,7 +4,14 @@
   import AuthorHeader from "./comp/AuthorHeader.vue";
   import { checkPermissions } from "@/hooks/usePermisions";
   import { PERMISSION } from "@/common/permision";
-  import { detail, like, collect, follow, reply } from "@/service/explore";
+  import {
+    detail,
+    like,
+    collect,
+    follow,
+    reply,
+    status,
+  } from "@/service/explore";
   import CommentBlock from "./comp/CommentBlock.vue";
   import BottomAction from "./comp/BottomAction.vue";
   import { adsClick } from "@/service/advert";
@@ -16,19 +23,32 @@
   const noteDIalogRef = useTemplateRef("note-dialog");
   const bottomRef = useTemplateRef("bottomActions");
   const { storeUser, store, onCopy, route, isMobile } = useVariable();
-  const loading = ref(false);
   const noteDialog = useNoteDialog();
   const state = reactive({
     data: {} as EmptyObjectType,
     comments: [] as EmptyObjectType[],
+    loading: false,
   });
 
   const snackbar = useSnackbar();
   const { setStatus } = useCapacitor();
 
+  const checkStatus = async () => {
+    try {
+      const request = {
+        owner: state.data.author.id,
+      };
+      const response = await status(request);
+      state.data.isFollow = response.data;
+    } catch (err) {
+      console.error("fetchFeeds failed:", err);
+    } finally {
+      state.loading = false;
+    }
+  };
   const onOpenNoteDialog = async () => {
     if (noteDIalogRef.value) noteDIalogRef.value.scrollTop = 0;
-    loading.value = true;
+    state.loading = true;
     try {
       const request = {
         id: noteDialog.id.value,
@@ -38,14 +58,18 @@
       if (response.data) {
         state.data = response.data;
         getComments();
+        if (storeUser.isLogin) {
+          checkStatus();
+        }
       }
+
       if (response.data?.errcode === 0 && Array.isArray(response.data.data)) {
         return response.data;
       }
     } catch (err) {
       console.error("fetchFeeds failed:", err);
     } finally {
-      loading.value = false;
+      state.loading = false;
     }
 
     // disableHorizontalSwipe();
@@ -189,8 +213,21 @@
   >
     <v-card
       class="main-contain"
-      :loading="loading"
+      :loading="state.loading"
     >
+      <v-card-title
+        class="pt-0 pb-1"
+        v-if="smAndDown"
+      >
+        <v-btn
+          icon
+          density="compact"
+          @click="noteDialog.closeNoteDialog"
+          color="surface"
+        >
+          <v-icon size="24px">mdi-chevron-left</v-icon>
+        </v-btn>
+      </v-card-title>
       <v-card-text class="pa-0">
         <v-row no-gutters>
           <!-- Left: Video area -->
@@ -207,16 +244,6 @@
               :media-info="state.data.fields"
               :height="smAndDown ? '300px' : 'calc(100vh - 120px)'"
             />
-            <v-btn
-              v-if="smAndDown"
-              class="back-button"
-              icon
-              density="compact"
-              @click="noteDialog.closeNoteDialog"
-              color="surface"
-            >
-              <v-icon size="24px">mdi-chevron-left</v-icon>
-            </v-btn>
           </v-col>
 
           <!-- Right: Info & Comments -->
@@ -231,6 +258,7 @@
               v-if="!smAndDown"
             >
               <AuthorHeader
+                :loading="state.loading"
                 :author="{
                   ...state.data?.author,
                   isFollow: state.data?.isFollow,

@@ -37,6 +37,12 @@
   const onSelectCity = (city: EmptyObjectType) => {
     state.selectedCity = city.code;
   };
+  watch(
+    () => state.selectedProvince,
+    () => {
+      state.selectedCity = "";
+    }
+  );
 
   const selectHotArea = (area: Record<number | string, string>) => {
     state.selectedArea = area.code;

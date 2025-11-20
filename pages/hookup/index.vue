@@ -177,15 +177,17 @@
     >
       <v-row dense>
         <v-col cols="4">
-          <div class="d-flex align-center">
+          <div
+            class="d-flex align-center"
+            @click="state.isDrawerOpen = true"
+          >
             <v-btn
               icon
               variant="text"
-              @click="state.isDrawerOpen = true"
             >
               <v-icon>mdi-map-marker</v-icon>
             </v-btn>
-            <span class="text-body-1">地点</span>
+            <span class="text-body-1 cursor-pointer">地点</span>
           </div>
         </v-col>
         <v-col

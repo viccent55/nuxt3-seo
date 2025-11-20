@@ -84,7 +84,14 @@ export async function search(params: EmptyObjectType) {
     method: "POST",
     body: dataEncrypt(params),
   });
-  console.log(res);
+  if (res.data) return decrypt(res.data);
+  return res;
+}
+export async function status(params: EmptyObjectType) {
+  const res: EmptyObjectType = await useApiFetch("/api/member/status", {
+    method: "POST",
+    body: dataEncrypt(params),
+  });
   if (res.data) return decrypt(res.data);
   return res;
 }

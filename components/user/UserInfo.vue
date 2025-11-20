@@ -8,7 +8,7 @@
 
   import useVariable from "@/composables/useVariable";
 
-  const props = defineProps<{ user: UserDetailInfo }>();
+  const props = defineProps<{ user: UserDetailInfo; loading: boolean }>();
   const emits = defineEmits(["click-follow", "click-report", "refresh"]);
   const userStore = useUserStore();
   const { onCopy, storeUser } = useVariable();
@@ -27,7 +27,7 @@
 
   const onCopyCode = async (code: string) => {
     await onCopy(code);
-    snackbar.showSnackbar("用户名已复制！", "success", 'center');
+    snackbar.showSnackbar("用户名已复制！", "success", "center");
   };
   const isConfirm = ref(false);
   const openLogout = async () => {
@@ -95,6 +95,7 @@
 
               <FollowButton
                 v-if="!self"
+                :loading="props.loading"
                 :is-follow="props.user.isFollow"
                 @click="clickFollow"
               />

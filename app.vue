@@ -184,7 +184,7 @@
   <v-app>
     <NuxtLayout :name="layoutName">
       <NuxtLoadingIndicator />
-      <NuxtPwaManifest />
+      <!-- <NuxtPwaManifest /> -->
       <NuxtPage />
     </NuxtLayout>
     <!-- Floating FAB -->
