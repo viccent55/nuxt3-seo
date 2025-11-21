@@ -55,6 +55,7 @@
         code: storeUser.visitCode,
       };
       const response = await detail(request);
+      console.log(response)
       if (response.data) {
         state.data = response.data;
         getComments();

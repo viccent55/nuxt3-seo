@@ -1,22 +1,23 @@
 <script setup lang="ts">
-import { ref } from "vue";
+  import { ref } from "vue";
 
-const emit = defineEmits(["retry"]);
+  const emit = defineEmits(["retry"]);
 
-const dialogVisible = ref(false);
+  const dialogVisible = ref(false);
 
-const open = () => {
-  dialogVisible.value = true;
-};
+  const open = () => {
+    dialogVisible.value = true;
+  };
 
-const onRetry = () => {
-  emit("retry");
-  // Close logic handled by parent
-};
+  const onRetry = () => {
+    emit("retry");
+    dialogVisible.value = false;
+    // Close logic handled by parent
+  };
 
-defineExpose({
-  open,
-});
+  defineExpose({
+    open,
+  });
 </script>
 
 <template>

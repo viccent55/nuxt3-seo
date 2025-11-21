@@ -2,7 +2,15 @@
   import Avatar from "@/components/Avatar.vue";
   import { type UserInfo } from "@/types/info";
 
-  const props = defineProps<{ author: UserInfo; loading: boolean }>();
+  const props = withDefaults(
+    defineProps<{
+      author: UserInfo;
+      loading?: boolean;
+    }>(),
+    {
+      loading: false, // ✅ default value
+    }
+  );
 
   const emits = defineEmits(["click-close", "click-author", "click-follow"]);
 

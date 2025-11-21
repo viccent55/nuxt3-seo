@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import { useDisplay, useTheme } from "vuetify";
+  import { useTheme } from "vuetify";
   import type { VSnackbar } from "vuetify/components/VSnackbar";
   import { openLoginDialog } from "@/hooks/useLoginDialog";
   import NotificationDialog from "@/components/NotificationDialog.vue";
@@ -18,7 +18,6 @@
   import { useNoteForbidden } from "@/hooks/useNoteForbiddenDialog";
   import { useNoteHookupDialog } from "@/hooks/useNoteHookupDialog";
   import { createId } from "@paralleldrive/cuid2";
-  // import { useLayoutManager } from "@/composables/useLayoutManager";
   const { storeUser, store } = useVariable();
   const { initAds } = useHome();
   const theme = useTheme();
@@ -114,7 +113,7 @@
   };
 
   const reloadPage = () => {
-    window.location.reload();
+    // window.location.reload();
   };
 
   // --- Server & Client Safe Initialization ---
@@ -137,7 +136,6 @@
     scrollableElement.value?.scrollTo({ top: 0, behavior: "smooth" });
   };
   const updateVersionRef = ref();
-  const showSplash = ref(true);
   onBeforeMount(async () => {
     await store.getConfiguration();
 
@@ -147,9 +145,7 @@
   });
   onMounted(() => {
     theme.change(store.darkMode);
-    setTimeout(() => {
-      showSplash.value = false;
-    }, 1500);
+
     setTimeout(() => {
       noteDialog.queryNoteDialogId();
       noteArticleDetail.queryNoteDialogId();

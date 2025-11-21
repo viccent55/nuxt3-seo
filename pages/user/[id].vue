@@ -88,17 +88,17 @@
       icon: "mdi-folder-account-outline",
     },
     {
-      name: "收藏",
+      name: "点赞",
       value: "like",
       icon: "mdi-thumb-up-outline",
     },
+    // {
+    //   name: "下列的",
+    //   value: "follow",
+    //   icon: "mdi-account-multiple-plus-outline",
+    // },
     {
-      name: "下列的",
-      value: "follow",
-      icon: "mdi-account-multiple-plus-outline",
-    },
-    {
-      name: "点赞",
+      name: "收藏",
       value: "star",
       icon: "mdi-star-outline",
     },

@@ -175,20 +175,21 @@
       color="surface"
       density="comfortable"
     >
-      <v-row dense>
+      <v-row
+        dense
+        align="center"
+      >
         <v-col cols="4">
-          <div
-            class="d-flex align-center"
+          <v-btn
+            variant="text"
             @click="state.isDrawerOpen = true"
+            class="px-2 ml-0 ml-md-2"
           >
-            <v-btn
-              icon
-              variant="text"
-            >
-              <v-icon>mdi-map-marker</v-icon>
-            </v-btn>
-            <span class="text-body-1 cursor-pointer">地点</span>
-          </div>
+            <div class="d-flex align-center ga-2">
+              <v-icon size="24">mdi-map-marker</v-icon>
+              <span class="text-body-1">地点</span>
+            </div>
+          </v-btn>
         </v-col>
         <v-col
           cols="4"

@@ -1,4 +1,4 @@
-import { useStore } from "~/store";
+
 // stores/auth.ts
 export const useGlobalDialog = defineStore("globalDialog", () => {
   const stateDialog = reactive({
