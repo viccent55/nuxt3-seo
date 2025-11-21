@@ -11,6 +11,7 @@
     follow,
     reply,
     status,
+    detailAuth,
   } from "@/service/explore";
   import CommentBlock from "./comp/CommentBlock.vue";
   import BottomAction from "./comp/BottomAction.vue";
@@ -50,12 +51,20 @@
     if (noteDIalogRef.value) noteDIalogRef.value.scrollTop = 0;
     state.loading = true;
     try {
-      const request = {
-        id: noteDialog.id.value,
-        code: storeUser.visitCode,
-      };
-      const response = await detail(request);
-      console.log(response)
+      let response: EmptyObjectType = {};
+      if (storeUser.isLogin) {
+        const request = {
+          id: noteDialog.id.value,
+          visitor: storeUser.visitCode,
+        };
+        response = await detailAuth(request);
+      } else {
+        const request = {
+          id: noteDialog.id.value,
+          code: storeUser.visitCode,
+        };
+        response = await detail(request);
+      }
       if (response.data) {
         state.data = response.data;
         getComments();
@@ -116,8 +125,10 @@
         const id_ = item.id;
         try {
           const response: EmptyObjectType = await like({
-            id: id_,
+            content_type: 1,
+            content_id: id_,
           });
+
           if (response.errcode === 0) {
             state.data.isLike = !state.data.isLike;
             if (state.data.isLike) {
@@ -144,7 +155,8 @@
         const id_ = item.id;
         try {
           const response: EmptyObjectType = await collect({
-            id: id_,
+            content_type: 1,
+            content_id: id_,
           });
           if (response.errcode == 0) {
             state.data.isStar = !state.data.isStar;
@@ -217,7 +229,7 @@
       :loading="state.loading"
     >
       <v-card-title
-        class="pt-0 pb-1"
+        class="pt-0 px-3"
         v-if="smAndDown"
       >
         <v-btn

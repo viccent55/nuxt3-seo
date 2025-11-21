@@ -118,8 +118,11 @@
       :loading="state.loading"
       class="main-contain"
     >
-      <v-card-title v-if="isMobile">
-        <div class="d-flex justify-space-between align-center">
+      <v-card-title>
+        <div
+          v-if="isMobile"
+          class="d-flex justify-space-between align-center"
+        >
           <v-btn
             icon
             density="compact"
@@ -135,6 +138,25 @@
           </v-btn>
           <div>茶女郎详情</div>
           <div></div>
+        </div>
+
+        <div
+          v-else
+          class="d-flex justify-end py-0"
+        >
+          <v-btn
+            icon
+            size="small"
+            color="primary"
+            @click="
+              () => {
+                noteDialog.closeNoteDialog();
+                state.data = {};
+              }
+            "
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
         </div>
       </v-card-title>
       <v-card-text class="pa-0 pb-4">
@@ -381,25 +403,6 @@
             lg="4"
             class="d-flex flex-column"
           >
-            <div
-              class="d-flex justify-end mt-2 py-0 pr-4"
-              v-if="!isMobile"
-            >
-              <v-btn
-                icon
-                size="small"
-                color="primary"
-                @click="
-                  () => {
-                    noteDialog.closeNoteDialog();
-                    state.data = {};
-                  }
-                "
-              >
-                <v-icon>mdi-close</v-icon>
-              </v-btn>
-            </div>
-
             <!-- Scrollable Content Area -->
             <div
               class="flex-grow-1 overflow-y-auto px-4"

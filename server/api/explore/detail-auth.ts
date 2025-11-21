@@ -4,5 +4,5 @@ export default defineEventHandler(async (event) => {
     ? config.public.apiLocal
     : config.public.apiBase;
   // In production, proxy the request to the actual backend API.
-  return proxyRequest(event, `${baseURL}/like/toggle`);
+  return proxyRequest(event, `${baseURL}/content/detail`);
 });

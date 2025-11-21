@@ -82,7 +82,7 @@ export default defineNuxtConfig({
     client: {
       installPrompt: true,
     },
-    registerType: "autoUpdate",
+    registerType: "prompt",
     includeAssets: [
       "/icons/icon-128.webp",
       "/default-icon.svg",

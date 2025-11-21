@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import { useTheme } from "vuetify";
+  import { useDisplay, useTheme } from "vuetify";
   import type { VSnackbar } from "vuetify/components/VSnackbar";
   import { openLoginDialog } from "@/hooks/useLoginDialog";
   import NotificationDialog from "@/components/NotificationDialog.vue";
@@ -30,6 +30,8 @@
   const permissions = [PERMISSION.Visitor, PERMISSION.User];
   const { scrollableElement, scrollTop } = useScrollManager();
   const { layoutName } = useLayoutManager();
+  const { smAndDown } = useDisplay();
+
   initPermissions(permissions);
 
   setDefaultPermission(
@@ -113,7 +115,7 @@
   };
 
   const reloadPage = () => {
-    // window.location.reload();
+    window.location.reload();
   };
 
   // --- Server & Client Safe Initialization ---
@@ -154,6 +156,14 @@
     }, 500);
     initAds();
     initializeApp();
+
+    const { needRefresh } = usePwaInstall();
+    const { isNative } = usePlatform()
+    watch(needRefresh, (isNeeded) => {
+      if (isNeeded && smAndDown.value && !isNative.value) {
+        updateVersionRef.value?.openNoteDialog();
+      }
+    });
   });
 </script>
 <template>
@@ -180,7 +190,7 @@
   <v-app>
     <NuxtLayout :name="layoutName">
       <NuxtLoadingIndicator />
-      <!-- <NuxtPwaManifest /> -->
+      <NuxtPwaManifest />
       <NuxtPage />
     </NuxtLayout>
     <!-- Floating FAB -->
@@ -189,7 +199,7 @@
         class="fab"
         icon="mdi-refresh"
         size="small"
-        @click="reloadNuxtApp()"
+        @click="reloadPage()"
       />
       <v-fab
         class="scroll-to-top"

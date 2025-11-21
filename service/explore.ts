@@ -78,6 +78,14 @@ export async function detail(params: EmptyObjectType) {
   if (res.data) return decrypt(res.data);
   return res;
 }
+export async function detailAuth(params: EmptyObjectType) {
+  const res: EmptyObjectType = await useApiFetch("/api/explore/detail-auth", {
+    method: "POST",
+    body: dataEncrypt(params),
+  });
+  if (res.data) return decrypt(res.data);
+  return res;
+}
 
 export async function search(params: EmptyObjectType) {
   const res: EmptyObjectType = await useApiFetch("/api/explore/search", {

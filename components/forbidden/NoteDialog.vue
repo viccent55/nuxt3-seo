@@ -59,7 +59,8 @@
         const id_ = item.id;
         try {
           const response: EmptyObjectType = await like({
-            id: id_,
+            content_type: 3,
+            content_id: id_,
           });
           if (response.errcode === 0) {
             state.data.isLike = !state.data.isLike;
@@ -69,7 +70,7 @@
               state.data.like_count--;
             }
           } else {
-            snackbar.showSnackbar(response.info, "warning");
+            snackbar.showSnackbar(response.info, "warning", 'center');
           }
         } catch (error) {
           console.error("Login failed:", error);
@@ -87,7 +88,8 @@
         const id_ = item.id;
         try {
           const response: EmptyObjectType = await collect({
-            id: id_,
+            content_type: 3,
+            content_id: id_,
           });
           if (response.errcode == 0) {
             state.data.isStar = !state.data.isStar;
@@ -97,7 +99,7 @@
               item.star_count--;
             }
           } else {
-            snackbar.showSnackbar(response.info, "warning");
+            snackbar.showSnackbar(response.info, "warning", 'center');
           }
         } catch (error) {
           console.error("Login failed:", error);
