@@ -27,7 +27,7 @@
         return "170px";
       }
     }
-    return "250px";
+    return "260px";
   });
 </script>
 

@@ -22,13 +22,22 @@
     class="pa-0"
     fluid
   >
-    <ExploreChannelBar
-      v-if="configuration.categories?.length > 0"
-      :items="categories"
-      :active-value="indexChannel"
-      @click-item="(v: EmptyObjectType) => (indexChannel = v.value)"
-    />
-    <NuxtPage />
+    <v-card
+      flat
+      color="surface"
+    >
+      <v-card-title class="pa-0">
+        <ExploreChannelBar
+          v-if="configuration.categories?.length > 0"
+          :items="categories"
+          :active-value="indexChannel"
+          @click-item="(v: EmptyObjectType) => (indexChannel = v.value)"
+        />
+      </v-card-title>
+      <v-card-text class="pa-0">
+        <NuxtPage />
+      </v-card-text>
+    </v-card>
   </v-container>
 </template>
 <style scoped lang="scss"></style>

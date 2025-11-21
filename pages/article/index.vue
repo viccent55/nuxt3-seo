@@ -97,9 +97,9 @@
   const heightOffset = computed(() => {
     if (!isNative.value) {
       if (smAndDown.value) {
-        return "140px";
+        return "160px";
       } else {
-        return "100px";
+        return "120px";
       }
     }
     return "220px";

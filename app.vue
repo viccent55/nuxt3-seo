@@ -30,7 +30,7 @@
   const permissions = [PERMISSION.Visitor, PERMISSION.User];
   const { scrollableElement, scrollTop } = useScrollManager();
   const { layoutName } = useLayoutManager();
-  const { smAndDown } = useDisplay();
+  const { mobile } = useDisplay();
 
   initPermissions(permissions);
 
@@ -158,9 +158,9 @@
     initializeApp();
 
     const { needRefresh } = usePwaInstall();
-    const { isNative } = usePlatform()
+    const { isNative } = usePlatform();
     watch(needRefresh, (isNeeded) => {
-      if (isNeeded && smAndDown.value && !isNative.value) {
+      if (isNeeded && mobile.value && !isNative.value) {
         updateVersionRef.value?.openNoteDialog();
       }
     });

@@ -141,45 +141,50 @@
     style="height: 100%"
   >
     <!-- Tabs fixed / sticky -->
-    <v-tabs
-      v-model="state.cid"
-      color="primary"
-      class="px-md-4 px-2 category-tabs flex-shrink-0"
-      density="compact"
-      show-arrows
-      @update:model-value="fetchData(true)"
-    >
-      <v-tab
-        v-for="item in displayMenu"
-        :key="item"
-        :value="item?.id"
-        class="px-0 custom-tab"
-      >
-        {{ item?.name }}
-      </v-tab>
-    </v-tabs>
-
-    <!-- Wrapper for content and overlay -->
-    <div class="content-wrapper">
-      <div
-        class="forbidden-wrapper pb-6 mt-2 md:pb-0"
-        ref="containerRef"
-      >
-        <ExploreContainer
-          ref="exploreContainerRef"
-          :items="state.data"
-          :is-load-more="state.loading"
-          :is-no-more="state.isNoMore"
-          @click-item="clickFeed"
-        />
-      </div>
-      <v-overlay
-        v-model="isVisible"
-        contained
-        :opacity="0.95"
-        style="min-height: calc(100vh - 250px)"
-      />
-    </div>
+    <v-card>
+      <v-card-title>
+        <v-tabs
+          v-model="state.cid"
+          color="primary"
+          class="category-tabs flex-shrink-0"
+          density="compact"
+          show-arrows
+          @update:model-value="fetchData(true)"
+        >
+          <v-tab
+            v-for="item in displayMenu"
+            :key="item"
+            :value="item?.id"
+            class="px-0 custom-tab"
+          >
+            {{ item?.name }}
+          </v-tab>
+        </v-tabs>
+      </v-card-title>
+      <v-card-text class="pa-0">
+        <!-- Wrapper for content and overlay -->
+        <div class="content-wrapper">
+          <div
+            class="forbidden-wrapper pb-6 mt-2 md:pb-0"
+            ref="containerRef"
+          >
+            <ExploreContainer
+              ref="exploreContainerRef"
+              :items="state.data"
+              :is-load-more="state.loading"
+              :is-no-more="state.isNoMore"
+              @click-item="clickFeed"
+            />
+          </div>
+          <v-overlay
+            v-model="isVisible"
+            contained
+            :opacity="0.95"
+            style="min-height: calc(100vh - 250px)"
+          />
+        </div>
+      </v-card-text>
+    </v-card>
     <ForbiddenRuleDialog v-model:model-value="isVisible" />
   </v-container>
 </template>

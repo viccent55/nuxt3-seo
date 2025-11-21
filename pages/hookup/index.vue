@@ -140,12 +140,12 @@
   const heightOffset = computed(() => {
     if (!isNative.value) {
       if (smAndDown.value) {
-        return "250px";
+        return "240px";
       } else {
         return "200px";
       }
     }
-    return "300px";
+    return "295px";
   });
   useSeo(
     computed(() => configuration.value?.novel_title),
@@ -168,165 +168,174 @@
 <template>
   <v-container
     fluid
-    class="pa-0"
+    class="pa-0 h-100"
     color="none"
   >
-    <v-toolbar
+    <v-card
+      flat
       color="surface"
-      density="comfortable"
     >
-      <v-row
-        dense
-        align="center"
-      >
-        <v-col cols="4">
-          <v-btn
-            variant="text"
-            @click="state.isDrawerOpen = true"
-            class="px-2 ml-0 ml-md-2"
-          >
-            <div class="d-flex align-center ga-2">
-              <v-icon size="24">mdi-map-marker</v-icon>
-              <span class="text-body-1">地点</span>
-            </div>
-          </v-btn>
-        </v-col>
-        <v-col
-          cols="4"
-          align-self="center"
+      <v-card-title class="px-0 pt-0">
+        <v-toolbar
+          color="surface"
+          density="compact"
         >
-          <div
-            class="d-flex justify-center text-h6 text-primary font-weight-bold"
+          <v-row
+            dense
+            align="center"
           >
-            精选推荐
-          </div>
-        </v-col>
-        <v-col cols="4">
-          <div class="d-flex align-center justify-end">
-            <v-btn
-              icon
-              variant="text"
-              @click="state.isFilterOpen = true"
+            <v-col cols="4">
+              <v-btn
+                variant="text"
+                @click="state.isDrawerOpen = true"
+                class="px-2 ml-0 ml-md-2"
+              >
+                <div class="d-flex align-center ga-2">
+                  <v-icon size="24">mdi-map-marker</v-icon>
+                  <span class="text-body-1">地点</span>
+                </div>
+              </v-btn>
+            </v-col>
+            <v-col
+              cols="4"
+              align-self="center"
             >
-              <v-icon>mdi-filter-variant</v-icon>
-            </v-btn>
-          </div>
-        </v-col>
-      </v-row>
-    </v-toolbar>
+              <div
+                class="d-flex justify-center text-h6 text-primary font-weight-bold"
+              >
+                精选推荐
+              </div>
+            </v-col>
+            <v-col cols="4">
+              <div class="d-flex align-center justify-end">
+                <v-btn
+                  icon
+                  variant="text"
+                  @click="state.isFilterOpen = true"
+                >
+                  <v-icon>mdi-filter-variant</v-icon>
+                </v-btn>
+              </div>
+            </v-col>
+          </v-row>
+        </v-toolbar>
 
-    <v-tabs
-      v-model="state.filter.cid"
-      color="primary"
-      class="px-md-4 px-0 category-tabs"
-      density="compact"
-      show-arrows
-      @update:model-value="onChange"
-    >
-      <v-tab
-        v-for="item in displayMenu"
-        :key="item"
-        :value="item?.id"
-        class="px-0 custom-tab"
-      >
-        {{ item?.name }}
-      </v-tab>
-    </v-tabs>
+        <v-tabs
+          v-model="state.filter.cid"
+          color="primary"
+          class="category-tabs"
+          density="compact"
+          show-arrows
+          @update:model-value="onChange"
+        >
+          <v-tab
+            v-for="item in displayMenu"
+            :key="item"
+            :value="item?.id"
+            class="px-0 custom-tab"
+          >
+            {{ item?.name }}
+          </v-tab>
+        </v-tabs>
+      </v-card-title>
 
-    <v-card-text class="px-3">
-      <!-- Tabs -->
-      <div
-        class="hookup-wrapper"
-        ref="containerRef"
-      >
-        <!-- <ExploreContainer
+      <v-card-text class="px-0 pb-0">
+        <!-- Tabs -->
+        <div
+          ref="containerRef"
+          class="hookup-wrapper"
+        >
+          <!-- <ExploreContainer
           ref="exploreContainerRef"
           :items="state.data"
           :is-load-more="state.loadmore"
           :is-no-more="state.isNoMore"
           @click-item="openDialog"
         /> -->
-        <v-row
-          :dense="smAndDown"
-          class="w-100"
-        >
-          <v-col
-            v-for="(item, index) in state.data"
-            :key="index"
-            cols="6"
-            sm="4"
-            md="3"
-            class="col-lg-1-5"
+          <v-row
+            :dense="smAndDown"
+            class="w-100 px-2"
           >
-            <v-card
-              @click.prevent="openDialog(item.id)"
-              tag="a"
-              :to="'/hookup/' + item.id"
-              flat
-              class="hookup-card"
-              rounded="lg"
+            <v-col
+              v-for="(item, index) in state.data"
+              :key="index"
+              cols="6"
+              sm="4"
+              md="3"
+              class="col-lg-1-5"
             >
-              <Image
-                :src="item?.cover"
-                min-height="200px"
-                :aspect-ratio="(180 / 280) * 1.5"
-                cover
-              />
-              <div class="pa-2">
-                <div class="text-surface-variant my-1">
-                  {{ item?.name }}
+              <v-card
+                @click.prevent="openDialog(item.id)"
+                tag="a"
+                :to="'/hookup/' + item.id"
+                flat
+                class="hookup-card"
+                rounded="lg"
+              >
+                <Image
+                  :src="item?.cover"
+                  min-height="200px"
+                  :aspect-ratio="(180 / 280) * 1.5"
+                  cover
+                />
+                <div class="pa-2">
+                  <div class="text-surface-variant my-1">
+                    {{ item?.name }}
+                  </div>
+                  <div>
+                    最低消费:
+                    <strong class="text-primary">
+                      {{ item?.min_price }} 元
+                    </strong>
+                  </div>
+                  <v-chip
+                    class="mr-1 mt-1 rounded-lg"
+                    v-for="(tag, index) in item?.tags"
+                    :key="index"
+                    size="small"
+                    variant="tonal"
+                    color="primary"
+                  >
+                    {{ tag?.name }}
+                  </v-chip>
                 </div>
-                <div>
-                  最低消费:
-                  <strong class="text-primary">{{ item?.min_price }} 元</strong>
-                </div>
-                <v-chip
-                  class="mr-1 mt-1 rounded-lg"
-                  v-for="(tag, index) in item?.tags"
-                  :key="index"
-                  size="small"
-                  variant="tonal"
-                  color="primary"
-                >
-                  {{ tag?.name }}
-                </v-chip>
-              </div>
-            </v-card>
-          </v-col>
+              </v-card>
+            </v-col>
 
-          <!-- Loading Indicator -->
-          <v-col
-            cols="12"
-            class="text-center"
+            <!-- Loading Indicator -->
+            <v-col
+              cols="12"
+              class="text-center"
+            >
+              <ExploreLoading :loading="state.loadmore" />
+            </v-col>
+          </v-row>
+
+          <!-- Empty State -->
+          <div
+            v-if="state.data.length >= state.total && state.isNoMore"
+            class="d-flex justify-center align-center text-center py-4"
           >
-            <ExploreLoading :loading="state.loadmore" />
-          </v-col>
-        </v-row>
-
-        <!-- Empty State -->
-        <div
-          v-if="state.data.length >= state.total && state.isNoMore"
-          class="d-flex justify-center align-center text-center py-4"
-        >
-          <v-empty-state
-            icon="mdi-image-off"
-            title="没有更多了"
-            text="暂无内容"
-          />
+            <v-empty-state
+              icon="mdi-image-off"
+              title="没有更多了"
+              text="暂无内容"
+            />
+          </div>
         </div>
-      </div>
-    </v-card-text>
-    <hookup-drawer-area
-      :areas="config?.areas"
-      :hot-areas="config?.hot_areas"
-      v-model="state.isDrawerOpen"
-      @select="onDrawerSelect"
-    ></hookup-drawer-area>
-    <hookup-drawer-filter
-      :tags="config?.tags"
-      v-model="state.isFilterOpen"
-      @select="onTagSelect"
-    ></hookup-drawer-filter>
+      </v-card-text>
+      <hookup-drawer-area
+        :areas="config?.areas"
+        :hot-areas="config?.hot_areas"
+        v-model="state.isDrawerOpen"
+        @select="onDrawerSelect"
+      ></hookup-drawer-area>
+      <hookup-drawer-filter
+        :tags="config?.tags"
+        v-model="state.isFilterOpen"
+        @select="onTagSelect"
+      ></hookup-drawer-filter>
+    </v-card>
   </v-container>
 </template>
 
@@ -336,6 +345,7 @@
     max-height: calc(100vh - v-bind(heightOffset));
     overflow-y: auto;
     scrollbar-width: none;
+    padding-bottom: 40px;
   }
   .custom-tab {
     min-width: 45px !important;
