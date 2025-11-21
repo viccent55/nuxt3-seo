@@ -15,10 +15,17 @@
       limit: 4,
     },
   });
-  const { postFilter, actorFilter, tagTop, comments, subjectFilter, store } =
-    useHome();
+  const {
+    postFilter,
+    actorFilter,
+    tagTop,
+    comments,
+    subjectFilter,
+    store,
+    getAllAds,
+  } = useHome();
   const { route } = useVariable();
-
+  await getAllAds();
   const { data: subject } = await useApiFetch("/api/home/subject", {
     method: "POST",
     body: state.filter,

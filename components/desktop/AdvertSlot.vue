@@ -29,7 +29,7 @@
       <Image
         :src="advert?.image"
         :alt="advert?.title"
-        height="auto"
+        :height="heightImage"
         contain
       />
     </NuxtLink>

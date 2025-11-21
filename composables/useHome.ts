@@ -115,7 +115,6 @@ export default function useHome() {
       }
     }
   };
-  getAllAds();
 
   const { data: comments } = useFetch<EmptyObjectType>(
     "/api/home/latest-comment",
@@ -140,5 +139,6 @@ export default function useHome() {
     tagTop,
     comments,
     store,
+    getAllAds,
   };
 }

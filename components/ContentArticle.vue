@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-  import Hls from "hls.js";
-
   const props = defineProps({
     content: {
       type: String,
@@ -13,10 +11,12 @@
   });
   const clonedContent = computed(() => structuredClone(props.content));
   // your composable
+  const { $hls } = useNuxtApp();
   const { decryptImage, decryptedImage } = useDecryption();
 
   const contentRef = ref<HTMLDivElement | any>(null);
   const loading = ref(false);
+  const hlsInstances = ref<any[]>([]);
 
   const initImgAndVideo = async (content: string) => {
     loading.value = true;
@@ -59,16 +59,36 @@
           video.style.width = "100%";
           video.style.maxHeight = "400px"; // 🔹 your desired limit
           video.style.objectFit = "contain"; // keeps aspect ratio
-
+          video.setAttribute("controls", "true");
+          video.setAttribute("playsinline", "true");
           const src = video.getAttribute("src");
           if (!src) return;
-
+          // const proxyUrl = `/api/video-proxy?url=${encodeURIComponent(src)}`;
           if (video.canPlayType("application/vnd.apple.mpegurl")) {
             video.src = src; // Safari native
-          } else if (Hls.isSupported()) {
-            const hls = new Hls();
+          } else if ($hls.isSupported() && video) {
+            const hls = new $hls();
+            hlsInstances.value.push(hls);
             hls.loadSource(src);
             hls.attachMedia(video);
+            hls.on($hls.Events.ERROR, (event, data) => {
+              if (data.fatal) {
+                switch (data.type) {
+                  case $hls.ErrorTypes.NETWORK_ERROR:
+                    console.error("Fatal network error. Retrying...");
+                    hls?.startLoad();
+                    break;
+                  case $hls.ErrorTypes.MEDIA_ERROR:
+                    console.error("Fatal media error. Recovering...");
+                    hls?.recoverMediaError();
+                    break;
+                  default:
+                    console.error("Unrecoverable HLS error", data);
+                    hls?.destroy();
+                    break;
+                }
+              }
+            });
           }
         });
       }
@@ -78,6 +98,12 @@
       loading.value = false;
     }
   };
+  onBeforeUnmount(() => {
+    contentRef.value = null;
+    hlsInstances.value.forEach((hls) => {
+      hls.destroy();
+    });
+  });
   onMounted(() => {
     initImgAndVideo(props.content);
   });
@@ -90,7 +116,7 @@
 
 <template>
   <div
-    class="mt-2 text-body-1 article-content"
+    class="mt-5 text-body-1 article-content"
     style="max-width: 100%"
   >
     <!-- Raw/original content while decrypting -->

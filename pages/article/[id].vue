@@ -87,7 +87,7 @@
           </v-card-title>
           <v-card-subtitle class="d-flex align-center justify-space-between">
             <div class="d-flex text-grey text-caption my-2 align-center">
-              <span class="mr-2">{{ formatTime(articleDetail?.created) }}</span>
+              <span v-if="articleDetail?.created" class="mr-2">{{ formatTime(articleDetail?.created) }}</span>
               <div
                 v-if="articleDetail?.categories?.length"
                 class="d-flex ga-2"
