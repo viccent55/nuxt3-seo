@@ -23,6 +23,7 @@
     fluid
   >
     <ExploreChannelBar
+      v-if="configuration.categories?.length > 0"
       :items="categories"
       :active-value="indexChannel"
       @click-item="(v: EmptyObjectType) => (indexChannel = v.value)"
