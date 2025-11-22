@@ -14,7 +14,7 @@
     <Footer
       v-if="['index', 'subject', 'actor', 'tag'].includes(String($route?.name))"
     />
-    <Search ref="search-article" />
   </v-main>
-  <Toolbar class="w-100" />
+  <Search ref="search-article" />
+  <Toolbar />
 </template>

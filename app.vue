@@ -110,10 +110,10 @@
   }
 
   .fab {
-    bottom: 70px;
+    bottom: 80px;
   }
   .scroll-to-top {
-    bottom: 120px;
+    bottom: 130px;
   }
 
   /* Desktop overrides */
