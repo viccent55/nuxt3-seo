@@ -173,7 +173,7 @@
   >
     <v-card
       flat
-      color="surface"
+      color="transparent"
     >
       <v-card-title class="px-0 pt-0">
         <v-toolbar
@@ -223,7 +223,7 @@
         <v-tabs
           v-model="state.filter.cid"
           color="primary"
-          class="category-tabs"
+          class="category-tabs px-md-2"
           density="compact"
           show-arrows
           @update:model-value="onChange"
@@ -353,6 +353,6 @@
   }
   .category-tabs :deep(.v-slide-group__next),
   .category-tabs :deep(.v-slide-group__prev) {
-    min-width: 32px;
+    min-width: 36px;
   }
 </style>

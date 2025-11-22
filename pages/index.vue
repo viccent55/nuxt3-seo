@@ -30,7 +30,7 @@
     <h1 class="d-none">小红书成人版-记录性福每一天</h1>
     <v-card
       flat
-      color="surface"
+      color="transparent"
     >
       <v-card-title class="pa-0">
         <ExploreChannelBar

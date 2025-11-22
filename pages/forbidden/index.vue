@@ -161,28 +161,25 @@
           </v-tab>
         </v-tabs>
       </v-card-title>
-      <v-card-text class="pa-0">
+      <v-card-text class="pa-0 contain-height">
         <!-- Wrapper for content and overlay -->
-        <div class="content-wrapper">
-          <div
-            class="forbidden-wrapper pb-6 mt-2 md:pb-0"
-            ref="containerRef"
-          >
-            <ExploreContainer
-              ref="exploreContainerRef"
-              :items="state.data"
-              :is-load-more="state.loading"
-              :is-no-more="state.isNoMore"
-              @click-item="clickFeed"
-            />
-          </div>
-          <v-overlay
-            v-model="isVisible"
-            contained
-            :opacity="0.95"
-            style="min-height: calc(100vh - 250px)"
+        <div
+          class="forbidden-wrapper pb-6 mt-2 md:pb-0"
+          ref="containerRef"
+        >
+          <ExploreContainer
+            ref="exploreContainerRef"
+            :items="state.data"
+            :is-load-more="state.loading"
+            :is-no-more="state.isNoMore"
+            @click-item="clickFeed"
           />
         </div>
+        <v-overlay
+          v-model="isVisible"
+          contained
+          :opacity="0.95"
+        />
       </v-card-text>
     </v-card>
     <ForbiddenRuleDialog v-model:model-value="isVisible" />
@@ -190,11 +187,8 @@
 </template>
 
 <style scoped lang="scss">
-  .content-wrapper {
-    position: relative;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
+  .contain-height {
+    min-height: 80vh;
   }
   .forbidden-wrapper {
     width: 100%;

@@ -24,7 +24,7 @@
   >
     <v-card
       flat
-      color="surface"
+      color="transparent"
     >
       <v-card-title class="pa-0">
         <ExploreChannelBar

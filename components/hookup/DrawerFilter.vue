@@ -45,13 +45,34 @@
           <v-icon size="25">mdi-filter</v-icon>
           <span class="text-h6">更多筛选</span>
         </div>
-        <v-btn
-          icon
-          size="small"
-          @click="model = false"
-        >
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
+        <div class="d-flex ga-3 align-center">
+          <v-btn
+            density="comfortable"
+            @click="
+              () => {
+                state.search = '';
+                state.selectedTag = null;
+                confirm();
+              }
+            "
+            color="warning"
+            variant="tonal"
+            rounded="xl"
+            flat
+          >
+            重置
+            <v-icon>mdi-restore</v-icon>
+          </v-btn>
+          <v-btn
+            icon
+            color="primary"
+            variant="text"
+            size="small"
+            @click="model = false"
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </div>
       </div>
 
       <!-- Search -->
