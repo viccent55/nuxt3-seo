@@ -6,13 +6,8 @@
   const store = useStore();
   const auth = useAuthStore();
   const storeDialog = useGlobalDialog();
-  const { isMobile } = useVariable();
   const state = reactive({
-    drawer: false,
-  });
-
-  const searchState = reactive({
-    input: "",
+    search: "",
     items: [] as any[],
     loading: false,
   });
@@ -22,28 +17,28 @@
   const fetchSearchResults = () => {
     $fetch("/api/home/search", {
       method: "POST",
-      body: { keyword: searchState.input },
+      body: { keyword: state.search },
     })
       .then((res: any) => {
-        searchState.items = res.data.items || [];
+        state.items = res.data.items || [];
       })
       .finally(() => {
-        searchState.loading = false;
+        state.loading = false;
       });
   };
 
   watch(
-    () => searchState.input,
+    () => state.search,
     (newValue) => {
       clearTimeout(debounceTimer);
       if (newValue && newValue.trim() !== "") {
-        searchState.loading = true;
+        state.loading = true;
         debounceTimer = setTimeout(() => {
           fetchSearchResults();
         }, 500);
       } else {
-        searchState.items = [];
-        searchState.loading = false;
+        state.items = [];
+        state.loading = false;
       }
     }
   );
@@ -112,9 +107,9 @@
         >
           <!-- Search Bar (only shown on sm+) -->
           <v-autocomplete
-            v-model:search="searchState.input"
-            :items="searchState.items"
-            :loading="searchState.loading"
+            v-model:search="state.search"
+            :items="state.items"
+            :loading="state.loading"
             item-title="title"
             item-value="id"
             hide-details
@@ -143,24 +138,14 @@
             <template v-slot:no-data>
               <div class="pa-2 text-body-2">
                 {{
-                  searchState.input ? "没有找到结果" : "请输入关键词开始搜索"
+                  state.search ? "没有找到结果" : "请输入关键词开始搜索"
                 }}
               </div>
             </template>
           </v-autocomplete>
-          <!-- Mobile Menu Icon -->
-          <v-btn
-            icon
-            variant="text"
-            class="d-flex d-md-none"
-            @click="state.drawer = !state.drawer"
-          >
-            <v-icon>mdi-menu</v-icon>
-          </v-btn>
-
           <!-- Divider + Auth -->
           <div
-            class="d-none d-md-flex align-center text-caption"
+            class="d-md-flex align-center text-caption"
             v-if="!store.userInfo?.username"
           >
             <v-btn
@@ -202,70 +187,6 @@
       </v-row>
     </v-container>
   </v-app-bar>
-
-  <!-- Mobile Drawer Navigation -->
-  <v-navigation-drawer
-    v-model="state.drawer"
-    temporary
-    location="left"
-    class="d-sm-none"
-    width="200"
-  >
-    <v-list
-      nav
-      class="text-center"
-    >
-      <!-- Categories Section -->
-      <div v-if="store.configuration?.categories?.length">
-        <v-list-item
-          v-for="(category, index) in store.configuration.categories"
-          :key="index"
-          :to="`/category_${category.id}`"
-          :title="category.name"
-        />
-        <v-divider class="my-2" />
-      </div>
-
-      <!-- Loading state for categories -->
-      <template v-else>
-        <v-list-item
-          v-for="n in 3"
-          :key="`skeleton-${n}`"
-          disabled
-        >
-          <v-skeleton-loader
-            type="text"
-            width="80px"
-            height="20px"
-          />
-        </v-list-item>
-        <v-divider class="my-2" />
-      </template>
-
-      <!-- Auth Section -->
-      <template v-if="!store.userInfo?.username">
-        <v-list-item
-          title="登录"
-          @click="openLogin"
-        />
-        <v-list-item
-          title="注册"
-          @click="openRegister"
-        />
-      </template>
-      <template v-else>
-        <v-list-item
-          :title="store.userInfo?.nickname || store.userInfo?.username"
-          :to="`/dashboard/${store.dbRouteName}`"
-        />
-
-        <v-list-item
-          title="退出登录"
-          @click="auth.clearToken()"
-        />
-      </template>
-    </v-list>
-  </v-navigation-drawer>
 </template>
 
 <style scoped lang="scss">

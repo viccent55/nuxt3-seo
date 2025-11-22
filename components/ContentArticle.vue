@@ -119,23 +119,12 @@
     class="mt-5 text-body-1 article-content"
     style="max-width: 100%"
   >
-    <!-- Raw/original content while decrypting -->
-    <!-- {{ placeholderContent }} -->
     <div
-      v-show="loading"
+      v-if="loading"
       v-html="clonedContent"
     />
-
-    <!-- Final decrypted content -->
-    <div
-      v-show="!loading"
-      ref="contentRef"
-    />
-    <!-- Fallback if JS is disabled -->
-    <noscript>
-      <div v-html="clonedContent"></div>
-    </noscript>
-    <!-- end js disabled -->
+    <div ref="contentRef" />
+    <noscript><div v-html="clonedContent"></div></noscript>
   </div>
 </template>
 

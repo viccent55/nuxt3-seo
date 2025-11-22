@@ -2,8 +2,7 @@
   import { useTheme } from "vuetify";
   import { useStore } from "~/store";
   import type { VSnackbar } from "vuetify/components/VSnackbar";
-
-  const { isMobile } = useVariable();
+  const { layoutName } = useLayoutManager();
 
   const theme = useTheme();
   const store = useStore();
@@ -73,7 +72,7 @@
     </template>
   </v-snackbar>
   <v-app>
-    <NuxtLayout :name="isMobile ? 'mobile' : 'desktop'">
+    <NuxtLayout :name="layoutName">
       <AnalyticsLoader :analytics="store.configuration?.analytics" />
       <NuxtLoadingIndicator />
       <NuxtPwaManifest />

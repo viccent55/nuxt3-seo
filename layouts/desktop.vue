@@ -4,10 +4,18 @@
 </script>
 <template>
   <Header />
-  <v-container class="container">
-    <v-main class="bg-background">
-      <slot />
-    </v-main>
-  </v-container>
+  <v-main class="bg-background">
+    <v-container
+      fluid
+      class="container"
+    >
+      <v-card
+        color="transparent "
+        flat
+      >
+        <slot />
+      </v-card>
+    </v-container>
+  </v-main>
   <Footer />
 </template>

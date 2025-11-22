@@ -16,17 +16,17 @@ export const useStore = defineStore("store", {
           value: "/",
         },
         {
-          name: "专题",
+          name: "专题列表",
           icon: "mdi-book-outline",
           value: "/subject",
         },
         {
-          name: "人物",
+          name: "人物档案",
           icon: "mdi-account-outline",
           value: "/actor",
         },
         {
-          name: "标签",
+          name: "标签页",
           icon: "mdi-shape-outline",
           value: "/tag",
         },
@@ -38,12 +38,12 @@ export const useStore = defineStore("store", {
           value: "/",
         },
         {
-          name: "专题",
+          name: "专题列表",
           icon: "mdi-book-outline",
           value: "/subject",
         },
         {
-          name: "人物",
+          name: "人物档案",
           icon: "mdi-account-multiple-outline",
           value: "/actor",
         },
