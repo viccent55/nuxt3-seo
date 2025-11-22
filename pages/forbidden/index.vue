@@ -161,7 +161,7 @@
           </v-tab>
         </v-tabs>
       </v-card-title>
-      <v-card-text class="pa-0 contain-height">
+      <v-card-text class="pa-0">
         <!-- Wrapper for content and overlay -->
         <div
           class="forbidden-wrapper pb-6 mt-2 md:pb-0"
@@ -174,12 +174,12 @@
             :is-no-more="state.isNoMore"
             @click-item="clickFeed"
           />
+          <v-overlay
+            v-model="isVisible"
+            contained
+            :opacity="0.95"
+          />
         </div>
-        <v-overlay
-          v-model="isVisible"
-          contained
-          :opacity="0.95"
-        />
       </v-card-text>
     </v-card>
     <ForbiddenRuleDialog v-model:model-value="isVisible" />
@@ -196,6 +196,8 @@
     flex-grow: 1;
     overflow-y: auto;
     padding: 0 12px;
+    position: relative;
+    min-height: 80vh;
     scrollbar-width: none;
   }
 
