@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-  import Index from "~/pages/dashboard/subscription/index.vue";
-
   const state = reactive({
     items: [] as any[],
     loading: false,
@@ -24,7 +22,6 @@
     }
   };
 
-  fetchSearchResults();
   watch(
     () => state.search,
     (newValue) => {
