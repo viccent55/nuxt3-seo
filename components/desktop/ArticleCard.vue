@@ -36,11 +36,11 @@
             :src="item.cover"
           ></Image>
         </div>
-        <v-card-text class="text-subtitle-2 pt-2 pb-0">
+        <v-card-text class="text-subtitle-2 truncate-1 pt-2 pb-0">
           {{ item.name }}
         </v-card-text>
 
-        <v-card-text class="text-body-2 text-grey-darken-1 py-1">
+        <v-card-text class="text-body-2 text-grey-darken-1 py-1 text-wrap">
           <div class="truncate-2 mb-2">
             {{ item.intro }}
           </div>
