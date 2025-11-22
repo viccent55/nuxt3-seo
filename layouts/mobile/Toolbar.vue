@@ -20,13 +20,10 @@
 
 <template>
   <v-bottom-navigation
+    app
     grow
-    class="d-md-none"
-    height="56"
+    height="72"
     color="surface"
-    elevation="3"
-    position="fixed"
-    border="t"
   >
     <template
       v-for="menu in store.menusMobile"

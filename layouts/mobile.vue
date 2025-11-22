@@ -7,14 +7,14 @@
   const searchRef = useTemplateRef("search-article");
 </script>
 <template>
+  <Header @search="searchRef?.open()" />
   <v-main class="bg-background">
-    <Header @search="searchRef?.open()" />
     <InstallPWA />
     <slot />
     <Footer
       v-if="['index', 'subject', 'actor', 'tag'].includes(String($route?.name))"
     />
+    <Search ref="search-article" />
   </v-main>
-  <Search ref="search-article" />
-  <Toolbar />
+  <Toolbar class="w-100" />
 </template>
