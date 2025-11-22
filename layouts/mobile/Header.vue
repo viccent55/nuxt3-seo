@@ -15,6 +15,9 @@
   const openRegister = () => {
     storeDialog.onRegister();
   };
+  const onHomePage = () => {
+    window.location.href = "/";
+  };
 </script>
 <template>
   <!-- Mobile Drawer Navigation -->
@@ -38,7 +41,7 @@
             src="/logo.png"
             lazy-src="/logo.png"
             alt="Logo"
-            @click="navigateTo('/')"
+            @click="onHomePage()"
           />
         </v-col>
         <v-col cols="9">
