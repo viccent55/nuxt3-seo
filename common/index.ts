@@ -92,7 +92,7 @@ export const NavigationItems: NavigationItem[] = [
 
   {
     name: "约啪",
-    icon: "heart",
+    icon: "heart-outline",
     type: "router-link",
     mode: "4",
     href: "/hookup",
