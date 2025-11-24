@@ -19,6 +19,7 @@
     cid: 0,
     categories: [] as EmptyArrayType,
     loading: false,
+    keyword: "",
   });
 
   const { clearQuery, store, storeUser, formatDate } = useVariable();
@@ -52,17 +53,23 @@
         cid: state.cid,
         page: state.page,
         limit: state.limit,
+        keyword: state.keyword,
       };
       const response: EmptyObjectType = await select(request);
       state.total = response?.data?.count || 0;
-      const newItems = response?.data.map((item: EmptyObjectType) => {
+      if (!response?.data?.length) return;
+      const newItems = response?.data?.map((item: EmptyObjectType) => {
         return {
           ...item,
           author: { name: formatDate(item.created_at) },
         };
       });
-
-      if (newItems.length > 0) {
+      if (newItems?.length > 0) {
+        if (state.page == 1) {
+          state.data = newItems;
+        } else {
+          state.data = [...state.data, ...newItems];
+        }
         state.data = newItems;
       } else {
         state.isNoMore = true;
@@ -117,11 +124,10 @@
     computed(() => configuration.value?.cartoon_description),
     computed(() => configuration.value?.cartoon_keywords)
   );
-  onBeforeMount(() => {
+  onMounted( () => {
     if (storeUser.userInfo?.invite_count < 5 || !storeUser.isLogin)
       isVisible.value = true;
-  });
-  onMounted(() => {
+
     const el = containerRef.value;
     if (el) {
       setScrollableElement(el);
