@@ -20,6 +20,7 @@
     categories: [] as EmptyArrayType,
     loading: false,
     keyword: "",
+    statusCode: null as number | null,
   });
 
   const { clearQuery, store, storeUser, formatDate } = useVariable();
@@ -57,6 +58,7 @@
       };
       const response: EmptyObjectType = await select(request);
       state.total = response?.data?.count || 0;
+      state.statusCode = response?.errcode;
       if (!response?.data?.length) return;
       const newItems = response?.data?.map((item: EmptyObjectType) => {
         return {
@@ -119,6 +121,11 @@
     state.cid = displayMenu.value[0]?.id ?? 0;
   }
   const { configuration } = storeToRefs(store);
+
+  const isForbidden = computed(() => {
+    if (isVisible.value || state.statusCode == 403) return true;
+    return false;
+  });
   useSeo(
     computed(() => configuration.value?.cartoon_title),
     computed(() => configuration.value?.cartoon_description),
@@ -194,14 +201,14 @@
             />
           </div>
           <v-overlay
-            v-model="isVisible"
+            v-model="isForbidden"
             contained
             :opacity="0.95"
           />
         </div>
       </v-card-text>
     </v-card>
-    <ForbiddenRuleDialog v-model:model-value="isVisible" />
+    <ForbiddenRuleDialog v-model:model-value="isForbidden" />
   </v-container>
 </template>
 
