@@ -124,7 +124,7 @@
     computed(() => configuration.value?.cartoon_description),
     computed(() => configuration.value?.cartoon_keywords)
   );
-  onMounted( () => {
+  onMounted(() => {
     if (storeUser.userInfo?.invite_count < 5 || !storeUser.isLogin)
       isVisible.value = true;
 
@@ -147,7 +147,10 @@
     style="height: 100%"
   >
     <!-- Tabs fixed / sticky -->
-    <v-card>
+    <v-card
+      flat
+      color="transparent"
+    >
       <v-card-title>
         <v-tabs
           v-model="state.cid"
@@ -167,7 +170,7 @@
           </v-tab>
         </v-tabs>
       </v-card-title>
-      <v-card-text class="pa-0">
+      <v-card-text class="pa-0 px-md-3">
         <!-- Wrapper for content and overlay -->
         <div
           class="forbidden-wrapper pb-6 mt-2 md:pb-0"
