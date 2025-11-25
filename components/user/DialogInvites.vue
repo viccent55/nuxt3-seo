@@ -90,7 +90,9 @@
 
           <v-col cols="5">
             <div class="text-subtitle-2 mb-1">还需邀请人数</div>
-            <div class="text-h5 font-weight-bold">{{ state.total }} / 5</div>
+            <div class="text-h5 font-weight-bold">
+              {{ userInfo.invite_count }} / 5
+            </div>
           </v-col>
         </v-row>
 

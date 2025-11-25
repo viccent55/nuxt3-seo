@@ -183,6 +183,16 @@
             :is-no-more="state.isNoMore"
             @click-item="clickFeed"
           />
+          <div
+            v-if="!state.data.length"
+            class="flex justify-center text-xl py-2"
+          >
+            <v-empty-state
+              headline="不再"
+              text="请稍后再查看更多数据!"
+              title="没有更多数据显示"
+            />
+          </div>
           <v-overlay
             v-model="isVisible"
             contained
