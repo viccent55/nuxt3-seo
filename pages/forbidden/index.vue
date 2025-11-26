@@ -23,7 +23,7 @@
     statusCode: null as number | null,
   });
 
-  const { clearQuery, store, storeUser, formatDate } = useVariable();
+  const { clearQuery, store, storeUser, formatDate, route } = useVariable();
   const containerRef = ref<HTMLElement | null>(null);
 
   const getAllCategories = async () => {
@@ -38,6 +38,14 @@
     }
   };
   await getAllCategories();
+
+  // const displayMenu = computed(() => {
+  //   return [...[{ id: 0, name: "全部" }], ...(state.categories || [])];
+  // });
+  if (state.categories?.length) {
+    state.cid = state.categories[0]?.id ?? 0;
+  }
+
   /* ---------------------------
      1. Centralized fetch function
   ---------------------------- */
@@ -86,6 +94,14 @@
 
   // Initial data fetch
   await fetchData(true);
+  watch(
+    () => route.params,
+    async () => {
+      if (storeUser.isLogin) {
+        fetchData(true);
+      }
+    }
+  );
 
   const onLoadMore = async () => {
     if (state.loading || state.isNoMore || state.data.length >= state.total)
@@ -114,12 +130,7 @@
     return "240px";
   });
   const isVisible = ref(false);
-  const displayMenu = computed(() => {
-    return [...[{ id: 0, name: "全部" }], ...(state.categories || [])];
-  });
-  if (displayMenu.value?.length) {
-    state.cid = displayMenu.value[0]?.id ?? 0;
-  }
+
   const { configuration } = storeToRefs(store);
 
   useSeo(
@@ -132,6 +143,7 @@
       isVisible.value = true;
     }
   });
+
   onMounted(() => {
     if (storeUser.userInfo?.invite_count < 5 || !storeUser.isLogin)
       isVisible.value = true;
@@ -169,7 +181,7 @@
           @update:model-value="fetchData(true)"
         >
           <v-tab
-            v-for="item in displayMenu"
+            v-for="item in state.categories"
             :key="item"
             :value="item?.id"
             class="px-0 custom-tab"
