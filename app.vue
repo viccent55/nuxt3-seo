@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-  import { useTheme } from "vuetify";
+  import { useDisplay, useTheme } from "vuetify";
   import { useStore } from "~/store";
   import type { VSnackbar } from "vuetify/components/VSnackbar";
 
-  const { layoutName } = useLayoutManager();
+  const { isMobile } = useVariable();
   const theme = useTheme();
   const store = useStore();
   const toggleDark = () => {
@@ -72,7 +72,7 @@
     </template>
   </v-snackbar>
   <v-app>
-    <NuxtLayout :name="layoutName">
+    <NuxtLayout :name="isMobile ? 'mobile' : 'desktop'">
       <AnalyticsLoader :analytics="store.configuration?.analytics" />
       <NuxtLoadingIndicator />
       <NuxtPwaManifest />

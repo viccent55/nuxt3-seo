@@ -236,6 +236,7 @@
                 <AdvertSlot
                   :advert="item.data"
                   class="latest-ads"
+                  height-image="auto"
                 />
               </div>
               <v-divider class="my-3 mx-2" />
@@ -491,8 +492,5 @@
   }
   .latest-ads {
     width: 100%;
-    // max-width: 800px;
-    aspect-ratio: 600 / 150;
-    object-fit: contain;
   }
 </style>
