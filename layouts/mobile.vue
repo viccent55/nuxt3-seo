@@ -8,7 +8,7 @@
 </script>
 <template>
   <Header @search="searchRef?.open()" />
-  <v-main class="bg-background">
+  <v-main class="bg-background pt-[56px]">
     <InstallPWA />
     <slot />
     <Footer
@@ -16,5 +16,5 @@
     />
   </v-main>
   <Search ref="search-article" />
-  <Toolbar />
+  <Toolbar class="w-100" />
 </template>

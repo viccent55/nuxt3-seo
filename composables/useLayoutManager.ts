@@ -1,5 +1,4 @@
 import { useDisplay } from "vuetify";
-
 type LayoutMode = "mobile" | "desktop";
 
 export function useLayoutManager() {

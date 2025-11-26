@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+  import { useDisplay } from "vuetify";
+
   defineProps({
     item: {
       type: Object as PropType<EmptyObjectType>,
@@ -9,7 +11,8 @@
       default: () => "",
     },
   });
-  const { formatTime, isMobileSm } = useVariable();
+  const { formatTime } = useVariable();
+  const { smAndDown } = useDisplay();
 
   const articleCard = ref(null);
   // get reactive width and height of the element
@@ -40,17 +43,17 @@
     <v-hover v-slot="{ isHovering, props: hoverProps }">
       <v-card
         ref="articleCard"
-        v-bind="isMobileSm ? {} : hoverProps"
+        v-bind="smAndDown ? {} : hoverProps"
         :class="[
           'd-flex mb-0 mb-md-2 py-0 py-md-2 position-relative',
-          isMobileSm ? 'flex-column' : '',
+          smAndDown ? 'flex-column' : '',
           isHovering ? 'bg-default' : 'bg-none',
         ]"
         tag="article"
         flat
       >
         <Image
-          v-if="isMobileSm"
+          v-if="smAndDown"
           v-show="!isHovering"
           :src="item?.cover"
           @image-dimensions="(v) => (imageDimensions = v)"
@@ -84,13 +87,13 @@
           :width="
             String((imageDimensions?.width / imageDimensions?.height) * 180)
           "
-          :height="isMobileSm ? '160' : '100%'"
+          :height="smAndDown ? '160' : '100%'"
           contain
           position="center"
         ></Image>
         <v-card-text
           class="pt-2 pb-0"
-          v-if="isMobileSm"
+          v-if="smAndDown"
         >
           <h4>{{ item?.title }}</h4>
           <v-row

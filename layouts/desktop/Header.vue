@@ -137,9 +137,7 @@
             </template>
             <template v-slot:no-data>
               <div class="pa-2 text-body-2">
-                {{
-                  state.search ? "没有找到结果" : "请输入关键词开始搜索"
-                }}
+                {{ state.search ? "没有找到结果" : "请输入关键词开始搜索" }}
               </div>
             </template>
           </v-autocomplete>

@@ -1,12 +1,15 @@
 <script lang="ts" setup>
-  const { store, route, isMobile } = useVariable();
+  import { useDisplay } from "vuetify";
+
+  const { store, route } = useVariable();
+  const { mdAndUp } = useDisplay();
 </script>
 <template>
   <!-- Scrollable Category Bar -->
   <v-toolbar
     class="category-scroll-wrapper mb-4"
     color="surface"
-    v-if="!isMobile"
+    v-if="mdAndUp"
   >
     <v-slide-group
       show-arrows

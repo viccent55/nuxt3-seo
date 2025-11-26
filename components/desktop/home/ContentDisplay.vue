@@ -6,6 +6,7 @@
   import SidebarSection from "~/components/desktop/SidebarSection.vue";
   import AdvertSlot from "~/components/desktop/AdvertSlot.vue";
   import { useStore } from "~/store";
+  import { useDisplay } from "vuetify";
 
   const props = defineProps({
     subjects: {
@@ -60,7 +61,8 @@
     return list.find((ad: any) => ad.position === index) || null;
   };
 
-  const { isMobile, route } = useVariable();
+  const { route } = useVariable();
+  const { smAndDown } = useDisplay();
   const chunkedSubjects = computed(() => {
     const chunkSize = 2;
     const chunks = [];
@@ -127,7 +129,7 @@
       />
       <section v-if="displaySubject">
         <v-carousel
-          v-if="isMobile"
+          v-if="smAndDown"
           :show-arrows="subjects.length > 2"
           hide-delimiters
           height="auto"

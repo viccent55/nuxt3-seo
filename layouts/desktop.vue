@@ -4,13 +4,13 @@
 </script>
 <template>
   <Header />
-  <v-main class="bg-background">
+  <v-main class="pt-16">
     <v-container
       fluid
       class="container"
     >
       <v-card
-        color="transparent "
+        color="transparent"
         flat
       >
         <slot />

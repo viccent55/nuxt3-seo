@@ -100,14 +100,8 @@ export default function useHome() {
       [POSITION_DETAIL_RIGHT]: "POSITION_DETAIL_RIGHT",
       [POSITION_DETAIL_RECOMMEND_APP]: "POSITION_DETAIL_RECOMMEND_APP",
     };
-
+    store.advertisement = {};
     const adsItems = advertData.value?.data;
-
-    // Ensure store.advertisement exists
-    if (!store.advertisement) {
-      store.advertisement = {};
-    }
-
     for (const key in adsItems) {
       const mappedKey = mapping?.[key];
       if (mappedKey) {
