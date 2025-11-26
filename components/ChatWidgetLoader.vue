@@ -34,8 +34,9 @@
     });
   };
   const onInitChat = async () => {
+    const config = useRuntimeConfig()
     await loadAndInitialize({
-      API_URL: "https://live.xhltfes.com/",
+      API_URL: config.public.apiChatWidget as string,
       AGENT_ID: "agent",
       USER_ID: state.userInfo.id || "",
       USER_NAME: state.userInfo.nickname || "no-name",

@@ -62,7 +62,7 @@ export default defineNuxtConfig({
       apiBase: process.env.PROD_API_BASE,
       apiMember: process.env.MEMBER_API_BASE,
       imageHost: process.env.IMAGE_HOST, // Expose IMAGE_HOST
-      apiTest: false,
+      apiChatWidget: process.env.CHAT_WIDGET_URL,
     },
   },
 
