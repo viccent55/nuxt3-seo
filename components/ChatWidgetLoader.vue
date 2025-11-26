@@ -34,12 +34,16 @@
     });
   };
   const onInitChat = async () => {
-    const config = useRuntimeConfig()
+    const config = useRuntimeConfig();
+    const displayName = storeUser.useId
+      ? storeUser.userInfo?.id + "|" + storeUser.userInfo?.nickname
+      : storeUser.visitCode;
+
     await loadAndInitialize({
       API_URL: config.public.apiChatWidget as string,
       AGENT_ID: "agent",
-      USER_ID: state.userInfo.id || "",
-      USER_NAME: state.userInfo.nickname || "no-name",
+      USER_ID: "",
+      USER_NAME: displayName,
       AUTO_OPEN: false,
     });
   };
@@ -49,7 +53,7 @@
 
   defineExpose({
     open: async () => {
-      await getUser();
+      // await getUser();
       await onInitChat();
       showChat();
     },

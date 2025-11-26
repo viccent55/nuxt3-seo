@@ -87,9 +87,7 @@
   };
   const { showChatWidget } = useSnackbar();
   const onLiveChat = () => {
-    checkPermissions(PERMISSION.User, async () => {
-      showChatWidget();
-    });
+    showChatWidget();
   };
 
   watch(
