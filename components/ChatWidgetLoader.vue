@@ -35,10 +35,10 @@
   };
   const onInitChat = async () => {
     const config = useRuntimeConfig();
-    const displayName = storeUser.useId
-      ? storeUser.userInfo?.id + "|" + storeUser.userInfo?.nickname
-      : storeUser.visitCode;
-
+    const displayName = storeUser.isLogin
+      ? `${storeUser.useId}|${storeUser.userInfo?.nickname}`
+      : storeUser?.visitCode;
+  
     await loadAndInitialize({
       API_URL: config.public.apiChatWidget as string,
       AGENT_ID: "agent",
