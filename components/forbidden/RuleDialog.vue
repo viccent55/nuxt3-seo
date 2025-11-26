@@ -52,7 +52,7 @@
     max-width="500px"
     @after-leave="onLeave"
   >
-    <v-card>
+    <v-card flat>
       <v-card-text>
         <div class="text-center text-primary text-subtitle-1">
           全球禁区中心包含: 真实强奸，稀缺幼女，萝莉岛，N号房，缅北内

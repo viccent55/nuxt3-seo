@@ -122,15 +122,16 @@
   }
   const { configuration } = storeToRefs(store);
 
-  const isForbidden = computed(() => {
-    if (isVisible.value || state.statusCode == 403) return true;
-    return false;
-  });
   useSeo(
     computed(() => configuration.value?.cartoon_title),
     computed(() => configuration.value?.cartoon_description),
     computed(() => configuration.value?.cartoon_keywords)
   );
+  onBeforeUpdate(() => {
+    if (state.statusCode == 403) {
+      isVisible.value = true;
+    }
+  });
   onMounted(() => {
     if (storeUser.userInfo?.invite_count < 5 || !storeUser.isLogin)
       isVisible.value = true;
@@ -201,14 +202,14 @@
             />
           </div>
           <v-overlay
-            v-model="isForbidden"
+            v-model="isVisible"
             contained
             :opacity="0.95"
           />
         </div>
       </v-card-text>
     </v-card>
-    <ForbiddenRuleDialog v-model:model-value="isForbidden" />
+    <ForbiddenRuleDialog v-model:model-value="isVisible" />
   </v-container>
 </template>
 
