@@ -61,8 +61,7 @@
     return list.find((ad: any) => ad.position === index) || null;
   };
 
-  const { route } = useVariable();
-  const { smAndDown } = useDisplay();
+  const { route, isMobile } = useVariable();
   const chunkedSubjects = computed(() => {
     const chunkSize = 2;
     const chunks = [];
@@ -129,7 +128,7 @@
       />
       <section v-if="displaySubject">
         <v-carousel
-          v-if="smAndDown"
+          v-if="$vuetify.display.mobile"
           :show-arrows="subjects.length > 2"
           hide-delimiters
           height="auto"
