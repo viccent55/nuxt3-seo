@@ -53,7 +53,6 @@
 
   const store = useStore();
   const emit = defineEmits(["page-change"]);
-  const { formatTime } = useVariable();
 
   const getAdvertAtIndex = (index: number) => {
     const list = props.adverts.POSITION_HOME_LIST || [];
@@ -61,7 +60,7 @@
     return list.find((ad: any) => ad.position === index) || null;
   };
 
-  const { route, isMobile } = useVariable();
+  const { route, isMobile, formatTime } = useVariable();
   const chunkedSubjects = computed(() => {
     const chunkSize = 2;
     const chunks = [];
@@ -128,7 +127,7 @@
       />
       <section v-if="displaySubject">
         <v-carousel
-          v-if="$vuetify.display.mobile"
+          v-if="isMobile"
           :show-arrows="subjects.length > 2"
           hide-delimiters
           height="auto"
