@@ -164,7 +164,6 @@
     try {
       const res = await getUserInfo(id.value);
       userInfo.value = res.data;
-      console.log(userInfo.value)
       checkStatus();
     } catch (e) {
       console.log(e);

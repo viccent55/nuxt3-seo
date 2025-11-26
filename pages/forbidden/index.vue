@@ -67,13 +67,14 @@
       const response: EmptyObjectType = await select(request);
       state.total = response?.data?.count || 0;
       state.statusCode = response?.errcode;
-      if (!response?.data?.length) return;
-      const newItems = response?.data?.map((item: EmptyObjectType) => {
+      if (!response?.data?.items?.length) return;
+      const newItems = response.data.items.map((item: EmptyObjectType) => {
         return {
           ...item,
           author: { name: formatDate(item.created_at) },
         };
       });
+
       if (newItems?.length > 0) {
         if (state.page == 1) {
           state.data = newItems;

@@ -7,7 +7,7 @@ export async function select(param: object) {
   return res;
 }
 export async function detail(params: object) {
-  const res: EmptyObjectType = await $fetch("/api/forbidden/detail", {
+  const res: EmptyObjectType = await useApiFetch("/api/forbidden/detail", {
     method: "POST",
     body: dataEncrypt(params),
   });

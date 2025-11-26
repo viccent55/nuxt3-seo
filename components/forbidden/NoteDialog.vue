@@ -70,7 +70,7 @@
               state.data.like_count--;
             }
           } else {
-            snackbar.showSnackbar(response.info, "warning", 'center');
+            snackbar.showSnackbar(response.info, "warning", "center");
           }
         } catch (error) {
           console.error("Login failed:", error);
@@ -99,7 +99,7 @@
               item.star_count--;
             }
           } else {
-            snackbar.showSnackbar(response.info, "warning", 'center');
+            snackbar.showSnackbar(response.info, "warning", "center");
           }
         } catch (error) {
           console.error("Login failed:", error);
@@ -130,6 +130,19 @@
       class="main-contain"
       :loading="loading"
     >
+      <v-card-title
+        class="pt-0 px-3"
+        v-if="smAndDown"
+      >
+        <v-btn
+          icon
+          density="compact"
+          @click="noteDialog.closeNoteDialog"
+          color="surface"
+        >
+          <v-icon size="24px">mdi-chevron-left</v-icon>
+        </v-btn>
+      </v-card-title>
       <v-card-text class="pa-0">
         <v-row no-gutters>
           <!-- Left: Video area -->
@@ -146,16 +159,6 @@
               :src="state.data?.m3u8"
               :height="smAndDown ? '300px' : 'calc(100vh - 120px)'"
             />
-            <v-btn
-              v-if="smAndDown"
-              class="back-button"
-              icon
-              density="compact"
-              @click="noteDialog.closeNoteDialog"
-              color="surface"
-            >
-              <v-icon size="24px">mdi-chevron-left</v-icon>
-            </v-btn>
           </v-col>
 
           <!-- Right: Info & Comments -->
@@ -269,11 +272,5 @@
     // padding-top: env(safe-area-inset-top, 0px);
     padding-top: var(--safe-area-inset-top, 0px);
     padding-bottom: var(--safe-area-inset-bottom, 0px);
-  }
-  .back-button {
-    position: absolute;
-    top: calc(var(--safe-area-inset-top, 0px) + 10px);
-    left: 10px;
-    z-index: 20;
   }
 </style>
