@@ -7,6 +7,12 @@ export default defineEventHandler(async (event) => {
   const baseURL = import.meta.dev
     ? config.public.apiLocal
     : config.public.apiBase;
+    
+  const method = event.method;
+  const realURL = `${baseURL}/forbiddenVideo/select`;
+  // build curl with dynamic method
+  const curlCmd = `curl -X ${method} "${realURL}"`;
+  console.warn("🐚 CURL Equivalent:", curlCmd);
 
-  return proxyRequest(event, `${baseURL}/forbiddenVideo/select`);
+  return proxyRequest(event, realURL);
 });

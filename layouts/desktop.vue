@@ -40,8 +40,11 @@
   };
 </script>
 <template>
-  <v-main class="bg-background">
-    <Header />
+  <!-- Header must be OUTSIDE v-main -->
+  <Header />
+
+  <!-- v-main needs padding-top so it doesn't jump after measuring app-bar -->
+  <v-main class="pt-16">
     <v-container
       fluid
       max-width="1720px"
@@ -71,6 +74,8 @@
       </v-row>
     </v-container>
   </v-main>
+
+  <Footer />
 </template>
 <style scoped>
   .aside-column {

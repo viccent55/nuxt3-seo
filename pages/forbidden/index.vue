@@ -16,7 +16,7 @@
     isNoMore: false,
     loadmore: false,
     total: 0,
-    cid: 0,
+    cid: null as number | null,
     categories: [] as EmptyArrayType,
     loading: false,
     keyword: "",
@@ -39,12 +39,12 @@
   };
   await getAllCategories();
 
-  // const displayMenu = computed(() => {
-  //   return [...[{ id: 0, name: "全部" }], ...(state.categories || [])];
-  // });
-  if (state.categories?.length) {
-    state.cid = state.categories[0]?.id ?? 0;
-  }
+  const displayMenu = computed(() => {
+    return [...[{ id: 0, name: "全部" }], ...(state.categories || [])];
+  });
+  // if (displayMenu.value?.length) {
+  //   state.cid = displayMenu.value[0]?.id ?? 0;
+  // }
 
   /* ---------------------------
      1. Centralized fetch function
@@ -58,16 +58,18 @@
 
     try {
       state.loading = true;
-      const request = {
-        cid: state.cid,
+      const request: EmptyObjectType = {
         page: state.page,
         limit: state.limit,
         keyword: state.keyword,
       };
+      if (state.cid && state.cid != 0) {
+        request.cid = state.cid;
+      }
       const response: EmptyObjectType = await select(request);
       state.total = response?.data?.count || 0;
       state.statusCode = response?.errcode;
-      if (!response?.data?.items?.length) return;
+      if (!response.data?.items?.length) return;
       const newItems = response.data.items.map((item: EmptyObjectType) => {
         return {
           ...item,
@@ -81,7 +83,6 @@
         } else {
           state.data = [...state.data, ...newItems];
         }
-        state.data = newItems;
       } else {
         state.isNoMore = true;
       }
@@ -94,10 +95,10 @@
   };
 
   // Initial data fetch
-  await fetchData(true);
+  // await fetchData(true);
   watch(
     () => route.params,
-    async () => {
+    async (val) => {
       if (storeUser.isLogin) {
         fetchData(true);
       }
@@ -130,34 +131,36 @@
     }
     return "240px";
   });
-  const isVisible = ref(false);
+  const isVisible = ref(
+    !storeUser.isLogin || (storeUser.userInfo?.invite_count ?? 0) < 5
+  );
 
   const { configuration } = storeToRefs(store);
 
   useSeo(
-    computed(() => configuration.value?.cartoon_title),
-    computed(() => configuration.value?.cartoon_description),
-    computed(() => configuration.value?.cartoon_keywords)
+    computed(() => configuration.value?.forbidden_title),
+    computed(() => configuration.value?.forbidden_description),
+    computed(() => configuration.value?.forbidden_keywords)
   );
-  onBeforeUpdate(() => {
-    if (state.statusCode == 403) {
-      isVisible.value = true;
+
+  watch(
+    () => state.statusCode,
+    (newCode) => {
+      if (newCode === 403) isVisible.value = true;
     }
-  });
-
+  );
+  if (process.client) {
+    useInfiniteScroll(containerRef, onLoadMore, {
+      distance: 300,
+      canLoadMore: () => !state.loadmore && !state.isNoMore,
+    });
+  }
   onMounted(() => {
-    if (storeUser.userInfo?.invite_count < 5 || !storeUser.isLogin)
-      isVisible.value = true;
-
     const el = containerRef.value;
     if (el) {
       setScrollableElement(el);
       el.addEventListener("scroll", () => (scrollTop.value = el.scrollTop));
     }
-    useInfiniteScroll(containerRef, onLoadMore, {
-      distance: 300,
-      canLoadMore: () => !state.loadmore && !state.isNoMore,
-    });
   });
 </script>
 
@@ -182,9 +185,9 @@
           @update:model-value="fetchData(true)"
         >
           <v-tab
-            v-for="item in state.categories"
-            :key="item"
-            :value="item?.id"
+            v-for="(item, index) in displayMenu"
+            :key="index"
+            :value="item.id"
             class="px-0 custom-tab"
           >
             {{ item?.name }}
@@ -204,16 +207,7 @@
             :is-no-more="state.isNoMore"
             @click-item="clickFeed"
           />
-          <div
-            v-if="!state.data.length"
-            class="flex justify-center text-xl py-2"
-          >
-            <v-empty-state
-              headline="不再"
-              text="请稍后再查看更多数据!"
-              title="没有更多数据显示"
-            />
-          </div>
+
           <v-overlay
             v-model="isVisible"
             contained
