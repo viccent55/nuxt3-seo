@@ -15,7 +15,7 @@
     isNomore: false,
     loadmore: false,
     total: 0,
-    cid: null as number | null,
+    cid: 0,
     categories: [] as EmptyArrayType,
     loading: false,
     keyword: "",
@@ -41,7 +41,7 @@
   await getAllCategories();
 
   const displayMenu = computed(() => {
-    return [...[{ id: null, name: "全部" }], ...(state.categories || [])];
+    return [...[{ id: 0, name: "全部" }], ...(state.categories || [])];
   });
   /* ---------------------------
      1. Centralized fetch function
@@ -59,13 +59,13 @@
         limit: state.limit,
         keyword: state.keyword,
       };
-      if (state.cid && state.cid != 0) {
+      if (state.cid != 0) {
         request.cid = state.cid;
       }
       const response: EmptyObjectType = await select(request);
       state.total = response?.data?.count || 0;
       state.statusCode = response?.errcode;
-      const newItems = response.data.items.map((item: EmptyObjectType) => {
+      const newItems = response.data?.items?.map((item: EmptyObjectType) => {
         return {
           ...item,
           author: { name: formatDate(item.created_at) },
@@ -195,7 +195,7 @@
           ref="pageWrapperRef"
         >
           <div
-            v-if="!state.data?.length && !isVisible && state.loading == false"
+            v-if="!state?.data?.length && !isVisible && state.loading == false"
             class="text-center"
           >
             <v-btn
