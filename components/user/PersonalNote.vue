@@ -120,9 +120,9 @@
         case "like":
           await getRes.likeFeeds();
           break;
-        case "follow":
-          await getRes.followFeeds();
-          break;
+        // case "follow":
+        //   await getRes.followFeeds();
+        //   break;
       }
     } finally {
       state.isLoadmore = false;

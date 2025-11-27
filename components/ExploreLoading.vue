@@ -5,9 +5,11 @@
 </script>
 
 <template>
-  <div class="d-flex justify-center py-2">
+  <div
+    class="d-flex justify-center py-2"
+    v-if="loading"
+  >
     <v-progress-circular
-      v-if="loading"
       :width="3"
       color="red"
       indeterminate

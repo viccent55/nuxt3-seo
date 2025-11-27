@@ -6,14 +6,13 @@
   import useVariable from "@/composables/useVariable";
   import { useNoteForbidden } from "~/hooks/useNoteForbiddenDialog";
   import { useDisplay } from "vuetify";
-  const { setScrollableElement, scrollTop } = useScrollManager();
   import { select, getCategories } from "@/service/forbidden";
 
   const state = reactive({
     data: [] as EmptyArrayType,
     page: 1,
     limit: 30,
-    isNoMore: false,
+    isNomore: false,
     loadmore: false,
     total: 0,
     cid: null as number | null,
@@ -24,7 +23,9 @@
   });
 
   const { clearQuery, store, storeUser, formatDate, route } = useVariable();
-  const containerRef = ref<HTMLElement | null>(null);
+  const exploreContainerRef = ref<{ element: HTMLElement } | null>(null);
+  const pageWrapperRef = ref<HTMLElement | null>(null);
+  const { setScrollableElement, scrollTop } = useScrollManager();
 
   const getAllCategories = async () => {
     state.loading = true;
@@ -40,12 +41,8 @@
   await getAllCategories();
 
   const displayMenu = computed(() => {
-    return [...[{ id: 0, name: "全部" }], ...(state.categories || [])];
+    return [...[{ id: null, name: "全部" }], ...(state.categories || [])];
   });
-  // if (displayMenu.value?.length) {
-  //   state.cid = displayMenu.value[0]?.id ?? 0;
-  // }
-
   /* ---------------------------
      1. Centralized fetch function
   ---------------------------- */
@@ -53,11 +50,10 @@
     if (isNewCategory) {
       state.page = 1;
       state.data = [];
-      state.isNoMore = false;
+      state.isNomore = false;
     }
-
+    state.loading = true;
     try {
-      state.loading = true;
       const request: EmptyObjectType = {
         page: state.page,
         limit: state.limit,
@@ -69,7 +65,6 @@
       const response: EmptyObjectType = await select(request);
       state.total = response?.data?.count || 0;
       state.statusCode = response?.errcode;
-      if (!response.data?.items?.length) return;
       const newItems = response.data.items.map((item: EmptyObjectType) => {
         return {
           ...item,
@@ -84,29 +79,22 @@
           state.data = [...state.data, ...newItems];
         }
       } else {
-        state.isNoMore = true;
+        state.isNomore = true;
       }
-    } catch (err) {
-      console.error("fetchData failed:", err);
-      state.isNoMore = true;
     } finally {
       state.loading = false;
+      state.loadmore = false;
     }
   };
 
   // Initial data fetch
   // await fetchData(true);
-  watch(
-    () => route.params,
-    async (val) => {
-      if (storeUser.isLogin) {
-        fetchData(true);
-      }
-    }
-  );
+  if (storeUser.isLogin) {
+    await fetchData(true);
+  }
 
   const onLoadMore = async () => {
-    if (state.loading || state.isNoMore || state.data.length >= state.total)
+    if (state.loading || state.isNomore || state.data.length >= state.total)
       return;
     state.loadmore = true;
     state.page++;
@@ -124,7 +112,7 @@
   const heightOffset = computed(() => {
     if (!isNative.value) {
       if (smAndDown.value) {
-        return "190px";
+        return "200px";
       } else {
         return "150px";
       }
@@ -149,18 +137,24 @@
       if (newCode === 403) isVisible.value = true;
     }
   );
-  if (process.client) {
-    useInfiniteScroll(containerRef, onLoadMore, {
-      distance: 300,
-      canLoadMore: () => !state.loadmore && !state.isNoMore,
-    });
-  }
+
   onMounted(() => {
-    const el = containerRef.value;
+    const el = exploreContainerRef.value?.element;
     if (el) {
       setScrollableElement(el);
       el.addEventListener("scroll", () => (scrollTop.value = el.scrollTop));
     }
+    // -------------------- Infinite Scroll --------------------
+    useInfiniteScroll(
+      pageWrapperRef,
+      () => {
+        onLoadMore();
+      },
+      {
+        distance: 300,
+        canLoadMore: () => !state.loadmore && !state.isNomore,
+      }
+    );
   });
 </script>
 
@@ -197,23 +191,36 @@
       <v-card-text class="pa-0 px-md-3">
         <!-- Wrapper for content and overlay -->
         <div
-          class="forbidden-wrapper pb-6 mt-2 md:pb-0"
-          ref="containerRef"
+          class="forbidden-wrapper"
+          ref="pageWrapperRef"
         >
+          <div
+            v-if="!state.data?.length && !isVisible && state.loading == false"
+            class="text-center"
+          >
+            <v-btn
+              @click="fetchData(true)"
+              color="primary"
+              rounded="xl"
+              prepend-icon="mdi-refresh"
+            >
+              刷新
+            </v-btn>
+          </div>
           <ExploreContainer
             ref="exploreContainerRef"
             :items="state.data"
             :is-load-more="state.loading"
-            :is-no-more="state.isNoMore"
+            :is-no-more="state.isNomore"
             @click-item="clickFeed"
           />
-
-          <v-overlay
-            v-model="isVisible"
-            contained
-            :opacity="0.95"
-          />
         </div>
+
+        <v-overlay
+          v-model="isVisible"
+          contained
+          :opacity="0.95"
+        />
       </v-card-text>
     </v-card>
     <ForbiddenRuleDialog v-model:model-value="isVisible" />
@@ -231,7 +238,7 @@
     overflow-y: auto;
     padding: 0 12px;
     position: relative;
-    min-height: 80vh;
+    min-height: 70vh;
     scrollbar-width: none;
   }
 
