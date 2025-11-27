@@ -53,7 +53,7 @@
         @click="$emit('click-like', action)"
         class="px-0"
       >
-        <v-icon :color="action?.isLike ? 'primary' : ''">
+        <v-icon :color="action?.liked ? 'primary' : ''">
           mdi-thumb-up-outline
         </v-icon>
         <span class="ml-1">{{ action?.like_count }}</span>
@@ -64,7 +64,7 @@
         @click="$emit('click-star', action)"
         class="px-0"
       >
-        <v-icon :color="action?.isStar ? 'primary' : ''">
+        <v-icon :color="action?.stared ? 'primary' : ''">
           mdi-star-outline
         </v-icon>
         <span class="ml-1">{{ action?.star_count }}</span>

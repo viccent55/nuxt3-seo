@@ -59,12 +59,12 @@
         const id_ = item.id;
         try {
           const response: EmptyObjectType = await like({
-            content_type: 3,
+            content_type: 7,
             content_id: id_,
           });
           if (response.errcode === 0) {
-            state.data.isLike = !state.data.isLike;
-            if (state.data.isLike) {
+            state.data.liked = !state.data.liked;
+            if (state.data.liked) {
               state.data.like_count++;
             } else {
               state.data.like_count--;
@@ -88,12 +88,12 @@
         const id_ = item.id;
         try {
           const response: EmptyObjectType = await collect({
-            content_type: 3,
+            content_type: 7,
             content_id: id_,
           });
           if (response.errcode == 0) {
-            state.data.isStar = !state.data.isStar;
-            if (state.data.isStar) {
+            state.data.stared = !state.data.stared;
+            if (state.data.stared) {
               item.star_count++;
             } else {
               item.star_count--;

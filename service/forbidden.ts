@@ -26,7 +26,7 @@ export async function like(params: object) {
 }
 
 export async function collect(params: object) {
-  const res: EmptyObjectType = await useApiFetch("/api/forbidden/favorite", {
+  const res: EmptyObjectType = await useApiFetch("/api/forbidden/collect", {
     method: "POST",
     body: dataEncrypt(params),
   });
