@@ -274,6 +274,7 @@
           <DesktopAdvertSlot
             :advert="item"
             class="home-button-ads"
+            height-image="auto"
           />
         </v-col>
       </v-row>
@@ -480,6 +481,7 @@
     // max-width: 373px;
     // aspect-ratio: 373 / 78;
     object-fit: contain;
+    height: auto;
   }
   .right-ads-ratio {
     display: block;

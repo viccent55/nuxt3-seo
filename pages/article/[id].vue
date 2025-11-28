@@ -174,6 +174,7 @@
                 <DesktopAdvertSlot
                   :advert="item"
                   color="transparent"
+                  height-image="auto"
                   class="detail-ads-ratio"
                 />
               </v-col>
@@ -228,7 +229,7 @@
             </v-sheet>
 
             <!-- Ads after content -->
-            <v-row no-gutters>
+            <v-row dense>
               <v-col
                 cols="12"
                 v-for="(item, index) in store.advertisement
@@ -238,13 +239,12 @@
                 <DesktopAdvertSlot
                   :advert="item"
                   color="transparent"
-                  class="detail-ads-ratio"
+                  class="ads-after-content ma-0"
+                  height-image="auto"
                 />
               </v-col>
-              <v-col cols="12">
-                <CommentSection />
-              </v-col>
             </v-row>
+            <CommentSection class="px-0" />
           </v-card>
           <div
             class="position-fixed"
@@ -358,7 +358,10 @@
               </v-row>
             </v-card>
           </v-sheet>
-          <v-row class="mt-5">
+          <v-row
+            class="mt-5"
+            dense
+          >
             <v-col
               cols="6"
               md="12"
@@ -368,6 +371,7 @@
             >
               <DesktopAdvertSlot
                 :advert="item"
+                height-image="auto"
                 class="detail-right-ads-ratio"
               />
             </v-col>
@@ -458,8 +462,8 @@
   .detail-ads-ratio {
     display: block;
     width: 100%;
-    max-width: 770px;
-    aspect-ratio: 770 / 100;
+    // max-width: 770px;
+    // aspect-ratio: 770 / 100;
     object-fit: contain;
   }
   .detail-right-ads-ratio {
@@ -467,6 +471,11 @@
     width: 100%;
     max-width: 373;
     aspect-ratio: 373 / 80;
+    object-fit: contain;
+  }
+  .ads-after-content {
+    width: 100%;
+    height: auto;
     object-fit: contain;
   }
 </style>
