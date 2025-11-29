@@ -46,12 +46,7 @@
   /* ---------------------------
      1. Centralized fetch function
   ---------------------------- */
-  const fetchData = async (isNewCategory = false) => {
-    if (isNewCategory) {
-      state.page = 1;
-      state.data = [];
-      state.isNomore = false;
-    }
+  const fetchData = async () => {
     state.loading = true;
     try {
       const request: EmptyObjectType = {
@@ -73,13 +68,10 @@
       });
 
       if (newItems?.length > 0) {
-        if (state.page == 1) {
-          state.data = newItems;
-        } else {
-          state.data = [...state.data, ...newItems];
-        }
+        return newItems;
       } else {
         state.isNomore = true;
+        return [];
       }
     } finally {
       state.loading = false;
@@ -87,18 +79,45 @@
     }
   };
 
+  const onCategoryChange = async () => {
+    state.page = 1;
+    state.data = [];
+    state.isNomore = false;
+    state.data = await fetchData();
+    if (pageWrapperRef.value) {
+      pageWrapperRef.value.scrollTop = 0;
+    }
+  };
+
   // Initial data fetch
-  // await fetchData(true);
   if (storeUser.isLogin) {
-    await fetchData(true);
+    await fetchData();
   }
 
   const onLoadMore = async () => {
     if (state.loading || state.isNomore || state.data.length >= state.total)
       return;
+
+    const scrollEl = pageWrapperRef.value;
+    const savedScrollTop = scrollEl?.scrollTop ?? 0;
+
     state.loadmore = true;
     state.page++;
-    await fetchData();
+    const newFeeds = await fetchData();
+    if (newFeeds?.length) {
+      state.data = [...state.data, ...newFeeds];
+    } else {
+      state.isNomore = true;
+    }
+
+    // Wait for the next DOM update, then wait for the next animation frame
+    // to ensure the masonry layout has been recalculated before restoring scroll.
+    await nextTick();
+    requestAnimationFrame(() => {
+      if (scrollEl) {
+        scrollEl.scrollTop = savedScrollTop;
+      }
+    });
   };
 
   const noteDialog = useNoteForbidden();
@@ -138,8 +157,15 @@
     }
   );
 
+  onActivated(() => {
+    const el = pageWrapperRef.value;
+    if (el) {
+      el.scrollTop = scrollTop.value;
+    }
+  });
+
   onMounted(() => {
-    const el = exploreContainerRef.value?.element;
+    const el = pageWrapperRef.value;
     if (el) {
       setScrollableElement(el);
       el.addEventListener("scroll", () => (scrollTop.value = el.scrollTop));
@@ -176,7 +202,7 @@
           class="category-tabs flex-shrink-0"
           density="compact"
           show-arrows
-          @update:model-value="fetchData(true)"
+          @update:model-value="onCategoryChange"
         >
           <v-tab
             v-for="(item, index) in displayMenu"
@@ -188,18 +214,18 @@
           </v-tab>
         </v-tabs>
       </v-card-title>
-      <v-card-text class="pa-0 px-md-3">
+      <v-card-text class="pa-0 px-md-3 position-relative">
         <!-- Wrapper for content and overlay -->
         <div
           class="forbidden-wrapper"
           ref="pageWrapperRef"
         >
           <div
-            v-if="!state?.data?.length && !isVisible && state.loading == false"
+            v-if="!state?.data?.length && !isVisible && !state.loading"
             class="text-center"
           >
             <v-btn
-              @click="fetchData(true)"
+              @click="onCategoryChange"
               color="primary"
               rounded="xl"
               prepend-icon="mdi-refresh"
@@ -210,17 +236,19 @@
           <ExploreContainer
             ref="exploreContainerRef"
             :items="state.data"
-            :is-load-more="state.loading"
+            :is-load-more="state.loadmore"
             :is-no-more="state.isNomore"
             @click-item="clickFeed"
           />
         </div>
 
-        <v-overlay
-          v-model="isVisible"
-          contained
-          :opacity="0.95"
-        />
+        <client-only>
+          <v-overlay
+            v-model="isVisible"
+            contained
+            :opacity="0.95"
+          />
+        </client-only>
       </v-card-text>
     </v-card>
     <ForbiddenRuleDialog v-model:model-value="isVisible" />

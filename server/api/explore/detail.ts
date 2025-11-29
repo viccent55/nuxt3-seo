@@ -5,13 +5,13 @@ export default defineEventHandler(async (event) => {
     ? config.public.apiLocal // when running `npm run dev`
     : config.public.apiBase;
 
+  const realUrl = `${baseURL}/item/${body?.id}/${body.code}`;
+  const curlCmd = `curl -X GET "${realUrl}"`;
+  console.warn("🐚 CURL Equivalent:", curlCmd);
   try {
-    const result: EmptyObjectType = await $fetch(
-      `${baseURL}/item/${body?.id}/${body.code}`,
-      {
-        method: "GET",
-      }
-    );
+    const result: EmptyObjectType = await $fetch(realUrl, {
+      method: "GET",
+    });
     return result;
   } catch (error) {
     // Handle errors gracefully

@@ -3,7 +3,7 @@ import { ref } from "vue";
 
 interface ChatWidgetOptions {
   API_URL: string;
-  AGENT_ID: string;
+  GROUP_ID: string;
   USER_ID?: string;
   USER_NAME?: string;
   USER_AVATAR?: string;

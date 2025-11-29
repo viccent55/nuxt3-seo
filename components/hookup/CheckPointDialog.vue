@@ -125,7 +125,7 @@
         </div>
       </v-card-title>
       <!-- Sign-in grid -->
-      <v-card-text class="py-2">
+      <v-card-text class="pt-2 pb-8">
         <v-row class="text-white">
           <v-col cols="12">
             <div>我的积分</div>
@@ -225,7 +225,11 @@
                       state.config?.deduct_max_per_time
                     }}元
                   </li>
-                  <li>积分满100可联系客服兑换抵扣</li>
+
+                  <li>
+                    积分满100可联系客服兑换抵扣,每月可抵扣
+                    {{ state.config?.monthly_deduct_limit }}次
+                  </li>
                 </ol>
               </v-card-text>
             </v-card>

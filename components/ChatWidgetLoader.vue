@@ -41,7 +41,7 @@
   
     await loadAndInitialize({
       API_URL: config.public.apiChatWidget as string,
-      AGENT_ID: "agent",
+      GROUP_ID: "1",
       USER_ID: "",
       USER_NAME: displayName,
       AUTO_OPEN: false,
