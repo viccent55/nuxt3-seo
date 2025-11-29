@@ -3,6 +3,8 @@
   import { useInfiniteScroll } from "@vueuse/core";
   import { useNoteHookupDialog } from "~/hooks/useNoteHookupDialog";
   import { useDisplay } from "vuetify";
+  import { checkPermissions } from "~/hooks/usePermisions";
+  import { PERMISSION } from "~/common/permision";
 
   definePageMeta({
     keepalive: true,
@@ -25,6 +27,7 @@
       tag_id: null as null | string,
     },
     loading: false,
+    isCheckpoint: false,
   });
   const { setScrollableElement, scrollTop } = useScrollManager();
   const { store, clearQuery, isMobile } = useVariable();
@@ -147,6 +150,11 @@
     }
     return "295px";
   });
+  const onOpenCheckPoint = () => {
+    checkPermissions(PERMISSION.User, () => {
+      state.isCheckpoint = true;
+    });
+  };
   useSeo(
     computed(() => configuration.value?.novel_title),
     computed(() => configuration.value?.novel_description),
@@ -239,7 +247,7 @@
         </v-tabs>
       </v-card-title>
 
-      <v-card-text class="px-0 pb-0">
+      <v-card-text class="px-0 pb-0 position-relative">
         <!-- Tabs -->
         <div
           ref="containerRef"
@@ -323,19 +331,32 @@
             />
           </div>
         </div>
+        <div
+          class="position-absolute point-bg"
+          style="right: 5px; bottom: 15vh"
+          @click="onOpenCheckPoint"
+        >
+          <div
+            class="px-2 py-3 d-flex flex-column text-white font-weight-bold f12"
+          >
+            <div>签到免</div>
+            <div>定金</div>
+          </div>
+        </div>
       </v-card-text>
-      <hookup-drawer-area
-        :areas="config?.areas"
-        :hot-areas="config?.hot_areas"
-        v-model="state.isDrawerOpen"
-        @select="onDrawerSelect"
-      ></hookup-drawer-area>
-      <hookup-drawer-filter
-        :tags="config?.tags"
-        v-model="state.isFilterOpen"
-        @select="onTagSelect"
-      ></hookup-drawer-filter>
     </v-card>
+    <hookup-drawer-area
+      :areas="config?.areas"
+      :hot-areas="config?.hot_areas"
+      v-model="state.isDrawerOpen"
+      @select="onDrawerSelect"
+    ></hookup-drawer-area>
+    <hookup-drawer-filter
+      :tags="config?.tags"
+      v-model="state.isFilterOpen"
+      @select="onTagSelect"
+    ></hookup-drawer-filter>
+    <HookupCheckPointDialog v-model="state.isCheckpoint" />
   </v-container>
 </template>
 
@@ -354,5 +375,16 @@
   .category-tabs :deep(.v-slide-group__next),
   .category-tabs :deep(.v-slide-group__prev) {
     min-width: 36px;
+  }
+  .point-bg {
+    background-image: url("/hookgirl/hookicon.png"); /* ✅ Nuxt will serve from /hookicon.png */
+    width: 60px;
+    border-radius: 10px;
+    // height: 100px;
+    background-color: #8745c4;
+    background-size: cover; /* or contain, depending what you want */
+    // background-position: right;
+    background-repeat: no-repeat;
+    cursor: pointer;
   }
 </style>

@@ -42,3 +42,35 @@ export async function collect(params: object) {
   if (res.data) return decrypt(res.data);
   return res;
 }
+export async function getPointConfig(params: object = {}) {
+  const res: EmptyObjectType = await useApiFetch("/api/hookup/point-config", {
+    method: "GET",
+    query: dataEncrypt(params),
+  });
+  if (res.data) return decrypt(res.data);
+  return res;
+}
+export async function getBalance(params: object = {}) {
+  const res: EmptyObjectType = await useApiFetch("/api/hookup/balance", {
+    method: "GET",
+    query: dataEncrypt(params),
+  });
+  if (res.data) return decrypt(res.data);
+  return res;
+}
+export async function getLogs(params: object) {
+  const res: EmptyObjectType = await useApiFetch("/api/hookup/logs", {
+    method: "POST",
+    body: dataEncrypt(params),
+  });
+  if (res.data) return decrypt(res.data);
+  return res;
+}
+export async function reedemPoint(params: object = {}) {
+  const res: EmptyObjectType = await useApiFetch("/api/hookup/sign", {
+    method: "POST",
+    body: dataEncrypt(params),
+  });
+  if (res.data) return decrypt(res.data);
+  return res;
+}
