@@ -12,11 +12,9 @@
     get: () => props.modelValue,
     set: (v) => emit("update:modelValue", v),
   });
-  let inviteClicked = false;
   const onInvite = () => {
     checkPermissions(PERMISSION.User, () => {
       router.push(`/user/${storeUser.useId}`);
-      inviteClicked = true;
       isVisible.value = false;
     });
   };
@@ -33,11 +31,6 @@
     }
   );
   const onLeave = () => {
-    if (inviteClicked) {
-      inviteClicked = false; // Reset flag for next time
-      return; // Stop execution if invite was clicked
-    }
-
     isVisible.value = false;
     if (window.history.length > 1) {
       router.back();
@@ -53,6 +46,15 @@
     @after-leave="onLeave"
   >
     <v-card flat>
+      <v-card-title class="d-flex justify-end">
+        <v-btn
+          size="small"
+          icon="mdi-close"
+          color="primary"
+          variant="elevated"
+          @click="onLeave"
+        ></v-btn>
+      </v-card-title>
       <v-card-text>
         <div class="text-center text-primary text-subtitle-1">
           全球禁区中心包含: 真实强奸，稀缺幼女，萝莉岛，N号房，缅北内
