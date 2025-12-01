@@ -1,42 +1,37 @@
 import { useDisplay } from "vuetify";
 
-export function useLayoutManager() {
-  const { smAndDown } = useDisplay();
+export const useLayoutManager = () => {
+  const layoutName = useState<"desktop" | "mobile">(
+    "layout-name",
+    () => "desktop"
+  );
 
-  // Cookie persists user's layout
-  const layoutCookie = useCookie<string>("server-layout", {
-    maxAge: 60 * 60 * 24 * 365,
-    default: () => "mobile",
-  });
+  // ✅ 1. SSR detection (first open)
+  if (process.server) {
+    const ua = useRequestHeader("user-agent") || "";
+    layoutName.value = /android|iphone|ipad|ipod|mobile/i.test(ua)
+      ? "mobile"
+      : "desktop";
+  }
 
-  // SSR-safe initial state
-  const layout = useState<string>("layout", () => {
-    // During SSR, use cookie value (if available)
-    // Client will correct this later
-    return layoutCookie.value || "desktop";
-  });
-
-  // Client-side correction
   if (process.client) {
-    const newLayout = smAndDown.value ? "mobile" : "desktop";
+    const update = () => {
+      // ✅ 2. Real responsive detection using viewport width
+      layoutName.value = window.innerWidth <= 768 ? "mobile" : "desktop";
+    };
 
-    // Update only if mismatch (prevents flicker)
-    if (layout.value !== newLayout) {
-      layout.value = newLayout;
-      layoutCookie.value = newLayout;
-    }
+    // ✅ 2.5 auto trigger on resize (real responsive behavior)
+    window.addEventListener("resize", update);
+    update(); // run immediately on client mount
 
-    // Watch for future resizes
-    watch(smAndDown, (isMobile) => {
-      const newLayout = isMobile ? "mobile" : "desktop";
-      if (layout.value !== newLayout) {
-        layout.value = newLayout;
-        layoutCookie.value = newLayout;
-      }
+    // ✅ 3. Hydrate with Vuetify display (extra safety)
+    const { smAndDown } = useDisplay();
+    nextTick(() => {
+      watchEffect(() => {
+        layoutName.value = smAndDown.value ? "mobile" : "desktop";
+      });
     });
   }
 
-  return {
-    layoutName: layout,
-  };
-}
+  return { layoutName };
+};
