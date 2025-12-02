@@ -1,37 +1,40 @@
 import { useDisplay } from "vuetify";
+import { Capacitor } from "@capacitor/core";
 
-export const useLayoutManager = () => {
-  const layoutName = useState<"desktop" | "mobile">(
-    "layout-name",
-    () => "desktop"
+export function useLayoutManager() {
+  const { smAndDown } = useDisplay();
+  const layoutCookie = useCookie<string>("server-layout", {
+    maxAge: 60 * 60 * 24 * 365,
+    default: () => "desktop",
+  });
+
+  // 1️⃣ Early detection
+  const userAgent =
+    process.server && useRequestHeaders()?.["user-agent"]
+      ? useRequestHeaders()["user-agent"]
+      : navigator.userAgent;
+  const isMobileUA = /Android|iPhone|iPad|iPod|Mobile|Tablet/i.test(
+    userAgent || ""
   );
 
-  // ✅ 1. SSR detection (first open)
-  if (process.server) {
-    const ua = useRequestHeader("user-agent") || "";
-    layoutName.value = /android|iphone|ipad|ipod|mobile/i.test(ua)
-      ? "mobile"
-      : "desktop";
-  }
+  // 2️⃣ Capacitor override
+  const isCapacitor =
+    typeof window !== "undefined" && typeof Capacitor !== "undefined";
 
-  if (process.client) {
-    const update = () => {
-      // ✅ 2. Real responsive detection using viewport width
-      layoutName.value = window.innerWidth <= 768 ? "mobile" : "desktop";
-    };
+  const layout = useState<string>("layout", () => {
+    if (isCapacitor) return "mobile";
+    return layoutCookie.value || (isMobileUA ? "mobile" : "desktop");
+  });
 
-    // ✅ 2.5 auto trigger on resize (real responsive behavior)
-    window.addEventListener("resize", update);
-    update(); // run immediately on client mount
-
-    // ✅ 3. Hydrate with Vuetify display (extra safety)
-    const { smAndDown } = useDisplay();
-    nextTick(() => {
-      watchEffect(() => {
-        layoutName.value = smAndDown.value ? "mobile" : "desktop";
-      });
-    });
-  }
-
-  return { layoutName };
-};
+  // 3️⃣ Reactive update (for browser resize)
+  const updateLayout = (isMobile: boolean) => {
+    const newLayout = isMobile ? "mobile" : "desktop";
+    if (layout.value !== newLayout) {
+      layout.value = newLayout;
+      layoutCookie.value = newLayout;
+    }
+  };
+  updateLayout(smAndDown.value);
+  watch(smAndDown, updateLayout);
+  return { layoutName: layout };
+}
