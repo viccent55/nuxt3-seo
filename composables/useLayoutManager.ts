@@ -1,40 +1,42 @@
 import { useDisplay } from "vuetify";
-import { Capacitor } from "@capacitor/core";
 
 export function useLayoutManager() {
   const { smAndDown } = useDisplay();
+
+  // Cookie persists user's layout
   const layoutCookie = useCookie<string>("server-layout", {
     maxAge: 60 * 60 * 24 * 365,
     default: () => "desktop",
   });
 
-  // 1️⃣ Early detection
-  const userAgent =
-    process.server && useRequestHeaders()?.["user-agent"]
-      ? useRequestHeaders()["user-agent"]
-      : navigator.userAgent;
-  const isMobileUA = /Android|iPhone|iPad|iPod|Mobile|Tablet/i.test(
-    userAgent || ""
-  );
-
-  // 2️⃣ Capacitor override
-  const isCapacitor =
-    typeof window !== "undefined" && typeof Capacitor !== "undefined";
-
+  // SSR-safe initial state
   const layout = useState<string>("layout", () => {
-    if (isCapacitor) return "mobile";
-    return layoutCookie.value || (isMobileUA ? "mobile" : "desktop");
+    // During SSR, use cookie value (if available)
+    // Client will correct this later
+    return layoutCookie.value || "desktop";
   });
 
-  // 3️⃣ Reactive update (for browser resize)
-  const updateLayout = (isMobile: boolean) => {
-    const newLayout = isMobile ? "mobile" : "desktop";
+  // Client-side correction
+  if (process.client) {
+    const newLayout = smAndDown.value ? "mobile" : "desktop";
+
+    // Update only if mismatch (prevents flicker)
     if (layout.value !== newLayout) {
       layout.value = newLayout;
       layoutCookie.value = newLayout;
     }
+
+    // Watch for future resizes
+    watch(smAndDown, (isMobile) => {
+      const newLayout = isMobile ? "mobile" : "desktop";
+      if (layout.value !== newLayout) {
+        layout.value = newLayout;
+        layoutCookie.value = newLayout;
+      }
+    });
+  }
+
+  return {
+    layoutName: layout,
   };
-  updateLayout(smAndDown.value);
-  watch(smAndDown, updateLayout);
-  return { layoutName: layout };
 }
