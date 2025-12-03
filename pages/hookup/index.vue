@@ -333,7 +333,7 @@
         </div>
         <div
           class="position-absolute point-bg"
-          style="right: 5px; bottom: 15vh"
+          style="right: 5px; bottom: 30vh"
           @click="onOpenCheckPoint"
         >
           <div

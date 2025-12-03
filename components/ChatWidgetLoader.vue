@@ -38,13 +38,19 @@
     const displayName = storeUser.isLogin
       ? `${storeUser.useId}|${storeUser.userInfo?.nickname}`
       : storeUser?.visitCode;
-  
+
     await loadAndInitialize({
       API_URL: config.public.apiChatWidget as string,
       GROUP_ID: "1",
-      USER_ID: "",
+      USER_ID: storeUser?.visitCode || "",
       USER_NAME: displayName,
+      USER_AVATAR: storeUser.userInfo?.avatar || "",
       AUTO_OPEN: false,
+      EXTRA: {
+        USER_ID: storeUser.userInfo?.id,
+        VISITOR_NAME: storeUser.userInfo?.nickname,
+        VISITOR_AVATAR: storeUser.userInfo?.avatar || "",
+      },
     });
   };
   onMounted(async () => {

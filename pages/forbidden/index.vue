@@ -138,9 +138,14 @@
     }
     return "240px";
   });
-  const isVisible = ref(
-    !storeUser.isLogin || (storeUser.userInfo?.invite_count ?? 0) < 5
+
+  // This computed property will always reflect the rule based on the current user state.
+  const shouldShowRuleDialog = computed(
+    () => !storeUser.isLogin || (storeUser.userInfo?.invite_count ?? 0) < 5
   );
+
+  // This ref will control the actual visibility of the overlay.
+  const isVisible = ref(shouldShowRuleDialog.value);
 
   const { configuration } = storeToRefs(store);
 
@@ -162,6 +167,8 @@
     if (el) {
       el.scrollTop = scrollTop.value;
     }
+    // Re-evaluate visibility when the component is activated
+    isVisible.value = shouldShowRuleDialog.value;
   });
 
   onMounted(() => {
@@ -244,14 +251,19 @@
 
         <client-only>
           <v-overlay
+            style="display: flex; justify-content: center; align-items: center"
             v-model="isVisible"
             contained
             :opacity="0.95"
-          />
+            persistent
+          >
+            <ForbiddenRuleDialog
+            
+            />
+          </v-overlay>
         </client-only>
       </v-card-text>
     </v-card>
-    <ForbiddenRuleDialog v-model:model-value="isVisible" />
   </v-container>
 </template>
 
@@ -303,5 +315,8 @@
   .category-tabs :deep(.v-slide-group__next),
   .category-tabs :deep(.v-slide-group__prev) {
     min-width: 32px;
+  }
+  .v-overlay__content {
+    padding: 16px;
   }
 </style>

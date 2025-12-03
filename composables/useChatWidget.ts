@@ -6,9 +6,12 @@ interface ChatWidgetOptions {
   GROUP_ID: string;
   USER_ID?: string;
   USER_NAME?: string;
-  USER_AVATAR?: string;
+  VISITOR_AVATAR?: string;
   containerId?: string;
   AUTO_OPEN: boolean;
+  VISITOR_ID?: string;
+  EXTRA?: Object;
+  USER_AVATAR: string;
 }
 
 declare global {
