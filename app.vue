@@ -18,6 +18,7 @@
   import { useNoteForbidden } from "@/hooks/useNoteForbiddenDialog";
   import { useNoteHookupDialog } from "@/hooks/useNoteHookupDialog";
   import { createId } from "@paralleldrive/cuid2";
+
   const { storeUser, store } = useVariable();
   const { initAds } = useHome();
   const theme = useTheme();
@@ -29,7 +30,6 @@
   const noteHookupDialog = useNoteHookupDialog();
   const permissions = [PERMISSION.Visitor, PERMISSION.User];
   const { scrollableElement, scrollTop } = useScrollManager();
-  const { layoutName } = useLayoutManager();
   const { mobile } = useDisplay();
 
   initPermissions(permissions);
@@ -92,28 +92,10 @@
     }
   };
 
-  const handleFetchError = (error: any) => {
-    console.error("Server is down or initial fetch failed:", error);
-
-    if (process.client) {
-      const NOTIFICATION_COOLDOWN = 60 * 60 * 1000; // 1 hour
-      const lastNotificationTimestamp = useLocalStorage<number | null>(
-        "lastNotificationTimestamp",
-        null
-      );
-
-      // --- notification cooldown ---
-      const now = Date.now();
-      if (
-        !lastNotificationTimestamp.value ||
-        now - lastNotificationTimestamp.value > NOTIFICATION_COOLDOWN
-      ) {
-        notificationDialogRef.value?.open();
-        lastNotificationTimestamp.value = now;
-      }
-    }
-  };
-
+  const { smAndDown } = useDisplay();
+  const layoutName = computed(() => {
+    return smAndDown.value ? "mobile" : "desktop";
+  });
   const reloadPage = () => {
     window.location.reload();
   };
@@ -164,6 +146,7 @@
         updateVersionRef.value?.openNoteDialog();
       }
     });
+    
   });
 </script>
 <template>
