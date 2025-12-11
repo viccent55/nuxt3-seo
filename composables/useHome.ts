@@ -1,15 +1,13 @@
 import { getPositionAds } from "@/service/advert";
 import { useStore } from "@/store";
-import { firstVisitInApp } from "@/service/app";
-import { generateCode } from "@/utils/toolsValidate";
-import { newVisitor, activeVisitor } from "@/service/explore";
+import { activeVisitor } from "@/service/explore";
 import { getMemberActive } from "@/service/user";
 import useVariable from "./useVariable";
 import { useLocalStorage } from "@vueuse/core";
 
 export default function useHome() {
   const store = useStore();
-  const { getTypeDevice, route, storeUser, isNativePlatform } = useVariable();
+  const { getTypeDevice, storeUser } = useVariable();
 
   const getAdsPosition = async (position = 1) => {
     const respnse: any = await getPositionAds(position);
@@ -24,50 +22,6 @@ export default function useHome() {
       store.detailAds = data;
     } else if (position === 5) {
       store.homeAds = data;
-    }
-  };
-
-  const checkNewVisitor = async () => {
-    if (!process.client) return;
-    const deviceType = getTypeDevice();
-    try {
-      const param = route.query.chan || "";
-      const urlParams = new URLSearchParams(window.location.search);
-      const chan = String(urlParams.get("chan") || param);
-      const cleanedChan = chan.replace(/\/+$/, "");
-      const request = {
-        visitor: storeUser.visitCode,
-        chan: cleanedChan,
-        platform: deviceType,
-      };
-      await newVisitor(request);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-  const getFirstVisitInApp = async () => {
-    if (!process.client) return;
-    const deviceType = getTypeDevice();
-    const lastCalledKey = "lastGetFirstVisitInApp";
-    const lastCalled = useLocalStorage<string>(lastCalledKey, null);
-    const now = Date.now();
-    const twentyFourHours = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-    if (
-      !lastCalled.value ||
-      now - parseInt(lastCalled.value, 10) > twentyFourHours
-    ) {
-      const param = route.query.chan || "";
-      const urlParams = new URLSearchParams(window.location.search);
-      const chan = String(urlParams.get("chan") || param);
-      const cleanedChan = chan.replace(/\/+$/, "");
-      const request = {
-        chan: cleanedChan,
-        visitor: storeUser.visitCode,
-        type: deviceType,
-      };
-      store.chan = cleanedChan;
-      await firstVisitInApp(request);
-      lastCalled.value = now.toString();
     }
   };
 
@@ -118,16 +72,6 @@ export default function useHome() {
     }
   };
 
-  const generateVisitCode = () => {
-    storeUser.visitCode = generateCode();
-    if (!isNativePlatform.value) {
-      checkNewVisitor();
-    }
-    if (isNativePlatform.value) {
-      getFirstVisitInApp();
-    }
-  };
-
   const initVisitor = () => {
     getActiveVisitor();
     getActiveUser();
@@ -139,10 +83,9 @@ export default function useHome() {
     getAdsPosition(4);
     getAdsPosition(5);
   };
+
   return {
-    generateVisitCode,
     initVisitor,
-    getFirstVisitInApp,
     initAds,
   };
 }

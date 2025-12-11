@@ -56,30 +56,32 @@
     flat
     color="surface"
     class="border-b"
-    height="64"
   >
     <!-- Left: Logo -->
     <v-container
       fluid
       max-width="1720px"
     >
-      <v-row dense>
-        <v-col cols="12">
-          <div class="d-flex align-center ga-5 w-100 justify-space-between">
-            <v-btn
-              variant="text"
-              class="pa-0 text-body-1 font-weight-bold"
-              rounded="xl"
-              href="/"
-            >
-              <v-img
-                src="/logo.png"
-                width="80"
-                alt="Logo"
-              ></v-img>
-            </v-btn>
-
-            <!-- Navigation -->
+      <v-row
+        dense
+        align="center"
+      >
+        <v-col cols="2">
+          <v-btn
+            variant="text"
+            class="pa-0 text-body-1 font-weight-bold"
+            rounded="xl"
+            href="/"
+          >
+            <v-img
+              src="/logo.png"
+              width="80"
+              alt="Logo"
+            ></v-img>
+          </v-btn>
+        </v-col>
+        <v-col cols="7">
+          <div class="d-flex ga-5 align-center justify-space-between">
             <nav
               aria-label=" navigation"
               class="d-flex ga-lg-8 ga-sm-3"
@@ -111,25 +113,26 @@
               @focus="onFocusSearch"
               @keydown.enter="onFocusSearch"
             />
-            <div class="d-flex align-center ga-2">
-              <v-fab
-                elevation="1"
-                icon="mdi-brightness-6"
-                color="surface"
-                @click="toggleDark"
-              />
-              <div class="d-flex align-center text-caption">
-                <div class="d-flex">
-                  <v-btn
-                    v-for="(item, index) in menuItems"
-                    :key="index"
-                    @click="openLoginDialog(item)"
-                  >
-                    {{ item.name }}
-                  </v-btn>
-                </div>
-              </div>
-            </div>
+          </div>
+        </v-col>
+        <v-col
+          cols="3"
+          class="d-flex align-center justify-end"
+        >
+          <div class="d-flex align-center">
+            <v-fab
+              elevation="1"
+              icon="mdi-brightness-6"
+              color="surface"
+              @click="toggleDark"
+            />
+            <v-btn
+              v-for="(item, index) in menuItems"
+              :key="index"
+              @click="openLoginDialog(item)"
+            >
+              {{ item.name }}
+            </v-btn>
           </div>
         </v-col>
       </v-row>

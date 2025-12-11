@@ -18,7 +18,7 @@
     total: 0,
   });
 
-  const { clearQuery, store } = useVariable();
+  const { clearQuery, store, isMobile } = useVariable();
   const containerRef = ref<HTMLElement | null>(null);
   const { configuration } = storeToRefs(store);
 
@@ -92,11 +92,10 @@
     clearQuery();
     noteDialog.openNoteDialog(id);
   };
-  const { smAndDown } = useDisplay();
   const { isNative } = usePlatform();
   const heightOffset = computed(() => {
     if (!isNative.value) {
-      if (smAndDown.value) {
+      if (isMobile.value) {
         return "160px";
       } else {
         return "120px";
@@ -126,7 +125,7 @@
       class="article-wrapper pb-6 md:pb-0"
       ref="containerRef"
     >
-      <v-row :no-gutters="$vuetify.display.mobile">
+      <v-row :no-gutters="isMobile">
         <!-- Each Article Card -->
         <v-col
           v-for="(item, index) in state.data"
@@ -144,7 +143,7 @@
           >
             <Image
               :src="item.cover"
-              :height="$vuetify.display.mobile ? '160' : '260'"
+              :height="isMobile ? '160' : '260'"
               cover
               class="rounded-lg"
             >

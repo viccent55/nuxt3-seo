@@ -17,7 +17,8 @@
   import { useNoteArticleDialog } from "@/hooks/useNoteArticleDialog";
   import { useNoteForbidden } from "@/hooks/useNoteForbiddenDialog";
   import { useNoteHookupDialog } from "@/hooks/useNoteHookupDialog";
-  import { createId } from "@paralleldrive/cuid2";
+  import { useReport } from "@/composables/useReport";
+  import { generateCode } from "@/utils/toolsValidate";
 
   const { storeUser, store } = useVariable();
   const { initAds } = useHome();
@@ -31,6 +32,7 @@
   const permissions = [PERMISSION.Visitor, PERMISSION.User];
   const { scrollableElement, scrollTop } = useScrollManager();
   const { mobile } = useDisplay();
+  const { runOncePerDay } = useReport();
 
   initPermissions(permissions);
 
@@ -107,7 +109,7 @@
   });
   // If the cookie is not set, generate a new code. This runs on the server or client.
   if (!visitCodeCookie.value) {
-    visitCodeCookie.value = createId();
+    visitCodeCookie.value = generateCode();
   }
   // Sync the cookie value to the Pinia store so it's available everywhere.
   storeUser.visitCode = visitCodeCookie.value;
@@ -146,7 +148,7 @@
         updateVersionRef.value?.openNoteDialog();
       }
     });
-    
+    runOncePerDay();
   });
 </script>
 <template>
@@ -173,7 +175,7 @@
   <v-app>
     <NuxtLayout :name="layoutName">
       <NuxtLoadingIndicator />
-      <NuxtPwaManifest />
+      <!-- <NuxtPwaManifest /> -->
       <NuxtPage />
     </NuxtLayout>
     <!-- Floating FAB -->
@@ -212,7 +214,10 @@
 
     <AnalyticsLoader :analytics="store.configuration?.analytics" />
     <!-- chat widget -->
-    <ChatWidgetLoader ref="chatWidgetRef" />
+    <ChatWidget
+      :user="storeUser.userInfo"
+      ref="chatWidgetRef"
+    />
   </v-app>
 </template>
 

@@ -29,7 +29,6 @@
   const emits = defineEmits(["get-more", "click-item", "before-update"]);
 
   const feedsContainer = ref<HTMLElement | null>(null);
-  const masonryRef = ref<any>(null);
   const { lg, md, smAndDown } = useDisplay();
 
   // Masonry layout properties
@@ -80,6 +79,7 @@
     ref="feedsContainer"
   >
     <MasonryWall
+      v-show="items?.length > 0"
       ref="masonryRef"
       :items="items ?? []"
       :min-columns="minColumns"

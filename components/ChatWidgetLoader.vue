@@ -1,9 +1,7 @@
 <script setup lang="ts">
   import { onMounted } from "vue";
-  import { getUserInfo } from "@/service/user";
-  import { checkPermissions } from "@/hooks/usePermisions";
-  import { PERMISSION } from "@/common/permision";
   import OverlayLoading from "./OverlayLoading.vue";
+  import CryptoJS from "crypto-js";
 
   const { loadAndInitialize, showChat } = useChatWidget();
 
@@ -18,39 +16,36 @@
     loading: false,
   });
   const { storeUser } = useVariable();
-  const id = computed(() => Number(storeUser.useId));
+  // const id = computed(() => Number(storeUser.useId));
 
-  const getUser = async () => {
-    checkPermissions(PERMISSION.User, async () => {
-      state.loading = true;
-      try {
-        const res = await getUserInfo(id.value);
-        state.userInfo = res.data;
-      } catch (e) {
-        console.log(e);
-      } finally {
-        state.loading = false;
-      }
-    });
-  };
   const onInitChat = async () => {
     const config = useRuntimeConfig();
-    const displayName = storeUser.isLogin
-      ? `${storeUser.useId}|${storeUser.userInfo?.nickname}`
-      : storeUser?.visitCode;
+    // const displayName = storeUser.isLogin
+    //   ? storeUser.useId
+    //   : storeUser?.visitCode;
+
+    const userId = computed(() => {
+      if (storeUser.userInfo.id) {
+        return CryptoJS.MD5(String(storeUser.userInfo.id)).toString();
+      }
+      return storeUser.visitCode;
+    });
+    const visitor = {
+      USER_ID: userId.value || "",
+      VISITOR_NAME: storeUser.userInfo?.nickname,
+      VISITOR_AVATAR: storeUser.userInfo?.avatar || "",
+    };
+    const visitorJson = JSON.stringify(visitor);
+    const extra = encodeURIComponent(visitorJson);
 
     await loadAndInitialize({
       API_URL: config.public.apiChatWidget as string,
       GROUP_ID: "1",
-      USER_ID: storeUser?.visitCode || "",
-      USER_NAME: displayName,
+      USER_ID: userId.value || "",
+      USER_NAME: storeUser.userInfo?.nickname || "",
       USER_AVATAR: storeUser.userInfo?.avatar || "",
       AUTO_OPEN: false,
-      EXTRA: {
-        USER_ID: storeUser.userInfo?.id,
-        VISITOR_NAME: storeUser.userInfo?.nickname,
-        VISITOR_AVATAR: storeUser.userInfo?.avatar || "",
-      },
+      EXTRA: extra,
     });
   };
   onMounted(async () => {

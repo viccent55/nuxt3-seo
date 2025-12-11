@@ -4,13 +4,15 @@
     getBalance,
     reedemPoint,
     getPointConfig,
-  } from "~/service/hookup";
+  } from "@/service/hookup";
+  import { screenMode } from "@/hooks/useScreenMode";
+  import useSnackbar from "@/composables/useSnackbar";
 
   const props = defineProps({
     modelValue: Boolean,
   });
   const emit = defineEmits(["update:modelValue"]);
-  const { isMobile } = useVariable();
+
   const model = computed({
     get: () => props.modelValue,
     set: (v) => emit("update:modelValue", v),
@@ -26,26 +28,45 @@
     loading: false,
     balance: 0,
     config: {} as EmptyObjectType,
-    hasCheckedInToday: false,
+    todaySigned: false, // ✅ has user signed today?
   });
 
   const snackbar = useSnackbar();
 
-  const checkHasCheckedInToday = (records: any[]) => {
-    if (!records || records.length === 0) return false;
-    const today = new Date().toISOString().slice(0, 10);
-    return records.some((record) => record.created_at.startsWith(today));
+  /** helper: compare two Date objects by yyyy-mm-dd */
+  const isSameDay = (d1: Date, d2: Date) => {
+    return (
+      d1.getFullYear() === d2.getFullYear() &&
+      d1.getMonth() === d2.getMonth() &&
+      d1.getDate() === d2.getDate()
+    );
+  };
+
+  const checkTodaySigned = () => {
+    const today = new Date();
+
+    state.todaySigned = state.records.some((item: any) => {
+      // 🔴 IMPORTANT: adjust this field if your API uses another name
+      // e.g. item.date, item.createdAt, item.log_date, etc.
+      const createdAt = item.created_at || item.date || item.createdAt;
+
+      if (!createdAt) return false;
+
+      const d = new Date(createdAt);
+      if (isNaN(d.getTime())) return false;
+
+      return isSameDay(d, today);
+    });
   };
 
   const getTableRecord = async () => {
     state.loading = true;
-    state.hasCheckedInToday = false;
     try {
       const response = await getLogs(state.paginate);
       if (response.errcode === 0) {
-        state.records = response.data.items;
-        // 🧠 Check today’s record
-        state.hasCheckedInToday = checkHasCheckedInToday(state.records);
+        state.records = response.data?.items ?? [];
+        // 🧠 after we load records, check if today already has a sign-in
+        checkTodaySigned();
       }
     } catch (e) {
       console.error(e);
@@ -53,6 +74,7 @@
       state.loading = false;
     }
   };
+
   const getCurrentBalance = async () => {
     try {
       const response = await getBalance();
@@ -63,6 +85,7 @@
       console.log(e);
     }
   };
+
   const getConfig = async () => {
     try {
       const response = await getPointConfig();
@@ -73,24 +96,44 @@
       console.log(e);
     }
   };
+
   const getRedeemPoint = async () => {
+    // ✅ extra guard on frontend
+    if (state.todaySigned) {
+      snackbar.showSnackbar("今天已签到，请明天再来～", "warning", "top");
+      return;
+    }
+
     try {
+      state.loading = true;
       const response = await reedemPoint();
+
       if (response.errcode === 0) {
         snackbar.showSnackbar("兑换成功", "success", "top");
-        state.hasCheckedInToday = true; // 🟢 Disable button for rest of day
+
+        // refresh data
         await getCurrentBalance();
         await getTableRecord();
+
+        // ✅ mark as signed today (even before records reload)
+        state.todaySigned = true;
       } else {
-        snackbar.showSnackbar(response.info, "warning", "top");
+        snackbar.showSnackbar(response.info || "兑换失败", "warning", "top");
+
+        // 如果后台用特定错误码标记“今天已经签到过了”，可以在这里同步状态
+        // e.g. if (response.errcode === 4003) state.todaySigned = true;
       }
     } catch (e) {
       console.error(e);
+    } finally {
+      state.loading = false;
     }
   };
+
   const closeSheet = () => {
     model.value = false;
   };
+
   const onInit = () => {
     getCurrentBalance();
     getTableRecord();
@@ -104,7 +147,7 @@
     @after-enter="onInit"
     transition="slide-y-transition"
     max-width="550px"
-    :fullscreen="isMobile"
+    :fullscreen="screenMode === 'phone'"
     scrollable
   >
     <v-card
@@ -124,13 +167,14 @@
           <div></div>
         </div>
       </v-card-title>
-      <!-- Sign-in grid -->
+
+      <!-- Content -->
       <v-card-text class="pt-2 pb-8">
         <v-row class="text-white">
           <v-col cols="12">
             <div>我的积分</div>
             <div class="d-flex justify-space-between align-center">
-              <div class="text-h4 font-weight-bold">{{ state?.balance }}</div>
+              <div class="text-h4 font-weight-bold">{{ state.balance }}</div>
               <v-avatar size="40">
                 <img
                   src="/hookgirl/currency.png"
@@ -139,6 +183,7 @@
               </v-avatar>
             </div>
           </v-col>
+
           <v-col cols="12">
             <v-card
               class="pa-3 rounded-lg"
@@ -166,11 +211,11 @@
                 <v-col
                   v-for="(point, index) in state.records"
                   :key="index"
-                  :cols="isMobile ? 3 : 2"
+                  :cols="screenMode === 'phone' ? 3 : 2"
                   class="mb-2"
                 >
                   <v-sheet
-                    color="purple-lighten-3"
+                    color="purple-lighten-2"
                     class="d-flex flex-column align-center justify-center px-2 py-3 rounded-lg"
                   >
                     <v-avatar size="20">
@@ -182,7 +227,6 @@
                     <span class="text-subtitle-2">
                       +{{ state.config?.daily_sign_point }}
                     </span>
-                    <!-- <span class="text-caption grey--text">第{{}}天</span> -->
                   </v-sheet>
                   <div class="text-center mt-1 f12">
                     {{ point.remark }}
@@ -198,19 +242,23 @@
                     width="200px"
                     rounded="xl"
                     size="large"
-                    :disabled="
-                      state.loading ||
-                      state.hasCheckedInToday ||
-                      state.records.length > 0
-                    "
+                    :disabled="state.loading || state.todaySigned"
                     @click="getRedeemPoint"
                   >
-                    立即签到
+                    <!-- 🔥 Change label based on todaySigned -->
+                    {{ state.todaySigned ? "今日已签到" : "立即签到" }}
                   </v-btn>
+                  <div
+                    v-if="state.todaySigned"
+                    class="mt-2 text-caption text-grey"
+                  >
+                    今天已经签到过了，明天再来哦～
+                  </div>
                 </v-col>
               </v-row>
             </v-card>
           </v-col>
+
           <v-col cols="12">
             <v-card rounded="lg">
               <v-card-text class="text-caption grey--text">
@@ -242,9 +290,6 @@
 
 <style scoped lang="scss">
   .dialog-custom {
-    padding-top: var(--safe-area-inset-top, 0px);
-    padding-bottom: var(--safe-area-inset-bottom, 0px);
-    /* from top 30% */
     background: linear-gradient(
       to bottom,
       #5e20ff 0%,
