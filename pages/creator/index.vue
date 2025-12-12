@@ -5,10 +5,6 @@
   const handleClick = () => {
     window.open("https://t.me/HFDHG9985", "_blank");
   };
-  const { isNative } = usePlatform();
-  const heightOffset = computed(() => {
-    return isNative.value ? "200px" : "90px";
-  });
 </script>
 
 <template>
@@ -69,7 +65,7 @@
   }
 
   .creator-content-row {
-    height: calc(100vh - v-bind(heightOffset));
+    height: calc(100vh - 90px);
   }
 
   .creator-card {

@@ -196,9 +196,8 @@
     },
   };
   const { smAndDown } = useDisplay();
-  const { isNative } = usePlatform();
   const getStyle = computed(() => {
-    return isNative.value || smAndDown.value
+    return smAndDown.value
       ? "height:100%; overflow-y: scroll"
       : "max-height: calc(100vh - 110px); overflow-y: scroll";
   });
@@ -214,7 +213,6 @@
   <v-dialog
     v-model="noteDialogVisible"
     max-width="1200"
-    :persistent="!isNative"
     height="100%"
     @after-enter="onOpenNoteDialog"
     :fullscreen="smAndDown"

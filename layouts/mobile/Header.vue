@@ -1,18 +1,8 @@
-<script setup lang="ts">
-  const dialogIosGuide = ref();
-  const { isNative } = usePlatform();
-  const dialgInfo = ref();
-  const displayColor = computed(() => {
-    if (isNative.value) {
-      return "primary";
-    }
-    return "surface";
-  });
-</script>
+<script setup lang="ts"></script>
 <template>
   <v-app-bar
     flat
-    :color="displayColor"
+    color="surface"
     class="border-b app-header"
   >
     <!-- Left: Logo -->

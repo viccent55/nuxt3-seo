@@ -18,16 +18,11 @@
     computed(() => categorySeo.value?.seo_description),
     computed(() => categorySeo.value?.seo_keywords)
   );
-  const { isNative } = usePlatform();
   const heightOffset = computed(() => {
-    if (!isNative.value) {
-      if (smAndDown.value) {
-        return "210px";
-      } else {
-        return "170px";
-      }
+    if (smAndDown.value) {
+      return "280px";
     }
-    return "260px";
+    return "160px";
   });
 </script>
 
@@ -41,7 +36,6 @@
   .explore-wrapper {
     width: 100%;
     max-height: calc(100vh - v-bind(heightOffset));
-    height: calc(100dvh - v-bind(heightOffset));
     display: flex;
     flex-direction: column;
     padding: 0 12px;

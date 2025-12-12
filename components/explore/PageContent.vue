@@ -132,16 +132,11 @@
     }
   );
   const { smAndDown } = useDisplay();
-  const { isNative } = usePlatform();
   const heightOffset = computed(() => {
-    if (!isNative.value) {
-      if (smAndDown.value) {
-        return "210px";
-      } else {
-        return "170px";
-      }
+    if (smAndDown.value) {
+      return "280px";
     }
-    return "260px";
+    return "160px";
   });
 
   onMounted(() => {

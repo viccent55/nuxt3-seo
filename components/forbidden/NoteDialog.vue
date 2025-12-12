@@ -15,7 +15,6 @@
   const noteDIalogRef = useTemplateRef("note-dialog");
   const { store, onCopy, route, formatDate } = useVariable();
   const { smAndDown } = useDisplay();
-  const { isNative } = usePlatform();
   const loading = ref(false);
   const noteDialog = useNoteForbidden();
   const state = reactive({
@@ -118,7 +117,7 @@
   <v-dialog
     v-model="noteDialogVisible"
     max-width="1200"
-    :persistent="!isNative"
+    persistent
     height="100%"
     @after-enter="onOpenNoteDialog"
     :fullscreen="smAndDown"

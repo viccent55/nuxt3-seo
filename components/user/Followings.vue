@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-  import { useInfiniteScroll } from "@vueuse/core";
+  import useVariable from "@/composables/useVariable";
+  import { screenMode } from "@/hooks/useScreenMode";
   import { getFollowFeed } from "@/service/user";
 
   const props = defineProps({
@@ -20,11 +21,7 @@
     total: 0,
   });
 
-  const { isMobile, formatDate, route } = useVariable();
-  const { setScrollableElement, scrollTop } = useScrollManager();
-  const id = computed(() => Number(route.params.id));
-  const exploreContainerRef = ref<{ element: HTMLElement } | null>(null);
-  const pageWrapperRef = ref<HTMLElement | null>(null);
+  const { formatDate, router } = useVariable();
 
   const getFollowing = async () => {
     try {
@@ -52,24 +49,18 @@
     await getFollowing();
   };
 
-  onMounted(() => {
-    const el = exploreContainerRef.value?.element;
-    if (el) {
-      setScrollableElement(el);
-      el.addEventListener("scroll", () => (scrollTop.value = el.scrollTop));
+  /**
+   * Called by Vuetify's v-intersect when the sentinel div
+   * enters the viewport.
+   */
+  function onIntersect(isIntersecting: boolean) {
+    if (!isIntersecting) return;
+    // guard: only load more when needed
+    if (!state.isNomore && !state.isLoadmore && !state.loading) {
+      onLoadMore();
     }
-    // -------------------- Infinite Scroll --------------------
-    useInfiniteScroll(
-      pageWrapperRef,
-      () => {
-        onLoadMore();
-      },
-      {
-        distance: 300,
-        canLoadMore: () => !state.isLoadmore && !state.isNomore,
-      }
-    );
-  });
+  }
+  onMounted(() => {});
   onBeforeRouteLeave((to, from, next) => {
     if (state.isOpen) {
       state.isOpen = false;
@@ -91,7 +82,7 @@
   <v-dialog
     v-model="state.isOpen"
     scrollable
-    :fullscreen="isMobile"
+    :fullscreen="screenMode === 'phone'"
     max-width="750"
   >
     <v-card
@@ -130,11 +121,11 @@
                 <v-avatar
                   class="me-3 cursor-pointer"
                   density="comfortable"
-                  :size="isMobile ? 40 : 60"
+                  :size="screenMode === 'phone' ? 40 : 60"
                   @click="
                     () => {
                       state.isOpen = false;
-                      navigateTo(`/user/${item.member?.id}`);
+                      router.push(`/user/${item.member?.id}`);
                     }
                   "
                 >
@@ -169,14 +160,29 @@
             />
           </v-col>
         </v-row>
+        <div
+          v-if="!state.isNomore && state.data.length > 0"
+          class="load-more-sentinel"
+          v-intersect="{
+            handler: onIntersect,
+            options: {
+              // start loading just before reaching the very bottom
+              rootMargin: '0px 0px 0px 0px',
+              threshold: 0.1,
+            },
+          }"
+        />
       </v-card-text>
     </v-card>
   </v-dialog>
 </template>
 <style scoped lang="scss">
   .main-contain {
+    // padding-top: env(safe-area-inset-top, 0px);
+    padding-top: var(--safe-area-inset-top, 0px);
     min-height: 500px;
   }
+
   .page-wrapper {
     position: relative;
     width: 100%;

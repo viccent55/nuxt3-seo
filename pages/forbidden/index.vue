@@ -1,12 +1,15 @@
 <script setup lang="ts">
+  import { reactive, ref, computed, watch, onMounted } from "vue";
+  import { useDisplay } from "vuetify";
+
+  import useVariable from "@/composables/useVariable";
+  import { useNoteForbidden } from "@/hooks/useNoteForbiddenDialog";
+  import { select, getCategories } from "@/service/forbidden";
+  import ForbiddenRuleDialog from "@/components/forbidden/RuleDialog.vue";
+
   definePageMeta({
     keepalive: true,
   });
-  import { useInfiniteScroll } from "@vueuse/core";
-  import useVariable from "@/composables/useVariable";
-  import { useNoteForbidden } from "~/hooks/useNoteForbiddenDialog";
-  import { useDisplay } from "vuetify";
-  import { select, getCategories } from "@/service/forbidden";
 
   const state = reactive({
     data: [] as EmptyArrayType,
@@ -22,30 +25,26 @@
     statusCode: null as number | null,
   });
 
-  const { clearQuery, store, storeUser, formatDate, route } = useVariable();
-  const exploreContainerRef = ref<{ element: HTMLElement } | null>(null);
+  const { clearQuery, store, storeUser, formatDate } = useVariable();
   const pageWrapperRef = ref<HTMLElement | null>(null);
-  const { setScrollableElement, scrollTop } = useScrollManager();
-
+  const { smAndDown } = useDisplay();
+  // 1 Load category list
   const getAllCategories = async () => {
     state.loading = true;
     try {
       const response: EmptyObjectType = await getCategories();
-      state.categories = response.data ?? [];
+      const cats = response.data ?? [];
+      state.categories = [{ id: 0, name: "全部" }, ...cats];
     } catch (e) {
       console.log(e);
     } finally {
       state.loading = false;
     }
   };
-  await getAllCategories();
 
-  const displayMenu = computed(() => {
-    return [...[{ id: 0, name: "全部" }], ...(state.categories || [])];
-  });
   /* ---------------------------
-     1. Centralized fetch function
-  ---------------------------- */
+   2. Centralized fetch function
+---------------------------- */
   const fetchData = async () => {
     state.loading = true;
     try {
@@ -54,18 +53,16 @@
         limit: state.limit,
         keyword: state.keyword,
       };
-      if (state.cid != 0) {
+      if (state.cid !== 0) {
         request.cid = state.cid;
       }
       const response: EmptyObjectType = await select(request);
       state.total = response?.data?.count || 0;
-      state.statusCode = response?.errcode;
-      const newItems = response.data?.items?.map((item: EmptyObjectType) => {
-        return {
-          ...item,
-          author: { name: formatDate(item.created_at) },
-        };
-      });
+      state.statusCode = response?.errcode ?? null;
+      const newItems = response.data?.items?.map((item: EmptyObjectType) => ({
+        ...item,
+        author: { name: formatDate(item.created_at) },
+      }));
 
       if (newItems?.length > 0) {
         return newItems;
@@ -79,28 +76,28 @@
     }
   };
 
+  /* ---------------------------
+   3. Category change
+---------------------------- */
   const onCategoryChange = async () => {
     state.page = 1;
     state.data = [];
     state.isNomore = false;
-    state.data = await fetchData();
+
+    const items = await fetchData();
+    state.data = items;
+
     if (pageWrapperRef.value) {
       pageWrapperRef.value.scrollTop = 0;
     }
   };
 
-  // Initial data fetch
-  if (storeUser.isLogin) {
-    await fetchData();
-  }
-
+  /* ---------------------------
+   4. Load more (infinite scroll)
+---------------------------- */
   const onLoadMore = async () => {
     if (state.loading || state.isNomore || state.data.length >= state.total)
       return;
-
-    const scrollEl = pageWrapperRef.value;
-    const savedScrollTop = scrollEl?.scrollTop ?? 0;
-
     state.loadmore = true;
     state.page++;
     const newFeeds = await fetchData();
@@ -109,51 +106,25 @@
     } else {
       state.isNomore = true;
     }
-
-    // Wait for the next DOM update, then wait for the next animation frame
-    // to ensure the masonry layout has been recalculated before restoring scroll.
-    await nextTick();
-    requestAnimationFrame(() => {
-      if (scrollEl) {
-        scrollEl.scrollTop = savedScrollTop;
-      }
-    });
   };
 
+  /* ---------------------------
+   5. Click handlers / dialog
+---------------------------- */
   const noteDialog = useNoteForbidden();
   const clickFeed = (item: EmptyObjectType) => {
     clearQuery();
     noteDialog.openNoteDialog(item.id);
   };
 
-  const { smAndDown } = useDisplay();
-  const { isNative } = usePlatform();
-  const heightOffset = computed(() => {
-    if (!isNative.value) {
-      if (smAndDown.value) {
-        return "200px";
-      } else {
-        return "150px";
-      }
-    }
-    return "240px";
-  });
-
-  // This computed property will always reflect the rule based on the current user state.
+  // rule overlay logic
   const shouldShowRuleDialog = computed(
     () => !storeUser.isLogin || (storeUser.userInfo?.invite_count ?? 0) < 5
   );
-
-  // This ref will control the actual visibility of the overlay.
-  const isVisible = ref(shouldShowRuleDialog.value);
-
-  const { configuration } = storeToRefs(store);
-
-  useSeo(
-    computed(() => configuration.value?.forbidden_title),
-    computed(() => configuration.value?.forbidden_description),
-    computed(() => configuration.value?.forbidden_keywords)
-  );
+  const isVisible = computed({
+    get: () => shouldShowRuleDialog.value,
+    set: () => (storeUser.isLogin ? false : false),
+  });
 
   watch(
     () => state.statusCode,
@@ -162,47 +133,37 @@
     }
   );
 
-  onActivated(() => {
-    const el = pageWrapperRef.value;
-    if (el) {
-      el.scrollTop = scrollTop.value;
+  /**
+   * Called by Vuetify's v-intersect when the sentinel div
+   * enters the viewport.
+   */
+  function onIntersect(isIntersecting: boolean) {
+    if (!isIntersecting) return;
+    // guard: only load more when needed
+    if (!state.isNomore && !state.loadmore && !state.loading) {
+      onLoadMore();
     }
-    // Re-evaluate visibility when the component is activated
-    isVisible.value = shouldShowRuleDialog.value;
-  });
+  }
 
-  onMounted(() => {
-    const el = pageWrapperRef.value;
-    if (el) {
-      setScrollableElement(el);
-      el.addEventListener("scroll", () => (scrollTop.value = el.scrollTop));
+  onMounted(async () => {
+    await getAllCategories();
+    if (storeUser.isLogin) {
+      const items = await fetchData(); // ✅ assign result
+      state.data = items; // ✅ initial list filled
     }
-    // -------------------- Infinite Scroll --------------------
-    useInfiniteScroll(
-      pageWrapperRef,
-      () => {
-        onLoadMore();
-      },
-      {
-        distance: 300,
-        canLoadMore: () => !state.loadmore && !state.isNomore,
-      }
-    );
   });
 </script>
-
 <template>
   <v-container
-    class="pa-0 d-flex flex-column"
+    class="d-flex flex-column pa-0"
     fluid
-    style="height: 100%"
   >
-    <!-- Tabs fixed / sticky -->
     <v-card
       flat
       color="transparent"
+      :loading="state.loading"
     >
-      <v-card-title>
+      <v-card-title class="px-0">
         <v-tabs
           v-model="state.cid"
           color="primary"
@@ -212,7 +173,7 @@
           @update:model-value="onCategoryChange"
         >
           <v-tab
-            v-for="(item, index) in displayMenu"
+            v-for="(item, index) in state.categories"
             :key="index"
             :value="item.id"
             class="px-0 custom-tab"
@@ -221,102 +182,85 @@
           </v-tab>
         </v-tabs>
       </v-card-title>
-      <v-card-text class="pa-0 px-md-3 position-relative">
-        <!-- Wrapper for content and overlay -->
+
+      <v-card-text class="px-3 px-md-0 page-content-container">
         <div
-          class="forbidden-wrapper"
-          ref="pageWrapperRef"
+          v-if="!state?.data?.length && !isVisible && !state.loading"
+          class="text-center"
         >
-          <div
-            v-if="!state?.data?.length && !isVisible && !state.loading"
+          <v-btn
+            @click="onCategoryChange"
+            color="primary"
+            rounded="xl"
+            prepend-icon="mdi-refresh"
+          >
+            刷新
+          </v-btn>
+        </div>
+        <v-row :dense="smAndDown">
+          <v-col
+            v-for="(item, index) in state.data"
+            :key="index"
+            cols="6"
+            sm="4"
+            md="4"
+            lg="3"
+            class="col-lg-1-5"
+          >
+            <ExploreFeed
+              :feed="item"
+              @click="clickFeed(item)"
+            />
+          </v-col>
+          <!-- Loading / Load More Indicator -->
+          <v-col
+            cols="12"
             class="text-center"
           >
-            <v-btn
-              @click="onCategoryChange"
-              color="primary"
-              rounded="xl"
-              prepend-icon="mdi-refresh"
-            >
-              刷新
-            </v-btn>
-          </div>
-          <ExploreContainer
-            ref="exploreContainerRef"
-            :items="state.data"
-            :is-load-more="state.loadmore"
-            :is-no-more="state.isNomore"
-            @click-item="clickFeed"
-          />
-        </div>
-
-        <client-only>
-          <v-overlay
-            style="display: flex; justify-content: center; align-items: center"
-            v-model="isVisible"
-            contained
-            :opacity="0.95"
-            persistent
+            <ExploreLoading :loading="state.loading || state.loading" />
+          </v-col>
+          <v-col
+            cols="12"
+            v-if="state.data.length >= state.total"
           >
-            <ForbiddenRuleDialog
-            
+            <div class="d-flex justify-center align-center text-center py-4">
+              <v-empty-state
+                title="没有更多了"
+                text="暂无内容"
+              />
+            </div>
+          </v-col>
+          <v-col cols="12">
+            <div
+              v-if="!state.isNomore && state.data.length > 0"
+              class="load-more-sentinel pb-5 pb-md-3"
+              v-intersect="{
+                handler: onIntersect,
+                options: {
+                  // start loading just before reaching the very bottom
+                  rootMargin: '0px 0px 0px 0px',
+                  threshold: 0.1,
+                },
+              }"
             />
-          </v-overlay>
-        </client-only>
+          </v-col>
+        </v-row>
+        <v-overlay
+          style="display: flex; justify-content: center; align-items: center"
+          v-model="isVisible"
+          contained
+          :opacity="0.95"
+          persistent
+        >
+          <ForbiddenRuleDialog />
+        </v-overlay>
       </v-card-text>
     </v-card>
   </v-container>
 </template>
-
 <style scoped lang="scss">
-  .contain-height {
+  .page-content-container {
+    // height: 100%;
     min-height: 80vh;
-  }
-  .forbidden-wrapper {
-    width: 100%;
-    max-height: calc(100vh - v-bind(heightOffset));
-    flex-grow: 1;
-    overflow-y: auto;
-    padding: 0 12px;
-    position: relative;
-    min-height: 70vh;
-    scrollbar-width: none;
-  }
-
-  .news-card {
-    width: 100%;
-    background-color: transparent;
-    overflow: hidden;
-    border: none;
-    transition: transform 0.2s ease;
-    cursor: pointer;
-
-    &:hover {
-      transform: translateY(-4px);
-    }
-  }
-
-  .title {
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 1.5;
-    text-align: center;
-    word-break: break-word;
-  }
-
-  .custom-tab {
-    min-width: 45px !important;
-    margin-right: 10px;
-  }
-  .category-tabs {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
-  .category-tabs :deep(.v-slide-group__next),
-  .category-tabs :deep(.v-slide-group__prev) {
-    min-width: 32px;
-  }
-  .v-overlay__content {
-    padding: 16px;
   }
 </style>

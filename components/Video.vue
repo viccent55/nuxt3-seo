@@ -23,7 +23,6 @@
 
   const videoPlayer = ref<HTMLVideoElement | null>(null);
   let hls: any | null = null;
-  const { isNative } = usePlatform();
 
   const initializePlayer = (url: string) => {
     // Clean up existing HLS instance if it exists
@@ -103,14 +102,7 @@
   const displayHeight = computed(() => props.height);
   watchEffect(() => {
     if (props.src) {
-      const proxyUrl = `/api/video-proxy?url=${encodeURIComponent(props.src)}`;
-      if (isNative.value) {
-        // In native environment, use the original src
-        initializePlayer(proxyUrl);
-      } else {
-        // In web environment, use the proxied URL
-        initializePlayer(props.src);
-      }
+      initializePlayer(props.src);
     }
   });
   // onMounted(() => {

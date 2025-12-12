@@ -211,16 +211,11 @@
       });
     }
   };
-  const { isNative } = usePlatform();
   const heightOffset = computed(() => {
-    if (!isNative.value) {
-      if (smAndDown.value) {
-        return "140px";
-      } else {
-        return "80px";
-      }
+    if (smAndDown.value) {
+      return "140px";
     }
-    return "120px";
+    return "80px";
   });
   onMounted(async () => {
     onInit();

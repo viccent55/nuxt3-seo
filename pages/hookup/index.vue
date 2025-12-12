@@ -139,16 +139,11 @@
     resetAndFetch();
   };
   const { smAndDown } = useDisplay();
-  const { isNative } = usePlatform();
   const heightOffset = computed(() => {
-    if (!isNative.value) {
-      if (smAndDown.value) {
-        return "240px";
-      } else {
-        return "200px";
-      }
+    if (smAndDown.value) {
+      return "280px";
     }
-    return "295px";
+    return "190px";
   });
   const onOpenCheckPoint = () => {
     checkPermissions(PERMISSION.User, () => {
@@ -182,6 +177,7 @@
     <v-card
       flat
       color="transparent"
+      :loading="state.loading"
     >
       <v-card-title class="px-0 pt-0">
         <v-toolbar

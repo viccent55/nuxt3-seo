@@ -7,7 +7,6 @@
   import useVariable from "@/composables/useVariable";
   import ExploreLoading from "@/components/ExploreLoading.vue";
   import { useNoteArticleDialog } from "~/hooks/useNoteArticleDialog";
-  import { useDisplay } from "vuetify";
   const { setScrollableElement, scrollTop } = useScrollManager();
 
   const state = reactive({
@@ -92,16 +91,11 @@
     clearQuery();
     noteDialog.openNoteDialog(id);
   };
-  const { isNative } = usePlatform();
   const heightOffset = computed(() => {
-    if (!isNative.value) {
-      if (isMobile.value) {
-        return "160px";
-      } else {
-        return "120px";
-      }
+    if (isMobile.value) {
+      return "140px";
     }
-    return "220px";
+    return "110px";
   });
   onMounted(() => {
     const el = containerRef.value;

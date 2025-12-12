@@ -142,9 +142,8 @@
     initializeApp();
 
     const { needRefresh } = usePwaInstall();
-    const { isNative } = usePlatform();
     watch(needRefresh, (isNeeded) => {
-      if (isNeeded && mobile.value && !isNative.value) {
+      if (isNeeded && mobile.value) {
         updateVersionRef.value?.openNoteDialog();
       }
     });

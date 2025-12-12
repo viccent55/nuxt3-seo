@@ -34,16 +34,11 @@
   const next = () => carousel.value?.next?.();
   const prev = () => carousel.value?.prev?.();
   const { smAndDown } = useDisplay();
-  const { isNative } = usePlatform();
   const heightOffset = computed(() => {
-    if (!isNative.value) {
-      if (smAndDown.value) {
-        return props.height;
-      } else {
-        return `calc(100vh - 120px)`;
-      }
+    if (smAndDown.value) {
+      return props.height;
     }
-    return props.height;
+    return `calc(100vh - 120px)`;
   });
   const lightBoxRef = useTemplateRef("light-box");
   const onOpenLightBox = (index: number) => {
@@ -113,7 +108,7 @@
       </v-carousel-item>
     </v-carousel>
     <Lightbox
-     v-if="mediaInfo.length > 0 && props.lightBox"
+      v-if="mediaInfo.length > 0 && props.lightBox"
       ref="light-box"
       :sources="mediaInfo.map((item) => item.value)"
     ></Lightbox>

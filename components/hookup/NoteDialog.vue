@@ -16,7 +16,6 @@
 
   const Swiper = defineAsyncComponent(() => import("../Swiper.vue"));
   const { store, onCopy, route, isMobile } = useVariable();
-  const { isNative } = usePlatform();
   const noteDialog = useNoteHookupDialog();
   const { smAndDown } = useDisplay();
   const swiperInstanceRef = ref<InstanceType<typeof Swiper> | null>(null);
@@ -104,7 +103,7 @@
     v-model="noteDialogVisible"
     max-width="1200"
     min-height="520px"
-    :persistent="!isNative"
+    persistent
     @after-enter="onOpenNoteDialog"
     scrollable
     :fullscreen="isMobile"
