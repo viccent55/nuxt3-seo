@@ -1,12 +1,6 @@
 import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
-const isCapacitor = process.env.NUXT_CAPACITOR === "true";
 
 export default defineNuxtConfig({
-  // 👇 Automatically switch
-  ssr: !isCapacitor, // true for web, false for Capacitor
-  nitro: {
-    preset: isCapacitor ? "static" : "node-server", // Generate static output for Capacitor
-  },
   app: {
     head: {
       title: "小红书成人版",

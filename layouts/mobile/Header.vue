@@ -34,8 +34,6 @@
   /* In your main CSS file or header component <style> */
   .app-header {
     position: fixed;
-    /* Add padding equal to the top safe area inset */
-    padding-top: var(--safe-area-inset-top, 0px);
   }
 
   .custom-dropdown {

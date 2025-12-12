@@ -204,7 +204,6 @@
             position: absolute;
             top: 10px;
             left: 10px;
-            padding-top: var(--safe-area-inset-top, 0px);
           "
         >
           <v-icon></v-icon>
@@ -233,8 +232,6 @@
 </template>
 <style scoped lang="scss">
   .main-contain {
-    // padding-top: env(safe-area-inset-top, 0px);
-    padding-top: var(--safe-area-inset-top, 0px);
     min-height: 500px;
   }
   .page-wrapper {

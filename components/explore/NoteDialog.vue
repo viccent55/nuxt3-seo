@@ -32,7 +32,6 @@
   });
 
   const snackbar = useSnackbar();
-  const { setStatus } = useCapacitor();
 
   const checkStatus = async () => {
     try {
@@ -206,9 +205,6 @@
   watch(
     () => noteDialogVisible.value,
     (val) => {
-      if (isNative.value) {
-        return setStatus(val);
-      }
       useDialogUXLock(noteDialogVisible);
     }
   );
@@ -419,12 +415,9 @@
 <style scoped lang="scss">
   .main-contain {
     /* Add padding equal to the top safe area inset */
-    padding-top: var(--safe-area-inset-top, 0px);
-    padding-bottom: var(--safe-area-inset-bottom, 0px);
   }
   .back-button {
     position: absolute;
-    top: calc(var(--safe-area-inset-top, 0px) + 10px);
     left: 10px;
     z-index: 20;
   }

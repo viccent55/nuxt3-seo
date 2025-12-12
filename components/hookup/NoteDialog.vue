@@ -25,7 +25,7 @@
     comments: [] as EmptyObjectType[],
     loading: false,
   });
-  const { setStatus } = useCapacitor();
+
   const snackbar = useSnackbar();
   const onOpenNoteDialog = async () => {
     state.loading = true;
@@ -94,9 +94,6 @@
     () => noteDialogVisible.value,
     (val) => {
       state.loading = true;
-      if (isNative.value) {
-        return setStatus(val);
-      }
       useDialogUXLock(noteDialogVisible);
     }
   );
@@ -493,8 +490,6 @@
 
 <style scoped lang="scss">
   .main-contain {
-    padding-top: var(--safe-area-inset-top, 0px);
-    padding-bottom: var(--safe-area-inset-bottom, 0px);
   }
   .image-cover {
     min-height: 150px;

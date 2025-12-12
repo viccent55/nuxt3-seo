@@ -73,8 +73,6 @@
     left: 0;
     right: 0;
     z-index: 10;
-
-    padding-bottom: var(--safe-area-inset-bottom, 0px);
   }
   .footer {
     z-index: 16;

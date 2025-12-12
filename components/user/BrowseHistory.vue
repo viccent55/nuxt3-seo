@@ -215,7 +215,6 @@
     scrollbar-width: none;
   }
   .main-contain {
-    padding-top: var(--safe-area-inset-top, 0px);
     min-height: 500px;
   }
 </style>

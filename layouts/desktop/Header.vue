@@ -60,13 +60,13 @@
     <!-- Left: Logo -->
     <v-container
       fluid
-      max-width="1720px"
+      style="max-width: 1720px"
     >
       <v-row
         dense
         align="center"
       >
-        <v-col cols="2">
+        <v-col :cols="2">
           <v-btn
             variant="text"
             class="pa-0 text-body-1 font-weight-bold"
@@ -80,7 +80,7 @@
             ></v-img>
           </v-btn>
         </v-col>
-        <v-col cols="7">
+        <v-col :cols="7">
           <div class="d-flex ga-5 align-center justify-space-between">
             <nav
               aria-label=" navigation"
@@ -107,7 +107,7 @@
               placeholder="请输入搜索内容"
               append-inner-icon="mdi-magnify"
               rounded="xl"
-              color="surface-variant"
+              color="warning"
               class="rounded-xl"
               max-width="400px"
               @focus="onFocusSearch"
@@ -116,7 +116,7 @@
           </div>
         </v-col>
         <v-col
-          cols="3"
+          :cols="3"
           class="d-flex align-center justify-end"
         >
           <div class="d-flex align-center">

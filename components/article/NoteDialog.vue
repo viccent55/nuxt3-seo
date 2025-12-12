@@ -24,7 +24,6 @@ _
     data: {} as EmptyObjectType,
     comments: [] as EmptyObjectType[],
   });
-  const { setStatus } = useCapacitor();
   const snackbar = useSnackbar();
   const contentArticleRef = useTemplateRef("content-article");
   const onOpenNoteDialog = async () => {
@@ -151,7 +150,6 @@ _
   watch(
     () => noteDialogVisible.value,
     (val) => {
-      setStatus(val);
       useDialogUXLock(noteDialogVisible);
     }
   );
@@ -332,9 +330,6 @@ _
 
 <style scoped lang="scss">
   .main-contain {
-    // padding-top: env(safe-area-inset-top, 0px);
-    padding-top: var(--safe-area-inset-top, 0px);
-    padding-bottom: var(--safe-area-inset-bottom, 0px);
   }
   .right-side {
     max-height: calc(100vh - 180px);

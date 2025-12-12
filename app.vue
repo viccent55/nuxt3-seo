@@ -157,7 +157,6 @@
     :color="state.color"
     :timeout="state.timeout"
     :location="state.location"
-    style="padding-top: var(--safe-area-inset-top, 0px)"
   >
     {{ state.message }}
     <template v-slot:actions>
