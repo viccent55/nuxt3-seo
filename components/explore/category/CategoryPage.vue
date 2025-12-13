@@ -99,7 +99,7 @@
     },
   };
 
-  const { reset } = useInfiniteScroll(
+  useInfiniteScroll(
     () => exploreContainerRef.value?.element,
     () => {
       // load more

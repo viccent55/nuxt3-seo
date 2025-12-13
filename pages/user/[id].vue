@@ -404,6 +404,8 @@
     justify-content: center;
     width: 100%;
     max-width: 900px;
+    height: 100%;
+    padding: 0 0 60px 0;
     margin: auto;
   }
   .user-content {

@@ -2,7 +2,6 @@
   import { getConfig, findList } from "~/service/hookup";
   import { useInfiniteScroll } from "@vueuse/core";
   import { useNoteHookupDialog } from "~/hooks/useNoteHookupDialog";
-  import { useDisplay } from "vuetify";
   import { checkPermissions } from "~/hooks/usePermisions";
   import { PERMISSION } from "~/common/permision";
 
@@ -138,10 +137,9 @@
   const onChange = () => {
     resetAndFetch();
   };
-  const { smAndDown } = useDisplay();
   const heightOffset = computed(() => {
-    if (smAndDown.value) {
-      return "280px";
+    if (isMobile.value) {
+      return "240px";
     }
     return "190px";
   });
@@ -257,7 +255,7 @@
           @click-item="openDialog"
         /> -->
           <v-row
-            :dense="smAndDown"
+            :dense="isMobile"
             class="w-100 px-2"
           >
             <v-col

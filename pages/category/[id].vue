@@ -20,7 +20,7 @@
   );
   const heightOffset = computed(() => {
     if (smAndDown.value) {
-      return "280px";
+      return "220px";
     }
     return "160px";
   });

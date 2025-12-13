@@ -9,13 +9,13 @@
   import { openPage } from "~/service";
   import { itemAdClick } from "@/service/advert";
   import useVariable from "@/composables/useVariable";
-  import { useDisplay } from "vuetify";
 
   const noteDialog = useNoteDialog();
   const feeds = ref<ExploreFeedInfo[]>([]);
   const isLoadMore = ref(false);
   const isNoMore = ref(false);
-  const { clearQuery, route, store, storeUser, debounce } = useVariable();
+  const { clearQuery, route, store, storeUser, debounce, isMobile } =
+    useVariable();
   const exploreContainerRef = ref<{ element: HTMLElement } | null>(null);
   const page = ref(Number(route.params.page) || 1);
   const { setScrollableElement, scrollTop } = useScrollManager();
@@ -131,10 +131,9 @@
       }
     }
   );
-  const { smAndDown } = useDisplay();
   const heightOffset = computed(() => {
-    if (smAndDown.value) {
-      return "280px";
+    if (isMobile.value) {
+      return "220px";
     }
     return "160px";
   });
@@ -146,7 +145,7 @@
       el.addEventListener("scroll", () => (scrollTop.value = el.scrollTop));
     }
     let isInitualized = false;
-    const { reset } = useInfiniteScroll(
+    useInfiniteScroll(
       () => exploreContainerRef.value?.element,
       () => {
         // load more
