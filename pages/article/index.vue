@@ -116,7 +116,7 @@
     fluid
   >
     <div
-      class="article-wrapper pb-6 md:pb-0"
+      class="article-wrapper pb-10 md:pb-0"
       ref="containerRef"
     >
       <v-row :no-gutters="isMobile">

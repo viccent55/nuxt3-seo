@@ -20,7 +20,7 @@
   );
   const heightOffset = computed(() => {
     if (smAndDown.value) {
-      return "180px";
+      return "200px";
     }
     return "160px";
   });
@@ -40,6 +40,5 @@
     flex-direction: column;
     padding: 0 12px;
     scrollbar-width: none;
-    padding-bottom: 80px;
   }
 </style>

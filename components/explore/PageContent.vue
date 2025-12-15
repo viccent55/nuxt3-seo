@@ -133,7 +133,7 @@
   );
   const heightOffset = computed(() => {
     if (isMobile.value) {
-      return "180px";
+      return "200px";
     }
     return "160px";
   });
@@ -184,6 +184,5 @@
     flex-direction: column;
     padding: 0 8px;
     scrollbar-width: none;
-    padding-bottom: 80px;
   }
 </style>

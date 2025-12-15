@@ -1,22 +1,20 @@
 import { useWindowSize } from "@vueuse/core";
-import { useGoTo } from "vuetify";
+import { useDisplay, useGoTo } from "vuetify";
 import { useStore } from "@/store";
 import { useUserStore } from "~/store/user";
-import { Capacitor } from "@capacitor/core";
 import dayjs from "dayjs";
 
 const useVaraible = () => {
   const { width } = useWindowSize();
   const store = useStore();
   const storeUser = useUserStore();
+  const { smAndDown } = useDisplay();
   const route = useRoute();
   const router = useRouter();
   const isMobileSm = computed(() => width.value < 467);
-  const isMobile = computed(() => width.value < 768);
+  const isMobile = computed(() => smAndDown.value || width.value < 768);
   const isIpad = computed(() => width.value <= 1024 && width.value >= 768);
   const goto = useGoTo();
-  const platform = computed(() => Capacitor.getPlatform());
-  const isNativePlatform = computed(() => Capacitor.isNativePlatform());
   const onCopy = async (text: string) => {
     try {
       if (navigator.clipboard?.writeText) {
@@ -161,8 +159,6 @@ const useVaraible = () => {
     getTypeDevice,
     clearQuery,
     storeUser,
-    platform,
-    isNativePlatform,
     debounce,
     formatDate,
   };
