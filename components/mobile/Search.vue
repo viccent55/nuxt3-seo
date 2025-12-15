@@ -31,6 +31,7 @@
   });
   const clickMenuItem = (item: Record<string, string>) => {
     store.channel = item.value;
+    navigateTo(`/category/${item.value}`);
   };
   const onOpenPage = () => {
     const param = route.query.chan || "";
