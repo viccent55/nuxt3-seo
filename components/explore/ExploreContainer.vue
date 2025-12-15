@@ -97,7 +97,7 @@
     <!-- Loading indicator for loading more -->
     <ExploreLoading
       :loading="isLoadMore"
-      class="pb-16"
+      class="explore-loading"
     />
     <!-- Loading indicator for loading more -->
 
@@ -120,5 +120,8 @@
     flex-grow: 1; /* Allow container to fill available space */
     overflow-y: auto;
     scrollbar-width: none;
+  }
+  .explore-loading {
+    padding-bottom: 80px !important;
   }
 </style>
