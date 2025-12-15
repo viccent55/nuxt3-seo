@@ -40,42 +40,42 @@
   };
 </script>
 <template>
-  <!-- Header must be OUTSIDE v-main -->
-  <Header />
+  <div>
+    <!-- Header must be OUTSIDE v-main -->
+    <Header />
 
-  <!-- v-main needs padding-top so it doesn't jump after measuring app-bar -->
-  <v-main class="pt-16">
-    <v-container
-      fluid
-      max-width="1720px"
-      class="pa-0"
-    >
-      <v-row no-gutters>
-        <v-col
-          class="d-none d-md-block aside-column"
-          md="3"
-          lg="2"
-          cols="12"
-        >
-          <DesktopAside
-            :items="NavigationItems"
-            @click-nav-item="clickNavigationItem"
-          />
-        </v-col>
-        <v-col
-          md="9"
-          lg="10"
-          cols="12"
-        >
-          <div class="content-column">
-            <slot />
-          </div>
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-main>
-
-  <Footer />
+    <!-- v-main needs padding-top so it doesn't jump after measuring app-bar -->
+    <v-main class="pt-16">
+      <v-container
+        fluid
+        max-width="1720px"
+        class="pa-0"
+      >
+        <v-row no-gutters>
+          <v-col
+            class="d-none d-md-block aside-column"
+            md="3"
+            lg="2"
+            cols="12"
+          >
+            <DesktopAside
+              :items="NavigationItems"
+              @click-nav-item="clickNavigationItem"
+            />
+          </v-col>
+          <v-col
+            md="9"
+            lg="10"
+            cols="12"
+          >
+            <div class="content-column">
+              <slot />
+            </div>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-main>
+  </div>
 </template>
 <style scoped>
   .aside-column {
