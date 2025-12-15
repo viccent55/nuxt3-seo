@@ -62,7 +62,7 @@
   };
 </script>
 <template>
-  <div>
+  <div class="w-100 px-3">
     <div class="d-flex align-center ga-5 w-100 justify-space-between">
       <v-btn
         variant="text"

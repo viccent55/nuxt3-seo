@@ -23,17 +23,21 @@
   };
 </script>
 <template>
-  <Header />
-  <v-main class="bg-background main-content-wrapper">
-    <slot />
-  </v-main>
-  <Footer
-    :active-item="store.mode"
-    :items="NavigationItems"
-    @click-nav-item="clickNavigationItem"
-  ></Footer>
+  <v-layout>
+    <Header />
+    <v-main class="page-main">
+      <slot />
+    </v-main>
+    <Footer
+      :active-item="store.mode"
+      :items="NavigationItems"
+      @click-nav-item="clickNavigationItem"
+    ></Footer>
+  </v-layout>
 </template>
 <style scoped lang="scss">
-  .main-content-wrapper {
+  .page-main {
+    padding-top: 64px; /* match your header height */
+    padding-bottom: 64px; /* if footer is fixed too */
   }
 </style>
