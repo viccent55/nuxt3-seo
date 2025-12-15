@@ -97,7 +97,7 @@
     <!-- Loading indicator for loading more -->
     <ExploreLoading
       :loading="isLoadMore"
-      class="pb-8"
+      class="pb-16"
     />
     <!-- Loading indicator for loading more -->
 

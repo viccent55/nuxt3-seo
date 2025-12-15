@@ -23,17 +23,15 @@
   };
 </script>
 <template>
-  <v-layout>
-    <Header />
-    <v-main class="page-main">
-      <slot />
-    </v-main>
-    <Footer
-      :active-item="store.mode"
-      :items="NavigationItems"
-      @click-nav-item="clickNavigationItem"
-    ></Footer>
-  </v-layout>
+  <Header />
+  <v-main class="page-main">
+    <slot />
+  </v-main>
+  <Footer
+    :active-item="store.mode"
+    :items="NavigationItems"
+    @click-nav-item="clickNavigationItem"
+  ></Footer>
 </template>
 <style scoped lang="scss">
   .page-main {
