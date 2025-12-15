@@ -139,7 +139,7 @@
   };
   const heightOffset = computed(() => {
     if (isMobile.value) {
-      return "240px";
+      return "220px";
     }
     return "190px";
   });
