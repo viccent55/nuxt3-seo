@@ -19,6 +19,7 @@ export const useStore = defineStore("store", {
       channel: "001",
       chan: "",
       search: "",
+      popupNotice: [] as EmptyArrayType,
     };
   },
   actions: {

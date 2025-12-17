@@ -83,9 +83,20 @@ export default function useHome() {
     getAdsPosition(4);
     getAdsPosition(5);
   };
-
+  const getPopupNotice = async () => {
+    try {
+      const response = await $fetch("/api/config/popupnotice", {
+        method: "GET",
+      });
+      const item = decrypt(response?.data);
+      store.popupNotice = item.data || {};
+    } catch (error) {
+      console.error("Failed to fetch config:", error);
+    }
+  };
   return {
     initVisitor,
     initAds,
+    getPopupNotice,
   };
 }

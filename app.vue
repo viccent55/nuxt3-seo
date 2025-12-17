@@ -2,7 +2,7 @@
   import { useDisplay, useTheme } from "vuetify";
   import type { VSnackbar } from "vuetify/components/VSnackbar";
   import { openLoginDialog } from "@/hooks/useLoginDialog";
-  import NotificationDialog from "@/components/NotificationDialog.vue";
+  import NotificationDialog from "@/components/global/NotificationDialog.vue";
   import NoteDialog from "@/components/explore/NoteDialog.vue";
   import UpdateVersion from "@/components/UpdateVersion.vue";
 
@@ -19,12 +19,12 @@
   import { useNoteHookupDialog } from "@/hooks/useNoteHookupDialog";
   import { useReport } from "@/composables/useReport";
   import { generateCode } from "@/utils/toolsValidate";
+  import type NotificationDialogVue from "./components/global/NotificationDialog.vue";
 
   const { storeUser, store } = useVariable();
   const { initAds } = useHome();
   const theme = useTheme();
   const showButton = ref(false);
-  const notificationDialogRef = ref<InstanceType<typeof NotificationDialog>>();
   const noteDialog = useNoteDialog();
   const noteArticleDetail = useNoteArticleDialog();
   const noteForbiddenDialog = useNoteForbidden();
@@ -193,12 +193,8 @@
       />
     </div>
     <LoginDialog></LoginDialog>
-    <NotificationDialog
-      ref="notificationDialogRef"
-      @retry="reloadPage"
-    />
     <UpdateVersion ref="updateVersionRef" />
-
+    <NotificationDialog v-if="!storeUser.loginDialogVisible" />
     <NoteDialog />
     <ArticleNoteDialog />
     <ForbiddenNoteDialog />
