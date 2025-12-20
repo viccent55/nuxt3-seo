@@ -177,21 +177,13 @@
       <NuxtPage />
     </NuxtLayout>
     <!-- Floating FAB -->
-    <div>
-      <v-fab
-        class="fab"
-        icon="mdi-refresh"
-        size="small"
-        @click="reloadPage()"
-      />
-      <v-fab
-        class="scroll-to-top"
-        size="small"
-        icon="mdi-arrow-up"
-        v-show="showButton"
-        @click="scrollToTop"
-      />
-    </div>
+    <v-fab
+      class="scroll-to-top"
+      size="small"
+      icon="mdi-arrow-up"
+      v-show="showButton"
+      @click="scrollToTop"
+    />
     <LoginDialog></LoginDialog>
     <UpdateVersion ref="updateVersionRef" />
     <NotificationDialog v-if="!storeUser.loginDialogVisible" />

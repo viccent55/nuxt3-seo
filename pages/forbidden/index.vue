@@ -144,7 +144,13 @@
       onLoadMore();
     }
   }
-
+  const onRefresh = async () => {
+    state.isNomore = false;
+    state.page = 1;
+    state.data = [];
+    const items = await fetchData();
+    state.data = items;
+  };
   onMounted(async () => {
     await getAllCategories();
     if (storeUser.isLogin) {
@@ -256,11 +262,43 @@
         </v-overlay>
       </v-card-text>
     </v-card>
+    <v-fab
+      class="fab"
+      icon="mdi-refresh"
+      size="small"
+      color="primary"
+      @click="onRefresh()"
+    />
   </v-container>
 </template>
 <style scoped lang="scss">
   .page-content-container {
     // height: 100%;
     min-height: 80vh;
+  }
+  .fab,
+  .scroll-to-top {
+    position: fixed;
+    right: 10px;
+    z-index: 99;
+  }
+
+  .fab {
+    bottom: 120px;
+  }
+  .scroll-to-top {
+    bottom: 170px;
+  }
+
+  /* Desktop overrides */
+  @media (min-width: 960px) {
+    .fab {
+      bottom: 30px;
+      right: 30px;
+    }
+    .scroll-to-top {
+      bottom: 80px;
+      right: 30px;
+    }
   }
 </style>

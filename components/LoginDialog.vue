@@ -26,6 +26,7 @@
       subscribed: 0,
     },
     isLogin: true,
+    loading: false,
   });
 
   const { onCopy, route } = useVariable();
@@ -62,6 +63,7 @@
       return snackbar.showSnackbar("请输入您的密码", "warning", "top");
 
     try {
+      state.loading = true;
       const response = await login(state.login);
       if (response.errcode === 0) {
         storeUser.login(response.data?.token, response.data?.userinfo);
@@ -72,6 +74,8 @@
       }
     } catch (e) {
       console.error("Error during login:", e);
+    } finally {
+      state.loading = false;
     }
   };
 
@@ -84,6 +88,7 @@
       return snackbar.showSnackbar("两次密码不一致", "warning", "top");
 
     try {
+      state.loading = true;
       const request = {
         ...state.register,
         visitor: storeUser.isUseToRegister
@@ -102,6 +107,8 @@
       }
     } catch (e) {
       console.error("Error during register:", e);
+    } finally {
+      state.loading = false;
     }
   };
 
@@ -180,6 +187,7 @@
                 class="mt-md-4 mt-0"
                 size="default"
                 rounded="pill"
+                :loading="state.loading"
                 @click="onAuth"
               >
                 登录
@@ -213,7 +221,7 @@
               />
               <v-text-field
                 v-model="state.register.invite_code"
-                label="邀请码"
+                label="邀请码(没有可不填)"
                 variant="outlined"
                 density="compact"
               />
@@ -223,6 +231,7 @@
                 size="default"
                 rounded="pill"
                 @click="onPrepareRegister"
+                :loading="state.loading"
               >
                 注册
               </v-btn>

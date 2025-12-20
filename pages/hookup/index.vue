@@ -153,6 +153,14 @@
     computed(() => configuration.value?.novel_description),
     computed(() => configuration.value?.novel_keywords)
   );
+
+  const onRefresh = async () => {
+    state.isNoMore = false;
+    state.page = 1;
+    state.data = [];
+    const data = await fetchData();
+    state.data = data.items;
+  };
   onMounted(() => {
     const el = containerRef.value;
     if (el) {
@@ -338,7 +346,15 @@
           </div>
         </div>
       </v-card-text>
+      <v-fab
+        class="fab"
+        icon="mdi-refresh"
+        size="small"
+        color="primary"
+        @click="onRefresh()"
+      />
     </v-card>
+
     <hookup-drawer-area
       :areas="config?.areas"
       :hot-areas="config?.hot_areas"
@@ -380,5 +396,31 @@
     // background-position: right;
     background-repeat: no-repeat;
     cursor: pointer;
+  }
+
+  .fab,
+  .scroll-to-top {
+    position: fixed;
+    right: 10px;
+    z-index: 99;
+  }
+
+  .fab {
+    bottom: 120px;
+  }
+  .scroll-to-top {
+    bottom: 170px;
+  }
+
+  /* Desktop overrides */
+  @media (min-width: 960px) {
+    .fab {
+      bottom: 30px;
+      right: 30px;
+    }
+    .scroll-to-top {
+      bottom: 80px;
+      right: 30px;
+    }
   }
 </style>

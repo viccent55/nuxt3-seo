@@ -97,6 +97,13 @@
     }
     return "110px";
   });
+  const onRefresh = async () => {
+    state.isNoMore = false;
+    state.page = 1;
+    state.data = [];
+    const data = await fetchArticle();
+    state.data = data.items;
+  };
   onMounted(() => {
     const el = containerRef.value;
     if (el) {
@@ -175,6 +182,13 @@
         />
       </div>
     </div>
+    <v-fab
+      class="fab"
+      icon="mdi-refresh"
+      size="small"
+      color="primary"
+      @click="onRefresh()"
+    />
   </v-container>
 </template>
 
@@ -194,5 +208,31 @@
   }
   .article-card:hover {
     transform: translateY(-2px);
+  }
+
+  .fab,
+  .scroll-to-top {
+    position: fixed;
+    right: 10px;
+    z-index: 99;
+  }
+
+  .fab {
+    bottom: 120px;
+  }
+  .scroll-to-top {
+    bottom: 170px;
+  }
+
+  /* Desktop overrides */
+  @media (min-width: 960px) {
+    .fab {
+      bottom: 30px;
+      right: 30px;
+    }
+    .scroll-to-top {
+      bottom: 80px;
+      right: 30px;
+    }
   }
 </style>

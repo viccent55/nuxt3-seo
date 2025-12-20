@@ -43,7 +43,11 @@
      2. Initial SSR fetch
   ---------------------------- */
 
-  const { data: initialFeeds, pending } = await useAsyncData(
+  const {
+    data: initialFeeds,
+    pending,
+    refresh,
+  } = await useAsyncData(
     `explore-feed-${page.value}`,
     () => fetchFeeds(page.value),
     {
@@ -137,7 +141,12 @@
     }
     return "160px";
   });
-
+  const onRefresh = async () => {
+    isNoMore.value = false;
+    page.value = 1;
+    await refresh();
+    feeds.value = initialFeeds.value || [];
+  };
   onMounted(() => {
     const el = exploreContainerRef.value?.element;
     if (el) {
@@ -173,6 +182,13 @@
       @click-item="handle.clickFeed"
     />
     <!-- The loading indicator is now inside ExploreContainer -->
+    <v-fab
+      class="fab"
+      icon="mdi-refresh"
+      size="small"
+      color="primary"
+      @click="onRefresh()"
+    />
   </div>
 </template>
 
@@ -184,5 +200,30 @@
     flex-direction: column;
     padding: 0 8px;
     scrollbar-width: none;
+  }
+  .fab,
+  .scroll-to-top {
+    position: fixed;
+    right: 10px;
+    z-index: 99;
+  }
+
+  .fab {
+    bottom: 120px;
+  }
+  .scroll-to-top {
+    bottom: 170px;
+  }
+
+  /* Desktop overrides */
+  @media (min-width: 960px) {
+    .fab {
+      bottom: 30px;
+      right: 30px;
+    }
+    .scroll-to-top {
+      bottom: 80px;
+      right: 30px;
+    }
   }
 </style>
