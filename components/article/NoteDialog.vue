@@ -159,7 +159,6 @@ _
   <v-dialog
     v-model="noteDialogVisible"
     max-width="1200"
-    persistent
     height="100%"
     @after-enter="onOpenNoteDialog"
     scrollable

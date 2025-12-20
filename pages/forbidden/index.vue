@@ -148,9 +148,13 @@
     state.isNomore = false;
     state.page = 1;
     state.data = [];
+
     const items = await fetchData();
     state.data = items;
+    await nextTick();
+    window.scrollTo({ top: 0 });
   };
+
   onMounted(async () => {
     await getAllCategories();
     if (storeUser.isLogin) {
@@ -261,14 +265,14 @@
           <ForbiddenRuleDialog />
         </v-overlay>
       </v-card-text>
+      <v-fab
+        class="fab"
+        icon="mdi-refresh"
+        size="small"
+        color="primary"
+        @click="onRefresh()"
+      />
     </v-card>
-    <v-fab
-      class="fab"
-      icon="mdi-refresh"
-      size="small"
-      color="primary"
-      @click="onRefresh()"
-    />
   </v-container>
 </template>
 <style scoped lang="scss">

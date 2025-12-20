@@ -144,6 +144,7 @@
   const onRefresh = async () => {
     isNoMore.value = false;
     page.value = 1;
+    feeds.value = [];
     await refresh();
     feeds.value = initialFeeds.value || [];
   };
