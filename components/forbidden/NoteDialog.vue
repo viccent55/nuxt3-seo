@@ -9,7 +9,6 @@
   import BottomAction from "./comp/BottomAction.vue";
   import { adsClick } from "@/service/advert";
   import { getCurrentDomain } from "@/service";
-  import { useDialogUXLock } from "@/hooks/useDialogUXLock";
   import { useDisplay } from "vuetify";
 
   const noteDIalogRef = useTemplateRef("note-dialog");
@@ -105,12 +104,6 @@
       });
     },
   };
-  watch(
-    () => noteDialogVisible.value,
-    (val) => {
-      useDialogUXLock(noteDialogVisible);
-    }
-  );
 </script>
 
 <template>

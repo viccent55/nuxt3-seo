@@ -8,9 +8,8 @@
   >
     <!-- Left: Logo -->
     <MobileSearch />
-    <ButtonColor></ButtonColor>
+    <!-- <ButtonColor></ButtonColor> -->
   </v-app-bar>
-  <DialogInfo ref="dialgInfo" />
   <GuideIos ref="dialogIosGuide" />
   <MobilePopupSearch />
 </template>

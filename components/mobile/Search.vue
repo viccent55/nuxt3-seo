@@ -213,13 +213,8 @@
             height="100%"
           />
         </v-card-text>
-
-        <!-- Optional Close Actions -->
-        <!--
-      <v-card-actions class="justify-end">
-        <v-btn text @click="handleClose">关闭</v-btn>
-      </v-card-actions>
-      --></v-card>
+      </v-card>
     </v-dialog>
+    <DialogInfo ref="dialgInfo" />
   </div>
 </template>

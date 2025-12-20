@@ -45,6 +45,12 @@
             <span class="text-caption mt-1">{{ app.name }}</span>
           </a>
         </v-col>
+        <v-col cols="12">
+          <v-empty-state
+            text="无广告入口!"
+            title="无广告"
+          />
+        </v-col>
       </v-row>
     </v-card-text>
   </v-card>
