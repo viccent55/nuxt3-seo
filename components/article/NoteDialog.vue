@@ -145,7 +145,7 @@ _
   const getStyle = computed(() =>
     smAndDown.value
       ? "scrollbar-width: none; margin-bottom: 10px"
-      : "max-height: calc(100vh - 200px); overflow-y: scroll"
+      : "max-height: calc(100vh - 230px); overflow-y: scroll"
   );
   watch(
     () => noteDialogVisible.value,
