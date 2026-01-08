@@ -180,11 +180,11 @@
               </v-col>
             </v-row>
             <!-- {{ articleDetail?.content }} -->
-
             <ContentArticle
               :content="articleDetail?.content"
               :skeleton="16"
               ref="contentArticleRef"
+              :poster="articleDetail?.cover"
             />
             <v-chip-group
               column
