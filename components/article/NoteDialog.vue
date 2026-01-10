@@ -17,7 +17,7 @@ _
 
   const noteDIalogRef = useTemplateRef("note-dialog");
   const bottomRef = useTemplateRef("bottomActions");
-  const { store, onCopy, route } = useVariable();
+  const { store, onCopy, route, storeUser } = useVariable();
   const loading = ref(false);
   const noteDialog = useNoteArticleDialog();
   const state = reactive({
@@ -32,9 +32,9 @@ _
     try {
       const request = {
         id: noteDialog.id.value,
+        visitor: storeUser.visitCode,
       };
       const response = await detail(request);
-
       if (response.data) {
         state.data = response.data;
         contentArticleRef.value?.init(state.data.content);
@@ -201,6 +201,7 @@ _
                 <ContentArticle
                   :content="state.data?.content"
                   ref="content-article"
+                  :poster="state.data?.cover"
                 />
               </v-card-text>
             </v-card>

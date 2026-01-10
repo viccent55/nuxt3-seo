@@ -94,13 +94,9 @@
     }
   };
 
-  const { smAndDown } = useDisplay();
-  const layoutName = computed(() => {
-    return smAndDown.value ? "mobile" : "desktop";
-  });
-  const reloadPage = () => {
-    window.location.reload();
-  };
+  import { useLayout } from "@/composables/useLayout";
+
+  const { layoutName } = useLayout();
 
   // --- Server & Client Safe Initialization ---
   // Use a cookie to persist the visitor code across server and client.
@@ -129,6 +125,7 @@
       updateVersionRef.value?.openNoteDialog();
     }
   });
+  const surveyRef = useTemplateRef("survey-dialog");
   onMounted(() => {
     theme.change(store.darkMode);
 
@@ -140,13 +137,6 @@
     }, 500);
     initAds();
     initializeApp();
-
-    const { needRefresh } = usePwaInstall();
-    watch(needRefresh, (isNeeded) => {
-      if (isNeeded && mobile.value) {
-        updateVersionRef.value?.openNoteDialog();
-      }
-    });
     runOncePerDay();
   });
 </script>
@@ -175,15 +165,30 @@
       <NuxtLoadingIndicator />
       <!-- <NuxtPwaManifest /> -->
       <NuxtPage />
+      <!-- Floating FAB -->
+      <div
+        class="survey-fab cursor-pointer"
+        @click="surveyRef?.open()"
+      >
+        <div
+          class="px-1 py-2 d-flex flex-column text-white font-weight-bold f11 align-center ga-1"
+        >
+          <v-img
+            width="20"
+            src="/reward.png"
+          ></v-img>
+          <div>有奖反馈</div>
+        </div>
+      </div>
+      <v-fab
+        v-if="showButton"
+        class="scroll-to-top"
+        size="small"
+        icon="mdi-arrow-up"
+        @click="scrollToTop"
+      />
     </NuxtLayout>
-    <!-- Floating FAB -->
-    <v-fab
-      class="scroll-to-top"
-      size="small"
-      icon="mdi-arrow-up"
-      v-show="showButton"
-      @click="scrollToTop"
-    />
+
     <LoginDialog></LoginDialog>
     <UpdateVersion ref="updateVersionRef" />
     <NotificationDialog v-if="!storeUser.loginDialogVisible" />
@@ -191,7 +196,7 @@
     <ArticleNoteDialog />
     <ForbiddenNoteDialog />
     <HookupNoteDialog />
-
+    <!-- <SurveyDialog ref="survey-dialog" /> -->
     <DesktopDialogPopupAds
       v-if="!storeUser.loginDialogVisible && store.homePopupAds?.length"
       :adverts="store.homePopupAds"
@@ -199,6 +204,7 @@
     <!-- <InstallPWA v-if="!storeUser.loginDialogVisible" /> -->
 
     <AnalyticsLoader :analytics="store.configuration?.analytics" />
+    <SurveyDialog ref="survey-dialog" />
     <!-- chat widget -->
     <ChatWidget
       :user="storeUser.userInfo"
@@ -208,31 +214,26 @@
 </template>
 
 <style scoped lang="scss">
-  .fab,
+  .position-relative {
+    position: relative !important;
+  }
   .scroll-to-top {
     position: fixed;
     right: 10px;
+    bottom: 130px;
     z-index: 99;
-  }
-
-  .fab {
-    bottom: 120px;
-  }
-  .scroll-to-top {
-    bottom: 170px;
   }
 
   /* Desktop overrides */
   @media (min-width: 960px) {
-    .fab {
-      bottom: 30px;
-      right: 30px;
-    }
     .scroll-to-top {
-      bottom: 80px;
-      right: 30px;
+      position: fixed;
+      right: 40px;
+      bottom: 90px;
+      z-index: 99;
     }
   }
+
   .splash-container {
     position: fixed;
     inset: 0;

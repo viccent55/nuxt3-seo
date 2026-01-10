@@ -8,25 +8,80 @@
       type: Number,
       default: 4,
     },
+    poster: {
+      type: String,
+      default: () => "",
+    },
   });
-  const clonedContent = computed(() => structuredClone(props.content));
   // your composable
   const { $hls } = useNuxtApp();
-  const { decryptImage, decryptedImage } = useDecryption();
+  const { decryptImage } = useDecryption();
 
   const contentRef = ref<HTMLDivElement | any>(null);
   const loading = ref(false);
   const hlsInstances = ref<any[]>([]);
 
+  const loadingContent = computed(() => {
+    if (!props.content) return props.content;
+    if (!process.client) return props.content; // SSR-safe
+    if (!props.content) return "";
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(props.content, "text/html");
+
+    // 🔥 PREVENT VIDEO FETCH DURING LOADING
+    doc.querySelectorAll("video").forEach((video) => {
+      const src = video.getAttribute("src");
+      if (src) {
+        video.setAttribute("data-src", src);
+        video.removeAttribute("src");
+        video.setAttribute("preload", "none");
+      }
+    });
+
+    return doc.body.innerHTML;
+  });
+
+  const HLS_CONFIG = {
+    // =============================
+    // 🐢 Slow network optimizations
+    // =============================
+    manifestLoadingTimeOut: 15000,
+    manifestLoadingMaxRetry: 3,
+    manifestLoadingRetryDelay: 3000,
+
+    levelLoadingTimeOut: 15000,
+    levelLoadingMaxRetry: 3,
+    levelLoadingRetryDelay: 3000,
+
+    fragLoadingTimeOut: 20000,
+    fragLoadingMaxRetry: 4,
+    fragLoadingRetryDelay: 3000,
+
+    // =============================
+    // 🎥 Playback behavior
+    // =============================
+    startLevel: -1,
+    capLevelToPlayerSize: true,
+    enableWorker: true,
+
+    // =============================
+    // 🧠 Stability
+    // =============================
+    lowLatencyMode: false,
+    backBufferLength: 30,
+  };
   const initImgAndVideo = async (content: string) => {
     loading.value = true;
     try {
       if (!content) return;
-      // Parse content using DOMParser for images
+
       const parser = new DOMParser();
       const doc = parser.parseFromString(content, "text/html");
 
-      // 🔹 decrypt images in parallel
+      /* =============================
+       * 🖼 Decrypt images
+       * ============================= */
       const images = Array.from(doc.querySelectorAll("img[data-lazy-src]"));
       await Promise.all(
         images.map(async (img: EmptyObjectType) => {
@@ -34,74 +89,119 @@
           if (!lazySrc) return;
 
           try {
-            await decryptImage(lazySrc); // use returned value per image
-            if (decryptedImage.value) {
+            const decrypted = await decryptImage(lazySrc);
+            if (decrypted) {
               img.removeAttribute("data-lazy-src");
-              img.src = decryptedImage.value;
+              img.src = decrypted;
             }
           } catch (err) {
-            console.error("Error decrypting image:", err);
+            console.error("Image decrypt failed:", err);
           }
         })
       );
 
-      // Insert the parsed & decrypted content into the container
-      // contentRef.value.innerHTML = "";
-      Array.from(doc.body.childNodes).forEach((node) => {
-        contentRef.value?.appendChild(node);
-      });
+      /* =============================
+       * 📦 Mount DOM
+       * ============================= */
+      contentRef.value.innerHTML = "";
+      Array.from(doc.body.childNodes).forEach((node) =>
+        contentRef.value.appendChild(node)
+      );
 
-      // 🔹 handle videos in the inserted content
-      const videos = contentRef.value?.querySelectorAll("video");
-      if (videos && videos.length > 0) {
-        videos.forEach((video: HTMLVideoElement) => {
-          video.style.display = "block";
-          video.style.width = "100%";
-          video.style.maxHeight = "400px"; // 🔹 your desired limit
-          video.style.objectFit = "contain"; // keeps aspect ratio
-          video.setAttribute("controls", "true");
-          video.setAttribute("playsinline", "true");
-          const src = video.getAttribute("src");
-          if (!src) return;
-          if (video.canPlayType("application/vnd.apple.mpegurl")) {
-            video.src = src; // Safari native
-          } else if ($hls.isSupported() && video) {
-            const hls = new $hls();
-            hlsInstances.value.push(hls);
-            hls.loadSource(src);
-            hls.attachMedia(video);
-            hls.on($hls.Events.ERROR, (event, data) => {
-              if (data.fatal) {
-                switch (data.type) {
-                  case $hls.ErrorTypes.NETWORK_ERROR:
-                    console.error("Fatal network error. Retrying...");
-                    hls?.startLoad();
-                    break;
-                  case $hls.ErrorTypes.MEDIA_ERROR:
-                    console.error("Fatal media error. Recovering...");
-                    hls?.recoverMediaError();
-                    break;
-                  default:
-                    console.error("Unrecoverable HLS error", data);
-                    hls?.destroy();
-                    break;
-                }
-              }
-            });
+      /* =============================
+       * 🎥 Handle videos
+       * ============================= */
+      const videos = contentRef.value.querySelectorAll("video");
+
+      for (const video of videos) {
+        if (video.dataset.hlsAttached === "true") continue;
+        video.dataset.hlsAttached = "true";
+
+        const src = video.getAttribute("src");
+        if (!src) continue;
+
+        // styles
+        Object.assign(video.style, {
+          display: "block",
+          width: "100%",
+          maxHeight: "400px",
+          objectFit: "contain",
+        });
+
+        video.controls = true;
+        video.playsInline = true;
+        video.preload = "metadata"; // ✅ IMPORTANT FIX
+
+        /* ===== Poster ===== */
+        if (props.poster && !video.poster) {
+          const poster = await decryptImage(props.poster);
+          if (poster) video.poster = poster;
+        }
+
+        /* =============================
+         * 🍏 Safari native HLS
+         * ============================= */
+        if (video.canPlayType("application/vnd.apple.mpegurl")) {
+          video.src = src;
+          continue;
+        }
+
+        /* =============================
+         * 🌍 HLS.js
+         * ============================= */
+        if (!$hls.isSupported()) continue;
+
+        const hls = new $hls(HLS_CONFIG);
+        hlsInstances.value.push(hls);
+
+        let manifestTimeout = setTimeout(() => {
+          console.error("⏱ HLS manifest timeout → destroy");
+          hls.destroy();
+        }, 20000);
+
+        hls.attachMedia(video);
+
+        hls.on($hls.Events.MEDIA_ATTACHED, () => {
+          hls.loadSource(src);
+        });
+
+        hls.on($hls.Events.MANIFEST_PARSED, () => {
+          clearTimeout(manifestTimeout);
+        });
+
+        hls.on($hls.Events.ERROR, (_, data) => {
+          if (!data.fatal) return;
+
+          clearTimeout(manifestTimeout);
+
+          switch (data.type) {
+            case $hls.ErrorTypes.NETWORK_ERROR:
+              hls.startLoad();
+              break;
+            case $hls.ErrorTypes.MEDIA_ERROR:
+              hls.recoverMediaError();
+              break;
+            default:
+              hls.destroy();
+              break;
           }
         });
       }
-    } catch (e) {
-      console.error("initImgAndVideo error:", e);
+    } catch (err) {
+      console.error("initImgAndVideo error:", err);
     } finally {
       loading.value = false;
     }
   };
+
   onBeforeUnmount(() => {
     contentRef.value = null;
     hlsInstances.value.forEach((hls) => {
       hls.destroy();
     });
+  });
+  onMounted(() => {
+    initImgAndVideo(props.content);
   });
   defineExpose({
     init: (content: string) => {
@@ -115,23 +215,12 @@
     class="mt-5 text-body-1 article-content"
     style="max-width: 100%"
   >
-    <!-- Raw/original content while decrypting -->
-    <!-- {{ placeholderContent }} -->
     <div
-      v-show="loading"
-      v-html="clonedContent"
+      v-if="loading"
+      v-html="loadingContent"
     />
-
-    <!-- Final decrypted content -->
-    <div
-      v-show="!loading"
-      ref="contentRef"
-    />
-    <!-- Fallback if JS is disabled -->
-    <noscript>
-      <div v-html="clonedContent"></div>
-    </noscript>
-    <!-- end js disabled -->
+    <div ref="contentRef" />
+    <noscript><div v-html="loadingContent"></div></noscript>
   </div>
 </template>
 

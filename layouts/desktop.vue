@@ -68,7 +68,7 @@
             lg="10"
             cols="12"
           >
-            <div class="content-column">
+            <div class="content-column position-relative">
               <slot />
             </div>
           </v-col>

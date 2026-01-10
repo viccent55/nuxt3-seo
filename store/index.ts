@@ -20,6 +20,10 @@ export const useStore = defineStore("store", {
       chan: "",
       search: "",
       popupNotice: [] as EmptyArrayType,
+      ruleTip: {
+        isOpen: false,
+        text: "",
+      },
     };
   },
   actions: {

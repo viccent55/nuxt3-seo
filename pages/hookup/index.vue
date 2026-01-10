@@ -333,9 +333,9 @@
             />
           </div>
         </div>
+        <!-- Checkpoint Button -->
         <div
-          class="position-absolute point-bg"
-          style="right: 5px; bottom: 30vh"
+          class="checkpoint-btn"
           @click="onOpenCheckPoint"
         >
           <div
@@ -347,7 +347,7 @@
         </div>
       </v-card-text>
       <v-fab
-        class="fab"
+        class="fab-refresh"
         icon="mdi-refresh"
         size="small"
         color="primary"
@@ -386,41 +386,30 @@
   .category-tabs :deep(.v-slide-group__prev) {
     min-width: 36px;
   }
+  .checkpoint-btn {
+    position: fixed;
+    bottom: 250px;
+    right: 10px;
+    z-index: 11;
+    @extend .point-bg;
+  }
   .point-bg {
-    background-image: url("/hookgirl/hookicon.png"); /* ✅ Nuxt will serve from /hookicon.png */
+    background-image: url("/hookgirl/hookicon.png");
     width: 60px;
     border-radius: 10px;
-    // height: 100px;
     background-color: #8745c4;
-    background-size: cover; /* or contain, depending what you want */
-    // background-position: right;
+    background-size: cover;
     background-repeat: no-repeat;
     cursor: pointer;
   }
-
-  .fab,
-  .scroll-to-top {
-    position: fixed;
-    right: 10px;
-    z-index: 99;
-  }
-
-  .fab {
-    bottom: 120px;
-  }
-  .scroll-to-top {
-    bottom: 170px;
-  }
-
   /* Desktop overrides */
   @media (min-width: 960px) {
-    .fab {
-      bottom: 30px;
+    .checkpoint-btn {
+      position: fixed;
+      bottom: 210px;
       right: 30px;
-    }
-    .scroll-to-top {
-      bottom: 80px;
-      right: 30px;
+      z-index: 11;
+      @extend .point-bg;
     }
   }
 </style>

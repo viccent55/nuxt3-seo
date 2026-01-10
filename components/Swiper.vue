@@ -21,6 +21,10 @@
       type: Boolean,
       default: false,
     },
+    poster: {
+      type: String,
+      default: () => "",
+    },
   });
 
   const videoPlayerRef = ref<InstanceType<typeof VideoPlayer>[]>([]);
@@ -103,6 +107,7 @@
           ref="videoPlayerRef"
           :src="item?.value"
           class="video"
+          :poster="poster"
           :height="height"
         />
       </v-carousel-item>

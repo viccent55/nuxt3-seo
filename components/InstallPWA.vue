@@ -6,15 +6,12 @@
   const {
     showInstallPrompt,
     isIOS,
-    promptInstall,
     closeInstallPrompt,
     needRefresh,
-    updateServiceWorker,
     closeReloadPrompt,
   } = usePWA();
 
   const onInstall = async () => {
-    await promptInstall();
     closeInstallPrompt();
   };
 

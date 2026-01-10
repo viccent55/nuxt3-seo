@@ -84,8 +84,6 @@
     // disableHorizontalSwipe();
   };
 
-  const swiperInstanceRef = ref<InstanceType<typeof Swiper> | null>(null);
-
   const getComments = async () => {
     if (!noteDialog.id.value) return;
     const response: EmptyObjectType = await $fetch(`/api/explore/comments`, {
@@ -127,7 +125,6 @@
             content_type: 1,
             content_id: id_,
           });
-
           if (response.errcode === 0) {
             state.data.isLike = !state.data.isLike;
             if (state.data.isLike) {
@@ -250,6 +247,7 @@
               v-if="state.data?.fields"
               :media-info="state.data.fields"
               :height="smAndDown ? '300px' : 'calc(100vh - 120px)'"
+              :poster="state.data?.cover"
             />
           </v-col>
 

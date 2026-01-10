@@ -19,11 +19,16 @@
       type: String,
       default: "auto",
     },
+    poster: {
+      type: String,
+      default: () => "",
+    },
   });
 
   const videoPlayer = ref<HTMLVideoElement | null>(null);
   let hls: any | null = null;
 
+  const { decryptImage, decryptedImage } = useDecryption();
   const initializePlayer = (url: string) => {
     // Clean up existing HLS instance if it exists
     if (hls) {
@@ -100,9 +105,12 @@
     }
   };
   const displayHeight = computed(() => props.height);
-  watchEffect(() => {
+  watchEffect(async () => {
     if (props.src) {
       initializePlayer(props.src);
+    }
+    if (props.poster) {
+      await decryptImage(props.poster);
     }
   });
   // onMounted(() => {
@@ -136,6 +144,7 @@
       :muted="props.muted"
       :autoplay="props.autoplay"
       playsinline
+      :poster="decryptedImage"
     ></video>
   </div>
 </template>

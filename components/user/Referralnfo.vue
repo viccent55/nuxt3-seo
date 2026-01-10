@@ -22,10 +22,10 @@
     >
       <v-avatar
         size="70"
-        class="elevation-2"
+        class="elevation-2 bg-none"
       >
         <v-img
-          src="/icons/icon-128.webp"
+          src="/public/icons/reward.png"
           cover
         />
       </v-avatar>

@@ -150,20 +150,6 @@
                             mdi-download
                           </v-icon>
                         </div>
-
-                        <div
-                          v-else
-                          class="px-3 py-1 cursor-pointer"
-                          @click="promptInstall"
-                        >
-                          安装到桌面
-                          <v-icon
-                            slot="prepend"
-                            class="ms-2"
-                          >
-                            mdi-download
-                          </v-icon>
-                        </div>
                       </v-list-item-title>
                     </v-list-item> -->
 

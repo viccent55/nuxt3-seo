@@ -100,6 +100,7 @@ export const useDecryption = () => {
       }
 
       decryptedImage.value = await decryptAndCreateUrl(fullUrl);
+      return decryptedImage.value;
     } catch (e: any) {
       error.value = e.message;
     } finally {

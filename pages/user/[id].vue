@@ -107,6 +107,11 @@
       value: "telegram",
       icon: "mdi-handshake-outline",
     },
+    {
+      name: "福利群",
+      value: "group-center",
+      icon: "mdi-account-group",
+    },
   ];
 
   const displayMenu = computed(() => {
@@ -118,11 +123,11 @@
     );
   });
 
-  const pageWrapperRef = ref<HTMLElement | null>(null);
-
   const pupupData = useTemplateRef("popup-data");
   const inviteRef = useTemplateRef("inviteRef");
   const followRef = useTemplateRef("followings");
+  const groupCenter = ref(false);
+
   const onClickMenu = async (item: EmptyObjectType) => {
     if (item.value == "call") {
       return showChatWidget();
@@ -132,18 +137,13 @@
       return followRef.value?.open();
     } else if (item.value == "telegram") {
       if (config.value?.tg_business) {
-        navigateTo(config.value.tg_business, {
-          external: true,
-          open: { target: "_blank" },
-        });
+        window.open(config.value.tg_business, "_blank"); // external
       } else {
-        navigateTo("https://t.me/HFDHG9985", {
-          external: true,
-          open: { target: "_blank" },
-        });
+        window.open("https://t.me/HFDHG9985", "_blank"); // external
       }
-
       return;
+    } else if (item.value === "group-center") {
+      return (groupCenter.value = true);
     }
     pupupData.value?.open(item);
   };
@@ -211,12 +211,6 @@
       });
     }
   };
-  const heightOffset = computed(() => {
-    if (smAndDown.value) {
-      return "140px";
-    }
-    return "80px";
-  });
   onMounted(async () => {
     onInit();
     getConfig();
@@ -271,44 +265,61 @@
           <UserBrowseHistory v-if="self" />
 
           <!-- Feature cards (AI remove / Business join) -->
-          <v-row class="mt-2 px-3 px-md-0 w-100">
+          <v-row
+            class="mt-2 px-3 px-md-0 w-100"
+            :dense="smAndDown"
+          >
             <v-col cols="6">
               <v-card
-                class="text-center pa-3"
-                :height="smAndDown ? 140 : 200"
+                class="pa-2 pa-md-3 d-flex align-center justify-center"
+                :height="smAndDown ? 90 : 160"
                 rounded="xl"
-                :color="config?.ai_clothes_background || '#965757'"
+                :color="config?.ai_clothes_background || '#9B310E'"
                 @click="onOpenAiDialog('left')"
               >
-                <div class="text-center text-subtitle-1 text-md-h6">
-                  {{ config?.ai_clothes_title || "AI脱衣" }}
+                <div class="d-flex align-center justify-center ga-2 ga-md-4">
+                  <v-avatar
+                    :size="smAndDown ? 50 : 120"
+                    color="white"
+                  >
+                    <v-img src="/users/ai-1.png"></v-img>
+                  </v-avatar>
+                  <div class="text-start text-subtitle-1 text-md-h6">
+                    <div class="text-body-1 text-md-h5">
+                      {{ config?.ai_clothes_title || "免费AI脱衣" }}
+                    </div>
+                    <div class="text-body-2 text-md-h6">
+                      {{ config?.ai_clothes_intro || "快来体验吧！" }}
+                    </div>
+                  </div>
                 </div>
-                <v-avatar
-                  :size="smAndDown ? 80 : 140"
-                  color="white"
-                >
-                  <v-img src="/ai-girl.png"></v-img>
-                </v-avatar>
               </v-card>
             </v-col>
 
             <v-col cols="6">
               <v-card
-                class="text-center pa-3"
-                :height="smAndDown ? 140 : 200"
+                class="pa-2 pa-md-3 d-flex align-center justify-center"
+                :height="smAndDown ? 90 : 160"
                 rounded="xl"
-                :color="config?.girl_join_background || '#965757'"
+                :color="config?.girl_join_background || '#8F1E6B'"
                 @click="onOpenAiDialog('right')"
               >
-                <div class="text-center text-subtitle-1 text-md-h6">
-                  {{ config?.girl_join_title || "楼凤入驻" }}
+                <div class="d-flex align-center justify-center ga-2 ga-md-4">
+                  <v-avatar
+                    :size="smAndDown ? 50 : 120"
+                    color="white"
+                  >
+                    <v-img src="/users/ai-2.png"></v-img>
+                  </v-avatar>
+                  <div class="text-start text-subtitle-1 text-md-h6">
+                    <div class="text-body-1 text-md-h5">
+                      {{ config?.girl_join_title || "楼凤入驻" }}
+                    </div>
+                    <div class="text-body-2 text-md-h6">
+                      {{ config?.girl_join_intro || "更多资源尽在" }}
+                    </div>
+                  </div>
                 </div>
-                <v-avatar
-                  :size="smAndDown ? 80 : 140"
-                  color="white"
-                >
-                  <v-img src="/ai-girl2.png"></v-img>
-                </v-avatar>
               </v-card>
             </v-col>
           </v-row>
@@ -377,16 +388,20 @@
       />
       <UserFollowings ref="followings" />
     </div>
+
+    <UserGroupCenter v-model="groupCenter" />
   </v-container>
 </template>
 
 <style scoped lang="scss">
   .wrap-page {
-    width: 100%; /* Default height for desktop */
+    width: 100%;
+    /* Default height for desktop */
     // max-height: calc(100vh - v-bind(heightOffset));
     overflow-y: scroll;
     scrollbar-width: none;
   }
+
   .user-background {
     position: absolute;
     top: 0;
@@ -397,6 +412,7 @@
     background-position: center;
     z-index: 0;
   }
+
   .user-content-container {
     position: relative;
     z-index: 1;
@@ -404,19 +420,21 @@
     justify-content: center;
     width: 100%;
     max-width: 900px;
-    height: 100%;
-    padding: 0 0 60px 0;
     margin: auto;
+    padding-bottom: 60px;
   }
+
   .user-content {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
   }
+
   .channel-wrapper {
     width: fit-content;
   }
+
   .feeds-container {
     width: 100%;
     padding: 0 16px;
@@ -425,7 +443,8 @@
 
   .menu-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr); /* 5 columns for mobile */
+    grid-template-columns: repeat(5, 1fr);
+    /* 5 columns for mobile */
     gap: 20px;
     text-align: center;
     width: 100%;
@@ -433,7 +452,8 @@
 
   @media (min-width: 960px) {
     .menu-grid {
-      grid-template-columns: repeat(6, 1fr); /* 6 columns for desktop */
+      grid-template-columns: repeat(6, 1fr);
+      /* 6 columns for desktop */
     }
   }
 
