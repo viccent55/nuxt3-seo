@@ -1,4 +1,4 @@
-import FingerprintJS from "@fingerprintjs/fingerprintjs";
+// import FingerprintJS from "@fingerprintjs/fingerprintjs";
 
 // noble cryptography
 import { gcm } from "@noble/ciphers/aes.js";
@@ -63,7 +63,7 @@ function getDeviceId() {
   try {
     const cached = localStorage.getItem(DEVICE_ID_KEY);
     if (cached && cached.length >= 16) return cached;
-  } catch {}
+  } catch { }
 
   const chars =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -73,7 +73,7 @@ function getDeviceId() {
 
   try {
     localStorage.setItem(DEVICE_ID_KEY, out);
-  } catch {}
+  } catch { }
   return out;
 }
 
@@ -150,18 +150,18 @@ function setBackendURL(str: string) {
 // ----------------------------------------------------
 // Fingerprint / visitor (same name)
 // ----------------------------------------------------
-export async function getVisitorId() {
-  try {
-    const fp = await FingerprintJS.load();
-    const r = await fp.get();
-    VISITOR_ID = r.visitorId;
-    REQUEST_ID = (r as any)?.requestId || "";
-    return { visitorId: VISITOR_ID, requestId: REQUEST_ID };
-  } catch (e) {
-    console.error("获取VisitorId失败:", e);
-    return "";
-  }
-}
+// export async function getVisitorId() {
+//   try {
+//     const fp = await FingerprintJS.load();
+//     const r = await fp.get();
+//     VISITOR_ID = r.visitorId;
+//     REQUEST_ID = (r as any)?.requestId || "";
+//     return { visitorId: VISITOR_ID, requestId: REQUEST_ID };
+//   } catch (e) {
+//     console.error("获取VisitorId失败:", e);
+//     return "";
+//   }
+// }
 
 // ----------------------------------------------------
 // POST helper (web fetch)
@@ -284,8 +284,8 @@ export async function onInit() {
   PLATFORM_NAME = getPlatform();
   QUERY = getQueryParams();
 
-  const fp: any = await getVisitorId();
-  if (fp) ({ visitorId: VISITOR_ID, requestId: REQUEST_ID } = fp);
+  // const fp: any = await getVisitorId();
+  // if (fp) ({ visitorId: VISITOR_ID, requestId: REQUEST_ID } = fp);
 
   await onSaveLocal();
 }

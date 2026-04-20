@@ -6,6 +6,8 @@
   import { useNoteForbidden } from "@/hooks/useNoteForbiddenDialog";
   import { select, getCategories } from "@/service/forbidden";
   import ForbiddenRuleDialog from "@/components/forbidden/RuleDialog.vue";
+  import { openLoginDialog } from "@/hooks/useLoginDialog";
+  import {verifyAuth} from "@/service/user"
 
   definePageMeta({
     keepalive: true,
@@ -118,11 +120,13 @@
   };
 
   // rule overlay logic
-  const shouldShowRuleDialog = computed(
-    () => !storeUser.isLogin || (storeUser.userInfo?.invite_count ?? 0) < 5
-  );
+  // const shouldShowRuleDialog = computed(
+  //   () => !storeUser.isLogin || (storeUser.userInfo?.invite_count ?? 0) < 5
+  // );
+
+  const ShowDialog = ref(true)
   const isVisible = computed({
-    get: () => shouldShowRuleDialog.value,
+    get: () => ShowDialog.value,
     set: () => (storeUser.isLogin ? false : false),
   });
 
@@ -156,14 +160,41 @@
   };
 
   onMounted(async () => {
-    await getAllCategories();
-    if (storeUser.isLogin) {
+    // await getAllCategories();
+    // if (storeUser.isLogin) {
+    //   const items = await fetchData(); // ✅ assign result
+    //   state.data = items; // ✅ initial list filled
+    // }
+  });
+  const showAlert = ref(false)
+  const unlockHandler = async () => {
+
+    if(!storeUser.isLogin){
+        openLoginDialog()
+
+        return 
+    }
+    const resp = await verifyAuth(0,'jinqu');
+    console.log('❌ fdaffaf', resp)
+    if (resp.data){
+      console.log('resp data : ', resp.data);
+      ShowDialog.value = false;
+      await getAllCategories();
       const items = await fetchData(); // ✅ assign result
       state.data = items; // ✅ initial list filled
+    }else{
+      showAlert.value = true
     }
-  });
+  }
 </script>
 <template>
+  <v-alert
+    v-model="showAlert"
+    type="warning"
+    title="权限警告"
+    text="您没有权限 请联系客服开通权限"
+    closable
+  ></v-alert>
   <v-container
     class="d-flex flex-column pa-0"
     fluid
@@ -262,7 +293,7 @@
           :opacity="0.95"
           persistent
         >
-          <ForbiddenRuleDialog />
+          <ForbiddenRuleDialog @select="unlockHandler" />
         </v-overlay>
       </v-card-text>
       <v-fab
