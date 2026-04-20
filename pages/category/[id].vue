@@ -9,7 +9,7 @@
   const { smAndDown } = useDisplay();
   const { configuration } = storeToRefs(store);
   const categorySeo = computed(() =>
-    configuration.value.categories.find(
+    configuration.value?.categories?.find(
       (item: EmptyObjectType) => item.id == route.params.id
     )
   );
@@ -18,16 +18,11 @@
     computed(() => categorySeo.value?.seo_description),
     computed(() => categorySeo.value?.seo_keywords)
   );
-  const { isNative } = usePlatform();
   const heightOffset = computed(() => {
-    if (!isNative.value) {
-      if (smAndDown.value) {
-        return "210px";
-      } else {
-        return "170px";
-      }
+    if (smAndDown.value) {
+      return "200px";
     }
-    return "250px";
+    return "160px";
   });
 </script>
 
@@ -41,7 +36,6 @@
   .explore-wrapper {
     width: 100%;
     max-height: calc(100vh - v-bind(heightOffset));
-    height: calc(100dvh - v-bind(heightOffset));
     display: flex;
     flex-direction: column;
     padding: 0 12px;

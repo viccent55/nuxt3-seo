@@ -51,7 +51,10 @@
     :fullscreen="isMobile"
     max-width="750"
   >
-    <v-card>
+    <v-card
+      flat
+      class="main-contain"
+    >
       <v-card-title class="pb-0">
         <v-btn
           icon="mdi-chevron-left"
@@ -82,7 +85,9 @@
 
           <v-col cols="5">
             <div class="text-subtitle-2 mb-1">还需邀请人数</div>
-            <div class="text-h5 font-weight-bold">{{ state.total }} / 5</div>
+            <div class="text-h5 font-weight-bold">
+              {{ userInfo.invite_count }} / 5
+            </div>
           </v-col>
         </v-row>
 
@@ -122,8 +127,23 @@
               </span>
             </v-card>
           </v-col>
+
+          <v-col
+            v-if="!state.data.length && !state.loading"
+            cols="12"
+            align="center"
+          >
+            <v-empty-state
+              title="空头支票"
+              text="请邀请您的朋友!"
+            />
+          </v-col>
         </v-row>
       </v-card-text>
     </v-card>
   </v-dialog>
 </template>
+<style scoped lang="scss">
+  .main-contain {
+  }
+</style>

@@ -1,6 +1,5 @@
 <script setup lang="ts">
-  import { ref, reactive, watch, onMounted } from "vue";
-  import { useRoute } from "vue-router";
+  import { ref, reactive, watch } from "vue";
   import AvatarUpload from "@/components/AvatarUpload.vue";
   import { setUserInfo, changePassword } from "@/service/user";
   import { screenMode } from "@/hooks/useScreenMode";

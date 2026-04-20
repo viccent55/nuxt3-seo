@@ -25,14 +25,15 @@
         return item.routeName === name || item.routeName === routeBaseName;
       });
       if (navItem) store.mode = navItem.mode;
-    }
+    },
+    { immediate: true }
   );
 </script>
 
 <template>
   <v-bottom-navigation
     app
-    height="90"
+    height="auto"
     class="footer bg-surface app-footer"
     density="comfortable"
     :model-value="store.mode"
@@ -42,7 +43,7 @@
       :key="item.name"
     >
       <v-btn
-        class="channel-wrapper"
+        class="channel-wrapper py-2"
         variant="text"
         style="min-width: 0; padding: 0"
         @click="
@@ -50,7 +51,7 @@
             emit('click-nav-item', item);
           }
         "
-        :class="store.mode === item.mode ? 'text-primary' : undefined"
+        :class="item.mode == store.mode ? 'text-primary' : undefined"
       >
         <v-icon
           :icon="`mdi-${item.icon.toLowerCase()}`"
@@ -72,7 +73,6 @@
     left: 0;
     right: 0;
     z-index: 10;
-    padding-bottom: var(--safe-area-inset-bottom, 0px);
   }
   .footer {
     z-index: 16;

@@ -1,12 +1,6 @@
 import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
-const isCapacitor = process.env.NUXT_CAPACITOR === "true";
 
 export default defineNuxtConfig({
-  // 👇 Automatically switch
-  ssr: !isCapacitor, // true for web, false for Capacitor
-  nitro: {
-    preset: isCapacitor ? "static" : "node-server", // Generate static output for Capacitor
-  },
   app: {
     head: {
       title: "小红书成人版",
@@ -61,6 +55,9 @@ export default defineNuxtConfig({
       apiLocal: process.env.LOCAL_API_BASE,
       apiBase: process.env.PROD_API_BASE,
       apiMember: process.env.MEMBER_API_BASE,
+      imageHost: process.env.IMAGE_HOST, // Expose IMAGE_HOST
+      apiChatWidget: process.env.CHAT_WIDGET_URL,
+      apiTransaction: process.env.TRANSACTION_API_BASE,
     },
   },
 
@@ -80,7 +77,7 @@ export default defineNuxtConfig({
     client: {
       installPrompt: true,
     },
-    registerType: "autoUpdate",
+    registerType: "prompt",
     includeAssets: [
       "/icons/icon-128.webp",
       "/default-icon.svg",

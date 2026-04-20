@@ -15,30 +15,32 @@
   import { useDisplay } from "vuetify";
 
   const Swiper = defineAsyncComponent(() => import("../Swiper.vue"));
-  const noteDIalogRef = useTemplateRef("note-dialog");
-  const bottomRef = useTemplateRef("bottomActions");
   const { store, onCopy, route, isMobile } = useVariable();
-  const loading = ref(false);
   const noteDialog = useNoteHookupDialog();
   const { smAndDown } = useDisplay();
   const swiperInstanceRef = ref<InstanceType<typeof Swiper> | null>(null);
   const state = reactive({
     data: {} as EmptyObjectType,
     comments: [] as EmptyObjectType[],
+    loading: false,
   });
-  const { setStatus } = useCapacitor();
+
   const snackbar = useSnackbar();
   const onOpenNoteDialog = async () => {
-    if (noteDIalogRef.value) noteDIalogRef.value.scrollTop = 0;
-    loading.value = true;
+    state.loading = true;
     try {
       const request = {
         id: noteDialog.id.value,
       };
       const response = await detail(request);
-      console.log(response);
       if (response.data) {
         state.data = response.data;
+        state.data.images = response.data.images.map((item: string) => {
+          return {
+            name: "image",
+            value: item,
+          };
+        });
       }
       if (response.data?.errcode === 0 && Array.isArray(response.data.data)) {
         return response.data;
@@ -46,9 +48,8 @@
     } catch (err) {
       console.error("fetchFeeds failed:", err);
     } finally {
-      loading.value = false;
+      state.loading = false;
     }
-
     // disableHorizontalSwipe();
   };
 
@@ -64,7 +65,8 @@
         const id_ = item.id;
         try {
           const response: EmptyObjectType = await collect({
-            gid: id_,
+            content_id: id_,
+            content_type: 6,
           });
           if (response.errcode == 0) {
             state.data.is_star = !state.data.is_star;
@@ -82,20 +84,17 @@
       });
     },
   };
+  const { showChatWidget } = useSnackbar();
+  const onLiveChat = () => {
+    showChatWidget();
+  };
+
   watch(
     () => noteDialogVisible.value,
     (val) => {
-      setStatus(val);
+      state.loading = true;
       useDialogUXLock(noteDialogVisible);
     }
-  );
-  const images = computed(() =>
-    state.data?.images?.map((item: string) => {
-      return {
-        name: "image",
-        value: item,
-      };
-    })
   );
 </script>
 
@@ -110,11 +109,14 @@
     :fullscreen="isMobile"
   >
     <v-card
-      :loading="loading"
+      :loading="state.loading"
       class="main-contain"
     >
-      <v-card-title v-if="isMobile">
-        <div class="d-flex justify-space-between align-center">
+      <v-card-title>
+        <div
+          v-if="isMobile"
+          class="d-flex justify-space-between align-center"
+        >
           <v-btn
             icon
             density="compact"
@@ -131,10 +133,28 @@
           <div>茶女郎详情</div>
           <div></div>
         </div>
+
+        <div
+          v-else
+          class="d-flex justify-end py-0"
+        >
+          <v-btn
+            icon
+            size="small"
+            color="primary"
+            @click="
+              () => {
+                noteDialog.closeNoteDialog();
+                state.data = {};
+              }
+            "
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </div>
       </v-card-title>
       <v-card-text class="pa-0 pb-4">
         <v-row no-gutters>
-          <!-- Left: Video area -->
           <v-col
             cols="12"
             md="7"
@@ -149,10 +169,41 @@
               <v-card-text>
                 <Swiper
                   ref="swiperInstanceRef"
-                  v-if="images?.length > 0"
-                  :media-info="images"
-                  :height="smAndDown ? 'calc(30vh - 50px)' : '100%'"
+                  v-if="state.data.images?.length > 0"
+                  :media-info="state.data.images"
+                  :height="smAndDown ? '300px' : '60vh'"
+                  light-box
                 />
+
+                <div
+                  v-if="state.loading"
+                  style="
+                    height: 180px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  "
+                >
+                  <v-progress-circular
+                    :size="80"
+                    color="primary"
+                    indeterminate
+                  ></v-progress-circular>
+                </div>
+                <div
+                  v-if="!state.loading && !state.data.images?.length"
+                  style="
+                    height: 180px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  "
+                >
+                  <v-empty-state
+                    icon="mdi-image-off"
+                    title="无图像显示"
+                  />
+                </div>
                 <v-row
                   dense
                   class="px-2 mt-2"
@@ -346,25 +397,6 @@
             lg="4"
             class="d-flex flex-column"
           >
-            <div
-              class="d-flex justify-end mt-2 py-0 pr-4"
-              v-if="!isMobile"
-            >
-              <v-btn
-                icon
-                size="small"
-                @click="
-                  () => {
-                    noteDialog.closeNoteDialog();
-
-                    state.data = {};
-                  }
-                "
-              >
-                <v-icon>mdi-close</v-icon>
-              </v-btn>
-            </div>
-
             <!-- Scrollable Content Area -->
             <div
               class="flex-grow-1 overflow-y-auto px-4"
@@ -447,6 +479,7 @@
           :total="state.data?.comment_count"
           @click-star="handle.clickStar"
           @click-share="handle.clickShare"
+          @live-chat="onLiveChat"
           class="px-4"
         />
       </v-card-actions>
@@ -456,8 +489,6 @@
 
 <style scoped lang="scss">
   .main-contain {
-    // padding-top: env(safe-area-inset-top, 0px);
-    padding-top: var(--safe-area-inset-top, 0px);
   }
   .image-cover {
     min-height: 150px;

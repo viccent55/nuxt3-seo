@@ -31,6 +31,7 @@
   });
   const clickMenuItem = (item: Record<string, string>) => {
     store.channel = item.value;
+    navigateTo(`/category/${item.value}`);
   };
   const onOpenPage = () => {
     const param = route.query.chan || "";
@@ -62,7 +63,7 @@
   };
 </script>
 <template>
-  <div>
+  <div class="w-100 px-3">
     <div class="d-flex align-center ga-5 w-100 justify-space-between">
       <v-btn
         variant="text"
@@ -149,20 +150,6 @@
                             mdi-download
                           </v-icon>
                         </div>
-
-                        <div
-                          v-else
-                          class="px-3 py-1 cursor-pointer"
-                          @click="promptInstall"
-                        >
-                          安装到桌面
-                          <v-icon
-                            slot="prepend"
-                            class="ms-2"
-                          >
-                            mdi-download
-                          </v-icon>
-                        </div>
                       </v-list-item-title>
                     </v-list-item> -->
 
@@ -212,13 +199,8 @@
             height="100%"
           />
         </v-card-text>
-
-        <!-- Optional Close Actions -->
-        <!--
-      <v-card-actions class="justify-end">
-        <v-btn text @click="handleClose">关闭</v-btn>
-      </v-card-actions>
-      --></v-card>
+      </v-card>
     </v-dialog>
+    <DialogInfo ref="dialgInfo" />
   </div>
 </template>

@@ -16,32 +16,43 @@ export async function getUserInfo(id: number) {
     method: "POST",
     body: { id },
   });
-  return decrypt(res.data);
+  if (res.data) return decrypt(res.data);
+  return res;
 }
 
 export async function getNoteFeeds(param: object) {
   const res: EmptyObjectType = await useApiFetch("/api/user/user-feed", {
     method: "POST",
-    body: param,
+    body: dataEncrypt(param),
   });
-
-  return decrypt(res.data);
+  if (res.data) return decrypt(res.data);
+  return res;
 }
 
 export async function getStarFeeds(param: object) {
-  const res: EmptyObjectType = await $fetch("/api/user/star-feed", {
+  const res: EmptyObjectType = await useApiFetch("/api/user/star-feed", {
     method: "POST",
     body: dataEncrypt(param),
   });
-  return decrypt(res.data);
+  if (res.data) return decrypt(res.data);
+  return res;
 }
 
 export async function getLikeFeeds(param: object) {
-  const res: EmptyObjectType = await $fetch("/api/user/like-feed", {
+  const res: EmptyObjectType = await useApiFetch("/api/user/like-feed", {
     method: "POST",
     body: dataEncrypt(param),
   });
-  return decrypt(res.data);
+  if (res.data) return decrypt(res.data);
+  return res;
+}
+export async function getFollowFeed(param: object) {
+  const res: EmptyObjectType = await useApiFetch("/api/user/follow-feed", {
+    method: "POST",
+    body: dataEncrypt(param),
+  });
+  if (res.data) return decrypt(res.data);
+  return res;
 }
 
 export async function setUserInfo(params: object) {
@@ -57,6 +68,7 @@ export async function retrySendEmailCode(params: EmptyObjectType) {
     method: "POST",
     body: dataEncrypt(params),
   });
+  if (res.data) return decrypt(res.data);
   return res;
 }
 
@@ -65,6 +77,7 @@ export async function veryCode(params: EmptyObjectType) {
     method: "POST",
     body: dataEncrypt(params),
   });
+  if (res.data) return decrypt(res.data);
   return res;
 }
 export async function changePassword(params: EmptyObjectType) {
@@ -110,15 +123,11 @@ export async function getHistories(params: EmptyObjectType) {
   return res;
 }
 
-export async function getConfigs(param: string) {
+export async function getConfigs(params: object) {
   const res: EmptyObjectType = await useApiFetch("/api/user/user-config", {
-    method: "GET",
-    params: {
-      names: param,
-    }, // send query parameters here
+    method: "POST",
+    body: dataEncrypt(params),
   });
-  if (res.data) {
-    return decrypt(res.data);
-  }
+  if (res.data) return decrypt(res.data);
   return res;
 }

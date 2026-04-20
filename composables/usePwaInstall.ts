@@ -1,6 +1,5 @@
 // composables/usePwaInstall.ts
 import { ref, onMounted } from "vue";
-import { pwaInstalled } from "@/service/app";
 import { useLocalStorage } from "@vueuse/core";
 
 // We can't use `BeforeInstallPromptEvent` because it's not in the default TS lib
@@ -66,47 +65,6 @@ export default function usePwaInstall() {
       updateServiceWorker.value = sw.updateServiceWorker;
     });
   }
-
-  const { route, storeUser, getDeviceInfo } = useVariable();
-  const promptInstall = async () => {
-    if (!installPromptEvent) return;
-    await installPromptEvent.prompt();
-    const { outcome } = await installPromptEvent.userChoice;
-
-    const device = getDeviceInfo();
-    let type = 0;
-    switch (true) {
-      case device.isAndroid:
-        type = 1; // Android
-        break;
-      case device.isIos:
-        type = 2; // iOS
-        break;
-      case device.isMac:
-        type = 3; // macOS
-        break;
-      case device.isWindows:
-        type = 4; // Windows
-        break;
-      default:
-        type = 0; // Unknown
-    }
-
-    if (outcome === "accepted") {
-      const param = route.query.chan || "";
-      const urlParams = new URLSearchParams(window.location.search);
-      const chan = String(urlParams.get("chan") || param);
-      const cleanedChan = chan.replace(/\/+$/, "");
-      const request = {
-        chan: cleanedChan,
-        visitor: storeUser.visitCode,
-        type: type,
-      };
-      await pwaInstalled(request);
-    }
-    installPromptEvent = null;
-    showInstallPrompt.value = false;
-  };
 
   const closeInstallPrompt = () => (showInstallPrompt.value = false);
 

@@ -11,7 +11,15 @@
   const { decryptImage, decryptedImage } = useDecryption();
 
   watchEffect(() => {
-    if (props.src) decryptImage(props.src); // decrypt async
+    const src = props.src;
+    if (!src) return;
+    // If the image is a normal public URL → skip decrypt
+    if (src.startsWith("http://") || src.startsWith("https://")) {
+      decryptedImage.value = src; // use as-is
+      return;
+    }
+    // Otherwise → decrypt
+    decryptImage(src);
   });
 
   const state = reactive({ width: 0, height: 0, isVertical: false });

@@ -24,7 +24,7 @@
 </script>
 <template>
   <Header />
-  <v-main class="bg-background main-content-wrapper">
+  <v-main class="page-main">
     <slot />
   </v-main>
   <Footer
@@ -34,11 +34,8 @@
   ></Footer>
 </template>
 <style scoped lang="scss">
-  .main-content-wrapper {
-    /* Ensure the content starts below the dynamic header */
-    padding-top: calc(64px + var(--safe-area-inset-top, 0px));
-    /* Ensure content ends above the dynamic footer */
-    padding-bottom: calc(90px + var(--safe-area-inset-bottom, 0px));
-    /* Use a min-height calculation if the content should always fill the screen */
+  .page-main {
+    padding-top: 64px; /* match your header height */
+    padding-bottom: 64px; /* if footer is fixed too */
   }
 </style>

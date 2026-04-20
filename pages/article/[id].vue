@@ -25,7 +25,7 @@
       state.comments = response.data;
     }
   };
-
+  const contentArticleRef = useTemplateRef("content-article");
   const fetchDetail = async () => {
     state.loading = true;
     try {
@@ -35,6 +35,7 @@
       const response = await detail(request);
       if (response.data) {
         state.data = response.data;
+        contentArticleRef.value?.init(state.data.content);
         getComments();
       }
       return response.data;
@@ -198,7 +199,7 @@
             <v-card-text>
               <ContentArticle
                 :content="state.data?.content"
-                ref="contentArticleRef"
+                ref="content-article"
               />
             </v-card-text>
           </v-card>

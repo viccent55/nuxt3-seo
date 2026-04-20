@@ -39,7 +39,19 @@
     <!-- Media Section -->
     <div
       class="position-absolute"
-      style="z-index: 10; right: 10px; top: 10px"
+      :style="
+        feed.is_hot
+          ? {
+              zIndex: 10,
+              right: '0px',
+              top: '0px',
+            }
+          : {
+              zIndex: 10,
+              right: '10px',
+              top: '10px',
+            }
+      "
     >
       <v-icon
         v-if="feed.mode === 1"
@@ -59,6 +71,16 @@
       >
         广告
       </div>
+      <span v-if="feed?.is_hot">
+        <v-chip
+          variant="flat"
+          density="compact"
+          label
+          class="rounded-te-lg bg-purple opacity-70"
+        >
+          热的
+        </v-chip>
+      </span>
     </div>
 
     <DesktopAdvertSlot
@@ -76,7 +98,7 @@
       v-if="feed.mode !== 3"
       :src="feed.cover"
       cover
-      :aspect-ratio="(feed.cover_w / feed.cover_h) * 1.5"
+      :aspect-ratio="((feed.cover_w || 1) / (feed.cover_h || 1)) * 1.5"
     />
 
     <!-- Info Section -->
@@ -89,22 +111,25 @@
       <!-- Author + Like -->
       <div class="d-flex justify-space-between align-center">
         <!-- Author -->
-        <v-chip
-          class="d-flex align-center px-0"
-          @click.stop
-          variant="text"
-          :to="'/user/' + feed.author?.id"
-        >
-          <Avatar
-           v-if="feed.author?.avatar"
-            :src="feed.author?.avatar"
-            :id="feed.id"
-            size="24"
-          />
-          <span class="text-caption text-surface-variant ml-2">
+        <div class="d-flex align-center ga-2">
+          <v-chip
+            class="px-0"
+            @click.stop
+            variant="text"
+            :to="'/user/' + feed.author?.id"
+            v-if="feed.author?.id"
+          >
+            <Avatar
+              v-if="feed.author?.avatar"
+              :src="feed.author?.avatar"
+              :id="feed.id"
+              size="24"
+            />
+          </v-chip>
+          <span class="text-caption text-surface-variant">
             {{ feed.author?.name || feed.author?.nickname }}
           </span>
-        </v-chip>
+        </div>
 
         <!-- Like -->
         <div class="d-flex align-center">

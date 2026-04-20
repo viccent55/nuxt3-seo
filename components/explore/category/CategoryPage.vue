@@ -43,7 +43,11 @@
    2. Initial SSR fetch
 ---------------------------- */
 
-  const { data: initialFeeds, pending } = await useAsyncData(
+  const {
+    data: initialFeeds,
+    pending,
+    refresh,
+  } = await useAsyncData(
     `explore-cat-${cat_id.value}`,
     () => fetchFeeds(page.value),
     { transform: (data) => data || [] } // SSR-safe
@@ -99,7 +103,7 @@
     },
   };
 
-  const { reset } = useInfiniteScroll(
+  useInfiniteScroll(
     () => exploreContainerRef.value?.element,
     () => {
       // load more
@@ -110,6 +114,13 @@
       canLoadMore: () => !isLoadMore.value && !isNoMore.value,
     }
   );
+  const onRefresh = async () => {
+    isNoMore.value = false;
+    page.value = 1;
+    feeds.value = [];
+    await refresh();
+    feeds.value = initialFeeds.value || [];
+  };
   onMounted(() => {
     const el = exploreContainerRef.value?.element;
     if (el) {
@@ -126,6 +137,13 @@
     :is-load-more="isLoadMore"
     :is-no-more="isNoMore"
     @click-item="handle.clickFeed"
+  />
+  <v-fab
+    class="fab-refresh"
+    icon="mdi-refresh"
+    size="small"
+    color="primary"
+    @click="onRefresh()"
   />
 </template>
 <style scoped lang="scss"></style>

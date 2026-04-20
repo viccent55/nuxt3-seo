@@ -3,6 +3,7 @@
   import type { ExploreChannelItem } from "@/types/item";
   import useVariable from "@/composables/useVariable";
   import { adsClick } from "@/service/advert";
+  import { useDisplay } from "vuetify";
 
   defineProps<{
     items: ExploreChannelItem[];
@@ -18,7 +19,7 @@
     adsClick(item.id);
   };
 
-  onMounted(() => {});
+  const { smAndDown } = useDisplay();
 
   watch(
     () => route.params.id,
@@ -26,7 +27,6 @@
       selected.value = newCid || "001";
     }
   );
-  const { isNative } = usePlatform();
   onUnmounted(() => {});
 </script>
 
@@ -52,7 +52,7 @@
           class="mx-1 text-surface-variant px-2 px-md-4"
           @click="$emit('click-item', item)"
           :to="item.value == '001' ? '/' : `/category/${item.value}`"
-          :density="isNative ? 'compact' : 'default'"
+          :density="smAndDown ? 'compact' : 'default'"
         >
           <span class="text-xs pa-0 ma-0 text-body-2">{{ item.name }}</span>
         </v-btn>

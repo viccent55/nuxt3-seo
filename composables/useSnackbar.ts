@@ -1,11 +1,20 @@
-// useSnackbar.ts
-import { inject } from 'vue'
-
 export default function useSnackbar() {
-  const showSnackbar = inject<(msg: string, color?: string, location?: string, timeout?: number) => void>('showSnackbar')
+  const uiActions = inject<{
+    triggerSnackbar: (
+      msg: string,
+      color?: string,
+      location?: string,
+      timeout?: number
+    ) => void;
+    showChatWidget: () => void;
+  }>("uiActions");
 
-  if (!showSnackbar) {
-    throw new Error('Snackbar composable is not provided')
+  if (!uiActions) {
+    throw new Error("uiActions is not provided");
   }
-  return { showSnackbar }
+
+  return {
+    showSnackbar: uiActions.triggerSnackbar,
+    showChatWidget: uiActions.showChatWidget,
+  };
 }

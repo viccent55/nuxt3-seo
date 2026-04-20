@@ -7,7 +7,6 @@
   import useVariable from "@/composables/useVariable";
   import ExploreLoading from "@/components/ExploreLoading.vue";
   import { useNoteArticleDialog } from "~/hooks/useNoteArticleDialog";
-  import { useDisplay } from "vuetify";
   const { setScrollableElement, scrollTop } = useScrollManager();
 
   const state = reactive({
@@ -18,7 +17,7 @@
     total: 0,
   });
 
-  const { clearQuery, store } = useVariable();
+  const { clearQuery, store, isMobile } = useVariable();
   const containerRef = ref<HTMLElement | null>(null);
   const { configuration } = storeToRefs(store);
 
@@ -87,33 +86,34 @@
     }
   };
 
-  useInfiniteScroll(containerRef, onLoadMore, {
-    distance: 300,
-    canLoadMore: () => !state.loadmore && !state.isNoMore,
-  });
   const noteDialog = useNoteArticleDialog();
   const openDialog = (id: number) => {
     clearQuery();
     noteDialog.openNoteDialog(id);
   };
-  const { smAndDown } = useDisplay();
-  const { isNative } = usePlatform();
   const heightOffset = computed(() => {
-    if (!isNative.value) {
-      if (smAndDown.value) {
-        return "140px";
-      } else {
-        return "100px";
-      }
+    if (isMobile.value) {
+      return "160px";
     }
-    return "220px";
+    return "110px";
   });
+  const onRefresh = async () => {
+    state.isNoMore = false;
+    state.page = 1;
+    state.data = [];
+    const data = await fetchArticle();
+    state.data = data.items;
+  };
   onMounted(() => {
     const el = containerRef.value;
     if (el) {
       setScrollableElement(el);
       el.addEventListener("scroll", () => (scrollTop.value = el.scrollTop));
     }
+    useInfiniteScroll(containerRef, onLoadMore, {
+      distance: 300,
+      canLoadMore: () => !state.loadmore && !state.isNoMore,
+    });
   });
 </script>
 
@@ -123,10 +123,10 @@
     fluid
   >
     <div
-      class="article-wrapper pb-6 md:pb-0"
+      class="article-wrapper pb-10 md:pb-0"
       ref="containerRef"
     >
-      <v-row :no-gutters="$vuetify.display.mobile">
+      <v-row :no-gutters="isMobile">
         <!-- Each Article Card -->
         <v-col
           v-for="(item, index) in state.data"
@@ -144,7 +144,7 @@
           >
             <Image
               :src="item.cover"
-              :height="$vuetify.display.mobile ? '160' : '260'"
+              :height="isMobile ? '160' : '260'"
               cover
               class="rounded-lg"
             >
@@ -182,6 +182,13 @@
         />
       </div>
     </div>
+    <v-fab
+      class="fab-refresh"
+      icon="mdi-refresh"
+      size="small"
+      color="primary"
+      @click="onRefresh()"
+    />
   </v-container>
 </template>
 
@@ -189,7 +196,6 @@
   .article-wrapper {
     width: 100%;
     max-height: calc(100vh - v-bind(heightOffset));
-    height: calc(100dvh - v-bind(heightOffset));
     overflow-y: auto;
     padding: 0 12px;
     scrollbar-width: none;

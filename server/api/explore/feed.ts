@@ -4,15 +4,12 @@ export default defineEventHandler(async (event) => {
   const baseURL = import.meta.dev
     ? config.public.apiLocal // when running `npm run dev`
     : config.public.apiBase;
-  try {
-    const result: EmptyObjectType = await $fetch(`${baseURL}/item/recommend`, {
-      method: "POST",
-      body,
-    });
-    return result;
-  } catch (error) {
-    // Handle errors gracefully
-    console.error("Error fetching data:", error);
-    return { error: "Failed to fetch data" };
-  }
+  const method = event.method;
+  // const method = "POST";
+  const realURL = `${baseURL}/item/recommend`;
+  // build curl with dynamic method
+  const curlCmd = `curl -X ${method} "${realURL}"`;
+  console.warn("🐚 CURL Equivalent:", curlCmd);
+
+  return proxyRequest(event, realURL);
 });

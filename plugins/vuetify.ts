@@ -10,6 +10,11 @@ export default defineNuxtPlugin((nuxtApp) => {
   const vuetify = createVuetify({
     components,
     directives,
+    defaults: {
+      VDialog: {
+        scrollStrategy: "reposition",
+      },
+    },
     icons: {
       defaultSet: "mdi",
       aliases,

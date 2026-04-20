@@ -8,7 +8,7 @@
   import { getUserInfo, getConfigs } from "@/service/user";
   import { checkPermissions } from "@/hooks/usePermisions";
   import { PERMISSION } from "@/common/permision";
-  import { follow } from "@/service/explore";
+  import { follow, status } from "@/service/explore";
   import { useDisplay } from "vuetify";
 
   const userInfo = ref<any>({});
@@ -20,10 +20,10 @@
   const self = computed(() => storeUser.useId === id.value);
   const isShowPupup = ref(false);
   const loading = ref(false);
-  const snackbar = useSnackbar();
+  const { showSnackbar, showChatWidget } = useSnackbar();
   const onVeryEmail = async () => {
     if (!userInfo.value.email) {
-      snackbar.showSnackbar("请输入您的代码", "warning");
+      showSnackbar("请输入您的代码", "warning");
       return;
     }
     try {
@@ -33,10 +33,10 @@
       });
 
       if (response.errcode === 0) {
-        snackbar.showSnackbar(response.info, "success", "top");
+        showSnackbar(response.info, "success", "top");
         isShowPupup.value = true;
       } else {
-        snackbar.showSnackbar(response.info, "error");
+        showSnackbar(response.info, "error");
       }
       isShowPupup.value = true;
     } catch (error) {
@@ -48,11 +48,11 @@
 
   const verifyEmail = async () => {
     if (!userInfo.value.email) {
-      snackbar.showSnackbar("请输入您的代码", "warning");
+      showSnackbar("请输入您的代码", "warning");
       return;
     }
     if (!code.value) {
-      snackbar.showSnackbar("需要代码！", "error");
+      showSnackbar("需要代码！", "error");
       return;
     }
     try {
@@ -61,9 +61,9 @@
         code: code.value,
       });
       if (response.errcode === 0) {
-        snackbar.showSnackbar(response.info, "success");
+        showSnackbar(response.info, "success");
       } else {
-        snackbar.showSnackbar(response.info, "error");
+        showSnackbar(response.info, "error");
       }
     } catch (error) {
       console.error("Error during login:", error);
@@ -79,21 +79,26 @@
     {
       name: "邀请记录",
       value: "invite",
-      icon: "mdi-account-multiple-plus",
+      icon: "mdi-account-group-outline",
     },
 
     {
       name: "我的关注",
       value: "note",
-      icon: "mdi-folder-account",
-    },
-    {
-      name: "收藏",
-      value: "like",
-      icon: "mdi-thumb-up-outline",
+      icon: "mdi-folder-account-outline",
     },
     {
       name: "点赞",
+      value: "like",
+      icon: "mdi-thumb-up-outline",
+    },
+    // {
+    //   name: "下列的",
+    //   value: "follow",
+    //   icon: "mdi-account-multiple-plus-outline",
+    // },
+    {
+      name: "收藏",
       value: "star",
       icon: "mdi-star-outline",
     },
@@ -102,62 +107,88 @@
       value: "telegram",
       icon: "mdi-handshake-outline",
     },
+    {
+      name: "福利群",
+      value: "group-center",
+      icon: "mdi-account-group",
+    },
   ];
 
   const displayMenu = computed(() => {
     if (self.value) {
       return menu;
     }
-    return menu.filter((item) => !["like", "star"].includes(item.value));
+    return menu.filter(
+      (item) => !["like", "star", "follow"].includes(item.value)
+    );
   });
 
-  const pageWrapperRef = ref<HTMLElement | null>(null);
-
-  const pupupData = useTemplateRef("pupupData");
+  const pupupData = useTemplateRef("popup-data");
   const inviteRef = useTemplateRef("inviteRef");
+  const followRef = useTemplateRef("followings");
+  const groupCenter = ref(false);
+
   const onClickMenu = async (item: EmptyObjectType) => {
     if (item.value == "call") {
-      return chatRef.value?.open();
+      return showChatWidget();
     } else if (item.value == "invite") {
       return inviteRef.value?.open();
+    } else if (item.value === "follow") {
+      return followRef.value?.open();
     } else if (item.value == "telegram") {
       if (config.value?.tg_business) {
-        navigateTo(config.value.tg_business, {
-          external: true,
-          open: { target: "_blank" },
-        });
+        window.open(config.value.tg_business, "_blank"); // external
       } else {
-        navigateTo("https://t.me/HFDHG9985", {
-          external: true,
-          open: { target: "_blank" },
-        });
+        window.open("https://t.me/HFDHG9985", "_blank"); // external
       }
-
       return;
+    } else if (item.value === "group-center") {
+      return (groupCenter.value = true);
     }
     pupupData.value?.open(item);
   };
 
+  const checkStatus = async () => {
+    try {
+      const request = {
+        owner: userInfo.value?.id,
+      };
+      const response = await status(request);
+      userInfo.value.isFollow = response.data;
+    } catch (err) {
+      console.error("fetchFeeds failed:", err);
+    }
+  };
   const onInit = async () => {
     pending.value = true;
-    const res = await getUserInfo(id.value);
-    userInfo.value = res.data;
+    try {
+      const res = await getUserInfo(id.value);
+      userInfo.value = res.data;
+      checkStatus();
+    } catch (e) {
+      console.log(e);
+    } finally {
+      pending.value = false;
+    }
   };
   const clickFollow = async (user: any) => {
     checkPermissions(PERMISSION.User, async () => {
       const res = await follow({
-        id: id.value,
+        owner: id.value,
       });
-      if (res.errcode === 0) user.isFollow = !user.isFollow;
+
+      user.isFollow = res.data;
     });
   };
-  const chatRef = useTemplateRef("chatRef");
   const config = ref<any>({});
   const getConfig = async () => {
     try {
-      const params =
-        "ai_clothes_background, ai_clothes_intro, ai_clothes_tg_link, ai_clothes_title, girl_join_background, girl_join_intro, girl_join_title, girl_join_tg_link, tg_business";
-      const res = await getConfigs(params);
+      const request = {
+        name: "",
+        names:
+          "ai_clothes_background, ai_clothes_intro, ai_clothes_tg_link, ai_clothes_title, girl_join_background, girl_join_intro, girl_join_title, girl_join_tg_link, tg_business",
+      };
+      const res = await getConfigs(request);
       config.value = res.data || {};
     } catch (e) {
       console.log(e);
@@ -180,17 +211,6 @@
       });
     }
   };
-  const { isNative } = usePlatform();
-  const heightOffset = computed(() => {
-    if (!isNative.value) {
-      if (smAndDown.value) {
-        return "140px";
-      } else {
-        return "80px";
-      }
-    }
-    return "120px";
-  });
   onMounted(async () => {
     onInit();
     getConfig();
@@ -212,10 +232,12 @@
           backgroundImage: `url(${store?.configuration?.member_center_background})`,
         }"
       ></div>
+
       <div class="user-content-container">
         <div class="user-content mx-md-4">
           <UserInfo
             :user="userInfo"
+            :loading="pending"
             @click-follow="clickFollow"
             @refresh="onInit"
           />
@@ -240,47 +262,64 @@
             <UserReferralnfo :userInfo="userInfo"></UserReferralnfo>
           </div>
           <!-- Browse History -->
-          <UserBrowseHistory />
+          <UserBrowseHistory v-if="self" />
 
           <!-- Feature cards (AI remove / Business join) -->
-          <v-row class="mt-2 px-3 px-md-0 w-100">
+          <v-row
+            class="mt-2 px-3 px-md-0 w-100"
+            :dense="smAndDown"
+          >
             <v-col cols="6">
               <v-card
-                class="text-center pa-3"
-                :height="smAndDown ? 140 : 200"
+                class="pa-2 pa-md-3 d-flex align-center justify-center"
+                :height="smAndDown ? 90 : 160"
                 rounded="xl"
-                :color="config?.ai_clothes_background || '#965757'"
+                :color="config?.ai_clothes_background || '#9B310E'"
                 @click="onOpenAiDialog('left')"
               >
-                <div class="text-center text-subtitle-1 text-md-h6">
-                  {{ config?.ai_clothes_title || "AI脱衣" }}
+                <div class="d-flex align-center justify-center ga-2 ga-md-4">
+                  <v-avatar
+                    :size="smAndDown ? 50 : 120"
+                    color="white"
+                  >
+                    <v-img src="/users/ai-1.png"></v-img>
+                  </v-avatar>
+                  <div class="text-start text-subtitle-1 text-md-h6">
+                    <div class="text-body-1 text-md-h5">
+                      {{ config?.ai_clothes_title || "免费AI脱衣" }}
+                    </div>
+                    <div class="text-body-2 text-md-h6">
+                      {{ config?.ai_clothes_intro || "快来体验吧！" }}
+                    </div>
+                  </div>
                 </div>
-                <v-avatar
-                  :size="smAndDown ? 80 : 140"
-                  color="white"
-                >
-                  <v-img src="/ai-girl.png"></v-img>
-                </v-avatar>
               </v-card>
             </v-col>
 
             <v-col cols="6">
               <v-card
-                class="text-center pa-3"
-                :height="smAndDown ? 140 : 200"
+                class="pa-2 pa-md-3 d-flex align-center justify-center"
+                :height="smAndDown ? 90 : 160"
                 rounded="xl"
-                :color="config?.girl_join_background || '#965757'"
+                :color="config?.girl_join_background || '#8F1E6B'"
                 @click="onOpenAiDialog('right')"
               >
-                <div class="text-center text-subtitle-1 text-md-h6">
-                  {{ config?.girl_join_title || "楼凤入驻" }}
+                <div class="d-flex align-center justify-center ga-2 ga-md-4">
+                  <v-avatar
+                    :size="smAndDown ? 50 : 120"
+                    color="white"
+                  >
+                    <v-img src="/users/ai-2.png"></v-img>
+                  </v-avatar>
+                  <div class="text-start text-subtitle-1 text-md-h6">
+                    <div class="text-body-1 text-md-h5">
+                      {{ config?.girl_join_title || "楼凤入驻" }}
+                    </div>
+                    <div class="text-body-2 text-md-h6">
+                      {{ config?.girl_join_intro || "更多资源尽在" }}
+                    </div>
+                  </div>
                 </div>
-                <v-avatar
-                  :size="smAndDown ? 80 : 140"
-                  color="white"
-                >
-                  <v-img src="/ai-girl2.png"></v-img>
-                </v-avatar>
               </v-card>
             </v-col>
           </v-row>
@@ -340,30 +379,29 @@
       </v-dialog>
       <UserDialogAI
         ref="dialog-ai"
-        @close="chatRef?.open()"
+        @close="showChatWidget()"
       ></UserDialogAI>
-      <UserPersonalNote ref="pupupData"></UserPersonalNote>
-      <ChatWidgetLoader
-        ref="chatRef"
-        :user="userInfo"
-        v-model:loading="loading"
-      />
+      <UserPersonalNote ref="popup-data" />
       <UserDialogInvites
         ref="inviteRef"
         :user-info="userInfo"
       />
+      <UserFollowings ref="followings" />
     </div>
+
+    <UserGroupCenter v-model="groupCenter" />
   </v-container>
 </template>
 
 <style scoped lang="scss">
   .wrap-page {
-    width: 100%; /* Default height for desktop */
-    max-height: calc(100vh - v-bind(heightOffset));
+    width: 100%;
+    /* Default height for desktop */
+    // max-height: calc(100vh - v-bind(heightOffset));
     overflow-y: scroll;
     scrollbar-width: none;
-    padding-bottom: 100px;
   }
+
   .user-background {
     position: absolute;
     top: 0;
@@ -374,6 +412,7 @@
     background-position: center;
     z-index: 0;
   }
+
   .user-content-container {
     position: relative;
     z-index: 1;
@@ -382,16 +421,20 @@
     width: 100%;
     max-width: 900px;
     margin: auto;
+    padding-bottom: 60px;
   }
+
   .user-content {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
   }
+
   .channel-wrapper {
     width: fit-content;
   }
+
   .feeds-container {
     width: 100%;
     padding: 0 16px;
@@ -400,7 +443,8 @@
 
   .menu-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr); /* 5 columns for mobile */
+    grid-template-columns: repeat(5, 1fr);
+    /* 5 columns for mobile */
     gap: 20px;
     text-align: center;
     width: 100%;
@@ -408,7 +452,8 @@
 
   @media (min-width: 960px) {
     .menu-grid {
-      grid-template-columns: repeat(6, 1fr); /* 6 columns for desktop */
+      grid-template-columns: repeat(6, 1fr);
+      /* 6 columns for desktop */
     }
   }
 

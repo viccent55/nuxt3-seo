@@ -54,7 +54,6 @@
 
   // Assign the fetched data to the reactive state
   if (fetchedData.value) {
-    console.log(fetchedData);
     state.data = fetchedData.value;
     getComments();
   }

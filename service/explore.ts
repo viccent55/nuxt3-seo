@@ -1,5 +1,3 @@
-import { decrypt, dataEncrypt } from "~/utils/crypto";
-
 export async function newVisitor(params: object): Promise<EmptyObjectType> {
   const res: EmptyObjectType = $fetch("/api/explore/newVisitor", {
     method: "POST",
@@ -80,13 +78,28 @@ export async function detail(params: EmptyObjectType) {
   if (res.data) return decrypt(res.data);
   return res;
 }
+export async function detailAuth(params: EmptyObjectType) {
+  const res: EmptyObjectType = await useApiFetch("/api/explore/detail-auth", {
+    method: "POST",
+    body: dataEncrypt(params),
+  });
+  if (res.data) return decrypt(res.data);
+  return res;
+}
 
 export async function search(params: EmptyObjectType) {
   const res: EmptyObjectType = await useApiFetch("/api/explore/search", {
     method: "POST",
     body: dataEncrypt(params),
   });
-  console.log(res);
+  if (res.data) return decrypt(res.data);
+  return res;
+}
+export async function status(params: EmptyObjectType) {
+  const res: EmptyObjectType = await useApiFetch("/api/member/status", {
+    method: "POST",
+    body: dataEncrypt(params),
+  });
   if (res.data) return decrypt(res.data);
   return res;
 }

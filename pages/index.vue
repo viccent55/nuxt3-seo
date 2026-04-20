@@ -28,11 +28,21 @@
     fluid
   >
     <h1 class="d-none">小红书成人版-记录性福每一天</h1>
-    <ExploreChannelBar
-      :items="categories"
-      :active-value="indexChannel"
-    />
-    <ExplorePageContent />
+    <v-card
+      flat
+      color="transparent"
+    >
+      <v-card-title class="pa-0">
+        <ExploreChannelBar
+          v-if="configuration.categories?.length > 0"
+          :items="categories"
+          :active-value="indexChannel"
+        />
+      </v-card-title>
+      <v-card-text class="pa-0">
+        <ExplorePageContent />
+      </v-card-text>
+    </v-card>
   </v-container>
 </template>
 

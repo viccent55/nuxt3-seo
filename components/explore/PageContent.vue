@@ -9,13 +9,13 @@
   import { openPage } from "~/service";
   import { itemAdClick } from "@/service/advert";
   import useVariable from "@/composables/useVariable";
-  import { useDisplay } from "vuetify";
 
   const noteDialog = useNoteDialog();
   const feeds = ref<ExploreFeedInfo[]>([]);
   const isLoadMore = ref(false);
   const isNoMore = ref(false);
-  const { clearQuery, route, store, storeUser, debounce } = useVariable();
+  const { clearQuery, route, store, storeUser, debounce, isMobile } =
+    useVariable();
   const exploreContainerRef = ref<{ element: HTMLElement } | null>(null);
   const page = ref(Number(route.params.page) || 1);
   const { setScrollableElement, scrollTop } = useScrollManager();
@@ -43,7 +43,11 @@
      2. Initial SSR fetch
   ---------------------------- */
 
-  const { data: initialFeeds, pending } = await useAsyncData(
+  const {
+    data: initialFeeds,
+    pending,
+    refresh,
+  } = await useAsyncData(
     `explore-feed-${page.value}`,
     () => fetchFeeds(page.value),
     {
@@ -105,22 +109,7 @@
       openPage(`${getCurrentDomain()}/#/user/${item.id}`);
     },
   };
-  let isInitualized = false;
-  const { reset } = useInfiniteScroll(
-    () => exploreContainerRef.value?.element,
-    () => {
-      // load more
-      if (!isInitualized) {
-        isInitualized = true;
-        return;
-      }
-      onLoadMore();
-    },
-    {
-      distance: 300,
-      canLoadMore: () => !isLoadMore.value && !isNoMore.value,
-    }
-  );
+
   const searchParam = async () => {
     if (store.search === "" || !store.search) return;
     try {
@@ -146,25 +135,41 @@
       }
     }
   );
-  const { smAndDown } = useDisplay();
-  const { isNative } = usePlatform();
   const heightOffset = computed(() => {
-    if (!isNative.value) {
-      if (smAndDown.value) {
-        return "210px";
-      } else {
-        return "170px";
-      }
+    if (isMobile.value) {
+      return "200px";
     }
-    return "255px";
+    return "160px";
   });
-
+  const onRefresh = async () => {
+    isNoMore.value = false;
+    page.value = 1;
+    feeds.value = [];
+    await refresh();
+    feeds.value = initialFeeds.value || [];
+  };
   onMounted(() => {
     const el = exploreContainerRef.value?.element;
     if (el) {
       setScrollableElement(el);
       el.addEventListener("scroll", () => (scrollTop.value = el.scrollTop));
     }
+    let isInitualized = false;
+    useInfiniteScroll(
+      () => exploreContainerRef.value?.element,
+      () => {
+        // load more
+        if (!isInitualized) {
+          isInitualized = true;
+          return;
+        }
+        onLoadMore();
+      },
+      {
+        distance: 300,
+        canLoadMore: () => !isLoadMore.value && !isNoMore.value,
+      }
+    );
   });
 </script>
 
@@ -178,6 +183,13 @@
       @click-item="handle.clickFeed"
     />
     <!-- The loading indicator is now inside ExploreContainer -->
+    <v-fab
+      class="fab-refresh"
+      icon="mdi-refresh"
+      size="small"
+      color="primary"
+      @click="onRefresh()"
+    />
   </div>
 </template>
 
@@ -185,7 +197,6 @@
   .explore-wrapper {
     width: 100%; /* Default height for desktop */
     max-height: calc(100vh - v-bind(heightOffset));
-    height: calc(100vh - v-bind(heightOffset));
     display: flex;
     flex-direction: column;
     padding: 0 8px;

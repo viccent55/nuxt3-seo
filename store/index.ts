@@ -1,5 +1,4 @@
 import { defineStore } from "pinia";
-import { decrypt } from "~/utils/crypto";
 
 export const useStore = defineStore("store", {
   state: () => {
@@ -20,6 +19,11 @@ export const useStore = defineStore("store", {
       channel: "001",
       chan: "",
       search: "",
+      popupNotice: [] as EmptyArrayType,
+      ruleTip: {
+        isOpen: false,
+        text: "",
+      },
     };
   },
   actions: {

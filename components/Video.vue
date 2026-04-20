@@ -1,6 +1,6 @@
 <script setup lang="ts">
-  import { ref, onMounted, onBeforeUnmount, watch } from "vue";
-  import Hls from "hls.js";
+  import { ref, onMounted, onBeforeUnmount } from "vue";
+  const { $hls } = useNuxtApp();
 
   const props = defineProps({
     src: {
@@ -15,24 +15,34 @@
       type: Boolean,
       default: false,
     },
+    height: {
+      type: String,
+      default: "auto",
+    },
+    poster: {
+      type: String,
+      default: () => "",
+    },
   });
 
   const videoPlayer = ref<HTMLVideoElement | null>(null);
-  let hls: Hls | null = null;
+  let hls: any | null = null;
 
-  const initializePlayer = () => {
+  const { decryptImage, decryptedImage } = useDecryption();
+  const initializePlayer = (url: string) => {
     // Clean up existing HLS instance if it exists
     if (hls) {
       hls.destroy();
       hls = null;
     }
-    if (Hls.isSupported() && videoPlayer.value) {
-      hls = new Hls();
-      hls.loadSource(props.src);
+
+    if ($hls.isSupported() && videoPlayer.value) {
+      hls = new $hls();
+      hls.loadSource(url);
       hls.attachMedia(videoPlayer.value);
 
       // Autoplay logic
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      hls.on($hls.Events.MANIFEST_PARSED, () => {
         if (props.autoplay) {
           videoPlayer.value?.play().catch((error) => {
             console.error("Autoplay failed:", error);
@@ -41,14 +51,14 @@
       });
 
       // Error handling
-      hls.on(Hls.Events.ERROR, (event, data) => {
+      hls.on($hls.Events.ERROR, (event: any, data: any) => {
         if (data.fatal) {
           switch (data.type) {
-            case Hls.ErrorTypes.NETWORK_ERROR:
+            case $hls.ErrorTypes.NETWORK_ERROR:
               console.error("Fatal network error. Retrying...");
               hls?.startLoad();
               break;
-            case Hls.ErrorTypes.MEDIA_ERROR:
+            case $hls.ErrorTypes.MEDIA_ERROR:
               console.error("Fatal media error. Recovering...");
               hls?.recoverMediaError();
               break;
@@ -64,7 +74,7 @@
       videoPlayer.value.canPlayType("application/vnd.apple.mpegurl")
     ) {
       // Native HLS (Safari)
-      videoPlayer.value.src = props.src;
+      videoPlayer.value.src = url;
       videoPlayer.value.addEventListener(
         "loadedmetadata",
         () => {
@@ -81,21 +91,6 @@
     }
   };
 
-  onMounted(() => {
-    if (props.src) {
-      initializePlayer();
-    }
-  });
-
-  // Re-initialize if src changes
-  watch(
-    () => props.src,
-    (newSrc) => {
-      if (newSrc) {
-        initializePlayer();
-      }
-    }
-  );
   const closeVideo = () => {
     // Stop video playback
     if (videoPlayer.value) {
@@ -109,7 +104,27 @@
       hls = null;
     }
   };
-
+  const displayHeight = computed(() => props.height);
+  watchEffect(async () => {
+    if (props.src) {
+      initializePlayer(props.src);
+    }
+    if (props.poster) {
+      await decryptImage(props.poster);
+    }
+  });
+  // onMounted(() => {
+  //   if (props.src) {
+  //     const proxyUrl = `/api/video-proxy?url=${encodeURIComponent(props.src)}`;
+  //     if (isNative.value) {
+  //       // In native environment, use the original src
+  //       initializePlayer(proxyUrl);
+  //     } else {
+  //       // In web environment, use the proxied URL
+  //       initializePlayer(props.src);
+  //     }
+  //   }
+  // });
   defineExpose({
     closeVideo,
   });
@@ -129,11 +144,12 @@
       :muted="props.muted"
       :autoplay="props.autoplay"
       playsinline
+      :poster="decryptedImage"
     ></video>
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
   .video-container {
     width: 100%;
     /* height: 100%; */
@@ -141,7 +157,7 @@
   }
   .video-js {
     width: 100%;
-    height: 100%;
+    height: v-bind(displayHeight);
     object-fit: contain;
   }
 </style>

@@ -37,6 +37,12 @@
   const onSelectCity = (city: EmptyObjectType) => {
     state.selectedCity = city.code;
   };
+  watch(
+    () => state.selectedProvince,
+    () => {
+      state.selectedCity = "";
+    }
+  );
 
   const selectHotArea = (area: Record<number | string, string>) => {
     state.selectedArea = area.code;
@@ -114,13 +120,36 @@
       <!-- Header -->
       <div class="d-flex justify-space-between align-center mb-2">
         <span class="text-h6">城市地区</span>
-        <v-btn
-          icon
-          size="small"
-          @click="closeSheet"
-        >
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
+        <div class="d-flex align-center ga-2">
+          <v-btn
+            density="comfortable"
+            @click="
+              () => {
+                closeSheet();
+                emit('select', {
+                  province: '',
+                  city: '',
+                });
+              }
+            "
+            variant="tonal"
+            color="warning"
+            rounded="xl"
+            flat
+          >
+            重置
+            <v-icon>mdi-restore</v-icon>
+          </v-btn>
+          <v-btn
+            icon
+            variant="text"
+            color="primary"
+            size="small"
+            @click="closeSheet"
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </div>
       </div>
 
       <!-- Search Input -->

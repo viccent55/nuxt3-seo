@@ -113,3 +113,5 @@ declare interface TableType<T = any> {
   };
 }
 declare module "vuetify/styles";
+// Fix for untyped module 'fslightbox-vue'
+declare module 'fslightbox-vue';

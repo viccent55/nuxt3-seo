@@ -17,7 +17,7 @@ export const useApiFetch = async (
       accessToken = "";
       return false;
     }
-    const { data, error } = await useFetch<EmptyObjectType>(
+    const response: EmptyObjectType = await $fetch(
       "/api/auth/refreshToken", // calls your local API handler
       {
         method: "POST",
@@ -27,17 +27,22 @@ export const useApiFetch = async (
         body: dataEncrypt({}),
       }
     );
-    const decrypted = decrypt(data.value?.data);
-    console.log(decrypted.data);
-    // res.data = decrypted;
-    if (decrypted.data) {
-      accessToken = decrypted.data.access_token;
-      refreshToken = decrypted.data.refresh_token;
+    if (response.data) {
+      const data = decrypt(response.data);
+      userStore.token = {
+        access_token: accessToken,
+        refresh_token: refreshToken,
+      };
+      accessToken = data.access_token;
+      refreshToken = data.refresh_token;
+
       return true;
     } else {
+      console.log("response.data", response);
       // Refresh failed, logout
       accessToken = "";
       refreshToken = "";
+      userStore.logout();
       return false;
     }
   };
@@ -54,7 +59,10 @@ export const useApiFetch = async (
     if (res.data) {
       return res;
     }
-    console.log(res);
+    const storeUser = useUserStore();
+    if (res.errcode === 401023) {
+      storeUser.logout(); // logout
+    }
     if (
       (res.errcode === 401013 ||
         res.errcode === 401015 ||

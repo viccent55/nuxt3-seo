@@ -17,25 +17,27 @@ _
 
   const noteDIalogRef = useTemplateRef("note-dialog");
   const bottomRef = useTemplateRef("bottomActions");
-  const { store, onCopy, route } = useVariable();
+  const { store, onCopy, route, storeUser } = useVariable();
   const loading = ref(false);
   const noteDialog = useNoteArticleDialog();
   const state = reactive({
     data: {} as EmptyObjectType,
     comments: [] as EmptyObjectType[],
   });
-  const { setStatus } = useCapacitor();
   const snackbar = useSnackbar();
+  const contentArticleRef = useTemplateRef("content-article");
   const onOpenNoteDialog = async () => {
     if (noteDIalogRef.value) noteDIalogRef.value.scrollTop = 0;
     loading.value = true;
     try {
       const request = {
         id: noteDialog.id.value,
+        visitor: storeUser.visitCode,
       };
       const response = await detail(request);
       if (response.data) {
         state.data = response.data;
+        contentArticleRef.value?.init(state.data.content);
         getComments();
       }
       if (response.data?.errcode === 0 && Array.isArray(response.data.data)) {
@@ -69,7 +71,8 @@ _
         const id_ = item.id;
         try {
           const response: EmptyObjectType = await like({
-            id: id_,
+            content_type: 2,
+            content_id: id_,
           });
           if (response.errcode === 0) {
             state.data.isLike = !state.data.isLike;
@@ -79,7 +82,7 @@ _
               state.data.like_count--;
             }
           } else {
-            snackbar.showSnackbar(response.info, "warning");
+            snackbar.showSnackbar(response.info, "warning", "center");
           }
         } catch (error) {
           console.error("Login failed:", error);
@@ -97,7 +100,8 @@ _
         const id_ = item.id;
         try {
           const response: EmptyObjectType = await collect({
-            id: id_,
+            content_type: 2,
+            content_id: id_,
           });
           if (response.errcode == 0) {
             state.data.isStar = !state.data.isStar;
@@ -107,7 +111,7 @@ _
               item.star_count--;
             }
           } else {
-            snackbar.showSnackbar(response.info, "warning");
+            snackbar.showSnackbar(response.info, "warning", "center");
           }
         } catch (error) {
           console.error("Login failed:", error);
@@ -141,12 +145,11 @@ _
   const getStyle = computed(() =>
     smAndDown.value
       ? "scrollbar-width: none; margin-bottom: 10px"
-      : "max-height: calc(100vh - 200px); overflow-y: scroll"
+      : "max-height: calc(100vh - 230px); overflow-y: scroll"
   );
   watch(
     () => noteDialogVisible.value,
     (val) => {
-      setStatus(val);
       useDialogUXLock(noteDialogVisible);
     }
   );
@@ -156,7 +159,6 @@ _
   <v-dialog
     v-model="noteDialogVisible"
     max-width="1200"
-    persistent
     height="100%"
     @after-enter="onOpenNoteDialog"
     scrollable
@@ -198,7 +200,8 @@ _
               <v-card-text :style="getStyle">
                 <ContentArticle
                   :content="state.data?.content"
-                  ref="contentArticleRef"
+                  ref="content-article"
+                  :poster="state.data?.cover"
                 />
               </v-card-text>
             </v-card>
@@ -216,6 +219,7 @@ _
               v-if="!smAndDown"
             >
               <v-btn
+                color="primary"
                 icon
                 size="small"
                 @click="noteDialog.closeNoteDialog"
@@ -326,8 +330,6 @@ _
 
 <style scoped lang="scss">
   .main-contain {
-    // padding-top: env(safe-area-inset-top, 0px);
-    padding-top: var(--safe-area-inset-top, 0px);
   }
   .right-side {
     max-height: calc(100vh - 180px);

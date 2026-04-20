@@ -3,12 +3,15 @@ import { ref } from "vue";
 
 interface ChatWidgetOptions {
   API_URL: string;
-  AGENT_ID: string;
-  USER_ID?: string;
+  GROUP_ID: string;
+  USER_ID: string;
   USER_NAME?: string;
-  USER_AVATAR?: string;
+  VISITOR_AVATAR?: string;
   containerId?: string;
   AUTO_OPEN: boolean;
+  VISITOR_ID?: string;
+  EXTRA?: string;
+  USER_AVATAR: string;
 }
 
 declare global {
@@ -19,7 +22,7 @@ declare global {
       renderButton?: () => void;
       open?: () => void; // some widgets have open()/show()
       close?: () => void;
-      openChatWindow: () => void;
+      openChatWindow?: () => void;
     };
   }
 }
@@ -61,9 +64,26 @@ export function useChatWidget() {
 
     // Initialize
     if (!isReady.value) {
-      window.CHAT_WIDGET.initialize({ ...options });
+      // 1️⃣ Build your custom values
+      const visitorId = options.VISITOR_ID || "guest_" + Date.now();
+      const refer = encodeURIComponent(window.location.href);
+      const extra = options.EXTRA || "";
+
+      // 2️⃣ Attach these to the initialize options
+      const finalOptions = {
+        ...options,
+        VISITOR_ID: visitorId,
+        REFER: refer, // add refer
+        EXTRA: extra, // ensure extra always exists
+      };
+
+      // 3️⃣ Initialize widget with enriched options
+      window.CHAT_WIDGET.initialize(finalOptions);
+
+      // 4️⃣ Mark ready
       isReady.value = true;
-      // Hide the default floating button
+
+      // 5️⃣ Hide default widget button
       const style = document.createElement("style");
       style.textContent = `#chat-widget-button { display: none !important; }`;
       document.head.appendChild(style);
@@ -73,7 +93,7 @@ export function useChatWidget() {
   /** Show / open the chat popup manually */
   const showChat = () => {
     if (!window.CHAT_WIDGET) return;
-    if (typeof window.CHAT_WIDGET.openChatWindow() === "function") {
+    if (typeof window.CHAT_WIDGET.openChatWindow === "function") {
       window.CHAT_WIDGET?.openChatWindow();
     } else if (typeof window.CHAT_WIDGET.renderButton === "function") {
       window.CHAT_WIDGET.renderButton();

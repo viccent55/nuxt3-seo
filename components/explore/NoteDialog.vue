@@ -4,7 +4,15 @@
   import AuthorHeader from "./comp/AuthorHeader.vue";
   import { checkPermissions } from "@/hooks/usePermisions";
   import { PERMISSION } from "@/common/permision";
-  import { detail, like, collect, follow, reply } from "@/service/explore";
+  import {
+    detail,
+    like,
+    collect,
+    follow,
+    reply,
+    status,
+    detailAuth,
+  } from "@/service/explore";
   import CommentBlock from "./comp/CommentBlock.vue";
   import BottomAction from "./comp/BottomAction.vue";
   import { adsClick } from "@/service/advert";
@@ -16,41 +24,65 @@
   const noteDIalogRef = useTemplateRef("note-dialog");
   const bottomRef = useTemplateRef("bottomActions");
   const { storeUser, store, onCopy, route, isMobile } = useVariable();
-  const loading = ref(false);
   const noteDialog = useNoteDialog();
   const state = reactive({
     data: {} as EmptyObjectType,
     comments: [] as EmptyObjectType[],
+    loading: false,
   });
-  const snackbar = useSnackbar();
-  const { setStatus } = useCapacitor();
 
-  const onOpenNoteDialog = async () => {
-    if (noteDIalogRef.value) noteDIalogRef.value.scrollTop = 0;
-    loading.value = true;
+  const snackbar = useSnackbar();
+
+  const checkStatus = async () => {
     try {
       const request = {
-        id: noteDialog.id.value,
-        code: storeUser.visitCode,
+        owner: state.data.author.id,
       };
-      const response = await detail(request);
+      const response = await status(request);
+      state.data.isFollow = response.data;
+    } catch (err) {
+      console.error("fetchFeeds failed:", err);
+    } finally {
+      state.loading = false;
+    }
+  };
+  const onOpenNoteDialog = async () => {
+    if (noteDIalogRef.value) noteDIalogRef.value.scrollTop = 0;
+    state.loading = true;
+    try {
+      let response: EmptyObjectType = {};
+      if (storeUser.isLogin) {
+        const request = {
+          id: noteDialog.id.value,
+          visitor: storeUser.visitCode,
+        };
+        response = await detailAuth(request);
+      } else {
+        const request = {
+          id: noteDialog.id.value,
+          code: storeUser.visitCode,
+        };
+        response = await detail(request);
+      }
       if (response.data) {
         state.data = response.data;
         getComments();
+        if (storeUser.isLogin) {
+          checkStatus();
+        }
       }
+
       if (response.data?.errcode === 0 && Array.isArray(response.data.data)) {
         return response.data;
       }
     } catch (err) {
       console.error("fetchFeeds failed:", err);
     } finally {
-      loading.value = false;
+      state.loading = false;
     }
 
     // disableHorizontalSwipe();
   };
-
-  const swiperInstanceRef = ref<InstanceType<typeof Swiper> | null>(null);
 
   const getComments = async () => {
     if (!noteDialog.id.value) return;
@@ -75,7 +107,7 @@
     clickFollow(id: number) {
       checkPermissions(PERMISSION.User, async () => {
         const response: EmptyObjectType = await follow({
-          id: id,
+          owner: id,
         });
         if (response.errcode == 0) {
           state.data.isFollow = !state.data.isFollow;
@@ -90,7 +122,8 @@
         const id_ = item.id;
         try {
           const response: EmptyObjectType = await like({
-            id: id_,
+            content_type: 1,
+            content_id: id_,
           });
           if (response.errcode === 0) {
             state.data.isLike = !state.data.isLike;
@@ -118,7 +151,8 @@
         const id_ = item.id;
         try {
           const response: EmptyObjectType = await collect({
-            id: id_,
+            content_type: 1,
+            content_id: id_,
           });
           if (response.errcode == 0) {
             state.data.isStar = !state.data.isStar;
@@ -159,17 +193,14 @@
     },
   };
   const { smAndDown } = useDisplay();
-  const { isNative } = usePlatform();
   const getStyle = computed(() => {
-    return isNative.value || smAndDown.value
+    return smAndDown.value
       ? "height:100%; overflow-y: scroll"
       : "max-height: calc(100vh - 110px); overflow-y: scroll";
   });
-
   watch(
     () => noteDialogVisible.value,
     (val) => {
-      setStatus(val);
       useDialogUXLock(noteDialogVisible);
     }
   );
@@ -179,7 +210,6 @@
   <v-dialog
     v-model="noteDialogVisible"
     max-width="1200"
-    persistent
     height="100%"
     @after-enter="onOpenNoteDialog"
     :fullscreen="smAndDown"
@@ -187,13 +217,23 @@
   >
     <v-card
       class="main-contain"
-      :loading="loading"
+      :loading="state.loading"
     >
-      <v-card-text class="pa-0">
-        <v-row
-          no-gutters
-          class="h-100"
+      <v-card-title
+        class="pt-0 px-3"
+        v-if="smAndDown"
+      >
+        <v-btn
+          icon
+          density="compact"
+          @click="noteDialog.closeNoteDialog"
+          color="surface"
         >
+          <v-icon size="24px">mdi-chevron-left</v-icon>
+        </v-btn>
+      </v-card-title>
+      <v-card-text class="pa-0">
+        <v-row no-gutters>
           <!-- Left: Video area -->
           <v-col
             cols="12"
@@ -206,17 +246,9 @@
               ref="swiperInstanceRef"
               v-if="state.data?.fields"
               :media-info="state.data.fields"
+              :height="smAndDown ? '300px' : 'calc(100vh - 120px)'"
+              :poster="state.data?.cover"
             />
-            <v-btn
-              v-if="smAndDown"
-              icon
-              density="compact"
-              @click="noteDialog.closeNoteDialog"
-              color="surface"
-              style="position: absolute; top: 10px; left: 10px; z-index: 20"
-            >
-              <v-icon size="24px">mdi-chevron-left</v-icon>
-            </v-btn>
           </v-col>
 
           <!-- Right: Info & Comments -->
@@ -231,6 +263,7 @@
               v-if="!smAndDown"
             >
               <AuthorHeader
+                :loading="state.loading"
                 :author="{
                   ...state.data?.author,
                   isFollow: state.data?.isFollow,
@@ -240,6 +273,7 @@
                 @click-follow="handle.clickFollow"
               />
               <v-btn
+                color="primary"
                 icon
                 size="small"
                 @click="noteDialog.closeNoteDialog"
@@ -262,7 +296,10 @@
                 发布日期: {{ state.data?.created_at }}
               </div>
 
-              <v-row dense>
+              <v-row
+                dense
+                v-if="isMobile"
+              >
                 <v-col cols="12">
                   <v-toolbar
                     class="d-flex justify-space-between align-center mb-2 py-0 rounded"
@@ -374,7 +411,10 @@
 <style scoped lang="scss">
   .main-contain {
     /* Add padding equal to the top safe area inset */
-    // padding-top: env(safe-area-inset-top, 0px);
-    padding-top: var(--safe-area-inset-top, 0px);
+  }
+  .back-button {
+    position: absolute;
+    left: 10px;
+    z-index: 20;
   }
 </style>
