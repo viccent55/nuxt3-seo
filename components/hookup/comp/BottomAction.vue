@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { ref, watchEffect } from "vue";
+  import { useTawk } from "@/composables/useTawk";
 
   const props = withDefaults(
     defineProps<{
@@ -33,6 +34,10 @@
   };
 
   defineExpose({ inputFocus });
+  const { openChat } = useTawk();
+  const onLivetalk = () => {
+    openChat()
+  }
 </script>
 
 <template>
@@ -41,15 +46,17 @@
     class="w-100"
   >
     <div class="d-flex align-center ga-2 justify-end">
-      <!-- <v-btn
+      <!-- @click="$emit('click-comment', action)" -->
+      <v-btn
         variant="text"
         density="comfortable"
-        @click="$emit('click-comment', action)"
+        
+        @click="onLivetalk"
         class="px-0"
       >
         <v-icon>mdi-comment-outline</v-icon>
         联系客服
-      </v-btn> -->
+      </v-btn>
       <v-btn
         variant="text"
         density="comfortable"

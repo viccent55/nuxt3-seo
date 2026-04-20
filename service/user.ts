@@ -1,3 +1,16 @@
+
+export async function verifyAuth(uid: number, auth: string) {
+  // console.log('verifyAuth ... ');
+  const res: EmptyObjectType = await useApiFetch(`/api/member/verify-auth`, {
+    method: "POST",
+    body: dataEncrypt({ uid: uid, auth: auth }),
+  });
+  if (res.data) {
+    return decrypt(res.data);
+  }
+  return res;
+}
+
 export async function getUserInfo(id: number) {
   const res: EmptyObjectType = await $fetch("/api/user", {
     method: "POST",

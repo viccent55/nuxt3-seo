@@ -6,6 +6,8 @@
   import useVariable from "@/composables/useVariable";
   import { useNoteAnimeDialog } from "~/hooks/useNoteAnimeDialog";
   import { useDisplay } from "vuetify";
+  import { openLoginDialog } from "@/hooks/useLoginDialog";
+  import {verifyAuth} from "@/service/user"
   const { setScrollableElement, scrollTop } = useScrollManager();
 
   const state = reactive({
@@ -26,6 +28,7 @@
     computed(() => configuration.value?.cartoon_keywords)
   );
 
+  
   /* ---------------------------
      1. Centralized fetch function
   ---------------------------- */
@@ -35,11 +38,13 @@
         page: state.page,
         limit: 30,
       };
-      const response: EmptyObjectType = await $fetch("/api/anime/select", {
+      // console.log('✅ ✅。🤣 。。。')
+      const response: EmptyObjectType = await useApiFetch("/api/anime/select", {
         method: "POST",
         body: dataEncrypt(request),
       });
       const result = decrypt(response.data);
+      // console.log('fetch data :', result);
       state.total = result.data.count;
       if (result?.errcode === 0 && Array.isArray(result.data.items)) {
         return result.data;
@@ -109,11 +114,11 @@
     }
     return "220px";
   });
-  const isVisible = ref(false);
-  onBeforeMount(() => {
-    if (storeUser.userInfo?.invite_count < 5 || !storeUser.isLogin)
-      isVisible.value = true;
-  });
+  const isVisible = ref(true);
+  // onBeforeMount(() => {
+  //   if (storeUser.userInfo?.invite_count < 5 || !storeUser.isLogin)
+  //     isVisible.value = true;
+  // });
   onMounted(() => {
     const el = containerRef.value;
     if (el) {
@@ -121,9 +126,38 @@
       el.addEventListener("scroll", () => (scrollTop.value = el.scrollTop));
     }
   });
+  const showAlert = ref(false)
+  const ShowDialog = ref(true)
+  const unlockHandler = async () => {
+    if(!storeUser.isLogin){
+        openLoginDialog()
+        return 
+    }
+    const resp = await verifyAuth(0,'jinqu');
+    // console.log('✅ ⚠️ : ',resp)
+    if (resp.data){
+      // console.log('⚠️ #fdsa....')
+      ShowDialog.value = false;
+      fetchData()
+            // console.log('⚠️ #fdsa....11')
+      isVisible.value = false;
+            // console.log('#fdsa....22')
+      return ;
+    }else{
+      showAlert.value = true
+    }
+  }
+
 </script>
 
 <template>
+  <v-alert
+    v-model="showAlert"
+    type="warning"
+    title="权限警告"
+    text="您没有权限 请联系客服开通权限"
+    closable
+  ></v-alert>
   <v-container
     class="px-0 pt-5"
     fluid
@@ -182,7 +216,7 @@
         />
       </div>
     </div>
-    <AnimeRuleDialog v-model:model-value="isVisible" />
+    <AnimeRuleDialog v-model:model-value="isVisible"  @select="unlockHandler" />
   </v-container>
 </template>
 

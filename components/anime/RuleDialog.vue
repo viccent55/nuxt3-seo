@@ -1,6 +1,8 @@
 <script lang="ts" setup>
   import { checkPermissions } from "@/hooks/usePermisions";
   import { PERMISSION } from "@/common/permision";
+  import { useTawk } from "@/composables/useTawk";
+  import { openLoginDialog } from "@/hooks/useLoginDialog";
 
   const props = defineProps({
     modelValue: Boolean,
@@ -20,6 +22,11 @@
       isVisible.value = false;
     });
   };
+  const onUnlock = () => {
+    // console.log('onUnlock')
+    emit('select')
+  }
+
   watch(
     () => router.currentRoute,
     (val) => {
@@ -32,25 +39,35 @@
       deep: true,
     }
   );
-  const onLeave = () => {
-    if (inviteClicked) {
-      inviteClicked = false; // Reset flag for next time
-      return; // Stop execution if invite was clicked
-    }
+  // const onLeave = () => {
+  //   if (inviteClicked) {
+  //     inviteClicked = false; // Reset flag for next time
+  //     return; // Stop execution if invite was clicked
+  //   }
 
-    isVisible.value = false;
-    if (window.history.length > 1) {
-      router.back();
-    } else {
-      router.push("/");
-    }
-  };
+  //   isVisible.value = false;
+  //   if (window.history.length > 1) {
+  //     router.back();
+  //   } else {
+  //     router.push("/");
+  //   }
+  // };
+
+const { openChat } = useTawk();
+const onLivetalk = () => {
+  if(!storeUser.isLogin){
+    openLoginDialog()
+    return 
+  }
+  openChat()
+}
+
 </script>
 <template>
+  <!---    @after-leave="onLeave" -->
   <v-dialog
     v-model="isVisible"
     max-width="500px"
-    @after-leave="onLeave"
   >
     <v-card>
       <v-card-text>
@@ -60,16 +77,23 @@
         </div>
 
         <div class="text-center text-warning my-4 text-subtitle-1">
-          成功邀请5人后，将永久免费解锁
+          开通VIP 权限 可免费观看禁区。 并免定金约啪
         </div>
-
+        <v-btn
+          color="info"
+          block
+          rounded="xl"
+          @click="onLivetalk"
+        >
+          联系客服 开通VIP权限
+        </v-btn><br/>
         <v-btn
           color="primary"
           block
           rounded="xl"
-          @click="onInvite"
+          @click="onUnlock"
         >
-          立即邀请
+          解锁观看
         </v-btn>
       </v-card-text>
     </v-card>
