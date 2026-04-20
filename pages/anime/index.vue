@@ -4,7 +4,7 @@
   });
   import { useInfiniteScroll } from "@vueuse/core";
   import useVariable from "@/composables/useVariable";
-  import { useNoteAnimeDialog } from "~/hooks/useNoteAnimeDialog";
+  import { useNoteForbidden } from "~/hooks/useNoteForbiddenDialog";
   import { useDisplay } from "vuetify";
   import { openLoginDialog } from "@/hooks/useLoginDialog";
   import {verifyAuth} from "@/service/user"
@@ -97,7 +97,7 @@
     distance: 300,
     canLoadMore: () => !state.loadmore && !state.isNoMore,
   });
-  const noteDialog = useNoteAnimeDialog();
+  const noteDialog = useNoteForbidden();
   const openDialog = (id: number) => {
     clearQuery();
     noteDialog.openNoteDialog(id);
